@@ -1,0 +1,39 @@
+[
+  {
+    "type": "apartamento",
+    "key": 1,
+    "subTypes": [
+      "Cobertura",
+      "flat",
+      "Térreo",
+      "Kitnet/Conjugado",
+      "Loft",
+      "Estúdio"
+    ]
+  },
+  {
+    "type": "Casa",
+    "key": 2,
+    "subTypes": [
+      "Casa de condomínio",
+      "Casa de bairro",
+      "Sobrado"
+    ]
+  },
+  {
+    "type": "Fazenda/Sítio/Chácara",
+    "key": 3,
+    "subTypes": [
+      "Terreno grande",
+      "Terreno pequeno"
+    ]
+  },
+  {
+    "type": "Lote/Terreno",
+    "key": 4,
+    "subTypes": [
+      "Terreno grande",
+      "Terreno pequeno"
+    ]
+  }
+]
