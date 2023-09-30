@@ -1,9 +1,0 @@
-@import "~react-credit-cards/es/styles-compiled.css";
-
-#PaymentForm .rccs {
-  width: 600px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 2rem;
-}
