@@ -111,6 +111,7 @@ const Address: React.FC<IAddressComponent> = ({
     const cep = event.target.value;
     const formattedZipCode = cep.replace(/-/g, '');
     setAddressData({...addressData, zipCode: formattedZipCode});
+    resetObjectToEmptyStrings(errors);
   };
 
   const handleCityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -137,6 +138,7 @@ const Address: React.FC<IAddressComponent> = ({
     const formattedNumber = number.replace(/-/g, '');
     const numberMask = formattedNumber.replace(/\D/g, '');
     setAddressData({...addressData, streetNumber: numberMask});
+    resetObjectToEmptyStrings(errors);
   };
 
   const handleNeighborhoodChange = (event: React.ChangeEvent<HTMLInputElement>) => {

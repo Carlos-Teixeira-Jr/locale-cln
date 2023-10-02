@@ -348,7 +348,6 @@ const MainFeatures: React.FC<IMainFeatures> = ({
           </select>
         </div>
 
-        {/* FORM DO VIACEP */}
         <div className="my-5 ml-5 lg:ml-0">
           <h3 className="md:text-3xl text-2xl text-quaternary font-semibold leading-9 my-5">
             Dados do Imóvel:
@@ -367,7 +366,6 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                 onChange={(e) => {
                   const numericValue = parseFloat(e.target.value); 
                   const totalArea = Number.isNaN(numericValue) ? 0 : numericValue;
-              
                   setPropertyFeaturesData({
                     ...propertyFeaturesData,
                     size: {
@@ -375,6 +373,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                       totalArea: totalArea
                     }
                   });
+                  resetObjectToEmptyStrings(errors);
                 }}
               />
               {errors.totalArea && (
@@ -457,7 +456,10 @@ const MainFeatures: React.FC<IMainFeatures> = ({
             <textarea
               className="bg-tertiary border border-quaternary rounded-[10px] h-40 drop-shadow-xl text-lg p-2 font-semibold text-quaternary"
               value={propertyFeaturesData.description}
-              onChange={(e) => setPropertyFeaturesData({...propertyFeaturesData, description: e.target.value})}
+              onChange={(e) => {
+                setPropertyFeaturesData({...propertyFeaturesData, description: e.target.value});
+                resetObjectToEmptyStrings(errors);
+              }}
               style={errors.description ? { border: '1px solid red' } : {}}
               required
             />
@@ -483,7 +485,10 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                 placeholder='R$'
                 className={'border border-quaternary rounded-[10px] h-12 w-full text-quaternary text-2xl font-bold p-2 md:font-bold drop-shadow-lg bg-tertiary mt-5'}
                 style={errors.propertyValue ? { border: '1px solid red' } : {}}
-                onChange={(e) => setPropertyFeaturesData({...propertyFeaturesData,propertyValue: maskedPrice(e.target.value)})}
+                onChange={(e) => {
+                  setPropertyFeaturesData({...propertyFeaturesData,propertyValue: maskedPrice(e.target.value)});
+                  resetObjectToEmptyStrings(errors);
+                }}
               />
               {errors.propertyValue && (
                 <span className="text-red-500 mt-2 text-xs">{errors.propertyValue}</span>
