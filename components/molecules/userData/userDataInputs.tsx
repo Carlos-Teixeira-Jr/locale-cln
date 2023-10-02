@@ -17,16 +17,18 @@ interface IUserDataInputs {
   userData?: IOwnerData
   isEdit: boolean
   onUserDataUpdate: (updatedUserData: IUserDataComponent) => void;
-  onErrorsInfo: OnErrorInfo
+  //onErrorsInfo: OnErrorInfo
   urlEmail?: string | undefined
+  error: any
 }
 
 const userDataInputs: React.FC<IUserDataInputs> = ({
   userData, 
   isEdit,
   onUserDataUpdate,
-  onErrorsInfo,
-  urlEmail
+  //onErrorsInfo,
+  urlEmail,
+  error
 }) => {
 
   const [errorModalIsOpen, setErrorModalIsOpen] = useState(false);
@@ -47,30 +49,33 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
   }, [urlEmail])
   
 
-  const [errors, setErrors] = useState<IUserDataComponentErrors>({
+  const [userDataErrors, setUserDataErrors] = useState<IUserDataComponentErrors>({
     username: '',
     email: '',
     cpf: '',
     cellPhone: '',
-    phone: '',
   });
 
-  // Processa a estrutura de dados de onErrosInfo para inserir no objeto formDataErrors;
   useEffect(() => {
-    setErrors({
-      username: '',
-      email: '',
-      cpf: '',
-      cellPhone: '',
-      phone: '',
-    });
-    if (onErrorsInfo) {
-      setErrors(prevErrors => ({
-        ...prevErrors,
-        [onErrorsInfo.prop]: onErrorsInfo.error,
-      }));
-    }
-  }, [onErrorsInfo]);
+    setUserDataErrors(error);
+  }, [error]);
+  
+
+  // Processa a estrutura de dados de onErrosInfo para inserir no objeto formDataErrors;
+  // useEffect(() => {
+  //   setUserDataErrors({
+  //     username: '',
+  //     email: '',
+  //     cpf: '',
+  //     cellPhone: '',
+  //   });
+  //   if (onErrorsInfo) {
+  //     setUserDataErrors(prevErrors => ({
+  //       ...prevErrors,
+  //       [onErrorsInfo.prop]: onErrorsInfo.error,
+  //     }));
+  //   }
+  // }, [onErrorsInfo]);
 
   // Envia os dados do usuário para o componente pai;
   useEffect(() => {
@@ -181,10 +186,10 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
               onChange={inputs[0].onChange}
               value={inputs[0].value}
               required
-              style={errors.username ? { border: '1px solid red' } : {}}
+              style={userDataErrors.username ? { border: '1px solid red' } : {}}
             />
-            {errors.username && (
-              <span className="text-red-500 text-xs">{errors.username}</span>
+            {userDataErrors.username && (
+              <span className="text-red-500 text-xs">{userDataErrors.username}</span>
             )}
           </div>
 
@@ -199,10 +204,10 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
                   onChange={input.onChange}
                   value={input.value}
                   required
-                  style={errors[input.key] !== '' ? { border: '1px solid red' } : {}}
+                  style={userDataErrors[input.key] !== '' ? { border: '1px solid red' } : {}}
                 />
-                {Object.keys(errors).includes(input.key) && (
-                  <span className="text-red-500 text-xs">{errors[input.key]}</span>
+                {Object.keys(userDataErrors).includes(input.key) && (
+                  <span className="text-red-500 text-xs">{userDataErrors[input.key]}</span>
                 )}
               </div>
             ))}
@@ -219,10 +224,10 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
                   onChange={input.onChange}
                   value={input.value}
                   required
-                  style={errors[input.key] !== '' ? { border: '1px solid red' } : {}}
+                  style={userDataErrors[input.key] !== '' ? { border: '1px solid red' } : {}}
                 />
-                {Object.keys(errors).includes(input.key) && (
-                  <span className="text-red-500 text-xs">{errors[input.key]}</span>
+                {Object.keys(userDataErrors).includes(input.key) && (
+                  <span className="text-red-500 text-xs">{userDataErrors[input.key]}</span>
                 )}
               </div>
             ))}

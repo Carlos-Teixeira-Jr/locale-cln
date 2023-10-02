@@ -48,6 +48,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
   const query = router.query;
   const urlEmail = query.email as string;
   const { progress, updateProgress } = useProgress();
+  const storedData = store.get('propertyData');
+  const propertyData = storedData.address;
 
   const { data: session } = useSession() as any;
   const userId = session?.user?.data._id;
@@ -71,13 +73,28 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     phone: '',
   });
 
-  const [propertyAddress, setPropertyAddress] = useState<IAddress>({
+  const [userDataErrors, setUserDataErrors] = useState({
+    username: '',
+    email: '',
+    cpf: '',
+    cellPhone: '',
+  });
+
+  const [addressData, setAddressData] = useState<IAddress>({
     zipCode: '',
     city: '',
     streetName: '',
     streetNumber: '',
     complement: '',
     neighborhood: '',
+    uf: ''
+  });
+
+  const [addressErrors, setAddressErrors] = useState({
+    zipCode: '',
+    city: '',
+    streetName: '',
+    streetNumber: '',
     uf: ''
   });
 
@@ -96,22 +113,22 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     }
   });
 
-  // Busca o endereço do imóvel armazenado no local storage e atualiza o valor de propertyAddress sempre que há o componente de endereço é aberto ou fechado - isso é necessário para que o componente ChangeAddressCheckbox recupere o endereço do localStorage quando a opção é alterada;
+  // Busca o endereço do imóvel armazenado no local storage e atualiza o valor de addressData sempre que há o componente de endereço é aberto ou fechado - isso é necessário para que o componente ChangeAddressCheckbox recupere o endereço do localStorage quando a opção é alterada;
   useEffect(() => {
-    setPropertyAddress(property ? property.address : '')
+    setAddressData(property ? property.address : '')
   },[isSameAddress]);
 
   // Envia as mensagens de erros para os componentes;
-  const [errorInfo, setErrorInfo] = useState({
-    error: '',
-    prop: ''
-  });
+  // const [errorInfo, setErrorInfo] = useState({
+  //   error: '',
+  //   prop: ''
+  // });
 
-  // Lida com a verificação de erros do handleSubmit (necessário para acessar o valor atualizado de erros ainda antes do final da execução do handleSubmit)
-  const errorHandler = useRef<{ error: string; prop: string }>({
-    error: '',
-    prop: ''
-  });
+  // // Lida com a verificação de erros do handleSubmit (necessário para acessar o valor atualizado de erros ainda antes do final da execução do handleSubmit)
+  // const errorHandler = useRef<{ error: string; prop: string }>({
+  //   error: '',
+  //   prop: ''
+  // });
 
   useEffect(() => {
     const url = router.pathname;
@@ -120,102 +137,150 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     }
   }, [router.pathname]);
 
-  useEffect(() => {
-    console.log("🚀 ~ file: registerStep3.tsx:130 ~ propertyAddress:", propertyAddress)
-  }, [propertyAddress]);
-
   const handleSubmit = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    console.log("🚀 ~ file: registerStep3.tsx:214 ~ handleSubmit ~ propertyAddress:", propertyAddress)
 
     const error = `Este campo é obrigatório.`;
 
     const planObj: IPlan | undefined = plans.find((plan) => plan._id === selectedPlan);
     const isPlanFree = planObj === undefined || planObj.name === 'Free';
 
-    setErrorInfo({
-      prop: '',
-      error: ''
+    setUserDataErrors({
+      username: '',
+      email: '',
+      cpf: '',
+      cellPhone: '',
     });
 
-    errorHandler.current = {
-      prop: '',
-      error: ''
+    setAddressErrors({
+      zipCode: '',
+      city: '',
+      streetName: '',
+      streetNumber: '',
+      uf: ''
+    });
+
+    const newUserDataErrors = {
+      username: '',
+      email: '',
+      cpf: '',
+      cellPhone: '',
     };
 
-    if (!userDataForm.username) {
-      setErrorInfo({ error: error, prop: 'username' });
-      errorHandler.current = { error: error, prop: 'username' }
-    }
-    if (!userDataForm.email) {
-      setErrorInfo({ error: error, prop: 'email' });
-      errorHandler.current = { error: error, prop: 'email' }
-    }
-    if (!userDataForm.cpf) {
-      setErrorInfo({ error: error, prop: 'cpf' });
-      errorHandler.current = { error: error, prop: 'cpf' }
-    }
-    if (!userDataForm.cellPhone) {
-      setErrorInfo({ error: error, prop: 'cellPhone' });
-      errorHandler.current = { error: error, prop: 'cellPhone' }
-    }
-    if (!userDataForm.phone) {
-      setErrorInfo({ error: error, prop: 'phone' });
-      errorHandler.current = { error: error, prop: 'phone' }
-    }
-    if (!termsAreRead) {
-      setErrorInfo({ error: error, prop: 'terms' });
-      errorHandler.current = { error: error, prop: 'terms' }
-    }
-    if (!isPlanFree) {
-      if (!creditCard.cardName) {
-        setErrorInfo({ error: error, prop: 'cardName' });
-        errorHandler.current = { error: error, prop: 'cardName' }
-      }
-      if (!creditCard.cardNumber) {
-        setErrorInfo({ error: error, prop: 'cardNumber' });
-        errorHandler.current = { error: error, prop: 'cardNumber' }
-      }
-      if (!creditCard.cvc) {
-        setErrorInfo({ error: error, prop: 'cvc' });
-        errorHandler.current = { error: error, prop: 'cvc' }
-      }
-      if (!creditCard.expiry) {
-        setErrorInfo({ error: error, prop: 'expiry' });
-        errorHandler.current = { error: error, prop: 'expiry' }
-      }
-    }
-    if (!isSameAddress) {
-      if (!propertyAddress.zipCode) {
-        setErrorInfo({ error: error, prop: 'zipcode' });
-        errorHandler.current = { error: error, prop: 'zipcode' }
-      }
-      if (!propertyAddress.city) {
-        setErrorInfo({ error: error, prop: 'city' });
-        errorHandler.current = { error: error, prop: 'city' }
-      }
-      if (!propertyAddress.uf) {
-        setErrorInfo({ error: error, prop: 'uf' });
-        errorHandler.current = { error: error, prop: 'uf' }
-      }
-      if (!propertyAddress.streetName) {
-        setErrorInfo({ error: error, prop: 'streetName' });
-        errorHandler.current = { error: error, prop: 'streetName' }
-      }
-      if (!propertyAddress.streetNumber) {
-        setErrorInfo({ error: error, prop: 'streetNumber' });
-        errorHandler.current = { error: error, prop: 'streetNumber' }
-      }
-      if (!propertyAddress.neighborhood) {
-        setErrorInfo({ error: error, prop: 'neighborhood' });
-        errorHandler.current = { error: error, prop: 'neighborhood' }
-      }
-    }
+    const newAddressErrors = {
+      zipCode: '',
+      city: '',
+      streetName: '',
+      streetNumber: '',
+      uf: ''
+    };
 
-    if (errorHandler.current.prop === '' && errorHandler.current.error === '') {
+    if (!userDataForm.username) newUserDataErrors.username = error;
+    if (!userDataForm.email) newUserDataErrors.email = error;
+    if (!userDataForm.cpf) newUserDataErrors.cpf = error;
+    if (!userDataForm.cellPhone) newUserDataErrors.cellPhone = error;
+    if (!addressData.zipCode) newAddressErrors.zipCode = error;
+    if (!addressData.streetName) newAddressErrors.streetName = error;
+    if (!addressData.streetNumber) newAddressErrors.streetNumber = error;
+    if (!addressData.city) newAddressErrors.city = error;
+    if (!addressData.uf) newAddressErrors.uf = error;
+    if (!termsAreRead) setTermsAreRead(false);
+
+    setUserDataErrors(newUserDataErrors);
+    setAddressErrors(newAddressErrors);
+    
+    // Combina os erros de registro e endereço em um único objeto de erros
+    const combinedErrors = {
+      ...newAddressErrors,
+      ...newUserDataErrors,
+    };
+
+    // Verifica se algum dos valores do objeto de erros combinados não é uma string vazia
+    const hasErrors = Object.values(combinedErrors).some((error) => error !== '');
+
+    // setErrorInfo({
+    //   prop: '',
+    //   error: ''
+    // });
+
+    // errorHandler.current = {
+    //   prop: '',
+    //   error: ''
+    // };
+
+    // if (!userDataForm.username) {
+    //   setErrorInfo({ error: error, prop: 'username' });
+    //   errorHandler.current = { error: error, prop: 'username' }
+    // }
+    // if (!userDataForm.email) {
+    //   setErrorInfo({ error: error, prop: 'email' });
+    //   errorHandler.current = { error: error, prop: 'email' }
+    // }
+    // if (!userDataForm.cpf) {
+    //   setErrorInfo({ error: error, prop: 'cpf' });
+    //   errorHandler.current = { error: error, prop: 'cpf' }
+    // }
+    // if (!userDataForm.cellPhone) {
+    //   setErrorInfo({ error: error, prop: 'cellPhone' });
+    //   errorHandler.current = { error: error, prop: 'cellPhone' }
+    // }
+    // if (!userDataForm.phone) {
+    //   setErrorInfo({ error: error, prop: 'phone' });
+    //   errorHandler.current = { error: error, prop: 'phone' }
+    // }
+    // if (!termsAreRead) {
+    //   setErrorInfo({ error: error, prop: 'terms' });
+    //   errorHandler.current = { error: error, prop: 'terms' }
+    // }
+    // if (!isPlanFree) {
+    //   if (!creditCard.cardName) {
+    //     setErrorInfo({ error: error, prop: 'cardName' });
+    //     errorHandler.current = { error: error, prop: 'cardName' }
+    //   }
+    //   if (!creditCard.cardNumber) {
+    //     setErrorInfo({ error: error, prop: 'cardNumber' });
+    //     errorHandler.current = { error: error, prop: 'cardNumber' }
+    //   }
+    //   if (!creditCard.cvc) {
+    //     setErrorInfo({ error: error, prop: 'cvc' });
+    //     errorHandler.current = { error: error, prop: 'cvc' }
+    //   }
+    //   if (!creditCard.expiry) {
+    //     setErrorInfo({ error: error, prop: 'expiry' });
+    //     errorHandler.current = { error: error, prop: 'expiry' }
+    //   }
+    // }
+    // if (!isSameAddress) {
+    //   if (!addressData.zipCode) {
+    //     setErrorInfo({ error: error, prop: 'zipcode' });
+    //     errorHandler.current = { error: error, prop: 'zipcode' }
+    //   }
+    //   if (!addressData.city) {
+    //     setErrorInfo({ error: error, prop: 'city' });
+    //     errorHandler.current = { error: error, prop: 'city' }
+    //   }
+    //   if (!addressData.uf) {
+    //     setErrorInfo({ error: error, prop: 'uf' });
+    //     errorHandler.current = { error: error, prop: 'uf' }
+    //   }
+    //   if (!addressData.streetName) {
+    //     setErrorInfo({ error: error, prop: 'streetName' });
+    //     errorHandler.current = { error: error, prop: 'streetName' }
+    //   }
+    //   if (!addressData.streetNumber) {
+    //     setErrorInfo({ error: error, prop: 'streetNumber' });
+    //     errorHandler.current = { error: error, prop: 'streetNumber' }
+    //   }
+    //   if (!addressData.neighborhood) {
+    //     setErrorInfo({ error: error, prop: 'neighborhood' });
+    //     errorHandler.current = { error: error, prop: 'neighborhood' }
+    //   }
+    //}
+
+    if (!hasErrors) {
 
       try {
-        const result = await geocodeAddress(propertyAddress);
+        const result = await geocodeAddress(addressData);
 
         if (result !== null) {
           console.log("🚀 ~ file: registerStep3.tsx:216 ~ handleSubmit ~ result:", result)
@@ -235,19 +300,19 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         cpf: userDataForm.cpf,
         cellPhone: userDataForm.cellPhone,
         phone: userDataForm.phone,
-        zipCode: propertyAddress.zipCode,
-        city: propertyAddress.city,
-        propertyAddress,
+        zipCode: addressData.zipCode,
+        city: addressData.city,
         geolocation: coordinates ? [coordinates?.lat, coordinates?.lng] : [-52.1872864, -32.1013804],
         plan: selectedPlan ? selectedPlan : freePlan,
-        isPlanFree
+        isPlanFree,
+        propertyAddress: 
       };
 
       const userData: ICreateProperty_userData = {
         _id: userId ? userId : '',
         username: userDataForm.username,
         email: userDataForm.email,
-        address: !isSameAddress ? storedData.address : propertyAddress,
+        address: !isSameAddress ? storedData.address : addressData,
         cpf: userDataForm.cpf
       }
 
@@ -391,15 +456,16 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
 
           <ChangeAddressCheckbox 
             onAddressCheckboxChange={(value: boolean) => setIsSameAddress(value)}
-            address={propertyAddress}
+            address={addressData}
           />
 
           {!isSameAddress && (
             <Address 
               isEdit={false} 
-              address={propertyAddress} 
-              onAddressUpdate={(address: IAddress) => setPropertyAddress(address)} 
+              address={addressData} 
+              onAddressUpdate={(address: IAddress) => setAddressData(address)} 
               onErrorsInfo={errorInfo}
+              errors={addressErrors}
             />
           )}
 

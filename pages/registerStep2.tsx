@@ -81,6 +81,8 @@ const RegisterStep2: NextPageWithLayout = () => {
           email: urlEmail
         }
       });
+    } else {
+      toast.error(`Algum campo obrigatório ${errorInfo.prop} não foi preenchido.`);
     }
   }
 

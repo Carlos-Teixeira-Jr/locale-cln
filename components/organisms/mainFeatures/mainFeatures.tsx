@@ -29,6 +29,7 @@ interface IMainFeatures {
   isEdit: boolean
   onErrorsInfo: OnErrorInfo
   onMainFeaturesUpdate: (updatedFeatures: IEditPropertyMainFeatures) => void
+  errors: any
 }
 
 const MainFeatures: React.FC<IMainFeatures> = ({
@@ -51,7 +52,8 @@ const MainFeatures: React.FC<IMainFeatures> = ({
   editarIptu,
   isEdit,
   onErrorsInfo,
-  onMainFeaturesUpdate
+  onMainFeaturesUpdate,
+  errors
 }: IMainFeatures) => {
 
   const [isBuy, setIsBuy] = useState(!isEdit ? true : (editarAdType === 'comprar' ? true : false));
@@ -110,34 +112,47 @@ const MainFeatures: React.FC<IMainFeatures> = ({
     onMainFeaturesUpdate(propertyFeaturesData)
   }, [propertyFeaturesData]);
   
-  const [errors, setErrors] = useState({
-    cep: '',
-    uf: '',
-    number: '',
-    city: '',
-    street: '',
-    district: '',
+  // const [propertyFeaturesErrors, setPropertyFeaturesErrors] = useState({
+  //   cep: '',
+  //   uf: '',
+  //   number: '',
+  //   city: '',
+  //   street: '',
+  //   district: '',
+  //   totalArea: '',
+  //   bedroomNum: '',
+  //   bathroomNum: '',
+  //   paringSpacesNum: '',
+  //   dependenciesNum: '',
+  //   suitesNum: '',
+  //   description: '',
+  //   propertyValue: '',
+  //   condominiumValue: '',
+  //   iptuValue: ''
+  // });
+
+  // useEffect(() => {
+  //   if (onErrorsInfo) {
+  //     resetObjectToEmptyStrings(propertyFeaturesErrors);
+  //     setPropertyFeaturesErrors(prevErrors => ({
+  //       ...prevErrors,
+  //       [onErrorsInfo.prop]: onErrorsInfo.error,
+  //     }));
+  //   }
+  // }, [onErrorsInfo]);
+
+  const [propertyFeaturesErrors, setPropertyFeaturesErrors] = useState({
+    description: errors ? errors.description : '',
     totalArea: '',
-    bedroomNum: '',
-    bathroomNum: '',
-    paringSpacesNum: '',
-    dependenciesNum: '',
-    suitesNum: '',
-    description: '',
     propertyValue: '',
     condominiumValue: '',
-    iptuValue: ''
+    iptuValue: '',
   });
 
   useEffect(() => {
-    if (onErrorsInfo) {
-      resetObjectToEmptyStrings(errors);
-      setErrors(prevErrors => ({
-        ...prevErrors,
-        [onErrorsInfo.prop]: onErrorsInfo.error,
-      }));
-    }
-  }, [onErrorsInfo]);
+    setPropertyFeaturesErrors(errors);
+  }, [errors])
+  
 
   const handleBuy = () => {
     setIsBuy(true);
@@ -363,7 +378,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                 value={propertyFeaturesData.size.totalArea}
                 placeholder='m²'
                 className={'border border-quaternary rounded-[10px] h-12 w-full text-quaternary text-2xl font-bold p-2 md:font-bold drop-shadow-lg bg-tertiary mt-5'}
-                style={errors.totalArea ? { border: '1px solid red' } : {}}
+                style={propertyFeaturesErrors.totalArea ? { border: '1px solid red' } : {}}
                 onChange={(e) => {
                   const numericValue = parseFloat(e.target.value); 
                   const totalArea = Number.isNaN(numericValue) ? 0 : numericValue;
@@ -375,10 +390,11 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                       totalArea: totalArea
                     }
                   });
+                  setPropertyFeaturesErrors({...propertyFeaturesErrors, totalArea: ''})
                 }}
               />
-              {errors.totalArea && (
-                <span className="text-red-500 mt-2 text-xs">{errors.totalArea}</span>
+              {propertyFeaturesErrors.totalArea && (
+                <span className="text-red-500 mt-2 text-xs">{propertyFeaturesErrors.totalArea}</span>
               )}
               <span
                 onClick={handleOpen}
@@ -457,12 +473,15 @@ const MainFeatures: React.FC<IMainFeatures> = ({
             <textarea
               className="bg-tertiary border border-quaternary rounded-[10px] h-40 drop-shadow-xl text-lg p-2 font-semibold text-quaternary"
               value={propertyFeaturesData.description}
-              onChange={(e) => setPropertyFeaturesData({...propertyFeaturesData, description: e.target.value})}
-              style={errors.description ? { border: '1px solid red' } : {}}
+              onChange={(e) => {
+                setPropertyFeaturesData({...propertyFeaturesData, description: e.target.value});
+                setPropertyFeaturesErrors({...propertyFeaturesErrors, description: ''})
+              }}
+              style={propertyFeaturesErrors.description ? { border: '1px solid red' } : {}}
               required
             />
-            {errors.description && (
-              <span className="text-red-500 mt-2 text-xs">{errors.description}</span>
+            {propertyFeaturesErrors.description && (
+              <span className="text-red-500 mt-2 text-xs">{propertyFeaturesErrors.description}</span>
             )}
           </div>
         </div>
@@ -482,11 +501,14 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                 value={maskedPrice(propertyFeaturesData.propertyValue)}
                 placeholder='R$'
                 className={'border border-quaternary rounded-[10px] h-12 w-full text-quaternary text-2xl font-bold p-2 md:font-bold drop-shadow-lg bg-tertiary mt-5'}
-                style={errors.propertyValue ? { border: '1px solid red' } : {}}
-                onChange={(e) => setPropertyFeaturesData({...propertyFeaturesData,propertyValue: maskedPrice(e.target.value)})}
+                style={propertyFeaturesErrors.propertyValue ? { border: '1px solid red' } : {}}
+                onChange={(e) => {
+                  setPropertyFeaturesData({...propertyFeaturesData,propertyValue: maskedPrice(e.target.value)});
+                  setPropertyFeaturesErrors({...propertyFeaturesErrors, propertyValue: ''})
+                } }
               />
-              {errors.propertyValue && (
-                <span className="text-red-500 mt-2 text-xs">{errors.propertyValue}</span>
+              {propertyFeaturesErrors.propertyValue && (
+                <span className="text-red-500 mt-2 text-xs">{propertyFeaturesErrors.propertyValue}</span>
               )}
             </div>
           </div>
@@ -510,11 +532,14 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                       !propertyFeaturesData.condominium ? 'bg-[#CACACA]' : 'bg-tertiary'
                     }`
                   }
-                  style={errors.condominiumValue ? { border: '1px solid red' } : {}}
-                  onChange={(e) => setPropertyFeaturesData({...propertyFeaturesData, condominiumValue: maskedPrice(e.target.value)})}
+                  style={propertyFeaturesErrors.condominiumValue ? { border: '1px solid red' } : {}}
+                  onChange={(e) => {
+                    setPropertyFeaturesData({...propertyFeaturesData, condominiumValue: maskedPrice(e.target.value)});
+                    setPropertyFeaturesErrors({...propertyFeaturesErrors, condominiumValue: ''});
+                  }}
                 />
-                {errors.condominiumValue && (
-                  <span className="text-red-500 mt-2 text-xs">{errors.condominiumValue}</span>
+                {propertyFeaturesErrors.condominiumValue && (
+                  <span className="text-red-500 mt-2 text-xs">{propertyFeaturesErrors.condominiumValue}</span>
                 )}
               </div>
 
@@ -554,12 +579,15 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                   className={`border border-quaternary rounded-[10px] h-12 lg:ml-0 md:ml-0 text-quaternary md:text-[26px] text-2xl font-bold md:px-2 drop-shadow-lg mt-5 p-2 ${
                     !propertyFeaturesData.iptu ? 'bg-[#CACACA]' : 'bg-tertiary'
                   }`}
-                  style={errors.iptuValue ? { border: '1px solid red' } : {}}
-                  onChange={(e) => setPropertyFeaturesData({...propertyFeaturesData, iptuValue: maskedPrice(e.target.value)})}
+                  style={propertyFeaturesErrors.iptuValue ? { border: '1px solid red' } : {}}
+                  onChange={(e) => {
+                    setPropertyFeaturesData({...propertyFeaturesData, iptuValue: maskedPrice(e.target.value)});
+                    setPropertyFeaturesErrors({...propertyFeaturesErrors, iptuValue: ''});
+                  }}
                 />
 
-                {propertyFeaturesData.iptu && errors.iptuValue && (
-                  <span className="text-red-500 mt-2 text-xs">{errors.iptuValue}</span>
+                {propertyFeaturesData.iptu && propertyFeaturesErrors.iptuValue && (
+                  <span className="text-red-500 mt-2 text-xs">{propertyFeaturesErrors.iptuValue}</span>
                 )}
               </div>
               
