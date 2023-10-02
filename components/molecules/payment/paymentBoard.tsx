@@ -84,7 +84,10 @@ const PaymentBoard: React.FC<IPaymentBoard> = ({
         <div className="flex my-auto">
           <div
             className=" w-8 h-8 shrink-0 border border-quaternary bg-tertiary rounded-[10px] drop-shadow-lg my-auto cursor-pointer"
-            onClick={() => setTermsAreRead(!terms)}
+            onClick={() => {
+              setTermsAreRead(!terms);
+              resetObjectToEmptyStrings(errors);
+            }}
             style={errors.terms ? { border: '1px solid red' } : {}}
           >
             {terms && (
@@ -109,7 +112,7 @@ const PaymentBoard: React.FC<IPaymentBoard> = ({
               </a>
             </p>
             {errors.terms && (
-              <span className="text-red-500 mt-2 ml-5">
+              <span className="text-red-500 ml-5">
                 {errors.terms}
               </span>
             )}
