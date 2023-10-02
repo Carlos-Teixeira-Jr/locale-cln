@@ -134,11 +134,9 @@ const Address: React.FC<IAddressComponent> = ({
   };
 
   const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const number = event.target.value;
-    const formattedNumber = number.replace(/-/g, '');
-    const numberMask = formattedNumber.replace(/\D/g, '');
-    setAddressData({...addressData, streetNumber: numberMask});
-    resetObjectToEmptyStrings(errors);
+    const inputValue = event.target.value;
+    const sanitizedInput = inputValue.replace(/[^a-zA-Z0-9 ]/g, '').toUpperCase();
+    setAddressData({ ...addressData, streetNumber: sanitizedInput });
   };
 
   const handleNeighborhoodChange = (event: React.ChangeEvent<HTMLInputElement>) => {
