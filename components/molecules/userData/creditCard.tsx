@@ -17,13 +17,15 @@ interface ICreditCard {
   isEdit: boolean
   onCreditCardUpdate?: (creditCard: CreditCardForm) => void
   onErrorInfo?: OnErrorInfo
+  error: any
 }
 
 
 const CreditCard = ({
   isEdit,
   onCreditCardUpdate,
-  onErrorInfo
+  onErrorInfo,
+  error
 }: ICreditCard) => {
 
   const [focus, setFocus] = useState<Focused | undefined>();

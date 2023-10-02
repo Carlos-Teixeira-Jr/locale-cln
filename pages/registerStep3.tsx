@@ -49,7 +49,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
   const urlEmail = query.email as string;
   const { progress, updateProgress } = useProgress();
   const storedData = store.get('propertyData');
-  const propertyData = storedData.address;
+  const propertyAddress = storedData.address;
 
   const { data: session } = useSession() as any;
   const userId = session?.user?.data._id;
@@ -64,6 +64,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
   const property = store.get('propertyData');
   const [isFreePlan, setIsFreePlan] = useState(false);
   const [failPaymentModalIsOpen, setFailPaymentModalIsOpen] = useState(false);
+  const [termsError, setTermsError] = useState('')
 
   const [userDataForm, setUserDataForm] = useState<IUserDataComponent>({
     username: '',
@@ -99,6 +100,13 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
   });
 
   const [creditCard, setCreditCard] = useState<CreditCardForm>({
+    cardName: '',
+    cardNumber: '',
+    cvc: '',
+    expiry: '',
+  });
+
+  const [creditCardErrors, setCreditCardErrors] = useState<CreditCardForm>({
     cardName: '',
     cardNumber: '',
     cvc: '',
@@ -184,7 +192,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     if (!addressData.streetNumber) newAddressErrors.streetNumber = error;
     if (!addressData.city) newAddressErrors.city = error;
     if (!addressData.uf) newAddressErrors.uf = error;
-    if (!termsAreRead) setTermsAreRead(false);
+    if (!termsAreRead) setTermsError(error);
 
     setUserDataErrors(newUserDataErrors);
     setAddressErrors(newAddressErrors);
@@ -277,7 +285,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     //   }
     //}
 
-    if (!hasErrors) {
+    if (!hasErrors && !termsError) {
 
       try {
         const result = await geocodeAddress(addressData);
@@ -305,7 +313,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         geolocation: coordinates ? [coordinates?.lat, coordinates?.lng] : [-52.1872864, -32.1013804],
         plan: selectedPlan ? selectedPlan : freePlan,
         isPlanFree,
-        propertyAddress: 
+        propertyAddress
       };
 
       const userData: ICreateProperty_userData = {
@@ -440,17 +448,18 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
           )}
         </div>
 
-        {errorInfo.prop === 'selectedPlan' && (
+        {/* {errorInfo.prop === 'selectedPlan' && (
           <span className="text-red-500 mt-2 text-xl ml-20">{errorInfo.error}</span>
-        )}
+        )} */}
 
         <div className='mx-5 md:mx-0'>
           <div className="max-w-[1536px] mt-[980px] md:mt-[1300px] lg:mt-96 flex justify-center flex-col">
             <UserDataInputs 
               isEdit={false} 
               onUserDataUpdate={(updatedUserData: IUserDataComponent) => setUserDataForm(updatedUserData)} 
-              onErrorsInfo={errorInfo}
+              //onErrorsInfo={errorInfo}
               urlEmail={urlEmail ? urlEmail : undefined}
+              error={userDataErrors}
             />
           </div>
 
@@ -464,7 +473,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
               isEdit={false} 
               address={addressData} 
               onAddressUpdate={(address: IAddress) => setAddressData(address)} 
-              onErrorsInfo={errorInfo}
+              //onErrorsInfo={errorInfo}
               errors={addressErrors}
             />
           )}
@@ -476,12 +485,13 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
                 return (
                   <CreditCard
                     isEdit={false}
-                    onErrorInfo={errorInfo}
+                    //onErrorInfo={errorInfo}
                     onCreditCardUpdate={(creditCard) => {
                       if (!isFreePlan) {
                         setCreditCard(creditCard);
                       }
                     }}
+                    error={creditCardErrors}
                   />
                 );
               }
@@ -492,7 +502,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
             onTermsChange={(value: boolean) => setTermsAreRead(value)}
             selectedPlan={selectedPlan}
             plans={plans}
-            onErrorInfo={errorInfo}
+            //onErrorInfo={errorInfo}
+            errors={termsError}
           />
 
           <div className="flex self-end md:justify-end justify-center mt-14 mb-32">
