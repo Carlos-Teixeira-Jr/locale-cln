@@ -1,4 +1,4 @@
-import { MouseEvent, useRef, useState } from 'react';
+import { MouseEvent, useState } from 'react';
 import LinearStepper from '../components/atoms/stepper/stepper';
 import AreaCalculatorModal from '../components/molecules/areaModal/areaModal';
 import Footer from '../components/organisms/footer/footer';
@@ -75,17 +75,6 @@ const Register = () => {
   const [open, setOpen] = useState(false);
   const handleClose = () => setOpen(false);
 
-  // Envia as mensagens de erros para os componentes;
-  const [errorInfo, setErrorInfo] = useState({
-    error: '',
-    prop: ''
-  });
-
-  // const errorHandler = useRef<{ error: string; prop: string }>({
-  //   error: '',
-  //   prop: ''
-  // });
-
   const handleSubmit = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
@@ -150,7 +139,6 @@ const Register = () => {
     // Verifica se algum dos valores do objeto de erros combinados não é uma string vazia
     const hasErrors = Object.values(combinedErrors).some((error) => error !== '');
 
-
     if(!hasErrors) {
       const propertyDataStep1: IRegisterPropertyData_Step1 = {
         adType: registration.adType,
@@ -191,7 +179,7 @@ const Register = () => {
       });
 
     } else {
-      toast.error(`Algum campo obrigatório ${errorInfo.prop} não foi preenchido.`);
+      toast.error(`Algum campo obrigatório não foi preenchido.`);
     }
   };
 
@@ -234,7 +222,6 @@ const Register = () => {
           editarIptuValue={''} 
           editarIptu={false} 
           isEdit={false} 
-          onErrorsInfo={errorInfo} 
           onMainFeaturesUpdate={(updatedFeatures: any) => setRegistration(updatedFeatures)}      
           errors={registrationErrors}  
         />
@@ -243,7 +230,6 @@ const Register = () => {
           isEdit={false} 
           address={address} 
           onAddressUpdate={(updatedAddress: IAddress) => setAddress(updatedAddress)} 
-          onErrorsInfo={errorInfo}
           errors={addressErrors}
         />
 

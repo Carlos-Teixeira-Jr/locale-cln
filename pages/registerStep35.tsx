@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import LinearStepper from '../components/atoms/stepper/stepper';
 import Footer from '../components/organisms/footer/footer';
 import Header from '../components/organisms/header/header';
@@ -23,6 +23,17 @@ const RegisterStep35: NextPageWithLayout<IRegisterStep35> = ({
   const urlEmail = query.email as string;
   const { progress, updateProgress } = useProgress();
   const storedData = store.get('propertyData');
+  const [cardBrand, setCardBrand] = useState('')
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      if (storedData) {
+        if (storedData.creditCard) {
+          setCardBrand(storedData.creditCard.cardBrand)
+        }
+      }
+    }
+  }, [storedData])
 
   // Verifica se o estado progress que determina em qual step o usuário está corresponde ao step atual;
   useEffect(() => {
@@ -45,11 +56,14 @@ const RegisterStep35: NextPageWithLayout<IRegisterStep35> = ({
         <div className="bg-[#F7F7F6] border-4 border-[#4BB543] flex flex-row justify-between items-center p-7 md:p-14 min-h-[198px] my-8 md:my-16">
           <div className="flex flex-col p-4">
             <h1 className="text-[#4BB543] text-4xl font-bold mb-6">
-              Pagamento Confirmado!
+              {!cardBrand || cardBrand === 'Free' ? 'Imóvel Cadastrado!' : 'Pagamento Confirmado!'} 
             </h1>
             <p className="text-quaternary text-md font-bold">
-              Seu pagamento foi confirmado e agora falta bem pouco para o
-              seu anúncio estar no ar!
+              {
+                !cardBrand || cardBrand === 'Free' ? 
+                'Seu imóvel foi cadastrado e agora falta bem pouco para o seu anúncio estar no ar!' : 
+                'Seu pagamento foi confirmado e agora falta bem pouco para o seu anúncio estar no ar!'
+              } 
             </p>
           </div>
           <div className='rounde rounded-full bg-[#4BB543] w-20 h-20 flex items-center justify-center shrink-0'>

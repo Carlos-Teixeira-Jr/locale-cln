@@ -17,7 +17,6 @@ interface IUserDataInputs {
   userData?: IOwnerData
   isEdit: boolean
   onUserDataUpdate: (updatedUserData: IUserDataComponent) => void;
-  //onErrorsInfo: OnErrorInfo
   urlEmail?: string | undefined
   error: any
 }
@@ -26,7 +25,6 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
   userData, 
   isEdit,
   onUserDataUpdate,
-  //onErrorsInfo,
   urlEmail,
   error
 }) => {
@@ -59,23 +57,6 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
   useEffect(() => {
     setUserDataErrors(error);
   }, [error]);
-  
-
-  // Processa a estrutura de dados de onErrosInfo para inserir no objeto formDataErrors;
-  // useEffect(() => {
-  //   setUserDataErrors({
-  //     username: '',
-  //     email: '',
-  //     cpf: '',
-  //     cellPhone: '',
-  //   });
-  //   if (onErrorsInfo) {
-  //     setUserDataErrors(prevErrors => ({
-  //       ...prevErrors,
-  //       [onErrorsInfo.prop]: onErrorsInfo.error,
-  //     }));
-  //   }
-  // }, [onErrorsInfo]);
 
   // Envia os dados do usuário para o componente pai;
   useEffect(() => {
@@ -223,10 +204,10 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
                   className="border w-full p-5 h-12 border-quaternary rounded-[10px] bg-tertiary font-bold text-xl md:text-2xl text-quaternary leading-7 drop-shadow-xl"
                   onChange={input.onChange}
                   value={input.value}
-                  required
-                  style={userDataErrors[input.key] !== '' ? { border: '1px solid red' } : {}}
+                  style={Object.keys(userDataErrors).includes(input.key) && userDataErrors[input.key] !== '' ? { border: '1px solid red' }: {}}
                 />
-                {Object.keys(userDataErrors).includes(input.key) && (
+                <p>{userDataErrors[input.key]}</p>
+                {Object.keys(userDataErrors).includes(input.key) && userDataErrors[input.key] !== '' && (
                   <span className="text-red-500 text-xs">{userDataErrors[input.key]}</span>
                 )}
               </div>

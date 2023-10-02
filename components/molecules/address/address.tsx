@@ -16,7 +16,6 @@ export interface IAddressComponent {
   isEdit: boolean;
   address: IAddress
   onAddressUpdate: (updatedAddress: IAddress) => void;
-  //onErrorsInfo: OnErrorInfo
   errors: any
 }
 
@@ -24,7 +23,6 @@ const Address: React.FC<IAddressComponent> = ({
   isEdit,
   address,
   onAddressUpdate,
-  //onErrorsInfo,
   errors
 }: IAddressComponent) => {
 
@@ -61,17 +59,6 @@ const Address: React.FC<IAddressComponent> = ({
     numero: '',
     complemento: ''
   });
-
-  // Processa a estrutura de dados de onErrosInfo para inserir no objeto errors;
-  // useEffect(() => {
-  //   resetObjectToEmptyStrings(errors);
-  //   if (onErrorsInfo) {
-  //     setErrors(prevErrors => ({
-  //       ...prevErrors,
-  //       [onErrorsInfo.prop]: onErrorsInfo.error,
-  //     }));
-  //   }
-  // }, [onErrorsInfo]);
 
   useEffect(() => {
     if (shouldExecuteEffect) {
@@ -178,7 +165,6 @@ const Address: React.FC<IAddressComponent> = ({
     }
     return `${numericOnly?.substring(0, 5)}-${numericOnly.substring(5, 8)}`;
   };
-  
 
   return (
     <div className="md:mx-0 lg:mx-auto w-96 md:w-full mx-auto max-w-[1215px]">

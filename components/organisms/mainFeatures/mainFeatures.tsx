@@ -3,10 +3,8 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import CheckIcon from '../../atoms/icons/checkIcon';
 import propertyTypesData from '../../../data/propertyTypesData.json';
 import { ISize, announcementSubtype, announcementType, propSubtype, propType } from '../../../common/interfaces/property/propertyData';
-import { OnErrorInfo } from '../../molecules/uploadImages/uploadImages';
 import { IEditPropertyMainFeatures } from '../../../common/interfaces/property/editPropertyData';
 import AreaCalculatorModal from '../../molecules/areaModal/areaModal';
-import { resetObjectToEmptyStrings } from '../../../common/utils/resetObjects';
 
 interface IMainFeatures {
   propertyId: string
@@ -27,7 +25,6 @@ interface IMainFeatures {
   editarIptuValue: string;
   editarIptu: boolean;
   isEdit: boolean
-  onErrorsInfo: OnErrorInfo
   onMainFeaturesUpdate: (updatedFeatures: IEditPropertyMainFeatures) => void
   errors: any
 }
@@ -51,7 +48,6 @@ const MainFeatures: React.FC<IMainFeatures> = ({
   editarIptuValue,
   editarIptu,
   isEdit,
-  onErrorsInfo,
   onMainFeaturesUpdate,
   errors
 }: IMainFeatures) => {
@@ -111,35 +107,6 @@ const MainFeatures: React.FC<IMainFeatures> = ({
   useEffect(() => {
     onMainFeaturesUpdate(propertyFeaturesData)
   }, [propertyFeaturesData]);
-  
-  // const [propertyFeaturesErrors, setPropertyFeaturesErrors] = useState({
-  //   cep: '',
-  //   uf: '',
-  //   number: '',
-  //   city: '',
-  //   street: '',
-  //   district: '',
-  //   totalArea: '',
-  //   bedroomNum: '',
-  //   bathroomNum: '',
-  //   paringSpacesNum: '',
-  //   dependenciesNum: '',
-  //   suitesNum: '',
-  //   description: '',
-  //   propertyValue: '',
-  //   condominiumValue: '',
-  //   iptuValue: ''
-  // });
-
-  // useEffect(() => {
-  //   if (onErrorsInfo) {
-  //     resetObjectToEmptyStrings(propertyFeaturesErrors);
-  //     setPropertyFeaturesErrors(prevErrors => ({
-  //       ...prevErrors,
-  //       [onErrorsInfo.prop]: onErrorsInfo.error,
-  //     }));
-  //   }
-  // }, [onErrorsInfo]);
 
   const [propertyFeaturesErrors, setPropertyFeaturesErrors] = useState({
     description: errors ? errors.description : '',
@@ -152,7 +119,6 @@ const MainFeatures: React.FC<IMainFeatures> = ({
   useEffect(() => {
     setPropertyFeaturesErrors(errors);
   }, [errors])
-  
 
   const handleBuy = () => {
     setIsBuy(true);

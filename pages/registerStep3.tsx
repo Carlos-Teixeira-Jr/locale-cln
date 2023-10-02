@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useEffect, useRef, useState, MouseEvent } from 'react';
+import { useEffect, useState, MouseEvent } from 'react';
 import LinearStepper from '../components/atoms/stepper/stepper';
 import PlansCardsHidden from '../components/molecules/cards/plansCards/plansCardHidden';
 import Footer from '../components/organisms/footer/footer';
@@ -49,7 +49,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
   const urlEmail = query.email as string;
   const { progress, updateProgress } = useProgress();
   const storedData = store.get('propertyData');
-  const propertyAddress = storedData.address;
+  const propertyAddress = storedData?.address ? storedData.address : {};
 
   const { data: session } = useSession() as any;
   const userId = session?.user?.data._id;
@@ -64,7 +64,12 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
   const property = store.get('propertyData');
   const [isFreePlan, setIsFreePlan] = useState(false);
   const [failPaymentModalIsOpen, setFailPaymentModalIsOpen] = useState(false);
-  const [termsError, setTermsError] = useState('')
+  const [termsError, setTermsError] = useState('');
+
+  useEffect(() => {
+    console.log("🚀 ~ file: registerStep3.tsx:76 ~ termsAreRead:", termsAreRead)
+  }, [termsAreRead])
+  
 
   const [userDataForm, setUserDataForm] = useState<IUserDataComponent>({
     username: '',
@@ -126,18 +131,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     setAddressData(property ? property.address : '')
   },[isSameAddress]);
 
-  // Envia as mensagens de erros para os componentes;
-  // const [errorInfo, setErrorInfo] = useState({
-  //   error: '',
-  //   prop: ''
-  // });
-
-  // // Lida com a verificação de erros do handleSubmit (necessário para acessar o valor atualizado de erros ainda antes do final da execução do handleSubmit)
-  // const errorHandler = useRef<{ error: string; prop: string }>({
-  //   error: '',
-  //   prop: ''
-  // });
-
   useEffect(() => {
     const url = router.pathname;
     if (url === '/adminUserData') {
@@ -167,6 +160,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
       streetNumber: '',
       uf: ''
     });
+
+    setTermsError('');
 
     const newUserDataErrors = {
       username: '',
@@ -206,86 +201,9 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     // Verifica se algum dos valores do objeto de erros combinados não é uma string vazia
     const hasErrors = Object.values(combinedErrors).some((error) => error !== '');
 
-    // setErrorInfo({
-    //   prop: '',
-    //   error: ''
-    // });
+    console.log("🚀 ~ file: registerStep3.tsx:224 ~ handleSubmit ~ !hasErrors && termsError === '':", !hasErrors && termsError === '')
 
-    // errorHandler.current = {
-    //   prop: '',
-    //   error: ''
-    // };
-
-    // if (!userDataForm.username) {
-    //   setErrorInfo({ error: error, prop: 'username' });
-    //   errorHandler.current = { error: error, prop: 'username' }
-    // }
-    // if (!userDataForm.email) {
-    //   setErrorInfo({ error: error, prop: 'email' });
-    //   errorHandler.current = { error: error, prop: 'email' }
-    // }
-    // if (!userDataForm.cpf) {
-    //   setErrorInfo({ error: error, prop: 'cpf' });
-    //   errorHandler.current = { error: error, prop: 'cpf' }
-    // }
-    // if (!userDataForm.cellPhone) {
-    //   setErrorInfo({ error: error, prop: 'cellPhone' });
-    //   errorHandler.current = { error: error, prop: 'cellPhone' }
-    // }
-    // if (!userDataForm.phone) {
-    //   setErrorInfo({ error: error, prop: 'phone' });
-    //   errorHandler.current = { error: error, prop: 'phone' }
-    // }
-    // if (!termsAreRead) {
-    //   setErrorInfo({ error: error, prop: 'terms' });
-    //   errorHandler.current = { error: error, prop: 'terms' }
-    // }
-    // if (!isPlanFree) {
-    //   if (!creditCard.cardName) {
-    //     setErrorInfo({ error: error, prop: 'cardName' });
-    //     errorHandler.current = { error: error, prop: 'cardName' }
-    //   }
-    //   if (!creditCard.cardNumber) {
-    //     setErrorInfo({ error: error, prop: 'cardNumber' });
-    //     errorHandler.current = { error: error, prop: 'cardNumber' }
-    //   }
-    //   if (!creditCard.cvc) {
-    //     setErrorInfo({ error: error, prop: 'cvc' });
-    //     errorHandler.current = { error: error, prop: 'cvc' }
-    //   }
-    //   if (!creditCard.expiry) {
-    //     setErrorInfo({ error: error, prop: 'expiry' });
-    //     errorHandler.current = { error: error, prop: 'expiry' }
-    //   }
-    // }
-    // if (!isSameAddress) {
-    //   if (!addressData.zipCode) {
-    //     setErrorInfo({ error: error, prop: 'zipcode' });
-    //     errorHandler.current = { error: error, prop: 'zipcode' }
-    //   }
-    //   if (!addressData.city) {
-    //     setErrorInfo({ error: error, prop: 'city' });
-    //     errorHandler.current = { error: error, prop: 'city' }
-    //   }
-    //   if (!addressData.uf) {
-    //     setErrorInfo({ error: error, prop: 'uf' });
-    //     errorHandler.current = { error: error, prop: 'uf' }
-    //   }
-    //   if (!addressData.streetName) {
-    //     setErrorInfo({ error: error, prop: 'streetName' });
-    //     errorHandler.current = { error: error, prop: 'streetName' }
-    //   }
-    //   if (!addressData.streetNumber) {
-    //     setErrorInfo({ error: error, prop: 'streetNumber' });
-    //     errorHandler.current = { error: error, prop: 'streetNumber' }
-    //   }
-    //   if (!addressData.neighborhood) {
-    //     setErrorInfo({ error: error, prop: 'neighborhood' });
-    //     errorHandler.current = { error: error, prop: 'neighborhood' }
-    //   }
-    //}
-
-    if (!hasErrors && !termsError) {
+    if (!hasErrors && termsAreRead) {
 
       try {
         const result = await geocodeAddress(addressData);
@@ -310,17 +228,20 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         phone: userDataForm.phone,
         zipCode: addressData.zipCode,
         city: addressData.city,
+        uf: addressData.uf,
+        streetName: addressData.streetName,
         geolocation: coordinates ? [coordinates?.lat, coordinates?.lng] : [-52.1872864, -32.1013804],
-        plan: selectedPlan ? selectedPlan : freePlan,
+        plan: selectedPlan !== '' ? selectedPlan : freePlan,
         isPlanFree,
         propertyAddress
       };
+      console.log("🚀 ~ file: registerStep3.tsx:248 ~ handleSubmit ~ propertyDataStep3:", propertyDataStep3)
 
       const userData: ICreateProperty_userData = {
         _id: userId ? userId : '',
         username: userDataForm.username,
         email: userDataForm.email,
-        address: !isSameAddress ? storedData.address : addressData,
+        address: !isSameAddress && storedData.address ? storedData.address : addressData,
         cpf: userDataForm.cpf
       }
 
@@ -329,7 +250,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         adSubtype: storedData.adSubtype,
         propertyType: storedData.propertyType,
         propertySubtype: storedData.propertySubtype,
-        address: storedData.address,
+        address: !isSameAddress && storedData.address ? storedData.address : addressData,
         description: storedData.description,
         metadata: storedData.metadata,
         images: storedData.images,
@@ -349,7 +270,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         const body: BodyReq = {
           propertyData,
           userData,
-          plan: selectedPlan,
+          plan: propertyDataStep3.plan,
           isPlanFree,
           phone: userDataForm.phone,
           cellPhone: userDataForm.cellPhone
@@ -400,6 +321,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         toast.error("Não foi possivel se conectar ao servidor. Por favor, tente novamente mais tarde.")
         console.error(error);
       }
+    } else {
+      toast.error(`Algum campo obrigatório não foi preenchido.`);
     }
   };
 
@@ -448,16 +371,11 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
           )}
         </div>
 
-        {/* {errorInfo.prop === 'selectedPlan' && (
-          <span className="text-red-500 mt-2 text-xl ml-20">{errorInfo.error}</span>
-        )} */}
-
         <div className='mx-5 md:mx-0'>
           <div className="max-w-[1536px] mt-[980px] md:mt-[1300px] lg:mt-96 flex justify-center flex-col">
             <UserDataInputs 
               isEdit={false} 
               onUserDataUpdate={(updatedUserData: IUserDataComponent) => setUserDataForm(updatedUserData)} 
-              //onErrorsInfo={errorInfo}
               urlEmail={urlEmail ? urlEmail : undefined}
               error={userDataErrors}
             />
@@ -473,7 +391,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
               isEdit={false} 
               address={addressData} 
               onAddressUpdate={(address: IAddress) => setAddressData(address)} 
-              //onErrorsInfo={errorInfo}
               errors={addressErrors}
             />
           )}
@@ -502,8 +419,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
             onTermsChange={(value: boolean) => setTermsAreRead(value)}
             selectedPlan={selectedPlan}
             plans={plans}
-            //onErrorInfo={errorInfo}
-            errors={termsError}
+            termsError={termsError}
           />
 
           <div className="flex self-end md:justify-end justify-center mt-14 mb-32">
