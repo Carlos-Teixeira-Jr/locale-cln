@@ -111,6 +111,7 @@ const Address: React.FC<IAddressComponent> = ({
     const cep = event.target.value;
     const formattedZipCode = cep.replace(/-/g, '');
     setAddressData({...addressData, zipCode: formattedZipCode});
+    resetObjectToEmptyStrings(errors);
   };
 
   const handleCityChange = (event: React.ChangeEvent<HTMLInputElement>) => {

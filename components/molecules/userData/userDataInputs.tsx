@@ -5,6 +5,7 @@ import SuccessOnUpdateModal from '../../atoms/modals/successOnUpdateModal';
 import { OnErrorInfo } from '../uploadImages/uploadImages';
 import { IOwnerData } from '../../../common/interfaces/owner/owner';
 import { applyNumericMask } from '../../../common/utils/masks/numericMask';
+import { resetObjectToEmptyStrings } from '../../../common/utils/resetObjects';
 
 type Input = {
   key: string,
@@ -84,8 +85,9 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
       value: formData.username,
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
-        const maskedValue = value.replace(/\d/g, '');
+        const maskedValue = value.replace(/[^A-Za-z]/g, '');
         setFormData({ ...formData, username: maskedValue });
+        resetObjectToEmptyStrings(errors);
       },
     },
     {
@@ -95,6 +97,7 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
         setFormData({ ...formData, email: value });
+        resetObjectToEmptyStrings(errors);
       },
     },
     {
@@ -117,6 +120,7 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
           input.setSelectionRange(selectionStart, selectionEnd);
         }
         setFormData({ ...formData, cpf: maskedValue });
+        resetObjectToEmptyStrings(errors);
       },
     },        
     {
@@ -139,6 +143,7 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
           input.setSelectionRange(selectionStart, selectionEnd);
         }
         setFormData({ ...formData, cellPhone: maskedValue });
+        resetObjectToEmptyStrings(errors);
       },
     },    
     {
@@ -161,6 +166,7 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
           input.setSelectionRange(selectionStart, selectionEnd);
         }
         setFormData({ ...formData, phone: maskedValue });
+        resetObjectToEmptyStrings(errors);
       },
     },
   ];

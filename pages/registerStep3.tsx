@@ -129,6 +129,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     console.log("🚀 ~ file: registerStep3.tsx:214 ~ handleSubmit ~ propertyAddress:", propertyAddress)
 
     const error = `Este campo é obrigatório.`;
+    const termsError = 'Você precisa marcar a caixa indicando que leu e concorda com os termos.'
 
     const planObj: IPlan | undefined = plans.find((plan) => plan._id === selectedPlan);
     const isPlanFree = planObj === undefined || planObj.name === 'Free';
@@ -164,8 +165,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
       errorHandler.current = { error: error, prop: 'phone' }
     }
     if (!termsAreRead) {
-      setErrorInfo({ error: error, prop: 'terms' });
-      errorHandler.current = { error: error, prop: 'terms' }
+      setErrorInfo({ error: termsError, prop: 'terms' });
+      errorHandler.current = { error: termsError, prop: 'terms' }
     }
     if (!isPlanFree) {
       if (!creditCard.cardName) {
@@ -380,7 +381,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         )}
 
         <div className='mx-5 md:mx-0'>
-          <div className="max-w-[1536px] mt-[980px] md:mt-[1300px] lg:mt-96 flex justify-center flex-col">
+          <div className="max-w-[1536px] mt-[980px] md:mt-[1300px] lg:mt-80 flex justify-center flex-col">
             <UserDataInputs 
               isEdit={false} 
               onUserDataUpdate={(updatedUserData: IUserDataComponent) => setUserDataForm(updatedUserData)} 
