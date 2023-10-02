@@ -1,19 +1,18 @@
+import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
+import CloseIcon from '../../atoms/icons/closeIcon';
 import FurnitureIcon from '../../atoms/icons/furnitureIcon';
+import ParkingIcon from '../../atoms/icons/parkingIcon';
 import PetsIcon from '../../atoms/icons/petsIcon';
 import PoolIcon from '../../atoms/icons/poolIcon';
-import ParkingIcon from '../../atoms/icons/parkingIcon';
-import CloseIcon from '../../atoms/icons/closeIcon';
-import { useRouter } from 'next/router';
 
 export interface ISearchShortcut {
   onMobileFilterIsOpenChange: (isOpen: boolean) => void;
 }
 
 const SearchShortcut: React.FC<ISearchShortcut> = ({
-  onMobileFilterIsOpenChange
+  onMobileFilterIsOpenChange,
 }) => {
-
   const router = useRouter();
   const query = router.query;
 
@@ -26,7 +25,10 @@ const SearchShortcut: React.FC<ISearchShortcut> = ({
   useEffect(() => {
     if (query.tags === 'aceita pets' && !selectedTags.includes('aceita pets')) {
       setSelectedTags(['aceita pets']);
-    } else if (query.tags === 'mobiliado' && !selectedTags.includes('mobiliado')) {
+    } else if (
+      query.tags === 'mobiliado' &&
+      !selectedTags.includes('mobiliado')
+    ) {
       setSelectedTags(['mobiliado']);
     }
   }, [query.tags]);
@@ -37,43 +39,38 @@ const SearchShortcut: React.FC<ISearchShortcut> = ({
         label: 'Pets',
         key: 'pets',
         tag: 'aceita pets',
-        icon: <PetsIcon 
-          fill='#6B7280'
-          className='group-hover:fill-tertiary'
-        />
+        icon: <PetsIcon fill="#6B7280" className="group-hover:fill-tertiary" />,
       },
       {
         label: 'Mobiliado',
         key: 'furnished',
         tag: 'mobiliado',
-        icon: <FurnitureIcon
-          fill='#6B7280'
-          className='group-hover:fill-tertiary'
-        />
+        icon: (
+          <FurnitureIcon fill="#6B7280" className="group-hover:fill-tertiary" />
+        ),
       },
       {
         label: 'Piscina',
         key: 'pool',
         tag: 'piscina',
-        icon: <PoolIcon
-          fill='#6B7280'
-          className='group-hover:fill-tertiary'
-        />
+        icon: <PoolIcon fill="#6B7280" className="group-hover:fill-tertiary" />,
       },
       {
         label: 'Garagem',
         key: 'garage',
         tag: 'garagem',
-        icon: <ParkingIcon
-          fill='#6B7280'
-          viewBox='4 -12 40 70'
-          width='24'
-          height='48'
-          className='group-hover:fill-tertiary'
-        />
+        icon: (
+          <ParkingIcon
+            fill="#6B7280"
+            viewBox="4 -12 40 70"
+            width="24"
+            height="48"
+            className="group-hover:fill-tertiary"
+          />
+        ),
       },
-    ]
-    return tagsShortcuts
+    ];
+    return tagsShortcuts;
   };
 
   useEffect(() => {
@@ -91,18 +88,22 @@ const SearchShortcut: React.FC<ISearchShortcut> = ({
 
   // Insere e remove as tags clicadas nos parâmetros da URL;
   const toggleSelection = (item: string) => {
-    const tags: string[] = Array.isArray(query.tags) ? query.tags : query.tags ? query.tags.split(',') : [];
-  
+    const tags: string[] = Array.isArray(query.tags)
+      ? query.tags
+      : query.tags
+      ? query.tags.split(',')
+      : [];
+
     let updatedTags: string[];
-  
+
     if (tags.includes(item)) {
       updatedTags = tags.filter((tag) => tag !== item);
     } else {
       updatedTags = [...tags, item];
     }
-  
+
     const updatedQueryTags = updatedTags.join(',');
-  
+
     if (updatedQueryTags) {
       router.push({
         pathname: router.pathname,
@@ -111,7 +112,7 @@ const SearchShortcut: React.FC<ISearchShortcut> = ({
     } else {
       const { tags, ...updatedQuery } = query;
       // Faz com que o parametro page volte a ser 1 quando o parametro tags é removido da url;
-      updatedQuery.page = "1";
+      updatedQuery.page = '1';
       router.push({
         pathname: router.pathname,
         query: updatedQuery,
@@ -146,17 +147,18 @@ const SearchShortcut: React.FC<ISearchShortcut> = ({
             key={shortcut.key}
             onClick={() => {
               query.tags?.includes(shortcut.tag)
-              ? null
-              : toggleSelection(shortcut.tag)
-            } }
+                ? null
+                : toggleSelection(shortcut.tag);
+            }}
             className={`group flex flex-row items-center max-w-[153px] h-[44px] border ${
               query.tags?.includes(shortcut.tag)
                 ? 'border-2 border-secondary'
                 : 'border-quaternary'
             } rounded-[30px] p-3 bg-transparent hover:bg-quaternary cursor-pointer`}
           >
-            <span 
+            <div
               onClick={() => toggleSelection(shortcut.tag)}
+              className="flex flex-row items-center justify-between"
             >
               {query.tags?.includes(shortcut.tag) ? (
                 <CloseIcon
@@ -170,22 +172,23 @@ const SearchShortcut: React.FC<ISearchShortcut> = ({
                   }`}
                 />
               ) : (
-                <span>
-                  {shortcut.icon}
-                </span>
+                <span>{shortcut.icon}</span>
               )}
-            </span>
-            <h3
-              className={`font-bold
-                ${query.tags?.includes(shortcut.tag) ? 'font-extrabold text-secondary' : 'font-bold'}
-                text-quaternary text-lg leading-5 group-hover:text-tertiary mx-4`
-              }
-            >
-              {shortcut.label}
-            </h3>
+              <h3
+                className={`font-bold
+                ${
+                  query.tags?.includes(shortcut.tag)
+                    ? 'font-extrabold text-secondary'
+                    : 'font-bold'
+                }
+                text-quaternary text-lg leading-5 group-hover:text-tertiary mx-4`}
+              >
+                {shortcut.label}
+              </h3>
+            </div>
           </div>
         ))}
-      </div> 
+      </div>
     </>
   );
 };
