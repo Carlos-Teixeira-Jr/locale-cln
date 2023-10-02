@@ -1,16 +1,19 @@
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { ILocation } from '../common/interfaces/locationDropdown';
-import { IData, IPropertyInfo } from '../common/interfaces/property/propertyData';
+import {
+  IData,
+  IPropertyInfo,
+} from '../common/interfaces/property/propertyData';
 import { IPropertyTypes } from '../common/interfaces/property/propertyTypes';
+import { fetchJson } from '../common/utils/fetchJson';
 import HomeFilter from '../components/atoms/filterSections/HomeFilter';
+import AccessCard from '../components/molecules/cards/accessCards/AccessCard';
 import PropertyCard from '../components/molecules/cards/propertyCard/PropertyCard';
 import Footer from '../components/organisms/footer/footer';
 import Header from '../components/organisms/header/header';
 import useTrackLocation from '../hooks/trackLocation';
 import { NextPageWithLayout } from './page';
-import AccessCard from '../components/molecules/cards/accessCards/AccessCard';
-import { fetchJson } from '../common/utils/fetchJson';
 
 export interface IHome {
   propertyInfo: IPropertyInfo;
@@ -30,10 +33,10 @@ const Home: NextPageWithLayout<IHome> = ({
   propertyTypes,
   locations,
 }) => {
-
   const { latitude, longitude, location } = useTrackLocation();
   const [propertiesByLocation, setPropertiesByLocation] = useState<any>([]);
-  const [propertiesByLocationError, setPropertiesByLocationError] = useState(null);
+  const [propertiesByLocationError, setPropertiesByLocationError] =
+    useState(null);
   const [isBuy, setIsBuy] = useState(true);
   const [isRent, setIsRent] = useState(false);
   const [transactionType, setTransactionType] = useState<TransactionType>(
@@ -67,9 +70,11 @@ const Home: NextPageWithLayout<IHome> = ({
             .catch(() => ({}));
 
           setPropertiesByLocation(response);
-        }catch(error: any){
-          setPropertiesByLocationError(error.message)
-          console.error(`Houve um erro ao pegar as coordenadas da localização do usuário. Erro: ${propertiesByLocationError}`)
+        } catch (error: any) {
+          setPropertiesByLocationError(error.message);
+          console.error(
+            `Houve um erro ao pegar as coordenadas da localização do usuário. Erro: ${propertiesByLocationError}`
+          );
         }
       }
     }
@@ -94,96 +99,91 @@ const Home: NextPageWithLayout<IHome> = ({
         </div>
 
         <div className="md:absolute flex justify-center md:justify-end xl:justify-center2 xl:max-w-[1536px] xl:pl-[600px] mt-[55px] lg:pr-11 lg:mr-28 lg:top-20 md:top-[25px] lg:left-0 md:p-4 w-full">
-          <HomeFilter 
-            isBuyProp={isBuy} 
-            isRentProp={isRent} 
-            setBuyProp={handleSetBuy} 
-            setRentProp={handleSetRent} 
+          <HomeFilter
+            isBuyProp={isBuy}
+            isRentProp={isRent}
+            setBuyProp={handleSetBuy}
+            setRentProp={handleSetRent}
             propertyTypesProp={propertyTypes}
             locationProp={locations}
           />
         </div>
 
-        <div className="inline max-w-screen-2xl">
-          <div className="mb-20">
-            <AccessCard 
-              isBuyProp={isBuy} 
-              isRentProp={isRent} 
-            />
+        <div className="flex max-w-[1232px] justify-center sm:items-center md:items-center lg:items-start xl:items-start flex-col m-auto">
+          <h3 className="sm:text-base md:text-2xl font-bold text-quaternary text-left mt-5 ml-5">
+            O que você procura a um clique de distância
+          </h3>
+        </div>
+
+        <div className="max-w-[1232px] flex sm:items-center md:items-center lg:items-start xl:items-start flex-col m-auto">
+          <div className="mb-10">
+            <AccessCard transactionType={transactionType} />
           </div>
 
-          <div className="flex sm:flex-col md:flex-row justify-center mb-3 px-2">
-            <div className="flex flex-row lg:w-fit px-4">
-              {propertiesByLocation.length != 0 ? (
-                <div className="flex flex-col lg:w-fit w-full m-auto align-middle mt-[9px]">
-                  <h3 className="sm:text-base md:text-[26px] font-bold text-quaternary md:text-left text-center">
-                    Veja os imóveis mais próximos de você!
-                  </h3>
+          <div className="flex max-w-[1232px]  justify-start text-left">
+            <h3 className="sm:text-base md:text-2xl font-bold text-quaternary text-left ml-5">
+              {propertiesByLocation.length != 0
+                ? 'Veja os imóveis mais próximos de você!'
+                : 'Veja os imóveis em destaque!'}
+            </h3>
+          </div>
+          <div className="flex sm:flex-col max-w-[1232px] justify-center items-center md:flex-row  mb-3 px-2">
+            <div className="flex flex-row px-4">
+              <div className="flex flex-col m-auto align-middle mt-[9px]">
+                <div className="sm:grid sm:grid-cols-1 md:grid md:grid-cols-2 lg:flex lg:flex-row justify-center gap-9 mx-14">
+                  {/* ISSO COMENTADO ABAIXO É O CÓDIGO QUE RENDERIZA APENAS OS CARDS REFERENTES A LOCALIZAÇÃO DO USUÁRIO */}
+                  {propertiesByLocation.docs
+                    ? propertiesByLocation.docs.map(
+                        ({
+                          _id,
+                          prices,
+                          description,
+                          address,
+                          images,
+                          metadata,
+                          highlighted,
+                        }: any) => (
+                          <PropertyCard
+                            key={_id}
+                            prices={prices[0].value}
+                            description={description}
+                            images={images}
+                            location={address.streetName}
+                            bedrooms={metadata[0].amount}
+                            bathrooms={metadata[1].amount}
+                            parking_spaces={metadata[2].amount}
+                            _id={_id}
+                            highlighted={highlighted}
+                          />
+                        )
+                      )
+                    : propertyInfo.docs?.map(
+                        ({
+                          _id,
+                          prices,
+                          description,
+                          address,
+                          images,
+                          metadata,
+                          highlighted,
+                        }: IData) => (
+                          <PropertyCard
+                            key={_id}
+                            prices={prices[0]}
+                            description={description}
+                            images={images}
+                            location={address.streetName}
+                            bedrooms={metadata[0].amount}
+                            bathrooms={metadata[1].amount}
+                            parking_spaces={metadata[2].amount}
+                            _id={_id}
+                            highlighted={highlighted}
+                          />
+                        )
+                      )}
                 </div>
-              ) : (
-                <div className="flex flex-col lg:w-fit text-center w-full m-auto align-middle ">
-                  <h3 className="sm:text-base md:text-[26px] font-bold text-quaternary md:text-left text-center">
-                    Veja os imóveis em destaque!
-                  </h3>
-                </div>
-              )}
+              </div>
             </div>
-          </div>
-
-          <div className="sm:grid sm:grid-cols-1 md:grid md:grid-cols-2 lg:flex lg:flex-row justify-center gap-9 mx-14">
-            {/* ISSO COMENTADO ABAIXO É O CÓDIGO QUE RENDERIZA APENAS OS CARDS REFERENTES A LOCALIZAÇÃO DO USUÁRIO */}
-            {propertiesByLocation.docs ? (
-              propertiesByLocation.docs.map(
-                ({
-                  _id,
-                  prices,
-                  description,
-                  address,
-                  images,
-                  metadata,
-                  highlighted
-                }: any) => (
-                  <PropertyCard
-                    key={_id}
-                    prices={prices[0].value}
-                    description={description}
-                    images={images}
-                    location={address.streetName}
-                    bedrooms={metadata[0].amount}
-                    bathrooms={metadata[1].amount}
-                    parking_spaces={metadata[2].amount}
-                    _id={_id} 
-                    highlighted={highlighted}                  
-                  />
-                )
-              )
-            ) : (
-              propertyInfo.docs?.map(
-                ({
-                  _id,
-                  prices,
-                  description,
-                  address,
-                  images,
-                  metadata,
-                  highlighted
-                }: IData) => (
-                  <PropertyCard
-                    key={_id}
-                    prices={prices[0]}
-                    description={description}
-                    images={images}
-                    location={address.streetName}
-                    bedrooms={metadata[0].amount}
-                    bathrooms={metadata[1].amount}
-                    parking_spaces={metadata[2].amount}
-                    _id={_id} 
-                    highlighted={highlighted}                  
-                  />
-                )
-              )
-            )}
-            
           </div>
         </div>
 
