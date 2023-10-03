@@ -1,4 +1,4 @@
-import { MouseEvent, useState } from 'react';
+import { MouseEvent, useRef, useState } from 'react';
 import LinearStepper from '../components/atoms/stepper/stepper';
 import AreaCalculatorModal from '../components/molecules/areaModal/areaModal';
 import Footer from '../components/organisms/footer/footer';
@@ -18,6 +18,24 @@ const Register = () => {
   const query = router.query;
   const urlEmail = query.email;
   const { updateProgress } = useProgress();
+
+  // Lida com o auto-scroll para os inputs de MainFeatures que mostrarem erro;
+  const mainFeaturesInputRefs = {
+    description: useRef<HTMLElement>(null),
+    totalArea: useRef<HTMLInputElement>(null),
+    propertyValue: useRef<HTMLInputElement>(null),
+    condominiumValue: useRef<HTMLInputElement>(null),
+    iptuValue: useRef<HTMLInputElement>(null)
+  }
+
+  // Lida com o auto-scroll para os inputs de Address que mostrarem erro;
+  const addressInputRefs = {
+    zipCode: useRef<HTMLInputElement>(null),
+    city: useRef<HTMLInputElement>(null),
+    streetName: useRef<HTMLInputElement>(null),
+    streetNumber: useRef<HTMLInputElement>(null),
+    uf: useRef<HTMLInputElement>(null),
+  }
   
   const [registration, setRegistration] = useState<IRegisterMainFeatures>({
     adType: 'comprar',
@@ -51,7 +69,7 @@ const Register = () => {
     propertyValue: '',
     condominiumValue: '',
     iptuValue: '',
-  })
+  });
 
   const [address, setAddress] = useState<IAddress>({
     zipCode: '',
@@ -224,6 +242,7 @@ const Register = () => {
           isEdit={false} 
           onMainFeaturesUpdate={(updatedFeatures: any) => setRegistration(updatedFeatures)}      
           errors={registrationErrors}  
+          mainFeaturesInputRefs={mainFeaturesInputRefs}
         />
 
         <Address 
@@ -231,6 +250,7 @@ const Register = () => {
           address={address} 
           onAddressUpdate={(updatedAddress: IAddress) => setAddress(updatedAddress)} 
           errors={addressErrors}
+          addressInputRefs={addressInputRefs}
         />
 
         <div className="flex self-end md:justify-end justify-center mb-32 mt-16">

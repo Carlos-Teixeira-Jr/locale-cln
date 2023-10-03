@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import CheckIcon from '../../atoms/icons/checkIcon';
 import propertyTypesData from '../../../data/propertyTypesData.json';
 import { ISize, announcementSubtype, announcementType, propSubtype, propType } from '../../../common/interfaces/property/propertyData';
@@ -27,6 +27,7 @@ interface IMainFeatures {
   isEdit: boolean
   onMainFeaturesUpdate: (updatedFeatures: IEditPropertyMainFeatures) => void
   errors: any
+  mainFeaturesInputRefs?: any
 }
 
 const MainFeatures: React.FC<IMainFeatures> = ({
@@ -49,8 +50,14 @@ const MainFeatures: React.FC<IMainFeatures> = ({
   editarIptu,
   isEdit,
   onMainFeaturesUpdate,
-  errors
+  errors,
+  mainFeaturesInputRefs
 }: IMainFeatures) => {
+  console.log("🚀 ~ file: mainFeatures.tsx:62 ~ mainFeaturesInputRefs:", mainFeaturesInputRefs)
+
+  const mainFeaturesErrorScroll = {
+    ...mainFeaturesInputRefs
+  }
 
   const [isBuy, setIsBuy] = useState(!isEdit ? true : (editarAdType === 'comprar' ? true : false));
   const [isRent, setIsRent] = useState(!isEdit ? false : (editarAdType === 'alugar' ? true : false));
@@ -104,6 +111,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
     ],
   });
 
+  // Atualiza o objeto que é enviado ao componente pai;
   useEffect(() => {
     onMainFeaturesUpdate(propertyFeaturesData)
   }, [propertyFeaturesData]);
@@ -118,7 +126,26 @@ const MainFeatures: React.FC<IMainFeatures> = ({
 
   useEffect(() => {
     setPropertyFeaturesErrors(errors);
-  }, [errors])
+  }, [errors]);
+
+  // Faz a rolagem automática para o input que apresentar erro;
+  useEffect(() => {
+    if (propertyFeaturesErrors.description !== '' && mainFeaturesInputRefs.description.current) {
+      mainFeaturesErrorScroll.description.current.scrollIntoView({ behavior: 'auto', block: 'center' });
+    }
+    if (propertyFeaturesErrors.totalArea !== '' && mainFeaturesInputRefs.totalArea.current) {
+      mainFeaturesErrorScroll.totalArea.current.scrollIntoView({ behavior: 'auto', block: 'center' });
+    }
+    if (propertyFeaturesErrors.propertyValue !== '' && mainFeaturesInputRefs.propertyValue.current) {
+      mainFeaturesErrorScroll.propertyValue.current.scrollIntoView({ behavior: 'auto', block: 'center' });
+    }
+    if (propertyFeaturesErrors.condominiumValue !== '' && mainFeaturesInputRefs.condominiumValue.current) {
+      mainFeaturesErrorScroll.condominiumValue.current.scrollIntoView({ behavior: 'auto', block: 'center' });
+    }
+    if (propertyFeaturesErrors.iptuValue !== '' && mainFeaturesInputRefs.iptuValue.current) {
+      mainFeaturesErrorScroll.iptuValue.current.scrollIntoView({ behavior: 'auto', block: 'center' });
+    }
+  }, [propertyFeaturesErrors]);
 
   const handleBuy = () => {
     setIsBuy(true);
@@ -329,14 +356,13 @@ const MainFeatures: React.FC<IMainFeatures> = ({
           </select>
         </div>
 
-        {/* FORM DO VIACEP */}
         <div className="my-5 ml-5 lg:ml-0">
           <h3 className="md:text-3xl text-2xl text-quaternary font-semibold leading-9 my-5">
             Dados do Imóvel:
           </h3>
           <div className="md:flex w-3/4">
 
-            <div className="flex flex-col md:w-full md:mr-5 mt-5 md:mt-0">
+            <div className="flex flex-col md:w-full md:mr-5 mt-5 md:mt-0" ref={mainFeaturesErrorScroll.totalArea}>
               <label className="text-2xl font-normal text-quaternary leading-7">
                 Área Total
               </label>
@@ -432,7 +458,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
         </div>
 
         <div className="my-5">
-          <div className="flex flex-col mx-5 lg:mx-0">
+          <div className="flex flex-col mx-5 lg:mx-0" ref={mainFeaturesErrorScroll.description}>
             <label className="text-2xl font-normal text-quaternary leading-7 mb-5 drop-shadow-xl">
               Descrição do Imóvel:
             </label>
@@ -459,7 +485,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
           </h3>
 
           <div className="md:flex my-5 mx-4 md:ml-5 lg:ml-0">
-            <div className="flex flex-col md:w-96 md:pr-6">
+            <div className="flex flex-col md:w-96 md:pr-6" ref={mainFeaturesErrorScroll.description}>
               <label className="text-2xl font-normal text-quaternary leading-7">
                 {`${isBuy ? 'Valor do Imóvel' : 'Valor do Aluguel'}`}
               </label>
@@ -480,7 +506,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
           </div>
 
           <div className="my-10">
-            <div className="flex">
+            <div className="flex" ref={mainFeaturesErrorScroll.condominiumValue}>
               <label className="text-2xl font-normal text-quaternary leading-7 ml-5 lg:ml-0">
                 Condomínio{' '}
               </label>
@@ -528,7 +554,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                 {propertyFeaturesData.condominium ? 'Remover' : 'Aplicar'}
               </p>
             </div>
-            <div className="flex mt-10 ml-5 lg:ml-0">
+            <div className="flex mt-10 ml-5 lg:ml-0" ref={mainFeaturesErrorScroll.iptuValue}>
               <label className="text-2xl font-normal text-quaternary leading-7">
                 IPTU
               </label>

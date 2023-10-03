@@ -10,6 +10,7 @@ interface IImages {
   editarImages?: string[];
   onImagesUpdate: (updatedImages: string[]) => void;
   onErrorsInfo: OnErrorInfo
+  imagesInputRef: any
 }
 
 export type OnErrorInfo = {
@@ -20,8 +21,11 @@ export type OnErrorInfo = {
 const UploadImages = ({ 
   editarImages,
   onImagesUpdate,
-  onErrorsInfo
+  onErrorsInfo,
+  imagesInputRef
 }: IImages) => {
+
+  const imagesErrorScroll = useRef(imagesInputRef);
 
   const [images, setImages] = useState<any[]>(editarImages || []);
 
@@ -29,6 +33,12 @@ const UploadImages = ({
     prop: '',
     error: ''
   });
+
+  useEffect(() => {
+    if (error.error !== '') {
+      imagesErrorScroll.current.scrollIntoView({ behavior: 'auto', block: 'center' });
+    }
+  }, [error])
 
   useEffect(() => {
     resetObjectToEmptyStrings(error);
@@ -49,7 +59,6 @@ const UploadImages = ({
 
   const handleAddImage = (event: any) => {
     const files = Array.from(event.target.files);
-
     if (files.length + images.length > 20) {
       alert('Você pode adicionar no máximo 20 imagens');
       return;
@@ -57,7 +66,6 @@ const UploadImages = ({
 
     files.forEach((file: any) => {
       const reader = new FileReader();
-
       reader.onloadend = () => {
         setImages((prevImages) => [
           ...prevImages,
@@ -82,7 +90,7 @@ const UploadImages = ({
   };
 
   return (
-    <div className="max-w-screen-md md:flex lg:block flex-column items-center justify-center mx-auto">
+    <div className="max-w-screen-md md:flex lg:block flex-column items-center justify-center mx-auto" ref={imagesErrorScroll}>
       <label
         className="flex flex-row items-center px-6 w-64 h-12 border rounded-[50px] bg-secondary cursor-pointer mt-4 mx-auto"
         htmlFor="uploadImages"

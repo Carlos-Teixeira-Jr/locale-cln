@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
 import { IAddress } from '../../../common/interfaces/property/propertyData';
-import { OnErrorInfo } from '../uploadImages/uploadImages';
-import { resetObjectToEmptyStrings } from '../../../common/utils/resetObjects';
 
 interface ViaZipCodeData {
   logradouro: string;
@@ -17,14 +15,20 @@ export interface IAddressComponent {
   address: IAddress
   onAddressUpdate: (updatedAddress: IAddress) => void;
   errors: any
+  addressInputRefs?: any
 }
 
 const Address: React.FC<IAddressComponent> = ({
   isEdit,
   address,
   onAddressUpdate,
-  errors
+  errors,
+  addressInputRefs
 }: IAddressComponent) => {
+
+  const addressInputsErrorScroll = {
+    ...addressInputRefs
+  };
 
   const [shouldExecuteEffect, setShouldExecuteEffect] = useState(false);
 
@@ -49,7 +53,6 @@ const Address: React.FC<IAddressComponent> = ({
   useEffect(() => {
     setAddressErrors(errors);
   }, [errors]);
-  
 
   const [viaZipCodeData, setViaZipCodeData] = useState<ViaZipCodeData>({
     logradouro: '',
@@ -60,6 +63,26 @@ const Address: React.FC<IAddressComponent> = ({
     complemento: ''
   });
 
+  // Realiza o auto-scroll para o input que apresenta erro;
+  useEffect(() => {
+    if (addressErrors.zipCode !== '' && addressInputRefs.zipCode.current) {
+      addressInputsErrorScroll.zipCode.current.scrollIntoView({ behavior: 'auto', block: 'center' });
+    }
+    if (addressErrors.city !== '' && addressInputRefs.city.current) {
+      addressInputsErrorScroll.city.current.scrollIntoView({ behavior: 'auto', block: 'center' });
+    }
+    if (addressErrors.streetName !== '' && addressInputRefs.streetName.current) {
+      addressInputsErrorScroll.streetName.current.scrollIntoView({ behavior: 'auto', block: 'center' });
+    }
+    if (addressErrors.streetNumber !== '' && addressInputRefs.streetNumber.current) {
+      addressInputsErrorScroll.streetNumber.current.scrollIntoView({ behavior: 'auto', block: 'center' });
+    }
+    if (addressErrors.uf !== '' && addressInputRefs.uf.current) {
+      addressInputsErrorScroll.uf.current.scrollIntoView({ behavior: 'auto', block: 'center' });
+    }
+  }, [addressErrors]);
+
+  // Necessário para lidar com a mudança dos estados de address quando sao inseridos automaticamente pela lib ViaCep;
   useEffect(() => {
     if (shouldExecuteEffect) {
       setAddressData({
@@ -76,13 +99,13 @@ const Address: React.FC<IAddressComponent> = ({
     // Define shouldExecuteEffect como true após a primeira renderização para mostrar os dados de endereço antes da alteração.
     setShouldExecuteEffect(true);
   }, [viaZipCodeData]);
-  
 
   // Envia os dados de endereço para o componente pai;
   useEffect(() => {
     onAddressUpdate(addressData)
   }, [addressData]);
 
+  // Busca os dados automaticamente usando o cep por meio da lib ViaCep;
   const handleZipCodeBlur = () => {
     if (addressData.zipCode.length === 8) {
       fetch(`https://viacep.com.br/ws/${addressData.zipCode}/json/`)
@@ -177,7 +200,7 @@ const Address: React.FC<IAddressComponent> = ({
             CEP
           </label>
           <div className="md:flex grid grid-flow-row">
-            <div>
+            <div ref={addressInputsErrorScroll.zipCode}>
               <input
                 className="border border-quaternary rounded-[10px] h-12 sm:w-1/3 md:w-full text-quaternary md:text-2xl text-xl font-bold px-5 drop-shadow-lg bg-tertiary mt-3"
                 type="cep"
@@ -203,7 +226,7 @@ const Address: React.FC<IAddressComponent> = ({
           </div>
         </div>
         <div className="md:flex">
-          <div className="md:flex flex-col md:mr-5 md:w-4/5">
+          <div className="md:flex flex-col md:mr-5 md:w-4/5" ref={addressInputsErrorScroll.city}>
             <label className="text-xl font-normal text-quaternary leading-7">
               Cidade
             </label>
@@ -218,7 +241,7 @@ const Address: React.FC<IAddressComponent> = ({
               <span className="text-red-500 text-xs">{addressErrors.city}</span>
             )}
           </div>
-          <div className="flex flex-col md:ml-5 mt-5 md:mt-0 md:w-1/5">
+          <div className="flex flex-col md:ml-5 mt-5 md:mt-0 md:w-1/5" ref={addressInputsErrorScroll.uf}>
             <label className="text-xl font-normal text-quaternary leading-7">
               UF
             </label>
@@ -235,7 +258,7 @@ const Address: React.FC<IAddressComponent> = ({
           </div>
         </div>
         <div className="md:flex mt-5">
-          <div className="md:flex flex-col md:mr-5 md:w-4/5">
+          <div className="md:flex flex-col md:mr-5 md:w-4/5" ref={addressInputsErrorScroll.streetName}>
             <label className="text-xl font-normal text-quaternary leading-7">
               Logradouro
             </label>
@@ -250,7 +273,7 @@ const Address: React.FC<IAddressComponent> = ({
               <span className="text-red-500 text-xs">{addressErrors.streetName}</span>
             )}
           </div>
-          <div className="flex flex-col md:ml-5 md:w-1/5">
+          <div className="flex flex-col md:ml-5 md:w-1/5" ref={addressInputsErrorScroll.streetNumber}>
             <label className="text-xl font-normal text-quaternary leading-7 mt-5 md:mt-0">
               Número
             </label>
@@ -287,7 +310,6 @@ const Address: React.FC<IAddressComponent> = ({
               onChange={handleNeighborhoodChange}
               readOnly
             />
-
           </div>
         </div>
       </form>

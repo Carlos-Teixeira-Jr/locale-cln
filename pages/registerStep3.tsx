@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useEffect, useState, MouseEvent } from 'react';
+import { useEffect, useState, MouseEvent, useRef } from 'react';
 import LinearStepper from '../components/atoms/stepper/stepper';
 import PlansCardsHidden from '../components/molecules/cards/plansCards/plansCardHidden';
 import Footer from '../components/organisms/footer/footer';
@@ -51,6 +51,31 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
   const storedData = store.get('propertyData');
   const propertyAddress = storedData?.address ? storedData.address : {};
 
+  // Lida com o autoscroll das validações de erro dos inputs;
+  const userDataInputRefs = {
+    username: useRef<HTMLElement>(null),
+    email: useRef<HTMLElement>(null),
+    cpf: useRef<HTMLElement>(null),
+    cellPhone: useRef<HTMLElement>(null),
+  };
+
+  // Lida com o auto-scroll para os inputs de Address que mostrarem erro;
+  const addressInputRefs = {
+    zipCode: useRef<HTMLInputElement>(null),
+    city: useRef<HTMLInputElement>(null),
+    streetName: useRef<HTMLInputElement>(null),
+    streetNumber: useRef<HTMLInputElement>(null),
+    uf: useRef<HTMLInputElement>(null),
+  };
+
+  // Lida com o auto-scroll para os inputs de creditCard que mostrarem erro;
+  const creditCardInputRefs = {
+    cardName: useRef<HTMLInputElement>(null),
+    cardNumber: useRef<HTMLInputElement>(null),
+    expiry: useRef<HTMLInputElement>(null),
+    cvc: useRef<HTMLInputElement>(null),
+  };
+
   const { data: session } = useSession() as any;
   const userId = session?.user?.data._id;
 
@@ -65,11 +90,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
   const [isFreePlan, setIsFreePlan] = useState(false);
   const [failPaymentModalIsOpen, setFailPaymentModalIsOpen] = useState(false);
   const [termsError, setTermsError] = useState('');
-
-  useEffect(() => {
-    console.log("🚀 ~ file: registerStep3.tsx:76 ~ termsAreRead:", termsAreRead)
-  }, [termsAreRead])
-  
 
   const [userDataForm, setUserDataForm] = useState<IUserDataComponent>({
     username: '',
@@ -117,7 +137,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     cvc: '',
     expiry: '',
   });
-  
   
   // Verifica se o estado progress que determina em qual step o usuário está corresponde ao step atual;
   useEffect(() => {
@@ -178,6 +197,13 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
       uf: ''
     };
 
+    const newCreditCardErrors = {
+      cardName: '',
+      cardNumber: '',
+      cvc: '',
+      expiry: '',
+    };
+
     if (!userDataForm.username) newUserDataErrors.username = error;
     if (!userDataForm.email) newUserDataErrors.email = error;
     if (!userDataForm.cpf) newUserDataErrors.cpf = error;
@@ -188,20 +214,29 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     if (!addressData.city) newAddressErrors.city = error;
     if (!addressData.uf) newAddressErrors.uf = error;
     if (!termsAreRead) setTermsError(error);
+    if (selectedPlan !== '') {
+      const planObj = plans.find((plan) => plan._id === selectedPlan);
+      if (planObj && planObj.name !== 'Free') {
+        if (!creditCard.cardName) newCreditCardErrors.cardName = error;
+        if (!creditCard.cardNumber) newCreditCardErrors.cardNumber = error;
+        if (!creditCard.expiry) newCreditCardErrors.expiry = error;
+        if (!creditCard.cvc) newCreditCardErrors.cvc = error;
+      }
+    }
 
     setUserDataErrors(newUserDataErrors);
     setAddressErrors(newAddressErrors);
+    setCreditCardErrors(newCreditCardErrors);
     
     // Combina os erros de registro e endereço em um único objeto de erros
     const combinedErrors = {
       ...newAddressErrors,
       ...newUserDataErrors,
+      ...newCreditCardErrors
     };
 
     // Verifica se algum dos valores do objeto de erros combinados não é uma string vazia
     const hasErrors = Object.values(combinedErrors).some((error) => error !== '');
-
-    console.log("🚀 ~ file: registerStep3.tsx:224 ~ handleSubmit ~ !hasErrors && termsError === '':", !hasErrors && termsError === '')
 
     if (!hasErrors && termsAreRead) {
 
@@ -209,7 +244,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         const result = await geocodeAddress(addressData);
 
         if (result !== null) {
-          console.log("🚀 ~ file: registerStep3.tsx:216 ~ handleSubmit ~ result:", result)
           setCoordinates(result);
         } else {
           console.log('Deu erro na chamada geocode')
@@ -235,7 +269,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         isPlanFree,
         propertyAddress
       };
-      console.log("🚀 ~ file: registerStep3.tsx:248 ~ handleSubmit ~ propertyDataStep3:", propertyDataStep3)
 
       const userData: ICreateProperty_userData = {
         _id: userId ? userId : '',
@@ -243,7 +276,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         email: userDataForm.email,
         address: !isSameAddress && storedData.address ? storedData.address : addressData,
         cpf: userDataForm.cpf
-      }
+      };
 
       const propertyData: ICreateProperty_propertyData = {
         adType: storedData.adType,
@@ -263,7 +296,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
           type: "Point",
           coordinates: propertyDataStep3.geolocation
         }
-      }
+      };
 
       try {
         toast.loading('Enviando...');
@@ -378,6 +411,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
               onUserDataUpdate={(updatedUserData: IUserDataComponent) => setUserDataForm(updatedUserData)} 
               urlEmail={urlEmail ? urlEmail : undefined}
               error={userDataErrors}
+              userDataInputRefs={userDataInputRefs}
             />
           </div>
 
@@ -392,6 +426,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
               address={addressData} 
               onAddressUpdate={(address: IAddress) => setAddressData(address)} 
               errors={addressErrors}
+              addressInputRefs={addressInputRefs}
             />
           )}
 
@@ -402,13 +437,13 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
                 return (
                   <CreditCard
                     isEdit={false}
-                    //onErrorInfo={errorInfo}
                     onCreditCardUpdate={(creditCard) => {
                       if (!isFreePlan) {
                         setCreditCard(creditCard);
                       }
                     }}
                     error={creditCardErrors}
+                    creditCardInputRefs={creditCardInputRefs}
                   />
                 );
               }

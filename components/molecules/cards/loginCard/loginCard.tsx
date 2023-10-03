@@ -36,10 +36,6 @@ const LoginCard: React.FC = () => {
   });
 
   useEffect(() => {
-    console.log("🚀 ~ file: loginCard.tsx:45 ~ emailVerificationData.email:", emailVerificationData.email)
-  }, [emailVerificationData.email])
-
-  useEffect(() => {
     setEmailVerificationData({...emailVerificationData, email: email })
   }, [email])
   

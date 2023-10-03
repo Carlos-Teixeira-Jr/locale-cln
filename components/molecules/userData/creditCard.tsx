@@ -18,15 +18,20 @@ interface ICreditCard {
   onCreditCardUpdate?: (creditCard: CreditCardForm) => void
   onErrorInfo?: OnErrorInfo
   error: any
+  creditCardInputRefs?: any
 }
-
 
 const CreditCard = ({
   isEdit,
   onCreditCardUpdate,
   onErrorInfo,
-  error
+  error,
+  creditCardInputRefs
 }: ICreditCard) => {
+
+  const creditCardErrorScroll = {
+    ...creditCardInputRefs
+  }
 
   const [focus, setFocus] = useState<Focused | undefined>();
   const [creditCardFormData, setCreditCardFormData] = useState<CreditCardForm>({
@@ -50,16 +55,25 @@ const CreditCard = ({
     }
   }, [creditCardFormData]);
 
-  // Processa a estrutura de dados de onErrosInfo para inserir no objeto formDataErrors;
   useEffect(() => {
-    resetObjectToEmptyStrings(errors);
-    if (onErrorInfo) {
-      setErrors(prevErrors => ({
-        ...prevErrors,
-        [onErrorInfo.prop]: onErrorInfo.error,
-      }));
+    setErrors(error);
+  }, [error]);
+
+  // Realiza o auto-scroll para o input que apresenta erro;
+  useEffect(() => {
+    if (errors.cardName !== '' && creditCardInputRefs.cardName.current) {
+      creditCardErrorScroll.cardName.current.scrollIntoView({ behavior: 'auto', block: 'center' });
     }
-  }, [onErrorInfo]);
+    if (errors.cardNumber !== '' && creditCardInputRefs.cardNumber.current) {
+      creditCardErrorScroll.cardNumber.current.scrollIntoView({ behavior: 'auto', block: 'center' });
+    }
+    if (errors.expiry !== '' && creditCardInputRefs.expiry.current) {
+      creditCardErrorScroll.expiry.current.scrollIntoView({ behavior: 'auto', block: 'center' });
+    }
+    if (errors.cvc !== '' && creditCardInputRefs.cvc.current) {
+      creditCardErrorScroll.cvc.current.scrollIntoView({ behavior: 'auto', block: 'center' });
+    }
+  }, [errors]);
 
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement>,
@@ -83,6 +97,7 @@ const CreditCard = ({
   const inputs = [
     {
       key: 'cardNumber',
+      ref: creditCardErrorScroll.cardNumber,
       name: 'cardNumber',
       type: 'number',
       label: 'Número do Cartão',
@@ -90,6 +105,7 @@ const CreditCard = ({
     },
     {
       key: 'cardName',
+      ref: creditCardErrorScroll.cardName,
       name: 'cardName',
       type: 'text',
       label: 'Nome no Cartão',
@@ -97,6 +113,7 @@ const CreditCard = ({
     },
     {
       key: 'expiry',
+      ref: creditCardErrorScroll.expiry,
       name: 'expiry',
       type: 'date',
       label: 'Validade',
@@ -104,6 +121,7 @@ const CreditCard = ({
     },
     {
       key: 'cvc',
+      ref: creditCardErrorScroll.cvc,
       name: 'cvc',
       type: 'text',
       label: 'CVC',
@@ -173,7 +191,7 @@ const CreditCard = ({
 
         <form className="flex flex-col w-full">
           {inputs.map((input) => (
-            <div key={input.key} className="flex flex-col lg:mx-0 w-full mx-auto">
+            <div key={input.key} className="flex flex-col lg:mx-0 w-full mx-auto" ref={input.ref}>
               <input
                 type={input.type}
                 name={input.name}

@@ -66,7 +66,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
               <AdminPropertyCard
                 _id={_id}
                 image={images[0]}
-                price={prices[0].value}
+                price={prices[0]?.value}
                 location={address.streetName}
                 views={views}
                 messages={ownerProperties?.messages?.filter((item: IMessage) => item.propertyId === _id)}

@@ -11,6 +11,8 @@ import { toast } from 'react-toastify';
 import { useProgress } from '../context/registerProgress';
 
 const RegisterStep2: NextPageWithLayout = () => {
+  
+  const imagesInputRef = useRef<HTMLElement>(null);
 
   const router = useRouter();
   const query = router.query;
@@ -30,7 +32,7 @@ const RegisterStep2: NextPageWithLayout = () => {
     }
   });
 
-  // Envia as mensagens de erros para os componetes;
+  // Envia as mensagens de erros para o componente UploadImages;
   const [errorInfo, setErrorInfo] = useState({
     error: '',
     prop: ''
@@ -99,7 +101,8 @@ const RegisterStep2: NextPageWithLayout = () => {
         <div className="max-w-[1232px]" id="upload-images">
           <UploadImages 
             onImagesUpdate={(updatedImages: string[]) => setImages(updatedImages)} 
-            onErrorsInfo={errorInfo} 
+            onErrorsInfo={errorInfo}
+            imagesInputRef={imagesInputRef}
           />
         </div>
 
