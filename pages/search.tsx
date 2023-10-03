@@ -369,7 +369,7 @@ const Search: NextPageWithLayout<ISearch> = ({
                     }: IData) => (
                       <PropertyCard
                         key={_id}
-                        prices={prices[0].value.toString()}
+                        prices={prices[0]}
                         description={description}
                         images={images}
                         location={address.streetName}

@@ -38,6 +38,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   properties,
   ownerData
 }) => {
+  console.log("🚀 ~ file: adminUserData.tsx:41 ~ ownerData:", ownerData)
   const router = useRouter();
   const isOwner = properties?.docs?.length > 0 ? true : false;
   const [selectedPlan, setSelectedPlan] = useState(ownerData?.owner ? ownerData?.owner?.plan : '');
@@ -201,7 +202,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       }
 
       const ownerFormData: IOwner = {
-        id: userData._id,
+        id: ownerData.owner ? ownerData.owner._id : '',
         ownername: formData.username,
         phones: [formData.cellPhone, formData.phone],
         userId: userData._id,

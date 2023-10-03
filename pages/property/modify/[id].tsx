@@ -22,6 +22,7 @@ interface IEditAnnouncement {
 }
 
 const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({ property }) => {
+console.log("🚀 ~ file: [id].tsx:25 ~ property:", property.prices)
 
   const [rotate1, setRotate1] = useState(false);
   const [rotate2, setRotate2] = useState(false);
@@ -40,6 +41,23 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({ property }) =
     neighborhood: '',
     uf: ''
   });
+
+  const [addressErrors, setAddressErrors] = useState({
+    zipCode: '',
+    uf: '',
+    streetNumber: '',
+    city: '',
+    streetName: '',
+  });
+
+  // Lida com o auto-scroll para os inputs de Address que mostrarem erro;
+  const addressInputRefs = {
+    zipCode: useRef<HTMLInputElement>(null),
+    city: useRef<HTMLInputElement>(null),
+    streetName: useRef<HTMLInputElement>(null),
+    streetNumber: useRef<HTMLInputElement>(null),
+    uf: useRef<HTMLInputElement>(null),
+  };
 
   const [mainFeatures, setMainFeatures] = useState<IEditPropertyMainFeatures>({
     _id: '',
@@ -62,10 +80,29 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({ property }) =
     metadata: [],
   });
 
+  const [mainFeaturesErrors, setMainFeaturesErrors] = useState({
+    description: '',
+    totalArea: '',
+    propertyValue: '',
+    condominiumValue: '',
+    iptuValue: '',
+  });
+
+  // Lida com o auto-scroll para os inputs de MainFeatures que mostrarem erro;
+  const mainFeaturesInputRefs = {
+    description: useRef<HTMLElement>(null),
+    totalArea: useRef<HTMLInputElement>(null),
+    propertyValue: useRef<HTMLInputElement>(null),
+    condominiumValue: useRef<HTMLInputElement>(null),
+    iptuValue: useRef<HTMLInputElement>(null)
+  };
+
   const [tags, setTags] = useState<string[]>(isEdit ? property.tags : []);
   const [condominiumTags, setCondominiumTags] = useState<string[]>(isEdit ? property.condominiumTags : []);
   const [videoLink, setVideoLink] = useState<string>(isEdit ? property.youtubeLink : '');
   const [images, setImages] = useState<string[]>(isEdit ? property.images : []);
+
+  const imagesInputRef = useRef<HTMLElement>(null);
 
   // Envia as mensagens de erros para os componetes;
   const [errorInfo, setErrorInfo] = useState({
@@ -115,68 +152,54 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({ property }) =
     errorHandler.current = {
       prop: '',
       error: ''
-    }
+    };
 
-    if (address.zipCode === '') {
-      setErrorInfo({
-        error: error,
-        prop: 'zipCode'
-      });
-      errorHandler.current = {
-        error: error,
-        prop: 'zipCode'
-      }
+    setMainFeaturesErrors({
+      description: '',
+      totalArea: '',
+      propertyValue: '',
+      condominiumValue: '',
+      iptuValue: '',
+    });
+
+    setAddressErrors({
+      zipCode: '',
+      city: '',
+      streetName: '',
+      streetNumber: '',
+      uf: ''
+    });
+
+    const newMainFeaturesErrors = {
+      description: '',
+      totalArea: '',
+      propertyValue: '',
+      condominiumValue: '',
+      iptuValue: '',
+    }; 
+
+    const newAddressErrors = {
+      zipCode: '',
+      city: '',
+      streetName: '',
+      streetNumber: '',
+      uf: ''
+    };
+
+    if (!mainFeatures.description) newMainFeaturesErrors.description = error;
+    if (!mainFeatures.size.totalArea) newMainFeaturesErrors.totalArea = error;
+    if (!mainFeatures.propertyValue) newMainFeaturesErrors.propertyValue = error;
+    if (mainFeatures.condominium) {
+      if (!mainFeatures.condominiumValue) newMainFeaturesErrors.condominiumValue = error;
     }
-    if (address.streetNumber === '') {
-      setErrorInfo({
-        error: error,
-        prop: 'streetNumber'
-      });
-      errorHandler.current = {
-        error: error,
-        prop: 'streetNumber'
-      }
-    }    
-    if (address.city === '') {
-      setErrorInfo({
-        error: error,
-        prop: 'city'
-      });
-      errorHandler.current = {
-        error: error,
-        prop: 'city'
-      }
+    if (mainFeatures.iptu) {
+      if (!mainFeatures.iptuValue) newMainFeaturesErrors.iptuValue = error;
     }
-    if (address.uf === '') {
-      setErrorInfo({
-        error: error,
-        prop: 'uf'
-      });
-      errorHandler.current = {
-        error: error,
-        prop: 'uf'
-      }
-    }
-    if (address.streetName === '') {
-      setErrorInfo({
-        error: error,
-        prop: 'streetName'
-      });
-      errorHandler.current = {
-        error: error,
-        prop: 'streetName'
-      }
-    }
-    if (address.neighborhood === '') {
-      setErrorInfo({
-        error: error,
-        prop: 'neighborhood'
-      });
-      errorHandler.current = {
-        error: error,
-        prop: 'neighborhood'
-      }
-    }
+    if (!address.zipCode) newAddressErrors.zipCode = error;
+    if (!address.streetName) newAddressErrors.streetName = error;
+    if (!address.streetNumber) newAddressErrors.streetNumber = error;
+    if (!address.city) newAddressErrors.city = error;
+    if (!address.uf) newAddressErrors.uf = error;
     if (images.length < 3) {
       const imagesError = 'Você precisa ter pelo menos três fotos.'
       setErrorInfo({
@@ -188,60 +211,19 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({ property }) =
         prop: 'images'
       }
     }
-    if (mainFeatures.description === '') {
-      setErrorInfo({
-        error: error,
-        prop: 'description'
-      });
-      errorHandler.current = {
-        error: error,
-        prop: 'description'
-      }
-    }
-    if (mainFeatures.size.totalArea === 0) {
-      setErrorInfo({
-        error: error,
-        prop: 'size.area'
-      });
-      errorHandler.current = {
-        error: error,
-        prop: 'size.area'
-      }
-    }
-    if (mainFeatures.propertyValue === '') {
-      setErrorInfo({
-        error: error,
-        prop: 'propertyValue'
-      });
-      errorHandler.current = {
-        error: error,
-        prop: 'propertyValue'
-      }
-    }
-    if (mainFeatures.condominium) {
-      if (mainFeatures.condominiumValue === '') {
-        setErrorInfo({
-          error: error,
-          prop: 'condominiumValue'
-        });
-        errorHandler.current = {
-          error: error,
-          prop: 'condominiumValue'
-        }
-      }
-    }
-    if (mainFeatures.iptu && mainFeatures.iptuValue === '') {
-      setErrorInfo({
-        error: error,
-        prop: 'iptuValue'
-      });
-      errorHandler.current = {
-        error: error,
-        prop: 'iptuValue'
-      }
-    }
 
-    if(errorHandler.current.prop === '' && errorHandler.current.error === '') {
+    setMainFeaturesErrors(newMainFeaturesErrors);
+    setAddressErrors(newAddressErrors);
+
+    const combinedErrors = {
+      ...newAddressErrors,
+      ...newMainFeaturesErrors,
+    };
+
+    // Verifica se algum dos valores do objeto de erros combinados não é uma string vazia
+    const hasErrors = Object.values(combinedErrors).some((error) => error !== '');
+
+    if(errorHandler.current.prop === '' && errorHandler.current.error === '' && !hasErrors) {
       const propertyData: IEditPropertyData = {
         id: property._id,
         adType: mainFeatures.adType,
@@ -307,7 +289,6 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({ property }) =
       <div className="flex flex-row justify-center lg:justify-end xl:justify-end 2xl:justify-center">
         <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:flex">
           <SideMenu
-            isMobileProp={false}
             isOwnerProp={property !== undefined && true}
           />
         </div>
@@ -344,7 +325,8 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({ property }) =
                       isEdit={isEdit}
                       address={property.address}
                       onAddressUpdate={(updatedAddress: IAddress) => setAddress(updatedAddress)}
-                      onErrorsInfo={errorInfo}
+                      addressInputRefs={addressInputRefs}
+                      errors={addressErrors}
                     />
                   </div>
                 </div>
@@ -378,6 +360,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({ property }) =
                       editarImages={property.images} 
                       onImagesUpdate={(updatedImages: string[]) => setImages(updatedImages)}
                       onErrorsInfo={errorInfo}
+                      imagesInputRef={imagesInputRef}
                     />
                   </div>
                 </div>
@@ -421,13 +404,16 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({ property }) =
                       editarDescription={property.description}
                       editarPropertyValue={property.prices[0].value.toString()}
                       editarCondominium={property.prices.some((obj: IPrices) => obj.type === 'condominio')}
-                      editarCondominiumValue={property.prices.find((obj: IPrices) => obj.type === 'condominio')?.value.toString() || ''}
-                      editarIptuValue={property.prices.find((obj: IPrices) => obj.type === 'condominio')?.value.toString() || ''}
+                      editarCondominiumValue={property.prices.find((obj: IPrices) => obj.type === 'condominio')?.value !== null
+                      ? property.prices.find((obj: IPrices) => obj.type === 'condominio')!.value.toString()
+                      : ''}
+                      editarIptuValue={property.prices.find((price) => price.type === 'IPTU') !== undefined ? property.prices.find((price) => price.type === 'IPTU')!.value.toString() : ''}
                       editarIptu={property.prices.some((obj: IPrices) => obj.type === 'condominio')}
                       isEdit={isEdit}
-                      onErrorsInfo={errorInfo}
                       onMainFeaturesUpdate={(updatedFeatures: IEditPropertyMainFeatures) => setMainFeatures(updatedFeatures)} 
                       editarSize={property.size}
+                      errors={mainFeaturesErrors}
+                      mainFeaturesInputRefs={mainFeaturesInputRefs}
                     />
                   </div>
                 </div>

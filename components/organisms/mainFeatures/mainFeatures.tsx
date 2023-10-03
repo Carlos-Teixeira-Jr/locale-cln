@@ -584,7 +584,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
               </div>
               
               <div
-                className={`lg:ml-5 w-12 h-12 border bg-tertiary rounded-[10px] mt-5 drop-shadow-lg cursor-pointer ${
+                className={`lg:ml-5 w-12 h-12 border bg-tertiary rounded-[10px] mt-5 drop-shadow-lg cursor-pointer shrink-0 ${
                   !propertyFeaturesData.iptu ? 'border-secondary' : 'border-quaternary'
                 }`}
                 onClick={() => {setPropertyFeaturesData({...propertyFeaturesData, iptu: !propertyFeaturesData.iptu})}}

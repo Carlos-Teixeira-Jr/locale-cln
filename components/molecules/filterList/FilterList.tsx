@@ -27,6 +27,7 @@ const FilterList: React.FC<IFilterListProps> = ({
   onMobileFilterIsOpenChange,
   onSearchBtnClick
 }) => {
+  console.log("🚀 ~ file: FilterList.tsx:30 ~ propertyTypesProp:", propertyTypesProp)
   
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
