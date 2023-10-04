@@ -1,6 +1,14 @@
 import { useEffect, useState } from 'react';
 import { IAddress } from '../../../common/interfaces/property/propertyData';
 
+export type AddressErrorsTypes = {
+  zipCode: string,
+  uf: string,
+  streetNumber: string,
+  city: string,
+  streetName: string,
+}
+
 interface ViaZipCodeData {
   logradouro: string;
   bairro: string;
@@ -14,7 +22,7 @@ export interface IAddressComponent {
   isEdit: boolean;
   address: IAddress
   onAddressUpdate: (updatedAddress: IAddress) => void;
-  errors: any
+  errors: AddressErrorsTypes
   addressInputRefs?: any
 }
 
@@ -65,22 +73,19 @@ const Address: React.FC<IAddressComponent> = ({
 
   // Realiza o auto-scroll para o input que apresenta erro;
   useEffect(() => {
-    if (addressErrors.zipCode !== '' && addressInputRefs.zipCode.current) {
-      addressInputsErrorScroll.zipCode.current.scrollIntoView({ behavior: 'auto', block: 'center' });
-    }
-    if (addressErrors.city !== '' && addressInputRefs.city.current) {
-      addressInputsErrorScroll.city.current.scrollIntoView({ behavior: 'auto', block: 'center' });
-    }
-    if (addressErrors.streetName !== '' && addressInputRefs.streetName.current) {
-      addressInputsErrorScroll.streetName.current.scrollIntoView({ behavior: 'auto', block: 'center' });
-    }
-    if (addressErrors.streetNumber !== '' && addressInputRefs.streetNumber.current) {
-      addressInputsErrorScroll.streetNumber.current.scrollIntoView({ behavior: 'auto', block: 'center' });
-    }
-    if (addressErrors.uf !== '' && addressInputRefs.uf.current) {
-      addressInputsErrorScroll.uf.current.scrollIntoView({ behavior: 'auto', block: 'center' });
-    }
+    const scrollToError = (errorKey: keyof typeof addressErrors) => {
+      if (addressErrors[errorKey] !== '' && addressInputRefs[errorKey]?.current) {
+        addressInputsErrorScroll[errorKey]?.current.scrollIntoView({ behavior: 'auto', block: 'center' });
+      }
+    };
+  
+    scrollToError('zipCode');
+    scrollToError('city');
+    scrollToError('streetName');
+    scrollToError('streetNumber');
+    scrollToError('uf');
   }, [addressErrors]);
+  
 
   // Necessário para lidar com a mudança dos estados de address quando sao inseridos automaticamente pela lib ViaCep;
   useEffect(() => {

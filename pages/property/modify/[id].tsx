@@ -22,7 +22,6 @@ interface IEditAnnouncement {
 }
 
 const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({ property }) => {
-console.log("🚀 ~ file: [id].tsx:25 ~ property:", property.prices)
 
   const [rotate1, setRotate1] = useState(false);
   const [rotate2, setRotate2] = useState(false);
@@ -224,6 +223,7 @@ console.log("🚀 ~ file: [id].tsx:25 ~ property:", property.prices)
     const hasErrors = Object.values(combinedErrors).some((error) => error !== '');
 
     if(errorHandler.current.prop === '' && errorHandler.current.error === '' && !hasErrors) {
+
       const propertyData: IEditPropertyData = {
         id: property._id,
         adType: mainFeatures.adType,
@@ -238,18 +238,22 @@ console.log("🚀 ~ file: [id].tsx:25 ~ property:", property.prices)
           width: mainFeatures.size.width,
           height: mainFeatures.size.height,
           totalArea: mainFeatures.size.totalArea,
-          useableArea: mainFeatures.size.useableArea
+          useableArea: mainFeatures.size.useableArea 
+            ? mainFeatures.size.useableArea 
+            : 0
         },
         tags: tags,
         condominiumTags: condominiumTags,
         prices: [
           {
             type: PricesType.mensal,
-            value: parseInt(mainFeatures.propertyValue)
+            value: parseInt(mainFeatures.propertyValue.replace(/\./g, '').replace(/,(.*)/, ''))
           },
           {
             type: PricesType.condominio,
-            value: parseInt(mainFeatures.condominiumValue),
+            value: mainFeatures.condominium 
+              ? parseInt(mainFeatures.condominiumValue.replace(/\./g, '').replace(/,(.*)/, '')) 
+              : 0,
           }
         ],
         youtubeLink: videoLink,
@@ -275,11 +279,19 @@ console.log("🚀 ~ file: [id].tsx:25 ~ property:", property.prices)
         }
       } catch (error) {
         toast.dismiss();
-        toast.error("Não foi possível se conectar ao servidor. Pro favor, tente novamente mais tarde.")
+        toast.error("Não foi possível se conectar ao servidor. Por favor, tente novamente mais tarde.")
         console.error("Houve um erro na resposta da chamada", error);
       }
     } else {
-      toast.error("Algum campo obrigatório não foi preenchido.")
+      toast.error("Algum campo obrigatório não foi preenchido.");
+
+      const addressErrorSection = Object.values(newAddressErrors).some((error) => error !== '');
+      const mainFeaturesErrorSection = Object.values(newMainFeaturesErrors).some((error) => error !== '');
+      const imagesErrorSection = errorInfo.error !== '';
+      
+      if (addressErrorSection && document.getElementById('accordion-1')?.classList?.contains('hidden')) showHide('accordion-1');
+      if (imagesErrorSection && document.getElementById('accordion-2')?.classList?.contains('hidden')) showHide('accordion-2');
+      if (mainFeaturesErrorSection && document.getElementById('accordion-3')?.classList?.contains('hidden')) showHide('accordion-3');
     }
   }
 
@@ -403,12 +415,12 @@ console.log("🚀 ~ file: [id].tsx:25 ~ property:", property.prices)
                       editarNumSuite={property.metadata.find((obj) => obj.type === 'suites')?.amount || 0}
                       editarDescription={property.description}
                       editarPropertyValue={property.prices[0].value.toString()}
-                      editarCondominium={property.prices.some((obj: IPrices) => obj.type === 'condominio')}
+                      editarCondominium={property.prices.some((obj: IPrices) => obj.type === 'condominio' && obj.value !== null)}
                       editarCondominiumValue={property.prices.find((obj: IPrices) => obj.type === 'condominio')?.value !== null
                       ? property.prices.find((obj: IPrices) => obj.type === 'condominio')!.value.toString()
                       : ''}
                       editarIptuValue={property.prices.find((price) => price.type === 'IPTU') !== undefined ? property.prices.find((price) => price.type === 'IPTU')!.value.toString() : ''}
-                      editarIptu={property.prices.some((obj: IPrices) => obj.type === 'condominio')}
+                      editarIptu={property.prices.some((obj: IPrices) => obj.type === 'IPTU')}
                       isEdit={isEdit}
                       onMainFeaturesUpdate={(updatedFeatures: IEditPropertyMainFeatures) => setMainFeatures(updatedFeatures)} 
                       editarSize={property.size}

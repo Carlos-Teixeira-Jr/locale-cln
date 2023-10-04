@@ -64,6 +64,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
                 views
               }: IData) => (
               <AdminPropertyCard
+                key={_id}
                 _id={_id}
                 image={images[0]}
                 price={prices[0]?.value}

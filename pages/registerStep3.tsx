@@ -148,7 +148,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
   // Busca o endereço do imóvel armazenado no local storage e atualiza o valor de addressData sempre que há o componente de endereço é aberto ou fechado - isso é necessário para que o componente ChangeAddressCheckbox recupere o endereço do localStorage quando a opção é alterada;
   useEffect(() => {
     setAddressData(property ? property.address : '')
-  },[isSameAddress]);
+  },[isSameAddress, property]);
 
   useEffect(() => {
     const url = router.pathname;
@@ -246,7 +246,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         if (result !== null) {
           setCoordinates(result);
         } else {
-          console.log('Deu erro na chamada geocode')
+          console.log('Não foi possível buscar as coordenadas geográficas do imóvel')
         }
       } catch (error) {
         console.error(error)

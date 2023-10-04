@@ -16,7 +16,6 @@ export type CreditCardForm = {
 interface ICreditCard {
   isEdit: boolean
   onCreditCardUpdate?: (creditCard: CreditCardForm) => void
-  onErrorInfo?: OnErrorInfo
   error: any
   creditCardInputRefs?: any
 }
@@ -24,7 +23,6 @@ interface ICreditCard {
 const CreditCard = ({
   isEdit,
   onCreditCardUpdate,
-  onErrorInfo,
   error,
   creditCardInputRefs
 }: ICreditCard) => {
@@ -61,19 +59,18 @@ const CreditCard = ({
 
   // Realiza o auto-scroll para o input que apresenta erro;
   useEffect(() => {
-    if (errors.cardName !== '' && creditCardInputRefs.cardName.current) {
-      creditCardErrorScroll.cardName.current.scrollIntoView({ behavior: 'auto', block: 'center' });
-    }
-    if (errors.cardNumber !== '' && creditCardInputRefs.cardNumber.current) {
-      creditCardErrorScroll.cardNumber.current.scrollIntoView({ behavior: 'auto', block: 'center' });
-    }
-    if (errors.expiry !== '' && creditCardInputRefs.expiry.current) {
-      creditCardErrorScroll.expiry.current.scrollIntoView({ behavior: 'auto', block: 'center' });
-    }
-    if (errors.cvc !== '' && creditCardInputRefs.cvc.current) {
-      creditCardErrorScroll.cvc.current.scrollIntoView({ behavior: 'auto', block: 'center' });
-    }
+    const scrollToError = (errorKey: keyof typeof errors) => {
+      if (errors[errorKey] !== '' && creditCardInputRefs[errorKey]?.current) {
+        creditCardErrorScroll[errorKey]?.current.scrollIntoView({ behavior: 'auto', block: 'center' });
+      }
+    };
+  
+    scrollToError('cardName');
+    scrollToError('cardNumber');
+    scrollToError('expiry');
+    scrollToError('cvc');
   }, [errors]);
+  
 
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement>,

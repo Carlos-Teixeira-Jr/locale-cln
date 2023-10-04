@@ -5,6 +5,13 @@ import SuccessOnUpdateModal from '../../atoms/modals/successOnUpdateModal';
 import { IOwnerData } from '../../../common/interfaces/owner/owner';
 import { applyNumericMask } from '../../../common/utils/masks/numericMask';
 
+export type UserDataErrorsTypes = {
+  username: string,
+  email: string,
+  cpf: string,
+  cellPhone: string,
+}
+
 type Input = {
   key: string,
   label: string,
@@ -18,7 +25,7 @@ interface IUserDataInputs {
   isEdit: boolean
   onUserDataUpdate: (updatedUserData: IUserDataComponent) => void;
   urlEmail?: string | undefined
-  error: any
+  error: UserDataErrorsTypes
   userDataInputRefs?: any
 }
 
@@ -66,19 +73,18 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
 
   // Realiza o auto-scroll para o input que apresenta erro;
   useEffect(() => {
-    if (userDataErrors.username !== '' && userDataInputRefs.username.current) {
-      userDataErrorScroll.username.current.scrollIntoView({ behavior: 'auto', block: 'center' });
-    }
-    if (userDataErrors.email !== '' && userDataInputRefs.email.current) {
-      userDataErrorScroll.email.current.scrollIntoView({ behavior: 'auto', block: 'center' });
-    }
-    if (userDataErrors.cpf !== '' && userDataInputRefs.cpf.current) {
-      userDataErrorScroll.cpf.current.scrollIntoView({ behavior: 'auto', block: 'center' });
-    }
-    if (userDataErrors.cellPhone !== '' && userDataInputRefs.cellPhone.current) {
-      userDataErrorScroll.cellPhone.current.scrollIntoView({ behavior: 'auto', block: 'center' });
-    }
+    const scrollToError = (errorKey: string) => {
+      if (userDataErrors[errorKey] !== '' && userDataInputRefs[errorKey]?.current) {
+        userDataErrorScroll[errorKey]?.current.scrollIntoView({ behavior: 'auto', block: 'center' });
+      }
+    };
+  
+    scrollToError('username');
+    scrollToError('email');
+    scrollToError('cpf');
+    scrollToError('cellPhone');
   }, [userDataErrors]);
+  
 
   // Envia os dados do usuário para o componente pai;
   useEffect(() => {

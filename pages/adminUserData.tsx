@@ -38,7 +38,6 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   properties,
   ownerData
 }) => {
-  console.log("🚀 ~ file: adminUserData.tsx:41 ~ ownerData:", ownerData)
   const router = useRouter();
   const isOwner = properties?.docs?.length > 0 ? true : false;
   const [selectedPlan, setSelectedPlan] = useState(ownerData?.owner ? ownerData?.owner?.plan : '');
@@ -98,12 +97,12 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     uf: useRef<HTMLInputElement>(null),
   };
 
-  const [creditCardErrors, setCreditCardErrors] = useState<CreditCardForm>({
+  const creditCardErrors: CreditCardForm = {
     cardName: '',
     cardNumber: '',
     cvc: '',
     expiry: '',
-  });
+  };
 
   // Lida com o auto-scroll para os inputs de creditCard que mostrarem erro;
   const creditCardInputRefs = {
