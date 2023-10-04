@@ -46,7 +46,7 @@ const RegisterStep2: NextPageWithLayout = () => {
 
   const handleSubmit = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    const imagesError = `Você precisa adicionar pelo menos mais ${3 - images.length} fotos.`;
+    const imagesError = `Você precisa adicionar pelo menos mais ${3 - images.length} ${3 - images.length === 1 ? 'foto' : 'fotos'}.`;
 
     setErrorInfo({
       prop: '',

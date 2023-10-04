@@ -378,7 +378,6 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                 onChange={(e) => {
                   const numericValue = parseFloat(e.target.value); 
                   const totalArea = Number.isNaN(numericValue) ? 0 : numericValue;
-              
                   setPropertyFeaturesData({
                     ...propertyFeaturesData,
                     size: {

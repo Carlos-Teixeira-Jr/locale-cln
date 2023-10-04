@@ -98,6 +98,9 @@ const PaymentBoard: React.FC<IPaymentBoard> = ({
             {errors && (
               <span className="text-red-500 mt-2 ml-5">
                 {errors}
+            {/* {errors.terms && (
+              <span className="text-red-500 ml-5">
+                {errors.terms} */}
               </span>
             )}
           </div>

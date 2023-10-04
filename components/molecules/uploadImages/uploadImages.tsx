@@ -73,6 +73,8 @@ const UploadImages = ({
         ]);
       };
 
+      resetObjectToEmptyStrings(error);
+
       reader.readAsDataURL(file);
     });
   };
@@ -115,7 +117,7 @@ const UploadImages = ({
         id="uploadImages"
       />
       <p
-        className={`text-quaternary font-medium text-xs mt-1 mb-6 flex ${
+        className={`text-quaternary font-medium text-xs mt-1 mb-2 flex ${
           images.length === 0 ? 'hidden' : ''
         }`}
       >
@@ -146,7 +148,7 @@ const UploadImages = ({
         </DndProvider>
       </div>
       {error.prop === 'images' && (
-        <span className="text-red-500 text-xs">{error.error}</span>
+        <span className="text-red-500 text-xs flex justify-center">{error.error}</span>
       )}
       <p
         className={`text-quaternary text-sm font-medium mt-2 text-justify p-2 md:p-0 ${
