@@ -19,6 +19,8 @@ import Header from '../../components/organisms/header/header';
 import PropertyInfo from '../../components/organisms/propertyInfo/PropertyInfo';
 import useTrackLocation from '../../hooks/trackLocation';
 import { NextPageWithLayout } from '../page';
+import { getSession } from 'next-auth/react';
+import { fetchJson } from '../../common/utils/fetchJson';
 
 export interface IIDPage {
   location: IGeolocation;
@@ -75,7 +77,7 @@ const PropertyPage: NextPageWithLayout<IIDPage> = ({ propertyID }: any) => {
         </div>
 
         <div className="md:max-w-[768p]">
-          <PropertyInfo propertyID={propertyID} />
+          <PropertyInfo property={propertyID} />
         </div>
         {/* IMÓVEIS RELACIONADOS */}
         {/* <div className="sm:grid sm:grid-cols-1 md:grid md:grid-cols-2 lg:flex lg:flex-row justify-center gap-9 mx-14 my-10 inline max-w-screen-2xl">
@@ -124,19 +126,45 @@ const PropertyPage: NextPageWithLayout<IIDPage> = ({ propertyID }: any) => {
 
 export default PropertyPage;
 
-export async function getServerSideProps(_context: NextPageContext) {
+export async function getServerSideProps(context: NextPageContext) {
 
+  const session = await getSession(context) as any;
+  const userId = session?.user.data._id;
+  const propertyId = context.query.id;
+  const baseUrl = process.env.BASE_API_URL;
+  let favouriteProperties;
+
+  if (userId) {
+    const fetchFavourites = await Promise.all([
+      fetch(`${baseUrl}/user/favourite`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          id: userId,
+        })
+      })
+      .then((res) => res.json())
+      .catch(() => []),
+      fetchJson(`${baseUrl}/user/favourite`),
+    ]);
+    if (fetchFavourites.length > 0) {
+      favouriteProperties = fetchFavourites;
+    }
+  }
+
+  const property = await Promise.all([
+    fetch(`${baseUrl}/property/${propertyId}`)
+    .then((res) => res.json())
+    .catch(() => {}),
+    fetchJson(`${baseUrl}/property/${propertyId}`),
+  ]);
   
-
-  const propertyID = await fetch(
-    `http://localhost:3001/property/${_context.query.id}?isEdit=true`
-  ).then((res) => res.json());
-  console.log({ propertyID });
-  console.log(propertyID.prices);
-  console.log(propertyID.tags);
   return {
     props: {
-      propertyID,
+      property,
+      favouriteProperties
     },
   };
 }

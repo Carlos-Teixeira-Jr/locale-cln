@@ -2,31 +2,28 @@ import clipboardy from 'clipboardy';
 import { useRouter } from 'next/router';
 import React, { MouseEvent, useState } from 'react';
 import 'react-tooltip/dist/react-tooltip.css';
-import { IMetadata, IPrices } from '../../../common/interfaces/property/propertyData';
+import { IData } from '../../../common/interfaces/property/propertyData';
 import CalculatorModal from '../../atoms/modals/calculatorModal';
 import LinkCopiedTooltip from '../../atoms/tooltip/Tooltip';
+import { useSession } from 'next-auth/react';
 
 export interface ITooltip {
   globalEventOff: string;
 }
 
 export interface IPropertyInfo {
-  propertyID: {
-    numBedrooms?: IMetadata;
-    numBathrooms: IMetadata;
-    numGarage: IMetadata;
-    description: string;
-    prices: IPrices;
-    tags: string[];
-    condominiumTags: string[];
-    acceptFunding?: boolean;
-  };
+  property: any;
 }
 
-const PropertyInfo: React.FC<IPropertyInfo> = ({ propertyID }: any) => {
+const PropertyInfo: React.FC<IPropertyInfo> = ({property}) => {
+console.log("🚀 ~ file: PropertyInfo.tsx:18 ~ property:", property)
+
+  const {status} = useSession();
+  const userIsLogged = status === 'authenticated' ? true : false
+
   const [tooltipIsVisible, setTooltipIsVisible] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [favourited, setFavourited] = useState(false);
+  const [favourited, setFavourited] = useState(true);
   const router = useRouter();
 
   const handleCopy = async () => {
@@ -58,11 +55,18 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({ propertyID }: any) => {
   const handleFavouriteBtnClick = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     setFavourited(!favourited);
+
+    try {
+      const owner = property.owner
+      console.log("🚀 ~ file: PropertyInfo.tsx:57 ~ handleFavouriteBtnClick ~ owner:", owner)
+    } catch (error) {
+      
+    }
   };
 
   const getMetadataValue = (type: string) => {
     return (
-      propertyID.metadata?.find((metadata: any) => metadata.type === type)
+      property.metadata?.find((metadata: any) => metadata.type === type)
         ?.value || 0
     );
   };
@@ -93,8 +97,8 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({ propertyID }: any) => {
               </div>
             </div>
             {/* <div className="ml-4 flex flex-col">
-              {propertyID.tags &&
-                propertyID.tags.map((tag: string, idx: number) => {
+              {property.tags &&
+                property.tags.map((tag: string, idx: number) => {
                   <span
                     className="font-normal text-xl text-quaternary"
                     key={idx}
@@ -104,8 +108,8 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({ propertyID }: any) => {
                 })}
             </div>
             <div className="ml-4 flex flex-col">
-              {propertyID.condominiumTags &&
-                propertyID.condominiumTags.map((tag: string, idx: number) => {
+              {property.condominiumTags &&
+                property.condominiumTags.map((tag: string, idx: number) => {
                   <span
                     className="font-normal text-xl text-quaternary"
                     key={idx}
@@ -120,7 +124,7 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({ propertyID }: any) => {
               Descrição
             </h3>
             <p className="font-normal text-xl text-quaternary text-justify">
-              {propertyID.description}
+              {property.description}
             </p>
           </div>
         </div>
@@ -138,9 +142,9 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({ propertyID }: any) => {
             Compartilhar
           </button>
 
-          {propertyID.acceptFunding && (
+          {property.acceptFunding && (
             <button
-              className="lg:w-[320px] h-[67px] bg-primary p-2.5 rounded-[10px] text-tertiary text-xl font-extrabold mb-6 md:flex md:items-center md:justify-center"
+              className="lg:w-80 h-16 bg-primary p-2.5 rounded-[10px] text-tertiary text-xl font-extrabold mb-6 md:flex md:items-center md:justify-center"
               onClick={handleCalculatorBtnClick}
             >
               Simular Financiamento
@@ -148,8 +152,13 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({ propertyID }: any) => {
           )}
 
           <button
-            className="lg:w-[320px] h-[67px] bg-primary p-2.5 rounded-[10px] text-tertiary text-xl font-extrabold flex justify-center mb-5"
-            onClick={handleFavouriteBtnClick}
+            className={`lg:w-80 h-16 bg-primary p-2.5 rounded-[10px] text-tertiary text-xl font-extrabold flex justify-center mb-5 ${
+              userIsLogged ?
+              'opacity opacity-100' :
+              'opacity-50'
+            }`}
+            onClick={() => {if (userIsLogged) handleFavouriteBtnClick}} 
+            disabled={userIsLogged}
           >
             <p className="my-auto pr-4">Favoritar</p>
             {favourited ? (
@@ -180,7 +189,7 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({ propertyID }: any) => {
           <CalculatorModal
             isOpen={modalIsOpen}
             setModalIsOpen={setModalIsOpen}
-            props={`R$ ${propertyID.prices[0].value}`}
+            props={`R$ ${property.prices[0].value}`}
           />
         )}
       </div>

@@ -52,7 +52,6 @@ const PropertyInfoTop: React.FC<IInfoTop> = ({ propertyID }: any) => {
           propertyID.metadata[0],
           propertyID.metadata[1]
         ).map((section, key) => {
-          console.log(section);
           return (
             <PropertyDetails
               key={key}
