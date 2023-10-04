@@ -102,7 +102,6 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
         const value = event.target.value;
         const maskedValue = value.replace(/[^A-Za-z]/g, '');
         setFormData({ ...formData, username: maskedValue });
-        resetObjectToEmptyStrings(errors);
       },
     },
     {
@@ -113,7 +112,6 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
         setFormData({ ...formData, email: value });
-        resetObjectToEmptyStrings(errors);
       },
     },
     {
@@ -137,7 +135,6 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
           input.setSelectionRange(selectionStart, selectionEnd);
         }
         setFormData({ ...formData, cpf: maskedValue });
-        resetObjectToEmptyStrings(errors);
       },
     },        
     {
@@ -161,7 +158,6 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
           input.setSelectionRange(selectionStart, selectionEnd);
         }
         setFormData({ ...formData, cellPhone: maskedValue });
-        resetObjectToEmptyStrings(errors);
       },
     },    
     {
@@ -184,7 +180,6 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
           input.setSelectionRange(selectionStart, selectionEnd);
         }
         setFormData({ ...formData, phone: maskedValue });
-        resetObjectToEmptyStrings(errors);
       },
     },
   ];

@@ -36,7 +36,6 @@ const HomeFilter: React.FC<IHomeFilter> = ({
   locationProp,
   ...homeFilterProps 
 }) => {
-  console.log("🚀 ~ file: HomeFilter.tsx:39 ~ propertyTypesProp:", propertyTypesProp)
 
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
