@@ -1,11 +1,12 @@
 import clipboardy from 'clipboardy';
 import { useRouter } from 'next/router';
-import React, { MouseEvent, useState } from 'react';
+import React, { MouseEvent, useEffect, useState } from 'react';
 import 'react-tooltip/dist/react-tooltip.css';
 import { IData } from '../../../common/interfaces/property/propertyData';
 import CalculatorModal from '../../atoms/modals/calculatorModal';
 import LinkCopiedTooltip from '../../atoms/tooltip/Tooltip';
 import { useSession } from 'next-auth/react';
+import { toast } from 'react-toastify';
 
 export interface ITooltip {
   globalEventOff: string;
@@ -13,19 +14,23 @@ export interface ITooltip {
 
 export interface IPropertyInfo {
   property: any;
+  isFavourite: boolean
 }
 
-const PropertyInfo: React.FC<IPropertyInfo> = ({property}) => {
-console.log("🚀 ~ file: PropertyInfo.tsx:18 ~ property:", property)
+const PropertyInfo: React.FC<IPropertyInfo> = ({
+  property,
+  isFavourite
+}) => {
 
-  const {status} = useSession();
-  const userIsLogged = status === 'authenticated' ? true : false
-
+  const session = useSession() as any;
+  const status = session.status;
+  const userIsLogged = status === 'authenticated' ? true : false;
+  const userId = session?.data?.user?.data?._id;
   const [tooltipIsVisible, setTooltipIsVisible] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [favourited, setFavourited] = useState(true);
+  const [favourited, setFavourited] = useState(isFavourite);
   const router = useRouter();
-
+  
   const handleCopy = async () => {
     setTooltipIsVisible(true);
 
@@ -52,17 +57,41 @@ console.log("🚀 ~ file: PropertyInfo.tsx:18 ~ property:", property)
     setModalIsOpen(true);
   };
 
-  const handleFavouriteBtnClick = (event: MouseEvent<HTMLButtonElement>) => {
+  const handleFavouriteBtnClick = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    setFavourited(!favourited);
-
+    if (!userIsLogged) return;
+    const { _id: propertyId } = property;
     try {
-      const owner = property.owner
-      console.log("🚀 ~ file: PropertyInfo.tsx:57 ~ handleFavouriteBtnClick ~ owner:", owner)
+      const response = await fetch(`http://localhost:3001/user/edit-favourite`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          userId,
+          propertyId
+        })
+      });
+  
+      if (response.ok) {
+        const newFavoutedList: string[] = await response.json();
+        const isFavourited = newFavoutedList.includes(propertyId);
+  
+        if (isFavourited) {
+          setFavourited(true);
+          toast.success('Imóvel favoritado com sucesso.')
+        } else {
+          setFavourited(false);
+          toast.success('Imóvel removido dos favoritos.')
+        }
+      } else {
+        toast.error('Houve um erro ao favoritar o imóvel.')
+      }
     } catch (error) {
-      
+      toast.error('Não foi possível se conectar ao servidor. Tente novamente mais tarde.')
     }
   };
+  
 
   const getMetadataValue = (type: string) => {
     return (
@@ -154,11 +183,10 @@ console.log("🚀 ~ file: PropertyInfo.tsx:18 ~ property:", property)
           <button
             className={`lg:w-80 h-16 bg-primary p-2.5 rounded-[10px] text-tertiary text-xl font-extrabold flex justify-center mb-5 ${
               userIsLogged ?
-              'opacity opacity-100' :
+              'opacity opacity-100 cursor-pointer' :
               'opacity-50'
             }`}
-            onClick={() => {if (userIsLogged) handleFavouriteBtnClick}} 
-            disabled={userIsLogged}
+            onClick={handleFavouriteBtnClick} 
           >
             <p className="my-auto pr-4">Favoritar</p>
             {favourited ? (

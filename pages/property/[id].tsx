@@ -2,6 +2,7 @@ import { NextPageContext } from 'next';
 import { useState } from 'react';
 import {
   IAddress,
+  IData,
   IGeolocation,
   IOwnerInfo,
   IPrices,
@@ -37,7 +38,17 @@ export interface IIDPage {
   ownerInfo: IOwnerInfo;
 }
 
-const PropertyPage: NextPageWithLayout<IIDPage> = ({ propertyID }: any) => {
+interface IPropertyPage {
+  property: IData
+  isFavourite: boolean
+}
+
+const PropertyPage: NextPageWithLayout<IPropertyPage> = ({ 
+  property,
+  isFavourite
+}: any) => {
+  console.log("🚀 ~ file: [id].tsx:50 ~ isFavourite:", isFavourite)
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const handleModalOpenChange = (isOpen: boolean) => {
     setIsModalOpen(isOpen);
@@ -64,20 +75,23 @@ const PropertyPage: NextPageWithLayout<IIDPage> = ({ propertyID }: any) => {
       </div>
       <div className="flex flex-col max-w-[1232px] items-center mx-auto lg:pt-10 pt-[90px]">
         <div className="lg:mx-auto mx-5 mb-[150px] md:mb-5 mt-5">
-          <Gallery propertyID={propertyID} isModalOpen={isModalOpen} />
+          <Gallery propertyID={property} isModalOpen={isModalOpen} />
         </div>
         <div className="lg:flex">
-          <PropertyInfoTop propertyID={propertyID} />
+          <PropertyInfoTop propertyID={property} />
 
           <ContactBox
-            propertyID={propertyID}
-            href={`https://api.whatsapp.com/send/?phone=5553991664864&text=Ol%C3%A1%2C+estou+interessado+no+im%C3%B3vel+${propertyID.address}.+Gostaria+de+mais+informa%C3%A7%C3%B5es.&type=phone_number&app_absent=0`}
+            propertyID={property}
+            href={`https://api.whatsapp.com/send/?phone=5553991664864&text=Ol%C3%A1%2C+estou+interessado+no+im%C3%B3vel+${property.address}.+Gostaria+de+mais+informa%C3%A7%C3%B5es.&type=phone_number&app_absent=0`}
             onModalIsOpenChange={handleModalOpenChange}
           />
         </div>
 
         <div className="md:max-w-[768p]">
-          <PropertyInfo property={propertyID} />
+          <PropertyInfo 
+            property={property} 
+            isFavourite={isFavourite}
+          />
         </div>
         {/* IMÓVEIS RELACIONADOS */}
         {/* <div className="sm:grid sm:grid-cols-1 md:grid md:grid-cols-2 lg:flex lg:flex-row justify-center gap-9 mx-14 my-10 inline max-w-screen-2xl">
@@ -132,7 +146,7 @@ export async function getServerSideProps(context: NextPageContext) {
   const userId = session?.user.data._id;
   const propertyId = context.query.id;
   const baseUrl = process.env.BASE_API_URL;
-  let favouriteProperties;
+  let isFavourite;
 
   if (userId) {
     const fetchFavourites = await Promise.all([
@@ -150,21 +164,19 @@ export async function getServerSideProps(context: NextPageContext) {
       fetchJson(`${baseUrl}/user/favourite`),
     ]);
     if (fetchFavourites.length > 0) {
-      favouriteProperties = fetchFavourites;
+
+      isFavourite = fetchFavourites.some((prop) => prop._id === propertyId);
     }
   }
 
-  const property = await Promise.all([
-    fetch(`${baseUrl}/property/${propertyId}`)
+  const property = await fetch(`${baseUrl}/property/${propertyId}`)
     .then((res) => res.json())
-    .catch(() => {}),
-    fetchJson(`${baseUrl}/property/${propertyId}`),
-  ]);
+    .catch(() => {})
   
   return {
     props: {
       property,
-      favouriteProperties
+      isFavourite
     },
   };
 }
