@@ -4,7 +4,6 @@ import ErrorOnUpdateModal from '../../atoms/modals/errorOnUpdateModal';
 import SuccessOnUpdateModal from '../../atoms/modals/successOnUpdateModal';
 import { IOwnerData } from '../../../common/interfaces/owner/owner';
 import { applyNumericMask } from '../../../common/utils/masks/numericMask';
-import { resetObjectToEmptyStrings } from '../../../common/utils/resetObjects';
 
 export type UserDataErrorsTypes = {
   username: string,
