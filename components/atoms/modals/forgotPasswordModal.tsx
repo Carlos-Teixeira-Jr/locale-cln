@@ -23,11 +23,6 @@ const ForgotPasswordModal: React.FC<IForgotPasswordModal> = ({ isOpen, setModalI
     setEmailForChangePassword(emailForChangePassword);
   }
 
-  useEffect(() => {
-    console.log("🚀 ~ file: forgotPasswordModal.tsx:33 ~ emailForChangePassword:", emailForChangePassword)
-  }, [emailForChangePassword])
-  
-
   const handleCloseModal = (event: React.MouseEvent<SVGSVGElement>) => {
     event.preventDefault();
     setModalIsOpen(false);

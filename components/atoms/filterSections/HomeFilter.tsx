@@ -419,7 +419,7 @@ const HomeFilter: React.FC<IHomeFilter> = ({
                           className="flex flex-col hover:bg-quaternary hover:text-tertiary px-2"
                         >
                           {Array.isArray(name) ? (
-                            name.map((option: string, idx: number) => (
+                            name?.map((option: string, idx: number) => (
                               <div
                                 key={`${option}-${idx}`}
                                 className={`flex h-[50px]`}
@@ -473,8 +473,8 @@ const HomeFilter: React.FC<IHomeFilter> = ({
                                 id={name}
                                 className="translate-x-[1px] w-full h-fit py-1.5 px-2 flex justify-center my-auto"
                               >
-                                {name.charAt(0).toUpperCase() +
-                                  name.slice(1).toLowerCase()}
+                                {name?.charAt(0).toUpperCase() +
+                                  name?.slice(1).toLowerCase()}
                               </span>
                             </div>
                           )}

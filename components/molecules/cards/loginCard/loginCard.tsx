@@ -41,6 +41,10 @@ const LoginCard = () => {
     passwordHash: '',
   });
 
+  useEffect(() => {
+    setEmailVerificationData({...emailVerificationData, email: email })
+  }, [email])
+  
   const handleTermsCheckbox = () => {
     setTerms(!terms);
   };
