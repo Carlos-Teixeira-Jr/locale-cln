@@ -152,7 +152,7 @@ const Home: NextPageWithLayout<IHome> = ({
                             bedrooms={metadata[0].amount}
                             bathrooms={metadata[1].amount}
                             parking_spaces={metadata[2].amount}
-                            _id={_id}
+                            id={_id}
                             highlighted={highlighted}
                           />
                         )
@@ -169,14 +169,14 @@ const Home: NextPageWithLayout<IHome> = ({
                         }: IData) => (
                           <PropertyCard
                             key={_id}
-                            prices={prices[0]}
+                            prices={prices}
                             description={description}
                             images={images}
                             location={address.streetName}
                             bedrooms={metadata[0].amount}
                             bathrooms={metadata[1].amount}
                             parking_spaces={metadata[2].amount}
-                            _id={_id}
+                            id={_id}
                             highlighted={highlighted}
                           />
                         )
