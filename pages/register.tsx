@@ -18,6 +18,24 @@ const Register = () => {
   const query = router.query;
   const urlEmail = query.email;
   const { updateProgress } = useProgress();
+
+  // Lida com o auto-scroll para os inputs de MainFeatures que mostrarem erro;
+  const mainFeaturesInputRefs = {
+    description: useRef<HTMLElement>(null),
+    totalArea: useRef<HTMLInputElement>(null),
+    propertyValue: useRef<HTMLInputElement>(null),
+    condominiumValue: useRef<HTMLInputElement>(null),
+    iptuValue: useRef<HTMLInputElement>(null)
+  }
+
+  // Lida com o auto-scroll para os inputs de Address que mostrarem erro;
+  const addressInputRefs = {
+    zipCode: useRef<HTMLInputElement>(null),
+    city: useRef<HTMLInputElement>(null),
+    streetName: useRef<HTMLInputElement>(null),
+    streetNumber: useRef<HTMLInputElement>(null),
+    uf: useRef<HTMLInputElement>(null),
+  }
   
   const [registration, setRegistration] = useState<IRegisterMainFeatures>({
     adType: 'comprar',
@@ -45,6 +63,14 @@ const Register = () => {
     iptuValue: '',
   });
 
+  const [registrationErrors, setRegistrationErrors] = useState({
+    description: '',
+    totalArea: '',
+    propertyValue: '',
+    condominiumValue: '',
+    iptuValue: '',
+  });
+
   const [address, setAddress] = useState<IAddress>({
     zipCode: '',
     city: '',
@@ -55,84 +81,83 @@ const Register = () => {
     uf: ''
   });
 
-  // Modal
-  const handleCalcSizeArea = (value: number) => {
-    setRegistration({
-      ...registration,
-      size: { ...registration.size, totalArea: value },
-    });
-  };
+  const [addressErrors, setAddressErrors] = useState({
+    zipCode: '',
+    uf: '',
+    streetNumber: '',
+    city: '',
+    streetName: '',
+  });
 
   // modal functions
   const [open, setOpen] = useState(false);
   const handleClose = () => setOpen(false);
-
-  // Envia as mensagens de erros para os componentes;
-  const [errorInfo, setErrorInfo] = useState({
-    error: '',
-    prop: ''
-  });
-
-  const errorHandler = useRef<{ error: string; prop: string }>({
-    error: '',
-    prop: ''
-  });
 
   const handleSubmit = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
     const error = 'Este campo é obrigatório';
 
-    setErrorInfo({
-      prop: '',
-      error: ''
+    setRegistrationErrors({
+      description: '',
+      totalArea: '',
+      propertyValue: '',
+      condominiumValue: '',
+      iptuValue: '',
     });
 
-    errorHandler.current = {
-      prop: '',
-      error: ''
-    }
+    setAddressErrors({
+      zipCode: '',
+      uf: '',
+      streetNumber: '',
+      city: '',
+      streetName: '',
+    })
 
-    if (address.zipCode === '') {
-      setErrorInfo({ error: error, prop: 'zipCode' });
-      errorHandler.current = { error: error, prop: 'zipCode' }
-    }
-    if (address.streetNumber === '') {
-      setErrorInfo({ error: error, prop: 'streetNumber' });
-      errorHandler.current = { error: error, prop: 'streetNumber' }
-    }
-    if (address.city === '') {
-      setErrorInfo({ error: error, prop: 'city' });
-      errorHandler.current = { error: error, prop: 'city' }
-    }
-    if (address.zipCode === '') {
-      setErrorInfo({ error: error, prop: 'zipCode' });
-      errorHandler.current = { error: error, prop: 'zipCode' }
-    }
-    if (registration.description === '') {
-      setErrorInfo({ error: error, prop: 'description' });
-      errorHandler.current = { error: error, prop: 'description' }
-    }
-    if (registration.size.totalArea === 0) {
-      setErrorInfo({ error: error, prop: 'totalArea' });
-      errorHandler.current = { error: error, prop: 'totalArea' }
-    }
-    if (registration.propertyValue === '') {
-      setErrorInfo({ error: error, prop: 'propertyValue' });
-      errorHandler.current = { error: error, prop: 'propertyValue' }
-    }
+    const newRegistrationErrors = {
+      description: '',
+      totalArea: '',
+      propertyValue: '',
+      condominiumValue: '',
+      iptuValue: '',
+    };
+
+    const newAddressErrors = {
+      zipCode: '',
+      uf: '',
+      streetNumber: '',
+      city: '',
+      streetName: '',
+    };
+
+    if (!address.zipCode) newAddressErrors.zipCode = error;
+    if (!address.city) newAddressErrors.city = error;
+    if (!address.streetName) newAddressErrors.streetName = error;
+    if (!address.streetNumber) newAddressErrors.streetNumber = error;
+    if (!address.uf) newAddressErrors.uf = error;
+    if (!registration.description) newRegistrationErrors.description = error;
+    if (registration.size.totalArea === 0) newRegistrationErrors.totalArea = error;
+    if (!registration.propertyValue) newRegistrationErrors.propertyValue = error;
     if (registration.condominium) {
-      if (registration.condominiumValue === '') {
-        setErrorInfo({ error: error, prop: 'condominiumValue' });
-        errorHandler.current = { error: error, prop: 'condominiumValue' }
-      }
+      if (!registration.condominiumValue) newRegistrationErrors.condominiumValue = error;
     }
-    if (registration.iptu && registration.iptuValue === '') {
-      setErrorInfo({ error: error, prop: 'iptuValue' });
-      errorHandler.current = { error: error, prop: 'iptuValue' }
+    if (registration.iptu) {
+      if (!registration.iptuValue) newRegistrationErrors.iptuValue = error;
     }
 
-    if(errorHandler.current.prop === '' && errorHandler.current.error === '') {
+    setRegistrationErrors(newRegistrationErrors);
+    setAddressErrors(newAddressErrors);
+
+    // Combina os erros de registro e endereço em um único objeto de erros
+    const combinedErrors = {
+      ...newRegistrationErrors,
+      ...newAddressErrors,
+    };
+
+    // Verifica se algum dos valores do objeto de erros combinados não é uma string vazia
+    const hasErrors = Object.values(combinedErrors).some((error) => error !== '');
+
+    if(!hasErrors) {
       const propertyDataStep1: IRegisterPropertyData_Step1 = {
         adType: registration.adType,
         adSubtype: registration.adSubtype,
@@ -172,7 +197,7 @@ const Register = () => {
       });
 
     } else {
-      toast.error(`Algum campo obrigatório ${errorInfo.prop} não foi preenchido.`);
+      toast.error(`Algum campo obrigatório não foi preenchido.`);
     }
   };
 
@@ -184,7 +209,12 @@ const Register = () => {
       <AreaCalculatorModal
         open={open}
         handleClose={handleClose}
-        handleSize={handleCalcSizeArea}
+        handleSize={(value: number) => {
+          setRegistration({
+            ...registration,
+            size: { ...registration.size, totalArea: value },
+          });
+        }}
       />
       <div className="lg:mx-24">
         <div className="md:mt-[150px] mt-[120px] md:mb-14 lg:mb-2 w-full mx-auto lg:mx-24 max-w-[1536px] xl:mx-auto">
@@ -210,15 +240,17 @@ const Register = () => {
           editarIptuValue={''} 
           editarIptu={false} 
           isEdit={false} 
-          onErrorsInfo={errorInfo} 
-          onMainFeaturesUpdate={(updatedFeatures: any) => setRegistration(updatedFeatures)}        
+          onMainFeaturesUpdate={(updatedFeatures: any) => setRegistration(updatedFeatures)}      
+          errors={registrationErrors}  
+          mainFeaturesInputRefs={mainFeaturesInputRefs}
         />
 
         <Address 
           isEdit={false} 
           address={address} 
           onAddressUpdate={(updatedAddress: IAddress) => setAddress(updatedAddress)} 
-          onErrorsInfo={errorInfo}
+          errors={addressErrors}
+          addressInputRefs={addressInputRefs}
         />
 
         <div className="flex self-end md:justify-end justify-center mb-32 mt-16">

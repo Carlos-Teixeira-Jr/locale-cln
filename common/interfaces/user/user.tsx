@@ -35,3 +35,4 @@ export interface IUserDataComponentErrors {
   cellPhone?: string;
   phone?: string;
 }
+

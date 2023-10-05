@@ -353,7 +353,6 @@ const HomeFilter: React.FC<IHomeFilter> = ({
                               name?.slice(1).toLowerCase()}
                           </span>
                         </div>
-                      )
                     )
                   : []}
               </div>

@@ -1,9 +1,12 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { MouseEvent, useEffect, useRef, useState } from 'react';
-import 'react-credit-cards/es/styles-compiled.css';
-import { toast } from 'react-toastify';
-import store from 'store';
+import { useEffect, useState, MouseEvent, useRef } from 'react';
+import LinearStepper from '../components/atoms/stepper/stepper';
+import PlansCardsHidden from '../components/molecules/cards/plansCards/plansCardHidden';
+import Footer from '../components/organisms/footer/footer';
+import Header from '../components/organisms/header/header';
+import UserDataInputs from '../components/molecules/userData/userDataInputs';
+import { NextPageWithLayout } from './page';
 import { IPlan } from '../common/interfaces/plans/plans';
 import { IAddress } from '../common/interfaces/property/propertyData';
 import {
@@ -49,6 +52,33 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
   const query = router.query;
   const urlEmail = query.email as string;
   const { progress, updateProgress } = useProgress();
+  const storedData = store.get('propertyData');
+  const propertyAddress = storedData?.address ? storedData.address : {};
+
+  // Lida com o autoscroll das validações de erro dos inputs;
+  const userDataInputRefs = {
+    username: useRef<HTMLElement>(null),
+    email: useRef<HTMLElement>(null),
+    cpf: useRef<HTMLElement>(null),
+    cellPhone: useRef<HTMLElement>(null),
+  };
+
+  // Lida com o auto-scroll para os inputs de Address que mostrarem erro;
+  const addressInputRefs = {
+    zipCode: useRef<HTMLInputElement>(null),
+    city: useRef<HTMLInputElement>(null),
+    streetName: useRef<HTMLInputElement>(null),
+    streetNumber: useRef<HTMLInputElement>(null),
+    uf: useRef<HTMLInputElement>(null),
+  };
+
+  // Lida com o auto-scroll para os inputs de creditCard que mostrarem erro;
+  const creditCardInputRefs = {
+    cardName: useRef<HTMLInputElement>(null),
+    cardNumber: useRef<HTMLInputElement>(null),
+    expiry: useRef<HTMLInputElement>(null),
+    cvc: useRef<HTMLInputElement>(null),
+  };
 
   const { data: session } = useSession() as any;
   const userId = session?.user?.data._id;
@@ -66,6 +96,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
   const property = store.get('propertyData');
   const [isFreePlan, setIsFreePlan] = useState(false);
   const [failPaymentModalIsOpen, setFailPaymentModalIsOpen] = useState(false);
+  const [termsError, setTermsError] = useState('');
 
   const [userDataForm, setUserDataForm] = useState<IUserDataComponent>({
     username: '',
@@ -75,7 +106,14 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     phone: '',
   });
 
-  const [propertyAddress, setPropertyAddress] = useState<IAddress>({
+  const [userDataErrors, setUserDataErrors] = useState({
+    username: '',
+    email: '',
+    cpf: '',
+    cellPhone: '',
+  });
+
+  const [addressData, setAddressData] = useState<IAddress>({
     zipCode: '',
     city: '',
     streetName: '',
@@ -83,6 +121,14 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     complement: '',
     neighborhood: '',
     uf: '',
+  });
+
+  const [addressErrors, setAddressErrors] = useState({
+    zipCode: '',
+    city: '',
+    streetName: '',
+    streetNumber: '',
+    uf: ''
   });
 
   const [creditCard, setCreditCard] = useState<CreditCardForm>({
@@ -99,22 +145,10 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     }
   });
 
-  // Busca o endereço do imóvel armazenado no local storage e atualiza o valor de propertyAddress sempre que há o componente de endereço é aberto ou fechado - isso é necessário para que o componente ChangeAddressCheckbox recupere o endereço do localStorage quando a opção é alterada;
+  // Busca o endereço do imóvel armazenado no local storage e atualiza o valor de addressData sempre que há o componente de endereço é aberto ou fechado - isso é necessário para que o componente ChangeAddressCheckbox recupere o endereço do localStorage quando a opção é alterada;
   useEffect(() => {
-    setPropertyAddress(property ? property.address : '');
-  }, [isSameAddress, property]);
-
-  // Envia as mensagens de erros para os componentes;
-  const [errorInfo, setErrorInfo] = useState({
-    error: '',
-    prop: '',
-  });
-
-  // Lida com a verificação de erros do handleSubmit (necessário para acessar o valor atualizado de erros ainda antes do final da execução do handleSubmit)
-  const errorHandler = useRef<{ error: string; prop: string }>({
-    error: '',
-    prop: '',
-  });
+    setAddressData(property ? property.address : '')
+  },[isSameAddress, property]);
 
   useEffect(() => {
     const url = router.pathname;
@@ -123,20 +157,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     }
   }, [router.pathname]);
 
-  useEffect(() => {
-    console.log(
-      '🚀 ~ file: registerStep3.tsx:130 ~ propertyAddress:',
-      propertyAddress
-    );
-  }, [propertyAddress]);
-
   const handleSubmit = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    console.log(
-      '🚀 ~ file: registerStep3.tsx:214 ~ handleSubmit ~ propertyAddress:',
-      propertyAddress
-    );
-
     const error = `Este campo é obrigatório.`;
     const termsError =
       'Você precisa marcar a caixa indicando que leu e concorda com os termos.';
@@ -146,89 +168,84 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     );
     const isPlanFree = planObj === undefined || planObj.name === 'Free';
 
-    setErrorInfo({
-      prop: '',
-      error: '',
+    setUserDataErrors({
+      username: '',
+      email: '',
+      cpf: '',
     });
 
-    errorHandler.current = {
-      prop: '',
-      error: '',
+    setAddressErrors({
+      zipCode: '',
+      city: '',
+      streetName: '',
+      streetNumber: '',
+      uf: ''
+    });
+
+    setTermsError('');
+
+    const newUserDataErrors = {
+      username: '',
+      email: '',
+      cpf: '',
     };
 
-    if (!userDataForm.username) {
-      setErrorInfo({ error: error, prop: 'username' });
-      errorHandler.current = { error: error, prop: 'username' };
-    }
-    if (!userDataForm.email) {
-      setErrorInfo({ error: error, prop: 'email' });
-      errorHandler.current = { error: error, prop: 'email' };
-    }
-    if (!userDataForm.cpf) {
-      setErrorInfo({ error: error, prop: 'cpf' });
-      errorHandler.current = { error: error, prop: 'cpf' };
-    }
-    if (!termsAreRead) {
-      setErrorInfo({ error: termsError, prop: 'terms' });
-      errorHandler.current = { error: termsError, prop: 'terms' };
-    }
-    if (!isPlanFree) {
-      if (!creditCard.cardName) {
-        setErrorInfo({ error: error, prop: 'cardName' });
-        errorHandler.current = { error: error, prop: 'cardName' };
-      }
-      if (!creditCard.cardNumber) {
-        setErrorInfo({ error: error, prop: 'cardNumber' });
-        errorHandler.current = { error: error, prop: 'cardNumber' };
-      }
-      if (!creditCard.cvc) {
-        setErrorInfo({ error: error, prop: 'cvc' });
-        errorHandler.current = { error: error, prop: 'cvc' };
-      }
-      if (!creditCard.expiry) {
-        setErrorInfo({ error: error, prop: 'expiry' });
-        errorHandler.current = { error: error, prop: 'expiry' };
-      }
-    }
-    if (!isSameAddress) {
-      if (!propertyAddress.zipCode) {
-        setErrorInfo({ error: error, prop: 'zipcode' });
-        errorHandler.current = { error: error, prop: 'zipcode' };
-      }
-      if (!propertyAddress.city) {
-        setErrorInfo({ error: error, prop: 'city' });
-        errorHandler.current = { error: error, prop: 'city' };
-      }
-      if (!propertyAddress.uf) {
-        setErrorInfo({ error: error, prop: 'uf' });
-        errorHandler.current = { error: error, prop: 'uf' };
-      }
-      if (!propertyAddress.streetName) {
-        setErrorInfo({ error: error, prop: 'streetName' });
-        errorHandler.current = { error: error, prop: 'streetName' };
-      }
-      if (!propertyAddress.streetNumber) {
-        setErrorInfo({ error: error, prop: 'streetNumber' });
-        errorHandler.current = { error: error, prop: 'streetNumber' };
-      }
-      if (!propertyAddress.neighborhood) {
-        setErrorInfo({ error: error, prop: 'neighborhood' });
-        errorHandler.current = { error: error, prop: 'neighborhood' };
+    const newAddressErrors = {
+      zipCode: '',
+      city: '',
+      streetName: '',
+      streetNumber: '',
+      uf: ''
+    };
+
+    const newCreditCardErrors = {
+      cardName: '',
+      cardNumber: '',
+      cvc: '',
+      expiry: '',
+    };
+
+    if (!userDataForm.username) newUserDataErrors.username = error;
+    if (!userDataForm.email) newUserDataErrors.email = error;
+    if (!userDataForm.cpf) newUserDataErrors.cpf = error;
+    if (!addressData.zipCode) newAddressErrors.zipCode = error;
+    if (!addressData.streetName) newAddressErrors.streetName = error;
+    if (!addressData.streetNumber) newAddressErrors.streetNumber = error;
+    if (!addressData.city) newAddressErrors.city = error;
+    if (!addressData.uf) newAddressErrors.uf = error;
+    if (!termsAreRead) setTermsError(error);
+    if (selectedPlan !== '') {
+      const planObj = plans.find((plan) => plan._id === selectedPlan);
+      if (planObj && planObj.name !== 'Free') {
+        if (!creditCard.cardName) newCreditCardErrors.cardName = error;
+        if (!creditCard.cardNumber) newCreditCardErrors.cardNumber = error;
+        if (!creditCard.expiry) newCreditCardErrors.expiry = error;
+        if (!creditCard.cvc) newCreditCardErrors.cvc = error;
       }
     }
 
-    if (errorHandler.current.prop === '' && errorHandler.current.error === '') {
+    setUserDataErrors(newUserDataErrors);
+    setAddressErrors(newAddressErrors);
+    setCreditCardErrors(newCreditCardErrors);
+    
+    // Combina os erros de registro e endereço em um único objeto de erros
+    const combinedErrors = {
+      ...newAddressErrors,
+      ...newUserDataErrors,
+      ...newCreditCardErrors
+    };
+
+    // Verifica se algum dos valores do objeto de erros combinados não é uma string vazia
+    const hasErrors = Object.values(combinedErrors).some((error) => error !== '');
+
+    if (!hasErrors && termsAreRead) {
       try {
-        const result = await geocodeAddress(propertyAddress);
+        const result = await geocodeAddress(addressData);
 
         if (result !== null) {
-          console.log(
-            '🚀 ~ file: registerStep3.tsx:216 ~ handleSubmit ~ result:',
-            result
-          );
           setCoordinates(result);
         } else {
-          console.log('Deu erro na chamada geocode');
+          console.log('Não foi possível buscar as coordenadas geográficas do imóvel')
         }
       } catch (error) {
         console.error(error);
@@ -242,22 +259,22 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         cpf: userDataForm.cpf,
         cellPhone: userDataForm.cellPhone ? userDataForm.cellPhone : '',
         phone: userDataForm.phone ? userDataForm.phone : '',
-        zipCode: propertyAddress.zipCode,
-        city: propertyAddress.city,
-        propertyAddress,
-        geolocation: coordinates
-          ? [coordinates?.lat, coordinates?.lng]
-          : [-52.1872864, -32.1013804],
-        plan: selectedPlan ? selectedPlan : freePlan,
+        zipCode: addressData.zipCode,
+        city: addressData.city,
+        uf: addressData.uf,
+        streetName: addressData.streetName,
+        geolocation: coordinates ? [coordinates?.lat, coordinates?.lng] : [-52.1872864, -32.1013804],
+        plan: selectedPlan !== '' ? selectedPlan : freePlan,
         isPlanFree,
+        propertyAddress
       };
 
       const userData: ICreateProperty_userData = {
         _id: userId ? userId : '',
         username: userDataForm.username,
         email: userDataForm.email,
-        address: !isSameAddress ? storedData.address : propertyAddress,
-        cpf: userDataForm.cpf,
+        address: !isSameAddress && storedData.address ? storedData.address : addressData,
+        cpf: userDataForm.cpf
       };
 
       const propertyData: ICreateProperty_propertyData = {
@@ -265,7 +282,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         adSubtype: storedData.adSubtype,
         propertyType: storedData.propertyType,
         propertySubtype: storedData.propertySubtype,
-        address: storedData.address,
+        address: !isSameAddress && storedData.address ? storedData.address : addressData,
         description: storedData.description,
         metadata: storedData.metadata,
         images: storedData.images,
@@ -275,9 +292,9 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         prices: storedData.prices,
         youtubeLink: storedData.youtubeLink,
         geolocation: {
-          type: 'Point',
-          coordinates: propertyDataStep3.geolocation,
-        },
+          type: "Point",
+          coordinates: propertyDataStep3.geolocation
+        }
       };
 
       try {
@@ -285,7 +302,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         const body: BodyReq = {
           propertyData,
           userData,
-          plan: selectedPlan,
+          plan: propertyDataStep3.plan,
           isPlanFree,
           phone: userDataForm.phone ? userDataForm.phone : '',
           cellPhone: userDataForm.cellPhone ? userDataForm.cellPhone : '',
@@ -338,6 +355,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         );
         console.error(error);
       }
+    } else {
+      toast.error(`Algum campo obrigatório não foi preenchido.`);
     }
   };
 
@@ -380,40 +399,28 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
             )
           )}
         </div>
-
-        {errorInfo.prop === 'selectedPlan' && (
-          <span className="text-red-500 mt-2 text-xl ml-20">
-            {errorInfo.error}
-          </span>
-        )}
-
-        <div className="mx-5 md:mx-0">
+        <div className='mx-5 md:mx-0'>
           <div className="max-w-[1536px] mt-[980px] md:mt-[1300px] lg:mt-80 flex justify-center flex-col">
-            <UserDataInputs
-              isEdit={false}
-              onUserDataUpdate={(updatedUserData: IUserDataComponent) =>
-                setUserDataForm(updatedUserData)
-              }
-              onErrorsInfo={errorInfo}
+            <UserDataInputs 
+              isEdit={false} 
+              onUserDataUpdate={(updatedUserData: IUserDataComponent) => setUserDataForm(updatedUserData)} 
               urlEmail={urlEmail ? urlEmail : undefined}
+              error={userDataErrors}
+              userDataInputRefs={userDataInputRefs}
             />
           </div>
-
-          <ChangeAddressCheckbox
-            onAddressCheckboxChange={(value: boolean) =>
-              setIsSameAddress(value)
-            }
-            address={propertyAddress}
+          <ChangeAddressCheckbox 
+            onAddressCheckboxChange={(value: boolean) => setIsSameAddress(value)}
+            address={addressData}
           />
 
           {!isSameAddress && (
-            <Address
-              isEdit={false}
-              address={propertyAddress}
-              onAddressUpdate={(address: IAddress) =>
-                setPropertyAddress(address)
-              }
-              onErrorsInfo={errorInfo}
+            <Address 
+              isEdit={false} 
+              address={addressData} 
+              onAddressUpdate={(address: IAddress) => setAddressData(address)} 
+              errors={addressErrors}
+              addressInputRefs={addressInputRefs}
             />
           )}
 
@@ -424,12 +431,13 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
                 return (
                   <CreditCard
                     isEdit={false}
-                    onErrorInfo={errorInfo}
                     onCreditCardUpdate={(creditCard) => {
                       if (!isFreePlan) {
                         setCreditCard(creditCard);
                       }
                     }}
+                    error={creditCardErrors}
+                    creditCardInputRefs={creditCardInputRefs}
                   />
                 );
               }
@@ -439,7 +447,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
             onTermsChange={(value: boolean) => setTermsAreRead(value)}
             selectedPlan={selectedPlan}
             plans={plans}
-            onErrorInfo={errorInfo}
+            termsError={termsError}
           />
 
           <div className="flex self-end md:justify-end justify-center mt-14 mb-32">
