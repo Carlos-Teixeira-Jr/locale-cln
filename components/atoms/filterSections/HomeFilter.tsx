@@ -238,7 +238,7 @@ const HomeFilter: React.FC<IHomeFilter> = ({
 
   return (
     <div
-      className="flex flex-col md:flex-row gap-4 bg-tertiary lg:p-4 p-3 text-quaternary w-fit md:w-fit lg:h-[400px] rounded-[30px] shadow-lg"
+      className="flex flex-col md:flex-row gap-4 bg-tertiary lg:p-4 p-3 text-quaternary w-fit md:w-fit lg:h-[355px] rounded-[30px] shadow-lg"
       {...homeFilterProps}
     >
       <div className="relative">
@@ -353,6 +353,7 @@ const HomeFilter: React.FC<IHomeFilter> = ({
                               name?.slice(1).toLowerCase()}
                           </span>
                         </div>
+                      )
                     )
                   : []}
               </div>

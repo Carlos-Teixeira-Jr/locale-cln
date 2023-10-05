@@ -1,15 +1,17 @@
+import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { toast } from 'react-toastify';
+import { IPrices } from '../../../../common/interfaces/property/propertyData';
 import BathroomIcon from '../../../atoms/icons/bathroomIcon';
 import BedroomIcon from '../../../atoms/icons/bedroomIcon';
 import DotIcon from '../../../atoms/icons/dotIcon';
 import HeartIcon from '../../../atoms/icons/heartIcon';
+import NextIcon from '../../../atoms/icons/nextIcon';
 import ParkingIcon from '../../../atoms/icons/parkingIcon';
+import PreviousIcon from '../../../atoms/icons/previousIcon';
 import formatCurrency from '../../../atoms/masks/currencyFormat';
-import { IPrices } from '../../../../common/interfaces/property/propertyData';
-import { toast } from 'react-toastify';
-import { useSession } from 'next-auth/react';
 
 export interface IPropertyCard {
   _id: string;
@@ -36,12 +38,11 @@ const PropertyCard: React.FC<IPropertyCard> = ({
   favorited,
   highlighted,
 }) => {
-
-  const {data: session} = useSession() as any;
+  const { data: session } = useSession() as any;
   const userId = session?.user.data._id;
   const [currentIndex, setCurrentIndex] = useState(0);
   const [expanded, setExpanded] = useState(false);
-  const [isExpandable, setIsExpandable] = useState(false)
+  const [isExpandable, setIsExpandable] = useState(false);
   const descriptionRef = useRef<HTMLParagraphElement>(null);
 
   // Expande o tamanho do corpo do card para mostrar todo o texto;
@@ -53,7 +54,9 @@ const PropertyCard: React.FC<IPropertyCard> = ({
   // Verifica se o texto excede os limites do corpo do card e atribui esse valor ao estado isExpandable;
   useEffect(() => {
     if (descriptionRef.current) {
-      const isOverflowing = descriptionRef.current.scrollHeight > descriptionRef.current.clientHeight;
+      const isOverflowing =
+        descriptionRef.current.scrollHeight >
+        descriptionRef.current.clientHeight;
       setIsExpandable(isOverflowing);
     }
   }, [description]);
@@ -91,54 +94,49 @@ const PropertyCard: React.FC<IPropertyCard> = ({
       parking_spaces,
       location,
     };
-  },[
-    _id, 
-    prices, 
-    description, 
-    bedrooms, 
-    bathrooms, 
-    parking_spaces, 
-    location
-  ]);
+  }, [_id, prices, description, bedrooms, bathrooms, parking_spaces, location]);
 
   const price = prices.value;
   const formattedPrice = formatCurrency(price);
 
   const handleFavouriteIcon = async () => {
     try {
-      toast.loading(`Enviando...`)
-      const response = await fetch(`http://localhost:3001/user/edit-favourite`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          userId,
-          propertyId: _id
-        })
-      });
+      toast.loading(`Enviando...`);
+      const response = await fetch(
+        `http://localhost:3001/user/edit-favourite`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            userId,
+            propertyId: _id,
+          }),
+        }
+      );
 
-      if(response.ok) {
+      if (response.ok) {
         toast.dismiss();
         window.location.reload();
       } else {
         toast.dismiss();
-        toast.error('Ocorreu um erro ao tentar atualizar seus favoritos.')
+        toast.error('Ocorreu um erro ao tentar atualizar seus favoritos.');
       }
     } catch (error) {
       toast.dismiss();
-      toast.error('Não foi possível estabelecer uma conexão com o servidor. Por favor tente novamente.')
+      toast.error(
+        'Não foi possível estabelecer uma conexão com o servidor. Por favor tente novamente.'
+      );
     }
-  }
+  };
 
   return (
-    <div 
+    <div
       className={`flex flex-col max-w-[350px] bg-tertiary shadow-lg rounded-[30px] mt-2 cursor-pointer ${
-        expanded ?
-        `min-h-[470px] max-h-fit` :
-        'max-h-[470px]'
+        expanded ? `min-h-[470px] max-h-fit` : 'max-h-[470px]'
       }`}
-    > 
+    >
       <Link href={`/property/${_id}`}>
         {/* caroussel */}
         <div className="group relative h-[200px]">
@@ -152,8 +150,8 @@ const PropertyCard: React.FC<IPropertyCard> = ({
               height="200"
             />
             {highlighted && (
-              <div className='bg-black absolute m-5 rounded-lg bg-opacity-50'>
-                <p className='text-white p-2 h-fit font-semibold'>Destaque</p>
+              <div className="bg-black absolute m-5 rounded-lg bg-opacity-50">
+                <p className="text-white p-2 h-fit font-semibold">Destaque</p>
               </div>
             )}
           </div>
@@ -168,21 +166,7 @@ const PropertyCard: React.FC<IPropertyCard> = ({
               className="z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
             >
               <span className="hidden group-hover:inline-flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-[#D9D9D9]/80 group-hover:bg-white/50 group-focus:outline-none">
-                <svg
-                  aria-hidden="true"
-                  className="hidden group-hover:block w-5 h-5 text-white sm:w-6 sm:h-6 dark:text-gray-800"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M15 19l-7-7 7-7"
-                  ></path>
-                </svg>
+                <PreviousIcon />
                 <span className="sr-only">Previous</span>
               </span>
             </button>
@@ -195,21 +179,7 @@ const PropertyCard: React.FC<IPropertyCard> = ({
               className="z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
             >
               <span className="hidden group-hover:inline-flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-[#D9D9D9]/80 group-hover:bg-white/50 group-focus:outline-none">
-                <svg
-                  aria-hidden="true"
-                  className="hidden group-hover:block w-5 h-5 text-white sm:w-6 sm:h-6 dark:text-gray-800"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M9 5l7 7-7 7"
-                  ></path>
-                </svg>
+                <NextIcon />
                 <span className="sr-only">Next</span>
               </span>
             </button>
@@ -238,7 +208,7 @@ const PropertyCard: React.FC<IPropertyCard> = ({
               <h1 className="font-bold text-2xl text-[#000000]">
                 {formattedPrice}
               </h1>
-              <span 
+              <span
                 className="ml-36 transition hover:text-red-500 hover:scale-105"
                 onClick={(e) => {
                   e.preventDefault();
@@ -247,9 +217,9 @@ const PropertyCard: React.FC<IPropertyCard> = ({
                   return false;
                 }}
               >
-                <HeartIcon 
-                  fill='#F75D5F'
-                  className='transition hover:text-red-500'
+                <HeartIcon
+                  fill="#F75D5F"
+                  className="transition hover:text-red-500"
                 />
               </span>
             </div>
@@ -266,7 +236,7 @@ const PropertyCard: React.FC<IPropertyCard> = ({
               display: '-webkit-box',
               lineClamp: expanded ? 'unset' : 2,
               WebkitLineClamp: expanded ? 'unset' : 2,
-              WebkitBoxOrient: 'vertical'
+              WebkitBoxOrient: 'vertical',
             }}
             className="font-medium text-sm text-quaternary mt-4 max-w-[350px] text-justify"
           >
@@ -280,7 +250,7 @@ const PropertyCard: React.FC<IPropertyCard> = ({
               {!expanded ? 'Ler mais...' : 'Ler menos...'}
             </span>
           )}
-          
+
           <h3 className="font-bold text-sm text-quaternary mt-4">
             {memoizedCardInfos.location}
           </h3>
