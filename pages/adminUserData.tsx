@@ -13,7 +13,7 @@ import Address from '../components/molecules/address/address';
 import { IAddress, IPropertyInfo } from '../common/interfaces/property/propertyData';
 import UserDataInputs from '../components/molecules/userData/userDataInputs';
 import { IUser, IUserDataComponent } from '../common/interfaces/user/user';
-import CreditCard from '../components/molecules/userData/creditCard';
+import CreditCard, { CreditCardForm } from '../components/molecules/userData/creditCard';
 import ArrowDownIcon from '../components/atoms/icons/arrowDownIcon';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { toast } from 'react-toastify';
@@ -55,6 +55,21 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     phone: '',
   });
 
+  const [formDataErrors, setFormDataErrors] = useState({
+    username: '',
+    email: '',
+    cpf: '',
+    cellPhone: '',
+  });
+
+  // Lida com o autoscroll das validações de erro dos inputs;
+  const userDataInputRefs = {
+    username: useRef<HTMLElement>(null),
+    email: useRef<HTMLElement>(null),
+    cpf: useRef<HTMLElement>(null),
+    cellPhone: useRef<HTMLElement>(null),
+  };
+
   const [address, setAddress] = useState<IAddress>({
     zipCode: '',
     city: '',
@@ -65,11 +80,37 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     uf: ''
   });
 
-  // Envia as mensagens de erros para os componetes;
-  const [errorInfo, setErrorInfo] = useState({
-    error: '',
-    prop: ''
+  const [addressErrors, setAddressErrors] = useState({
+    zipCode: '',
+    city: '',
+    streetName: '',
+    streetNumber: '',
+    uf: ''
   });
+
+  // Lida com o auto-scroll para os inputs de Address que mostrarem erro;
+  const addressInputRefs = {
+    zipCode: useRef<HTMLInputElement>(null),
+    city: useRef<HTMLInputElement>(null),
+    streetName: useRef<HTMLInputElement>(null),
+    streetNumber: useRef<HTMLInputElement>(null),
+    uf: useRef<HTMLInputElement>(null),
+  };
+
+  const creditCardErrors: CreditCardForm = {
+    cardName: '',
+    cardNumber: '',
+    cvc: '',
+    expiry: '',
+  };
+
+  // Lida com o auto-scroll para os inputs de creditCard que mostrarem erro;
+  const creditCardInputRefs = {
+    cardName: useRef<HTMLInputElement>(null),
+    cardNumber: useRef<HTMLInputElement>(null),
+    expiry: useRef<HTMLInputElement>(null),
+    cvc: useRef<HTMLInputElement>(null),
+  };
 
   // Recebe alterações do componente address;
   const handleAddressUpdate = (updatedAddress: IAddress) => {
@@ -93,68 +134,64 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     }
   }, [router.pathname]);
 
-  // Lida com a verificação de erros do handleSubmit (necessário para acessar o valor atualizado de erros ainda antes do final da execução do handleSubmit)
-  const errorHandler = useRef<{ error: string; prop: string }>({
-    error: '',
-    prop: ''
-  });
-
   const handleUpdateBtn = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const error = 'Este campo é obrigatório';
 
-    setErrorInfo({
-      prop: '',
-      error: ''
+    setFormDataErrors({
+      username: '',
+      email: '',
+      cpf: '',
+      cellPhone: '',
     });
 
-    errorHandler.current = {
-      prop: '',
-      error: ''
-    }
+    setAddressErrors({
+      zipCode: '',
+      city: '',
+      streetName: '',
+      streetNumber: '',
+      uf: ''
+    });
 
-    if (!formData.username) {
-      setErrorInfo({ error: error,prop: 'username' });
-      errorHandler.current = { error: error, prop: 'username'}
-    }
-    if (!formData.email) {
-      setErrorInfo({ error: error, prop: 'email' });
-      errorHandler.current = { error: error, prop: 'email' }
-    }
-    if (!formData.cpf) {
-      setErrorInfo({ error: error, prop: 'cpf' });
-      errorHandler.current = { error: error, prop: 'cpf' }
-    }
-    if (!formData.cellPhone) {
-      setErrorInfo({ error: error, prop: 'cellPhone' });
-      errorHandler.current = { error: error, prop: 'cellPhone' }
-    }
-    if (!formData.phone) {
-      setErrorInfo({ error: error, prop: 'phone' });
-      errorHandler.current = { error: error, prop: 'phone' }
-    }
-    if (!address.zipCode) {
-      setErrorInfo({ error: error, prop: 'zipCode' });
-      errorHandler.current = { error: error, prop: 'zipCode' }
-    }
-    if (!address.city) {
-      setErrorInfo({ error: error, prop: 'city' });
-      errorHandler.current = { error: error, prop: 'city' }
-    }
-    if (!address.uf) {
-      setErrorInfo({ error: error, prop: 'uf' });
-      errorHandler.current = { error: error, prop: 'uf' }
-    }
-    if (!address.streetName) {
-      setErrorInfo({ error: error, prop: 'streetName' });
-      errorHandler.current = { error: error, prop: 'streetName' }
-    }
-    if (!address.neighborhood) {
-      setErrorInfo({ error: error, prop: 'neighborhood' });
-      errorHandler.current = { error: error, prop: 'neighborhood' }
-    }
+    const newFormDataErrors = {
+      username: '',
+      email: '',
+      cpf: '',
+      cellPhone: '',
+    };
+
+    const newAddressErrors = {
+      zipCode: '',
+      city: '',
+      streetName: '',
+      streetNumber: '',
+      uf: ''
+    };
+
+    if (!formData.username) newFormDataErrors.username = error;
+    if (!formData.email) newFormDataErrors.email = error;
+    if (!formData.cpf) newFormDataErrors.cpf = error;
+    if (!formData.cellPhone) newFormDataErrors.cellPhone = error;
+
+    if (!address.zipCode) newAddressErrors.zipCode = error;
+    if (!address.city) newAddressErrors.city = error;
+    if (!address.uf) newAddressErrors.uf = error;
+    if (!address.streetName) newAddressErrors.streetName = error;
+    if (!address.streetNumber) newAddressErrors.streetNumber = error;
+
+    setFormDataErrors(newFormDataErrors);
+    setAddressErrors(newAddressErrors);
+
+    // Combina os erros de registro e endereço em um único objeto de erros
+    const combinedErrors = {
+      ...newAddressErrors,
+      ...newFormDataErrors,
+    };
+
+    // Verifica se algum dos valores do objeto de erros combinados não é uma string vazia
+    const hasErrors = Object.values(combinedErrors).some((error) => error !== '');
     
-    if (errorHandler.current.prop === '' && errorHandler.current.error === '') {
+    if (!hasErrors) {
       const userFormData: IUser = {
         id: userData._id,
         address,
@@ -162,10 +199,9 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
         email: formData.email,
         cpf: formData.cpf,
       }
-      console.log("🚀 ~ file: adminUserData.tsx:165 ~ handleUpdateBtn ~ userFormData:", userFormData)
 
       const ownerFormData: IOwner = {
-        id: userData._id,
+        id: ownerData.owner ? ownerData.owner._id : '',
         ownername: formData.username,
         phones: [formData.cellPhone, formData.phone],
         userId: userData._id,
@@ -226,7 +262,8 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                 isEdit={isEdit}
                 userData={ownerData} 
                 onUserDataUpdate={handleUserDataUpdate}
-                onErrorsInfo={errorInfo}
+                error={formDataErrors}
+                userDataInputRefs={userDataInputRefs}
               />
 
               <h2 className="md:text-3xl text-2xl leading-10 text-quaternary font-bold mb-5 md:mb-10">
@@ -270,7 +307,8 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                   isEdit={isEdit} 
                   address={ownerData?.user?.address} 
                   onAddressUpdate={handleAddressUpdate} 
-                  onErrorsInfo={errorInfo}
+                  errors={addressErrors}
+                  addressInputRefs={addressInputRefs}
                 />
               </div>
             </div>
@@ -307,6 +345,8 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                 {creditCardIsOpen && (
                   <CreditCard 
                     isEdit={true} 
+                    error={creditCardErrors}
+                    creditCardInputRefs={creditCardInputRefs}
                   />
                 )}
               </div>

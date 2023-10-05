@@ -27,6 +27,7 @@ const FilterList: React.FC<IFilterListProps> = ({
   onMobileFilterIsOpenChange,
   onSearchBtnClick
 }) => {
+  console.log("🚀 ~ file: FilterList.tsx:30 ~ propertyTypesProp:", propertyTypesProp)
   
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -656,7 +657,7 @@ const FilterList: React.FC<IFilterListProps> = ({
                           key={_id}
                           className="translate-x-[1px] w-full h-[50px]  py-3"
                         >
-                          {name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()}
+                          {/* {name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()} */}
                         </span>
                       </div>
                     )

@@ -30,6 +30,7 @@ const Home: NextPageWithLayout<IHome> = ({
   propertyTypes,
   locations,
 }) => {
+  console.log("🚀 ~ file: index.tsx:33 ~ propertyInfo:", propertyInfo)
 
   const { latitude, longitude, location } = useTrackLocation();
   const [propertiesByLocation, setPropertiesByLocation] = useState<any>([]);
@@ -214,6 +215,7 @@ export async function getStaticProps() {
     fetchJson(`${baseUrl}/property-type`),
     fetchJson(`${baseUrl}/location`),
   ]);
+  console.log("🚀 ~ file: index.tsx:218 ~ getStaticProps ~ propertyInfo:", propertyInfo)
 
   return {
     props: {
