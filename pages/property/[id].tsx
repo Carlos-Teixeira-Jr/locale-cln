@@ -50,7 +50,7 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
   isFavourite,
   relatedProperties
 }: any) => {
-  console.log("🚀 ~ file: [id].tsx:53 ~ relatedProperties:", relatedProperties.docs)
+  console.log("🚀 ~ file: [id].tsx:53 ~ isFavourite:", isFavourite)
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const handleModalOpenChange = (isOpen: boolean) => {
@@ -158,13 +158,15 @@ export async function getServerSideProps(context: NextPageContext) {
       body: JSON.stringify({
         id: userId,
       })
-    })
+    });
 
     if (fetchFavourites.ok) {
       const favourites = await fetchFavourites.json();
+      console.log("🚀 ~ file: [id].tsx:165 ~ getServerSideProps ~ favourites:", favourites)
+
       if (favourites.length > 0) {
 
-        isFavourite = favourites[0].some((prop: any) => prop._id === propertyId);
+        isFavourite = favourites.some((prop: any) => prop._id === propertyId);
       } else {
         isFavourite = false;
       }
