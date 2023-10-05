@@ -45,6 +45,8 @@ export interface IRegisterPropertyData_Step3 {
   phone: string,
   zipCode: string,
   city: string,
+  uf: string,
+  streetName: string,
   propertyAddress: IAddress,
   geolocation: number[],
   plan: string,

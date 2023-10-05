@@ -5,7 +5,8 @@ import { User } from "../user/user"
 type Owner = {
   _id: string
   adCredits: number
-  phones: string[]
+  cellPhone: string
+  phone: string
   plan: string
 }
 

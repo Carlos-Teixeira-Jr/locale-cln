@@ -2,15 +2,21 @@ import React, { ChangeEvent, useEffect, useState } from 'react'
 import { IUserDataComponent, IUserDataComponentErrors } from '../../../common/interfaces/user/user';
 import ErrorOnUpdateModal from '../../atoms/modals/errorOnUpdateModal';
 import SuccessOnUpdateModal from '../../atoms/modals/successOnUpdateModal';
-import { OnErrorInfo } from '../uploadImages/uploadImages';
 import { IOwnerData } from '../../../common/interfaces/owner/owner';
 import { applyNumericMask } from '../../../common/utils/masks/numericMask';
-import { resetObjectToEmptyStrings } from '../../../common/utils/resetObjects';
+
+export type UserDataErrorsTypes = {
+  username: string,
+  email: string,
+  cpf: string,
+  cellPhone: string,
+}
 
 type Input = {
   key: string,
   label: string,
   value: string,
+  ref?: any
   onChange: (event: ChangeEvent<HTMLInputElement>) => void,
 }
 
@@ -18,17 +24,23 @@ interface IUserDataInputs {
   userData?: IOwnerData
   isEdit: boolean
   onUserDataUpdate: (updatedUserData: IUserDataComponent) => void;
-  onErrorsInfo: OnErrorInfo
   urlEmail?: string | undefined
+  error: UserDataErrorsTypes
+  userDataInputRefs?: any
 }
 
 const userDataInputs: React.FC<IUserDataInputs> = ({
   userData, 
   isEdit,
   onUserDataUpdate,
-  onErrorsInfo,
-  urlEmail
+  urlEmail,
+  error,
+  userDataInputRefs
 }) => {
+
+  const userDataErrorScroll = {
+    ...userDataInputRefs
+  };
 
   const [errorModalIsOpen, setErrorModalIsOpen] = useState(false);
   const [succesModalIsOpen, setSuccesModalIsOpen] = useState(false);
@@ -37,41 +49,42 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
     username: userData ? userData.user.username : '',
     email: userData ? userData.user.email : '',
     cpf: userData ? userData.user.cpf : '',
-    cellPhone: userData && userData.owner ? userData.owner.phones[0] : '',
-    phone: userData && userData.owner ? userData.owner.phones[1] : '',
+    cellPhone: userData && userData.owner ? userData.owner.cellPhone : '',
+    phone: userData && userData.owner ? userData.owner.phone : '',
   });
 
+  // Pega o email da url caso o usuário tenha passado o mesmo no início do cadastro na pagina announcement;
   useEffect(() => {
     if (urlEmail) {
       setFormData({...formData, email: urlEmail})
     }
-  }, [urlEmail])
+  }, [urlEmail]);
   
-
-  const [errors, setErrors] = useState<IUserDataComponentErrors>({
+  const [userDataErrors, setUserDataErrors] = useState<IUserDataComponentErrors>({
     username: '',
     email: '',
     cpf: '',
     cellPhone: '',
-    phone: '',
   });
 
-  // Processa a estrutura de dados de onErrosInfo para inserir no objeto formDataErrors;
   useEffect(() => {
-    setErrors({
-      username: '',
-      email: '',
-      cpf: '',
-      cellPhone: '',
-      phone: '',
-    });
-    if (onErrorsInfo) {
-      setErrors(prevErrors => ({
-        ...prevErrors,
-        [onErrorsInfo.prop]: onErrorsInfo.error,
-      }));
-    }
-  }, [onErrorsInfo]);
+    setUserDataErrors(error);
+  }, [error]);
+
+  // Realiza o auto-scroll para o input que apresenta erro;
+  useEffect(() => {
+    const scrollToError = (errorKey: string) => {
+      if (userDataErrors[errorKey] !== '' && userDataInputRefs[errorKey]?.current) {
+        userDataErrorScroll[errorKey]?.current.scrollIntoView({ behavior: 'auto', block: 'center' });
+      }
+    };
+  
+    scrollToError('username');
+    scrollToError('email');
+    scrollToError('cpf');
+    scrollToError('cellPhone');
+  }, [userDataErrors]);
+  
 
   // Envia os dados do usuário para o componente pai;
   useEffect(() => {
@@ -83,27 +96,28 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
       key: 'username',
       label: 'Nome Completo',
       value: formData.username,
+      ref: userDataErrorScroll.username,
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
         const maskedValue = value.replace(/[^A-Za-z]/g, '');
         setFormData({ ...formData, username: maskedValue });
-        resetObjectToEmptyStrings(errors);
       },
     },
     {
       key: 'email',
       label: 'E-mail',
       value: formData.email,
+      ref: userDataErrorScroll.email,
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
         setFormData({ ...formData, email: value });
-        resetObjectToEmptyStrings(errors);
       },
     },
     {
       key: 'cpf',
       label: 'CPF',
       value: formData.cpf,
+      ref: userDataErrorScroll.cpf,
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
         const input = event.target;
         const value = input.value;
@@ -120,13 +134,13 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
           input.setSelectionRange(selectionStart, selectionEnd);
         }
         setFormData({ ...formData, cpf: maskedValue });
-        resetObjectToEmptyStrings(errors);
       },
     },        
     {
       key: 'cellPhone',
       label: 'Celular',
       value: formData.cellPhone,
+      ref: userDataErrorScroll.cellPhone,
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
         const input = event.target;
         const value = input.value;
@@ -143,7 +157,6 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
           input.setSelectionRange(selectionStart, selectionEnd);
         }
         setFormData({ ...formData, cellPhone: maskedValue });
-        resetObjectToEmptyStrings(errors);
       },
     },    
     {
@@ -166,7 +179,6 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
           input.setSelectionRange(selectionStart, selectionEnd);
         }
         setFormData({ ...formData, phone: maskedValue });
-        resetObjectToEmptyStrings(errors);
       },
     },
   ];
@@ -178,7 +190,7 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
       </h1>
       <div className="my-5">
         <div>
-          <div className="my-5 w-full">
+          <div className="my-5 w-full" ref={inputs[0].ref}>
             <h3 className="text-xl font-normal text-quaternary leading-7">
               {inputs[0].label}
             </h3>
@@ -187,16 +199,16 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
               onChange={inputs[0].onChange}
               value={inputs[0].value}
               required
-              style={errors.username ? { border: '1px solid red' } : {}}
+              style={userDataErrors.username ? { border: '1px solid red' } : {}}
             />
-            {errors.username && (
-              <span className="text-red-500 text-xs">{errors.username}</span>
+            {userDataErrors.username && (
+              <span className="text-red-500 text-xs">{userDataErrors.username}</span>
             )}
           </div>
 
           <div className="my-5 mx-auto flex flex-col md:flex-row w-full gap-5 md:gap-10">
             {inputs.slice(1, 3).map((input: Input) => (
-              <div key={input.key} className="w-full">
+              <div key={input.key} className="w-full" ref={input.ref}>
                 <h3 className="text-xl font-normal text-quaternary leading-7">
                   {input.label}
                 </h3>
@@ -205,10 +217,10 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
                   onChange={input.onChange}
                   value={input.value}
                   required
-                  style={errors[input.key] !== '' ? { border: '1px solid red' } : {}}
+                  style={userDataErrors[input.key] !== '' ? { border: '1px solid red' } : {}}
                 />
-                {Object.keys(errors).includes(input.key) && (
-                  <span className="text-red-500 text-xs">{errors[input.key]}</span>
+                {Object.keys(userDataErrors).includes(input.key) && (
+                  <span className="text-red-500 text-xs">{userDataErrors[input.key]}</span>
                 )}
               </div>
             ))}
@@ -216,7 +228,7 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
 
           <div className="my-5 mx-auto flex w-full gap-10">
             {inputs.slice(3).map((input: Input) => (
-              <div key={input.key} className="w-full">
+              <div key={input.key} className="w-full" ref={input.ref}>
                 <h3 className="text-xl font-normal text-quaternary leading-7">
                   {input.label}
                 </h3>
@@ -224,11 +236,10 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
                   className="border w-full p-5 h-12 border-quaternary rounded-[10px] bg-tertiary font-bold text-xl md:text-2xl text-quaternary leading-7 drop-shadow-xl"
                   onChange={input.onChange}
                   value={input.value}
-                  required
-                  style={errors[input.key] !== '' ? { border: '1px solid red' } : {}}
+                  style={Object.keys(userDataErrors).includes(input.key) && userDataErrors[input.key] !== '' ? { border: '1px solid red' }: {}}
                 />
-                {Object.keys(errors).includes(input.key) && (
-                  <span className="text-red-500 text-xs">{errors[input.key]}</span>
+                {Object.keys(userDataErrors).includes(input.key) && userDataErrors[input.key] !== '' && (
+                  <span className="text-red-500 text-xs">{userDataErrors[input.key]}</span>
                 )}
               </div>
             ))}

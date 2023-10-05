@@ -35,5 +35,4 @@ export interface IUserDataComponentErrors {
   email: string
   cpf: string
   cellPhone: string
-  phone: string
 }

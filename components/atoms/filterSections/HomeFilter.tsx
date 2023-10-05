@@ -342,7 +342,7 @@ const HomeFilter: React.FC<IHomeFilter> = ({
                           key={_id}
                           className="translate-x-[1px] w-full h-[50px]  py-3"
                         >
-                          {name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()}
+                          {name?.charAt(0).toUpperCase() + name?.slice(1).toLowerCase()}
                         </span>
                       </div>
                     )
