@@ -6,7 +6,7 @@ interface StaticMapProps {
   lng: number | string;
   width: number;
   height: number;
-  onClick: any;
+  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 const StaticMap: FC<StaticMapProps> = ({ lat, lng, width, height, onClick }) => {
@@ -18,7 +18,7 @@ const StaticMap: FC<StaticMapProps> = ({ lat, lng, width, height, onClick }) => 
 
   return (
     <div className='relative'>
-      <div id='backdrop' className={`bg-black absolute w-full h-full lg:w-[1312px] opacity-50 lg:h-[${height}]`}></div>
+      <div id='backdrop' className={`bg-black absolute w-full h-full lg:w-full opacity-50 lg:h-[${height}]`}></div>
       <Image 
         src={!error ? googleStaticMapUrl : mapFallbackUrl} 
         alt={''}

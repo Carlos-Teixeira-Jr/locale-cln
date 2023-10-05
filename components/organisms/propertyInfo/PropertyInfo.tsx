@@ -2,18 +2,20 @@ import clipboardy from 'clipboardy';
 import { useRouter } from 'next/router';
 import React, { MouseEvent, useEffect, useState } from 'react';
 import 'react-tooltip/dist/react-tooltip.css';
-import { IData } from '../../../common/interfaces/property/propertyData';
+import { IData, IMetadata } from '../../../common/interfaces/property/propertyData';
 import CalculatorModal from '../../atoms/modals/calculatorModal';
 import LinkCopiedTooltip from '../../atoms/tooltip/Tooltip';
 import { useSession } from 'next-auth/react';
 import { toast } from 'react-toastify';
+import { capitalizeFirstLetter } from '../../../common/utils/strings/capitalizeFirstLetter';
+import FavouritePropertyTooltip from '../../atoms/tooltip/favouritePropertyTooltip';
 
 export interface ITooltip {
   globalEventOff: string;
 }
 
 export interface IPropertyInfo {
-  property: any;
+  property: IData;
   isFavourite: boolean
 }
 
@@ -27,6 +29,7 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
   const userIsLogged = status === 'authenticated' ? true : false;
   const userId = session?.data?.user?.data?._id;
   const [tooltipIsVisible, setTooltipIsVisible] = useState(false);
+  const [favPropTooltipIsVisible, setFavPropTooltipIsVisible] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [favourited, setFavourited] = useState(isFavourite);
   const router = useRouter();
@@ -52,6 +55,10 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
     setTooltipIsVisible(false);
   };
 
+  const hideFavTooltip = () => {
+    setFavPropTooltipIsVisible(false)
+  }
+
   const handleCalculatorBtnClick = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     setModalIsOpen(true);
@@ -59,105 +66,88 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
 
   const handleFavouriteBtnClick = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    if (!userIsLogged) return;
-    const { _id: propertyId } = property;
-    try {
-      const response = await fetch(`http://localhost:3001/user/edit-favourite`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          userId,
-          propertyId
-        })
-      });
-  
-      if (response.ok) {
-        const newFavoutedList: string[] = await response.json();
-        const isFavourited = newFavoutedList.includes(propertyId);
-  
-        if (isFavourited) {
-          setFavourited(true);
-          toast.success('Imóvel favoritado com sucesso.')
+    if (!userIsLogged) {
+      setFavPropTooltipIsVisible(true);
+    } else {
+      const { _id: propertyId } = property;
+      try {
+        const response = await fetch(`http://localhost:3001/user/edit-favourite`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            userId,
+            propertyId
+          })
+        });
+    
+        if (response.ok) {
+          const newFavoutedList: string[] = await response.json();
+          const isFavourited = newFavoutedList.includes(propertyId);
+    
+          if (isFavourited) {
+            setFavourited(true);
+            toast.success('Imóvel favoritado com sucesso.')
+          } else {
+            setFavourited(false);
+            toast.success('Imóvel removido dos favoritos.')
+          }
         } else {
-          setFavourited(false);
-          toast.success('Imóvel removido dos favoritos.')
+          toast.error('Houve um erro ao favoritar o imóvel.')
         }
-      } else {
-        toast.error('Houve um erro ao favoritar o imóvel.')
+      } catch (error) {
+        toast.error('Não foi possível se conectar ao servidor. Tente novamente mais tarde.')
       }
-    } catch (error) {
-      toast.error('Não foi possível se conectar ao servidor. Tente novamente mais tarde.')
     }
+    
   };
   
 
   const getMetadataValue = (type: string) => {
+    const value = property.metadata?.find((metadata: IMetadata) => metadata.type === type)?.amount;
     return (
-      property.metadata?.find((metadata: any) => metadata.type === type)
-        ?.value || 0
+      value
     );
   };
 
+
   return (
     <>
-      <div className="md:grid md:grid-cols-3 md:max-w-full md:mx-5 lg:w-fit md:top-[1095px] md:left-[69px] bg-tertiary drop-shadow-lg">
+      <div className="md:grid md:grid-cols-3 py-10 px-5 lg:w-full bg-tertiary drop-shadow-lg">
         <div className="col-span-2">
-          <h1 className="font-extrabold text-quaternary md:text-[40px] text-[25px] leading-[49px] pt-6 pl-3.5">
+          <h1 className="font-extrabold text-quaternary md:text-4xl text-2xl">
             Características do imóvel
           </h1>
-          <h3 className="font-extrabold text-quaternary text-[32px] leading-[39px] pl-3.5 pt-6">
+          <h3 className="font-extrabold text-quaternary text-3xl pt-6">
             Dependências
           </h3>
           <div className="lg:grid md:grid-cols-6 md:gap-4 flex">
-            <div className="ml-4 flex flex-col">
-              <div className="font-normal text-xl text-quaternary flex justify-between ">
+            <div className="flex flex-col">
+              <div className="font-normal text-xl text-quaternary flex justify-between gap-2">
                 {getMetadataValue('bedroom')}
-                <span> quarto(s)</span>
+                <span>quarto(s)</span>
               </div>
-              <div className="font-normal text-xl text-quaternary flex justify-between">
+              <div className="font-normal text-xl text-quaternary flex justify-between gap-2">
                 {getMetadataValue('bathroom')}
-                <span> banheiro(s)</span>
+                <span>banheiro(s)</span>
               </div>
-              <div className="font-normal text-xl text-quaternary flex justify-between">
-                {getMetadataValue('parkingSpaces')}
-                <span> garagem(s)</span>
+              <div className="font-normal text-xl text-quaternary flex justify-between gap-2">
+                {getMetadataValue('garage')}
+                <span>garagem(s)</span>
               </div>
             </div>
-            {/* <div className="ml-4 flex flex-col">
-              {property.tags &&
-                property.tags.map((tag: string, idx: number) => {
-                  <span
-                    className="font-normal text-xl text-quaternary"
-                    key={idx}
-                  >
-                    {tag}
-                  </span>;
-                })}
-            </div>
-            <div className="ml-4 flex flex-col">
-              {property.condominiumTags &&
-                property.condominiumTags.map((tag: string, idx: number) => {
-                  <span
-                    className="font-normal text-xl text-quaternary"
-                    key={idx}
-                  >
-                    {tag}
-                  </span>;
-                })}
-            </div> */}
           </div>
-          <div className="pl-3.5 pt-6">
-            <h3 className="font-extrabold text-quaternary text-[32px] leading-[39px] pb-4">
+          <div className="pt-6">
+            <h3 className="font-extrabold text-quaternary text-3xl leading-[39px] pb-4">
               Descrição
             </h3>
             <p className="font-normal text-xl text-quaternary text-justify">
-              {property.description}
+              {capitalizeFirstLetter(property.description)}
             </p>
           </div>
         </div>
-        <div className="md:grid md:grid-col grid md:my-[140px] my-[40px] md:mx-[62px] justify-center">
+        <div className="md:grid md:grid-col grid md:my-auto my-[40px] md:mx-[62px] justify-center">
           <LinkCopiedTooltip
             open={tooltipIsVisible}
             onRequestClose={hideTooltip}
@@ -180,7 +170,14 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
             </button>
           )}
 
+          <FavouritePropertyTooltip 
+            open={favPropTooltipIsVisible} 
+            onRequestClose={hideFavTooltip} 
+            anchorId={'fav-property-tooltip'}            
+          />
+
           <button
+            id='fav-property-tooltip'
             className={`lg:w-80 h-16 bg-primary p-2.5 rounded-[10px] text-tertiary text-xl font-extrabold flex justify-center mb-5 ${
               userIsLogged ?
               'opacity opacity-100 cursor-pointer' :

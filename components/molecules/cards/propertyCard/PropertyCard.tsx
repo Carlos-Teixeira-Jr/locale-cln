@@ -12,20 +12,20 @@ import { toast } from 'react-toastify';
 import { useSession } from 'next-auth/react';
 
 export interface IPropertyCard {
-  _id: string;
-  prices: IPrices;
+  id: string;
+  prices: IPrices[];
   description: string;
   bedrooms?: number;
   bathrooms?: number;
   parking_spaces?: number;
   images: string[];
-  location: string;
+  location?: string;
   favorited?: boolean;
   highlighted: boolean;
 }
 
 const PropertyCard: React.FC<IPropertyCard> = ({
-  _id,
+  id,
   prices,
   description,
   bedrooms,
@@ -38,7 +38,7 @@ const PropertyCard: React.FC<IPropertyCard> = ({
 }) => {
 
   const {data: session} = useSession() as any;
-  const userId = session?.user.data._id;
+  const userId = session?.user.data.id;
   const [currentIndex, setCurrentIndex] = useState(0);
   const [expanded, setExpanded] = useState(false);
   const [isExpandable, setIsExpandable] = useState(false)
@@ -83,7 +83,7 @@ const PropertyCard: React.FC<IPropertyCard> = ({
 
   const memoizedCardInfos = useMemo(() => {
     return {
-      _id,
+      id,
       prices,
       description,
       bedrooms,
@@ -92,7 +92,7 @@ const PropertyCard: React.FC<IPropertyCard> = ({
       location,
     };
   },[
-    _id, 
+    id, 
     prices, 
     description, 
     bedrooms, 
@@ -101,7 +101,7 @@ const PropertyCard: React.FC<IPropertyCard> = ({
     location
   ]);
 
-  const price = prices.value;
+  const price = prices[0].value;
   const formattedPrice = formatCurrency(price);
 
   const handleFavouriteIcon = async () => {
@@ -114,7 +114,7 @@ const PropertyCard: React.FC<IPropertyCard> = ({
         },
         body: JSON.stringify({
           userId,
-          propertyId: _id
+          propertyId: id
         })
       });
 
@@ -139,7 +139,7 @@ const PropertyCard: React.FC<IPropertyCard> = ({
         'max-h-[470px]'
       }`}
     > 
-      <Link href={`/property/${_id}`}>
+      <Link href={`/property/${id}`}>
         {/* caroussel */}
         <div className="group relative h-[200px]">
           {/* Images */}

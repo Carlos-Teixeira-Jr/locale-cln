@@ -22,6 +22,7 @@ import useTrackLocation from '../../hooks/trackLocation';
 import { NextPageWithLayout } from '../page';
 import { getSession } from 'next-auth/react';
 import { fetchJson } from '../../common/utils/fetchJson';
+import PropertyCard from '../../components/molecules/cards/propertyCard/PropertyCard';
 
 export interface IIDPage {
   location: IGeolocation;
@@ -41,22 +42,24 @@ export interface IIDPage {
 interface IPropertyPage {
   property: IData
   isFavourite: boolean
+  relatedProperties: IData[]
 }
 
 const PropertyPage: NextPageWithLayout<IPropertyPage> = ({ 
   property,
-  isFavourite
+  isFavourite,
+  relatedProperties
 }: any) => {
-  console.log("🚀 ~ file: [id].tsx:50 ~ isFavourite:", isFavourite)
+  console.log("🚀 ~ file: [id].tsx:53 ~ relatedProperties:", relatedProperties.docs)
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const handleModalOpenChange = (isOpen: boolean) => {
     setIsModalOpen(isOpen);
   };
 
-  const { latitude, longitude } = useTrackLocation();
-  const latitudeToNumber = parseFloat(latitude);
-  const longitudeToNumber = parseFloat(longitude);
+  const lat = property.geolocation ? property.geolocation.coordinates[0] : null;
+  const long = property.geolocation ? property.geolocation.coordinates[1] : null;
+
   const [backdropActive, setBackdropActive] = useState(true);
 
   const handleMapButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -73,48 +76,46 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
       <div className={`fixed top-0 md:w-full ${isModalOpen ? '' : 'z-40'}`}>
         <Header />
       </div>
-      <div className="flex flex-col max-w-[1232px] items-center mx-auto lg:pt-10 pt-[90px]">
-        <div className="lg:mx-auto mx-5 mb-[150px] md:mb-5 mt-5">
+      <div className="flex flex-col max-w-5xl items-center mx-auto lg:pt-10 pt-[90px]">
+        <div className="lg:mx-auto mx-5 mb-[150px] md:mb-5 mt-5 z-0">
           <Gallery propertyID={property} isModalOpen={isModalOpen} />
         </div>
-        <div className="lg:flex">
+        <div className="lg:flex w-full justify-between">
           <PropertyInfoTop propertyID={property} />
 
           <ContactBox
             propertyID={property}
             href={`https://api.whatsapp.com/send/?phone=5553991664864&text=Ol%C3%A1%2C+estou+interessado+no+im%C3%B3vel+${property.address}.+Gostaria+de+mais+informa%C3%A7%C3%B5es.&type=phone_number&app_absent=0`}
-            onModalIsOpenChange={handleModalOpenChange}
           />
         </div>
 
-        <div className="md:max-w-[768p]">
+        <div className="w-full h-fit">
           <PropertyInfo 
             property={property} 
             isFavourite={isFavourite}
           />
         </div>
         {/* IMÓVEIS RELACIONADOS */}
-        {/* <div className="sm:grid sm:grid-cols-1 md:grid md:grid-cols-2 lg:flex lg:flex-row justify-center gap-9 mx-14 my-10 inline max-w-screen-2xl">
-          {props.property && (
+        <div className="sm:grid sm:grid-cols-1 md:grid md:grid-cols-2 lg:flex lg:flex-row justify-center gap-9 mx-14 my-10 inline w-full">
+          {relatedProperties.docs.length > 0 && relatedProperties?.docs.map((prop: IData) => (
             <PropertyCard
-              key={id}
-              prices={prices}
-              description={description}
-              images={images}
-              location={location} // geolocation
-              bedrooms={bedrooms}
-              bathrooms={bathrooms}
-              parking_spaces={parking_spaces}
-              id={id}
-              highlighted={highlighted}
+              key={prop._id}
+              prices={prop.prices}
+              description={prop.description}
+              images={prop.images}
+              bedrooms={prop.metadata.find((item) => item.type === 'bedroom')?.amount}
+              bathrooms={prop.metadata.find((item) => item.type === 'bathroom')?.amount}
+              parking_spaces={prop.metadata.find((item) => item.type === 'garage')?.amount}
+              id={prop._id}
+              highlighted={prop.highlighted}
             />
-          )}
-        </div> */}
-        <div className="lg:w-[1312px] md:h-[446px] mx-auto md:mb-[150px] drop-shadow-xl">
+          ))}
+        </div>
+        <div className="lg:w-full md:h-fit mx-auto md:mb-32 drop-shadow-xl">
           <div id="static-map">
             <StaticMap
-              lat={latitudeToNumber}
-              lng={longitudeToNumber}
+              lat={lat}
+              lng={long}
               width={1312}
               height={223}
               onClick={handleMapButtonClick}
@@ -125,10 +126,10 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
             className={
               backdropActive
                 ? 'hidden'
-                : 'md:w-[1312px] h-[446px] mx-auto md:mb-[150px] drop-shadow-xl'
+                : 'md:w-full h-fit my-10 mx-auto md:mb-[150px] drop-shadow-xl'
             }
           >
-            <DynamicMap lat={latitudeToNumber} lng={longitudeToNumber} />
+            <DynamicMap lat={lat} lng={long} />
           </div>
         </div>
       </div>
@@ -146,37 +147,46 @@ export async function getServerSideProps(context: NextPageContext) {
   const userId = session?.user.data._id;
   const propertyId = context.query.id;
   const baseUrl = process.env.BASE_API_URL;
-  let isFavourite;
+  let isFavourite: boolean;
 
-  if (userId) {
-    const fetchFavourites = await Promise.all([
-      fetch(`${baseUrl}/user/favourite`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          id: userId,
-        })
+  if(userId) {
+    const fetchFavourites = await fetch(`${baseUrl}/user/favourite`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        id: userId,
       })
-      .then((res) => res.json())
-      .catch(() => []),
-      fetchJson(`${baseUrl}/user/favourite`),
-    ]);
-    if (fetchFavourites.length > 0) {
+    })
 
-      isFavourite = fetchFavourites.some((prop) => prop._id === propertyId);
+    if (fetchFavourites.ok) {
+      const favourites = await fetchFavourites.json();
+      if (favourites.length > 0) {
+
+        isFavourite = favourites[0].some((prop: any) => prop._id === propertyId);
+      } else {
+        isFavourite = false;
+      }
+    } else {
+      isFavourite = false;
     }
+  } else {
+    isFavourite = false;
   }
 
   const property = await fetch(`${baseUrl}/property/${propertyId}`)
     .then((res) => res.json())
     .catch(() => {})
+
+  const url = `http://localhost:3001/property/filter/?page=1&limit=3`;
+  const relatedProperties = await fetch(url).then((res) => res.json());
   
   return {
     props: {
       property,
-      isFavourite
+      isFavourite,
+      relatedProperties
     },
   };
 }
