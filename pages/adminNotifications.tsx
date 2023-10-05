@@ -1,19 +1,16 @@
-import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import Pagination from '../components/atoms/pagination/pagination';
-import NotificationCard from '../components/molecules/cards/notificationCard/notificationCard';
-import SideMenu from '../components/organisms/sideMenu/sideMenu';
-import { NextPageWithLayout } from './page';
+import NotificationCard, {
+  INotification,
+} from '../components/molecules/cards/notificationCard/notificationCard';
 import AdminHeader from '../components/organisms/adminHeader/adminHeader';
+import SideMenu from '../components/organisms/sideMenu/sideMenu';
 
-const MessageNotifications: NextPageWithLayout = ({
-  propertyMessages,
-}: any) => {
+const MessageNotifications = ({ dataNot }: any) => {
   const [isMobile, setIsMobile] = useState(false);
-
   useEffect(() => {
     function handleResize() {
-      setIsMobile(window.innerWidth < 900);
+      setIsMobile(window.innerWidth < 1000);
     }
 
     handleResize();
@@ -27,56 +24,39 @@ const MessageNotifications: NextPageWithLayout = ({
 
   return (
     <main>
-      <AdminHeader image={''} />
+      <AdminHeader />
 
       <div className="lg:flex">
-        <SideMenu isMobile={isMobile} />
-
-        <div className="flex flex-col w-full max-w-[1536px] xl:mx-auto">
-          <h1 className="lg:m-10 m-5 mx-auto text-5xl font-bold leading-[56px] text-quaternary">
-            Mensagens
+        {!isMobile ? (
+          <SideMenu
+            isMobileProp={false}
+            isOwnerProp={false}
+            notifications={dataNot}
+          />
+        ) : (
+          ''
+        )}
+        <div className="flex flex-col w-full max-w-[1232px] xl:mx-auto">
+          <h1 className="text-2xl md:text-5xl text-quaternary font-bold mt-28 ml-8">
+            Notificações
           </h1>
-
-          <div className="lg:flex lg:mx-10 mx-auto mb-10">
-            <div>
-              <Image
-                src={'/images/foto-message-card.png'}
-                alt={''}
-                width={260}
-                height={160}
-              />
-            </div>
-            <div className="mx-5 my-auto">
-              <h2 className="lg:text-3xl my-5 text-quaternary font-bold leading-6">
-                Rua Eliú Araujo, 45
-              </h2>
-              <p className="text-2xl text-quaternary">Cassino</p>
-              <p className="text-2xl text-quaternary">Rio Grande - RS</p>
-            </div>
-          </div>
-
-          <div className="flex justify-center mb-5">
-            <Pagination totalPages={0} page={0} onPageChange={function (newPageIndex: number): void {
-              throw new Error('Function not implemented.');
-            } } />
+          <div className="flex justify-center">
+            <Pagination totalPages={0} />
           </div>
 
           <div className="mx-10">
-            {propertyMessages.map(({ email, message, phone, name }: any) => (
+            {dataNot.map(({ description, _id, title }: INotification) => (
               <NotificationCard
-                key={name}
-                name={name}
-                email={email}
-                phone={phone}
-                message={message}
+                key={_id}
+                description={description}
+                title={title}
+                _id={_id}
               />
             ))}
           </div>
 
           <div className="flex justify-center mb-10">
-            <Pagination totalPages={0} page={0} onPageChange={function (newPageIndex: number): void {
-              throw new Error('Function not implemented.');
-            } } />
+            <Pagination totalPages={0} />
           </div>
         </div>
       </div>
@@ -87,15 +67,21 @@ const MessageNotifications: NextPageWithLayout = ({
 export default MessageNotifications;
 
 export async function getStaticProps() {
-  const propertyMessages = await fetch(
-    'https://raw.githubusercontent.com/Carlos-Teixeira-Jr/data/main/data/messages.json'
-  )
-    .then((res) => res.json())
-    .catch(() => ({}));
+  const notifications = await fetch(
+    `http://localhost:3001/notification/64da04b6052b4d12939684b0`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+
+  const dataNot = await notifications.json();
 
   return {
     props: {
-      propertyMessages,
+      dataNot,
     },
   };
 }
