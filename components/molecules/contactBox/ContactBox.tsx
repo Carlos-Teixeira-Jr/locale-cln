@@ -94,10 +94,11 @@ const ContactBox: React.FC<IContactBox> = (
       </div>
 
       {modalIsOpen && (
-        <div className=' z-50'>
+        <div className=''>
           <MessageModal
             isOpen={modalIsOpen}
             setModalIsOpen={handleModalClose}
+            propertyInfo={propertyID}
           />
         </div>
         

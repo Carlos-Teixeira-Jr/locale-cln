@@ -16,6 +16,7 @@ const StaticMap: FC<StaticMapProps> = ({ lat, lng, width, height, onClick }) => 
   const [error, setError] = useState(false);
   const googleStaticMapUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${lat},${lng}&zoom=15&size=${width}x${height}&markers=${lat},${lng}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`
 
+  console.log("🚀 ~ file: map.tsx:19 ~ NEXT_PUBLIC_GOOGLE_MAPS_API_KEY:", process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY)
   return (
     <div className='relative'>
       <div id='backdrop' className={`bg-black absolute w-full h-full lg:w-full opacity-50 lg:h-[${height}]`}></div>

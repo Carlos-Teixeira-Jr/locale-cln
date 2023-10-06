@@ -1,5 +1,5 @@
 import { NextPageContext } from 'next';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   IAddress,
   IData,
@@ -18,10 +18,8 @@ import PropertyInfoTop from '../../components/molecules/property/propertyInfoTop
 import Footer from '../../components/organisms/footer/footer';
 import Header from '../../components/organisms/header/header';
 import PropertyInfo from '../../components/organisms/propertyInfo/PropertyInfo';
-import useTrackLocation from '../../hooks/trackLocation';
 import { NextPageWithLayout } from '../page';
 import { getSession } from 'next-auth/react';
-import { fetchJson } from '../../common/utils/fetchJson';
 import PropertyCard from '../../components/molecules/cards/propertyCard/PropertyCard';
 
 export interface IIDPage {
@@ -50,12 +48,13 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
   isFavourite,
   relatedProperties
 }: any) => {
-  console.log("🚀 ~ file: [id].tsx:53 ~ isFavourite:", isFavourite)
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const handleModalOpenChange = (isOpen: boolean) => {
-    setIsModalOpen(isOpen);
-  };
+
+  useEffect(() => {
+    console.log("🚀 ~ file: [id].tsx:61 ~ isModalOpen:", isModalOpen)
+  }, [isModalOpen])
+  
 
   const lat = property.geolocation ? property.geolocation.coordinates[0] : null;
   const long = property.geolocation ? property.geolocation.coordinates[1] : null;
@@ -73,12 +72,20 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
 
   return (
     <>
-      <div className={`fixed top-0 md:w-full ${isModalOpen ? '' : 'z-40'}`}>
+      <div className={`fixed top-0 md:w-full ${isModalOpen ? 'z-40' : 'z-50'}`}>
         <Header />
       </div>
       <div className="flex flex-col max-w-5xl items-center mx-auto lg:pt-10 pt-[90px]">
-        <div className="lg:mx-auto mx-5 mb-[150px] md:mb-5 mt-5 z-0">
-          <Gallery propertyID={property} isModalOpen={isModalOpen} />
+        <div className={`lg:mx-auto mx-5 mb-36 md:mb-5 mt-5 ${
+          isModalOpen ?
+          'z-50' :
+          'z-30'
+        }`}>
+          <Gallery 
+            propertyID={property} 
+            isModalOpen={isModalOpen} 
+            onGalleryModalOpen={(isOpen: boolean) => setIsModalOpen(isOpen)}
+          />
         </div>
         <div className="lg:flex w-full justify-between">
           <PropertyInfoTop propertyID={property} />
@@ -162,7 +169,6 @@ export async function getServerSideProps(context: NextPageContext) {
 
     if (fetchFavourites.ok) {
       const favourites = await fetchFavourites.json();
-      console.log("🚀 ~ file: [id].tsx:165 ~ getServerSideProps ~ favourites:", favourites)
 
       if (favourites.length > 0) {
 
