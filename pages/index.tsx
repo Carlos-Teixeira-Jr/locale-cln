@@ -145,7 +145,7 @@ const Home: NextPageWithLayout<IHome> = ({
                         }: any) => (
                           <PropertyCard
                             key={_id}
-                            prices={prices[0].value}
+                            prices={prices}
                             description={description}
                             images={images}
                             location={address.streetName}

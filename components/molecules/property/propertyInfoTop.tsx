@@ -58,9 +58,9 @@ const PropertyInfoTop: React.FC<IInfoTop> = ({ propertyID }: any) => {
   ];
   
   return (
-    <div className="md:m-5 lg:mx-auto w-2/3">
+    <div className="m-5 lg:mx-auto md:w-2/3">
       <div className="md:m-5 lg:mx-auto">
-        <div className="lg:w-fit font-normal text-sm leading-5 text-quaternary">
+        <div className="lg:w-fit font-normal text-xs md:text-sm text-quaternary mb-2 md:mb-0">
           <div className="grid grid-flow-col justify-start">
             <p className="mr-2"> {`${capitalizeFirstLetter(propertyID.adType)} >`}</p>
             <p className="mr-2"> {`${capitalizeFirstLetter(propertyID.address.uf)} >`}</p>
@@ -69,15 +69,15 @@ const PropertyInfoTop: React.FC<IInfoTop> = ({ propertyID }: any) => {
           </div>
         </div>
         <div className="flex flex-col">
-          <h3 className="md:text-3xl font-bold text-quaternary md:mb-[52px] lg:mb-0">
+          <h3 className="md:text-3xl font-bold text-quaternary mt-2 md:mb-12 lg:mb-0">
             {propertyID.propertyType}, {capitalizeFirstLetter(propertyID.address.streetName)},{' '}
             {capitalizeFirstLetter(propertyID.address.streetNumber)} -{' '}
             {capitalizeFirstLetter(propertyID.address.neighborhood)}
           </h3>
-          <h1 className="lg:text-6xl mt-5 text-4xl font-extrabold text-quaternary">{`R$ ${propertyID.prices[0].value},00`}</h1>
+          <h1 className="lg:text-6xl mt-2 md:mt-5 text-4xl font-extrabold text-quaternary">{`R$ ${propertyID.prices[0].value},00`}</h1>
         </div>
       </div>
-      <div className="flex flex-row items-end text-quaternary font-semibold lg:text-2xl justify-between">
+      <div className="flex flex-row items-end text-quaternary font-semibold lg:text-2xl justify-between mt-2 md:mt-0">
         {getSections(
           propertyID.size.area,
           propertyID.metadata.find((item: IMetadata) => item.type === 'bedroom'),

@@ -23,8 +23,9 @@ export interface IFormData {
 
 const MessageModal: React.FC<IMessageModal> = ({ isOpen, setModalIsOpen, propertyInfo }) => {
 
-  const ownerName = propertyInfo ? capitalizeFirstLetter(propertyInfo?.ownerInfo.name) : 'o responsável pelo imóvel';
+  const ownerName = capitalizeFirstLetter(propertyInfo?.ownerInfo.name) ;
   const portalClassName = `modal-${uuidv4()}`;
+  
   const [formData, setFormData] = useState<IFormData>({
     name: '',
     phone: '',
@@ -85,54 +86,53 @@ const MessageModal: React.FC<IMessageModal> = ({ isOpen, setModalIsOpen, propert
 
   const handleModalField = async (event: any) => {
     event.preventDefault();
-
-    setErrors({
-      name: '',
-      email: '',
-      phone: '',
-      message: ''
-    });
-
-    const errorMessage = 'Este campo é obrigatório.'
-    const newErrors = { name: '', phone: '', email: '', message: '' };
-
-    if (!formData.name) newErrors.name = errorMessage;
-    if (!formData.email) newErrors.email = errorMessage;
-    if (!validator.isEmail(formData.email)) newErrors.email = errorMessage;
-    if (!formData.phone.length) newErrors.phone = errorMessage;
-    if (!formData.message) newErrors.message = errorMessage;
-
+  
+    const errorMessage = 'Este campo é obrigatório.';
+    const newErrors = {
+      name: !formData.name ? errorMessage : '',
+      email: !formData.email ? errorMessage : !validator.isEmail(formData.email) ? errorMessage : '',
+      phone: !formData.phone.length ? errorMessage : '',
+      message: !formData.message ? errorMessage : '',
+    };
+  
     setErrors(newErrors);
-
-    if (
-      newErrors.name ||
-      newErrors.email ||
-      newErrors.phone ||
-      newErrors.message
-    ) {
-      toast.error('Você esqueceu de preencher algum campo obrigatário!');
-    }
-
-    try {
-      console.log("🚀 ~ file: messageModal.tsx:121 ~ handleModalField ~ formData:", formData)
-
-      const baseUrl = process.env.BASE_API_URL;
-      const response = await fetch(`${baseUrl}/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        toast.success('Sua mensagem foi enviada ao proprietário do imóvel com sucesso!');
+  
+    const hasErrors = Object.values(newErrors).some((item) => item !== '');
+  
+    if (hasErrors) {
+      toast.error('Você esqueceu de preencher algum campo obrigatório!');
+    } else {
+      try {
+        const body = {
+          ownerId: propertyInfo.owner,
+          propertyId: propertyInfo._id,
+          name: formData.name,
+          phone: formData.phone,
+          email: formData.email,
+          message: formData.message,
+        };
+  
+        const response = await fetch(`http://localhost:3001/message`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(body),
+        });
+  
+        if (response.ok) {
+          toast.success('Sua mensagem foi enviada ao proprietário do imóvel com sucesso!');
+          setModalIsOpen(false);
+        } else {
+          toast.error("Houve um problema ao tentar enviar a mensagem. Tente novamente mais tarde.", { className: 'z-[60]' });
+        }
+      } catch (error) {
+        console.log(error);
+        toast.error('Não foi possível se conectar ao servidor. Por favor, tente novamente mais tarde.', { className: 'z-[60]' });
       }
-    } catch (error) {
-      console.log(error);
-      toast.error('Não foi possível se conectar ao servidor. Por favor, tente novamente mais tarde.');
     }
   };
+  
 
   return (
     <Modal
@@ -148,10 +148,10 @@ const MessageModal: React.FC<IMessageModal> = ({ isOpen, setModalIsOpen, propert
           right: 0,
           bottom: 0,
           backgroundColor: 'rgba(255, 255, 255, 0.75)',
-          zIndex: 999999
+          zIndex: 50
         },
         content: {
-          zIndex: 9999999999,
+          zIndex: 40,
           top: '50%',
           left: '50%',
           right: 'auto',
@@ -174,7 +174,7 @@ const MessageModal: React.FC<IMessageModal> = ({ isOpen, setModalIsOpen, propert
     >
       <div className="bg-quinary">
         <h1 className="lg:w-fit lg:h-fit m-1 mt-0 font-bold md:text-xl text-quaternary">
-          Mande uma mensagem para {ownerName}
+          Mande uma mensagem para {ownerName ? ownerName : 'o responsável pelo imóvel.'}
         </h1>
 
         {inputs.map((input) => (

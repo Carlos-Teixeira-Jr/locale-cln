@@ -1,25 +1,29 @@
 import { GoogleMap, LoadScript, MarkerF } from '@react-google-maps/api';
 import { FC } from 'react';
+import { IGeolocation } from '../../../common/interfaces/property/propertyData';
 
 interface DynamicMapProps {
-  lat: number;
-  lng: number;
+  geolocation: IGeolocation
 }
 
-const DynamicMap: FC<DynamicMapProps> = ({ lat, lng }) => {
+const DynamicMap: FC<DynamicMapProps> = ({ 
+  geolocation 
+}) => {
+  
   const containerStyle = {
-    width: '100%',
+    width: 'full',
     height: '400px',
+    display: 'flex'
   };
 
   const center = {
-    lat: lat,
-    lng: lng,
+    lat: geolocation.coordinates[1],
+    lng: geolocation.coordinates[0],
   };
 
   const markerPosition = {
-    lat: lat,
-    lng: lng,
+    lat: geolocation.coordinates[1],
+    lng: geolocation.coordinates[0],
   };
 
   return (

@@ -50,15 +50,6 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
 }: any) => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  useEffect(() => {
-    console.log("🚀 ~ file: [id].tsx:61 ~ isModalOpen:", isModalOpen)
-  }, [isModalOpen])
-  
-
-  const lat = property.geolocation ? property.geolocation.coordinates[0] : null;
-  const long = property.geolocation ? property.geolocation.coordinates[1] : null;
-
   const [backdropActive, setBackdropActive] = useState(true);
 
   const handleMapButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -103,7 +94,7 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
           />
         </div>
         {/* IMÓVEIS RELACIONADOS */}
-        <div className="sm:grid sm:grid-cols-1 md:grid md:grid-cols-2 lg:flex lg:flex-row justify-center gap-9 mx-14 my-10 inline w-full">
+        <div className="grid sm:grid-cols-1 md:grid md:grid-cols-2 lg:flex lg:flex-row justify-center gap-9 mx-14 my-10 w-full">
           {relatedProperties.docs.length > 0 && relatedProperties?.docs.map((prop: IData) => (
             <PropertyCard
               key={prop._id}
@@ -121,11 +112,10 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
         <div className="lg:w-full md:h-fit mx-auto md:mb-32 drop-shadow-xl">
           <div id="static-map">
             <StaticMap
-              lat={lat}
-              lng={long}
               width={1312}
               height={223}
               onClick={handleMapButtonClick}
+              geolocation={property.geolocation}
             />
           </div>
           <div
@@ -136,7 +126,9 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
                 : 'md:w-full h-fit my-10 mx-auto md:mb-[150px] drop-shadow-xl'
             }
           >
-            <DynamicMap lat={lat} lng={long} />
+            <DynamicMap 
+              geolocation={property.geolocation}
+            />
           </div>
         </div>
       </div>
