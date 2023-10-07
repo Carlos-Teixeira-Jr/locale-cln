@@ -42,9 +42,9 @@ const LoginCard = () => {
   });
 
   useEffect(() => {
-    setEmailVerificationData({...emailVerificationData, email: email })
-  }, [email])
-  
+    // setEmailVerificationData({...emailVerificationData, email: email })
+  }, [email]);
+
   const handleTermsCheckbox = () => {
     setTerms(!terms);
   };
