@@ -22,6 +22,7 @@ const LinkCopiedTooltip: React.FC<ILinkCopiedTooltip> = ({
       events={['click']}
       content="Link copiado!"
       delayHide={5000}
+      noArrow
     />
   );
 };

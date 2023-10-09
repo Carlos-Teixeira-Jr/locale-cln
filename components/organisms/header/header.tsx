@@ -4,10 +4,15 @@ import { useEffect, useRef, useState } from 'react';
 import DropdownMenu from '../../atoms/dropdowns/dropdownMenu';
 import MenuIcon from '../../atoms/icons/menuIcon';
 import LocaleLogo from '../../atoms/logos/locale';
+import { signOut, useSession } from 'next-auth/react';
+import UserIcon from '../../atoms/icons/userIcon';
+import Image from 'next/image';
 
 export interface IHeader extends React.ComponentPropsWithoutRef<'header'> {}
 
 const Header: React.FC<IHeader> = () => {
+  
+  const { data: session } = useSession() as any;
   const router = useRouter();
   const [isBuy, setIsBuy] = useState(false);
   const [isRent, setIsRent] = useState(false);
@@ -41,14 +46,14 @@ const Header: React.FC<IHeader> = () => {
 
   return (
     <div>
-      <div className="sticky top-0 w-auto z-10 justify-between flex flex-row bg-tertiary h-14 shadow-md mr-6 ml-6 mt-8 p-2 rounded-[50px]">
+      <div className="sticky top-0 w-full md:w-auto z-40 justify-between grid grid-cols-2 md:grid md:grid-cols-3 bg-tertiary h-fit shadow-md mr-6 ml-6 mt-8 p-2 rounded-[50px]">
         <Link
           href="/"
           className="relative flex items-center cursor-pointer my-auto ml-4"
         >
           <LocaleLogo />
         </Link>
-        <div className="hidden lg:flex lg:flex-row lg:items-center justify-between space-x-8 text-lg ml-5 md:ml-0 font-bold text-quaternary">
+        <div className="hidden lg:flex lg:flex-row lg:items-center justify-between space-x-2 text-lg ml-5 md:ml-0 font-bold text-quaternary">
           <Link
             className={`cursor-pointer ${
               isBuy
@@ -76,21 +81,47 @@ const Header: React.FC<IHeader> = () => {
             Anunciar
           </Link>
         </div>
-        <div className="flex flex-row items-center justify-end ">
-          <Link href="/login">
-            <button className="bg-primary justify-self-end cursor-pointer text-tertiary rounded-3xl font-normal py-1 text-xl w-[100px] md:w-[124px] mr-2 shadow-md">
-              Entrar
-            </button>
-          </Link>
-          <div ref={ref as any} onClick={() => setOpen(!open)}>
-            <button className="visible md:hidden cursor-pointer decoration-transparent">
-              <MenuIcon />
-            </button>
-          </div>
+        <div className="flex flex-row items-center justify-end">
+          {session ? (
+            <div className='flex gap-2'>
+              <p className='my-auto mx-2'>{session.user?.data.username}</p>
+              <Link href={'/admin'}>
+                {session.user.data.picture!! ? (
+                  <Image
+                    src={session.user?.data.picture!!}
+                    alt={'Admin image'}
+                    width={50}
+                    height={50}
+                    className="border border-primary rounded-full w-12 h-12"
+                  />
+                ) : (
+                  <UserIcon
+                    className="border border-secondary rounded-full w-10 h-10 p-1 bg-white"
+                    fill='#F75D5F'
+                  />
+                )}
+              </Link>
+              <button className='my-auto cursor-pointer mx-2 text-primary font-semibold text-xl' onClick={() => signOut()}>Sair</button>
+            </div>
+          ) : (
+            <>
+              <Link href="/login">
+                <button className="bg-primary justify-self-end cursor-pointer text-tertiary rounded-3xl font-normal py-1 text-xl w-[100px] md:w-[124px] mr-2 shadow-md">
+                  Entrar
+                </button>
+              </Link>
+              <div ref={ref as any} onClick={() => setOpen(!open)}>
+                <button className="visible md:hidden cursor-pointer decoration-transparent">
+                  <MenuIcon />
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </div>
       {open && <DropdownMenu />}
     </div>
   );
 };
+
 export default Header;

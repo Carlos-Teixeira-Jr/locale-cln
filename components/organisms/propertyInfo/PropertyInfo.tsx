@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import React, { MouseEvent, useState } from 'react';
 import 'react-tooltip/dist/react-tooltip.css';
 import {
+  IData,
   IMetadata,
   IPrices,
 } from '../../../common/interfaces/property/propertyData';
@@ -10,30 +11,38 @@ import FavouritedIcon from '../../atoms/icons/favouritedIcon';
 import UnfavouritedIcon from '../../atoms/icons/unfavouritedIcon';
 import CalculatorModal from '../../atoms/modals/calculatorModal';
 import LinkCopiedTooltip from '../../atoms/tooltip/Tooltip';
+import { useSession } from 'next-auth/react';
+import { toast } from 'react-toastify';
+import { capitalizeFirstLetter } from '../../../common/utils/strings/capitalizeFirstLetter';
+import FavouritePropertyTooltip from '../../atoms/tooltip/favouritePropertyTooltip';
+import HeartIcon from '../../atoms/icons/heartIcon';
+import { useIsMobile } from '../../../hooks/useIsMobile';
 
 export interface ITooltip {
   globalEventOff: string;
 }
 
 export interface IPropertyInfo {
-  propertyID: {
-    numBedrooms?: IMetadata;
-    numBathrooms: IMetadata;
-    numGarage: IMetadata;
-    description: string;
-    prices: IPrices;
-    tags: string[];
-    condominiumTags: string[];
-    acceptFunding?: boolean;
-  };
+  property: IData;
+  isFavourite: boolean
 }
 
-const PropertyInfo: React.FC<IPropertyInfo> = ({ propertyID }: any) => {
-  const [tooltipIsVisible, setTooltipIsVisible] = useState(false);
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [favourited, setFavourited] = useState(false);
-  const router = useRouter();
+const PropertyInfo: React.FC<IPropertyInfo> = ({
+  property,
+  isFavourite
+}) => {
 
+  const session = useSession() as any;
+  const status = session.status;
+  const userIsLogged = status === 'authenticated' ? true : false;
+  const userId = session?.data?.user?.data?._id;
+  const [tooltipIsVisible, setTooltipIsVisible] = useState(false);
+  const [favPropTooltipIsVisible, setFavPropTooltipIsVisible] = useState(false);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [favourited, setFavourited] = useState(isFavourite);
+  const router = useRouter();
+  const isMobile = useIsMobile();
+  
   const handleCopy = async () => {
     setTooltipIsVisible(true);
 
@@ -55,81 +64,96 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({ propertyID }: any) => {
     setTooltipIsVisible(false);
   };
 
+  const hideFavTooltip = () => {
+    setFavPropTooltipIsVisible(false)
+  }
+
   const handleCalculatorBtnClick = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     setModalIsOpen(true);
   };
 
-  const handleFavouriteBtnClick = (event: MouseEvent<HTMLButtonElement>) => {
+  const handleFavouriteBtnClick = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    setFavourited(!favourited);
+    if (!userIsLogged) {
+      setFavPropTooltipIsVisible(true);
+    } else {
+      const { _id: propertyId } = property;
+      try {
+        const response = await fetch(`http://localhost:3001/user/edit-favourite`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            userId,
+            propertyId
+          })
+        });
+    
+        if (response.ok) {
+          const newFavoutedList: string[] = await response.json();
+          const isFavourited = newFavoutedList.includes(propertyId);
+    
+          if (isFavourited) {
+            setFavourited(true);
+            toast.success('Imóvel favoritado com sucesso.')
+          } else {
+            setFavourited(false);
+            toast.success('Imóvel removido dos favoritos.')
+          }
+        } else {
+          toast.error('Houve um erro ao favoritar o imóvel.')
+        }
+      } catch (error) {
+        toast.error('Não foi possível se conectar ao servidor. Tente novamente mais tarde.')
+      }
+    }
   };
 
   const getMetadataValue = (type: string) => {
+    const value = property.metadata?.find((metadata: IMetadata) => metadata.type === type)?.amount;
     return (
-      propertyID.metadata?.find((metadata: any) => metadata.type === type)
-        ?.value || 0
+      value
     );
   };
 
   return (
     <>
-      <div className="md:grid md:grid-cols-3 md:max-w-full md:mx-5 lg:w-fit md:top-[1095px] md:left-[69px] bg-tertiary drop-shadow-lg">
+      <div className="md:grid md:grid-cols-3 py-2 md:py-10 px-5 lg:w-full bg-tertiary drop-shadow-lg">
         <div className="col-span-2">
-          <h1 className="font-extrabold text-quaternary md:text-[40px] text-[25px] leading-[49px] pt-6 pl-3.5">
+          <h1 className="font-extrabold text-quaternary md:text-4xl text-2xl">
             Características do imóvel
           </h1>
-          <h3 className="font-extrabold text-quaternary text-[32px] leading-[39px] pl-3.5 pt-6">
+          <h3 className="font-extrabold text-quaternary text-3xl pt-6 pb-2">
             Dependências
           </h3>
           <div className="lg:grid md:grid-cols-6 md:gap-4 flex">
-            <div className="ml-4 flex flex-col">
-              <div className="font-normal text-xl text-quaternary flex justify-between ">
+            <div className="flex flex-col">
+              <div className="font-normal text-xl text-quaternary flex md:justify-between gap-2">
                 {getMetadataValue('bedroom')}
-                <span> quarto(s)</span>
+                <span>quarto(s)</span>
               </div>
-              <div className="font-normal text-xl text-quaternary flex justify-between">
+              <div className="font-normal text-xl text-quaternary flex justify-between gap-2">
                 {getMetadataValue('bathroom')}
-                <span> banheiro(s)</span>
+                <span>banheiro(s)</span>
               </div>
-              <div className="font-normal text-xl text-quaternary flex justify-between">
-                {getMetadataValue('parkingSpaces')}
-                <span> garagem(s)</span>
+              <div className="font-normal text-xl text-quaternary flex justify-between gap-2">
+                {getMetadataValue('garage')}
+                <span>garagem(s)</span>
               </div>
             </div>
-            {/* <div className="ml-4 flex flex-col">
-              {propertyID.tags &&
-                propertyID.tags.map((tag: string, idx: number) => {
-                  <span
-                    className="font-normal text-xl text-quaternary"
-                    key={idx}
-                  >
-                    {tag}
-                  </span>;
-                })}
-            </div>
-            <div className="ml-4 flex flex-col">
-              {propertyID.condominiumTags &&
-                propertyID.condominiumTags.map((tag: string, idx: number) => {
-                  <span
-                    className="font-normal text-xl text-quaternary"
-                    key={idx}
-                  >
-                    {tag}
-                  </span>;
-                })}
-            </div> */}
           </div>
-          <div className="pl-3.5 pt-6">
-            <h3 className="font-extrabold text-quaternary text-[32px] leading-[39px] pb-4">
+          <div className="pt-6">
+            <h3 className="font-extrabold text-quaternary text-3xl pb-2 md:pb-4">
               Descrição
             </h3>
             <p className="font-normal text-xl text-quaternary text-justify">
-              {propertyID.description}
+              {capitalizeFirstLetter(property.description)}
             </p>
           </div>
         </div>
-        <div className="md:grid md:grid-col grid md:my-[140px] my-[40px] md:mx-[62px] justify-center">
+        <div className="grid grid-cols-2 md:grid-cols-1 mt-10 md:my-auto md:mx-14 justify-items-center">
           <LinkCopiedTooltip
             open={tooltipIsVisible}
             onRequestClose={hideTooltip}
@@ -137,24 +161,37 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({ propertyID }: any) => {
           />
           <button
             id="tooltip"
-            className="lg:w-[320px] h-[67px] bg-primary p-2.5 rounded-[10px] text-tertiary text-xl font-extrabold mb-6"
+            className="lg:w-[320px] w-40 h-12 md:h-[67px] bg-primary p-2.5 rounded-[10px] text-tertiary text-xl font-extrabold mb-6"
             onClick={handleCopy}
           >
             Compartilhar
           </button>
 
-          {propertyID.acceptFunding && (
+          {property.acceptFunding && (
             <button
-              className="lg:w-[320px] h-[67px] bg-primary p-2.5 rounded-[10px] text-tertiary text-xl font-extrabold mb-6 md:flex md:items-center md:justify-center"
+              className="lg:w-80 md:h-16 h-12 bg-primary p-2.5 rounded-[10px] text-tertiary text-xl font-extrabold mb-6 md:flex md:items-center md:justify-center"
               onClick={handleCalculatorBtnClick}
             >
               Simular Financiamento
             </button>
           )}
 
+          {isFavourite && (
+            <FavouritePropertyTooltip 
+              open={favPropTooltipIsVisible} 
+              onRequestClose={hideFavTooltip} 
+              anchorId={'fav-property-tooltip'}            
+            />
+          )}
+
           <button
-            className="lg:w-[320px] h-[67px] bg-primary p-2.5 rounded-[10px] text-tertiary text-xl font-extrabold flex justify-center mb-5"
-            onClick={handleFavouriteBtnClick}
+            id='fav-property-tooltip'
+            className={`lg:w-80 w-40 h-12 md:h-16 bg-primary p-2.5 rounded-[10px] text-tertiary text-xl font-extrabold flex justify-center mb-5 ${
+              userIsLogged ?
+              'opacity opacity-100 cursor-pointer' :
+              'opacity-50'
+            }`}
+            onClick={handleFavouriteBtnClick} 
           >
             <p className="my-auto pr-4">Favoritar</p>
             {favourited ? <FavouritedIcon /> : <UnfavouritedIcon />}
@@ -165,7 +202,7 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({ propertyID }: any) => {
           <CalculatorModal
             isOpen={modalIsOpen}
             setModalIsOpen={setModalIsOpen}
-            props={`R$ ${propertyID.prices[0].value}`}
+            props={`R$ ${property.prices[0].value}`}
           />
         )}
       </div>
