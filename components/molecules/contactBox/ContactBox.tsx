@@ -5,13 +5,11 @@ import MessageModal from '../../atoms/modals/messageModal';
 import { useSession } from 'next-auth/react';
 import UserIcon from '../../atoms/icons/userIcon';
 import { capitalizeFirstLetter } from '../../../common/utils/strings/capitalizeFirstLetter';
+import { IData } from '../../../common/interfaces/property/propertyData';
 Modal.setAppElement('#__next');
 
 export interface IContactBox {
-  propertyID: {
-    src: string;
-    nameA: string;
-  };
+  propertyID: IData;
 }
 
 const ContactBox: React.FC<IContactBox> = (
