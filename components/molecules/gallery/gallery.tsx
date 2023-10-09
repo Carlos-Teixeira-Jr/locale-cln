@@ -196,7 +196,7 @@ const Gallery: React.FC<IGallery> = ({ propertyID, isModalOpen, onGalleryModalOp
           {modalIsOpen && (
             <GalleryModal 
               setModalIsOpen={setModalIsOpen} 
-              props={propertyID} 
+              property={propertyID} 
               selectedImage={selectedImage}
             />
           )}
