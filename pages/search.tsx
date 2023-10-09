@@ -241,31 +241,30 @@ const Search: NextPageWithLayout<ISearch> = ({
                     mobileFilterIsOpen ? 'hidden' : ''
                   }`}
                 >
-                  {propertyInfo.docs &&
-                    propertyInfo?.docs.map(
-                      ({
-                        _id,
-                        prices,
-                        description,
-                        address,
-                        images,
-                        metadata,
-                        highlighted,
-                      }: IData) => (
-                        <PropertyCard
-                          key={_id}
-                          prices={prices[0]}
-                          description={description}
-                          images={images}
-                          location={address.streetName}
-                          bedrooms={metadata[0].amount}
-                          bathrooms={metadata[1].amount}
-                          parking_spaces={metadata[2].amount}
-                          _id={_id}
-                          highlighted={highlighted}
-                        />
-                      )
-                    )}
+                  {propertyInfo.docs && propertyInfo?.docs.map(
+                    ({
+                      _id,
+                      prices,
+                      description,
+                      address,
+                      images,
+                      metadata,
+                      highlighted,
+                    }: IData) => (
+                      <PropertyCard
+                        key={_id}
+                        prices={prices}
+                        description={description}
+                        images={images}
+                        location={address.streetName}
+                        bedrooms={metadata[0].amount}
+                        bathrooms={metadata[1].amount}
+                        parking_spaces={metadata[2].amount}
+                        id={_id}
+                        highlighted={highlighted}
+                      />
+                    )
+                  )}
                 </div>
               ) : (
                 <div

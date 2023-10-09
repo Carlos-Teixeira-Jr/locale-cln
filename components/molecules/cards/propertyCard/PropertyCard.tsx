@@ -14,20 +14,20 @@ import PreviousIcon from '../../../atoms/icons/previousIcon';
 import formatCurrency from '../../../atoms/masks/currencyFormat';
 
 export interface IPropertyCard {
-  _id: string;
-  prices: IPrices;
+  id: string;
+  prices: IPrices[];
   description: string;
   bedrooms?: number;
   bathrooms?: number;
   parking_spaces?: number;
   images: string[];
-  location: string;
+  location?: string;
   favorited?: boolean;
   highlighted: boolean;
 }
 
 const PropertyCard: React.FC<IPropertyCard> = ({
-  _id,
+  id,
   prices,
   description,
   bedrooms,
@@ -38,8 +38,9 @@ const PropertyCard: React.FC<IPropertyCard> = ({
   favorited,
   highlighted,
 }) => {
-  const { data: session } = useSession() as any;
-  const userId = session?.user.data._id;
+
+  const {data: session} = useSession() as any;
+  const userId = session?.user.data.id;
   const [currentIndex, setCurrentIndex] = useState(0);
   const [expanded, setExpanded] = useState(false);
   const [isExpandable, setIsExpandable] = useState(false);
@@ -86,7 +87,7 @@ const PropertyCard: React.FC<IPropertyCard> = ({
 
   const memoizedCardInfos = useMemo(() => {
     return {
-      _id,
+      id,
       prices,
       description,
       bedrooms,
@@ -94,27 +95,32 @@ const PropertyCard: React.FC<IPropertyCard> = ({
       parking_spaces,
       location,
     };
-  }, [_id, prices, description, bedrooms, bathrooms, parking_spaces, location]);
+  },[
+    id, 
+    prices, 
+    description, 
+    bedrooms, 
+    bathrooms, 
+    parking_spaces, 
+    location
+  ]);
 
-  const price = prices.value;
+  const price = prices[0].value;
   const formattedPrice = formatCurrency(price);
 
   const handleFavouriteIcon = async () => {
     try {
-      toast.loading(`Enviando...`);
-      const response = await fetch(
-        `http://localhost:3001/user/edit-favourite`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            userId,
-            propertyId: _id,
-          }),
-        }
-      );
+      toast.loading(`Enviando...`)
+      const response = await fetch(`http://localhost:3001/user/edit-favourite`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          userId,
+          propertyId: id
+        })
+      });
 
       if (response.ok) {
         toast.dismiss();
@@ -136,8 +142,8 @@ const PropertyCard: React.FC<IPropertyCard> = ({
       className={`flex flex-col max-w-[350px] bg-tertiary shadow-lg rounded-[30px] mt-2 cursor-pointer ${
         expanded ? `min-h-[470px] max-h-fit` : 'max-h-[470px]'
       }`}
-    >
-      <Link href={`/property/${_id}`}>
+    > 
+      <Link href={`/property/${id}`}>
         {/* caroussel */}
         <div className="group relative h-[200px]">
           {/* Images */}

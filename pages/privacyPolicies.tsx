@@ -4,9 +4,9 @@ import { NextPageWithLayout } from './page';
 const PrivacyPolicies: NextPageWithLayout = () => {
   return (
     <div className="flex items-center justify-center">
-      <div className="flex justify-center max-w-[1232px]">
-        <div className="text-2xl m-auto">
-          <div className="flex flex-col items-center mb-44 mt-2">
+      <div className="flex justify-center max-w-[1000px] my-20">
+        <div className="text-xl m-auto">
+          <div className="flex flex-col items-center mt-2">
             <h1 className="font-bold mb-5">Política de Privacidade</h1>
             <p className="text-center mt-1">
               Os seguintes termos podem ser mudados sem aviso prévio.

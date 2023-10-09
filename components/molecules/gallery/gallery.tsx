@@ -10,13 +10,19 @@ export interface IGallery {
     images: string[];
   };
   isModalOpen: boolean;
+  onGalleryModalOpen: (isOpen: boolean) => void;
 }
 
-const Gallery: React.FC<IGallery> = ({ propertyID, isModalOpen }: IGallery) => {
+const Gallery: React.FC<IGallery> = ({ propertyID, isModalOpen, onGalleryModalOpen }: IGallery) => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const ref = useRef();
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    onGalleryModalOpen(modalIsOpen);
+  }, [modalIsOpen]);
+  
 
   useEffect(() => {
     document.addEventListener('click', handleClick);

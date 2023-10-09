@@ -34,6 +34,8 @@ const HomeFilter: React.FC<IHomeFilter> = ({
   locationProp,
   ...homeFilterProps
 }) => {
+  console.log("🚀 ~ file: HomeFilter.tsx:37 ~ propertyTypesProp:", propertyTypesProp)
+
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const [isBuy, setIsBuy] = useState(true);
@@ -237,6 +239,7 @@ const HomeFilter: React.FC<IHomeFilter> = ({
   });
 
   return (
+    <>
     <div
       className="flex flex-col md:flex-row gap-4 bg-tertiary lg:p-4 p-3 text-quaternary w-fit md:w-fit lg:h-[355px] rounded-[30px] shadow-lg"
       {...homeFilterProps}
@@ -322,7 +325,7 @@ const HomeFilter: React.FC<IHomeFilter> = ({
                   ? propertyTypesProp?.map(
                       ({ _id, name }: IPropertyTypes, index: number) => (
                         <div
-                          key={index}
+                          key={_id}
                           className="flex hover:bg-quaternary hover:text-tertiary"
                           onClick={() => {
                             if (propertyType.includes(name)) {
@@ -332,7 +335,7 @@ const HomeFilter: React.FC<IHomeFilter> = ({
                             } else {
                               setPropertyType([...propertyType, name]);
                             }
-                          }}
+                          } }
                         >
                           <div className="w-[20px] h-[20px] shrink-0 my-auto border border-quaternary rounded-[3px] bg-tertiary m-2">
                             {propertyType.includes(name) && (
@@ -340,8 +343,7 @@ const HomeFilter: React.FC<IHomeFilter> = ({
                                 width="20"
                                 height="20"
                                 fill="#F5BF5D"
-                                viewBox="40 126 960 960"
-                              />
+                                viewBox="40 126 960 960" />
                             )}
                           </div>
                           <span
@@ -351,6 +353,13 @@ const HomeFilter: React.FC<IHomeFilter> = ({
                           >
                             {name?.charAt(0).toUpperCase() +
                               name?.slice(1).toLowerCase()}
+                          </span>
+                          <span
+                            id={name}
+                            key={_id}
+                            className="translate-x-[1px] w-full h-[50px]  py-3"
+                          >
+                            {name?.charAt(0).toUpperCase() + name?.slice(1).toLowerCase()}
                           </span>
                         </div>
                       )
@@ -497,6 +506,7 @@ const HomeFilter: React.FC<IHomeFilter> = ({
         </button>
       </div>
     </div>
+    </>
   );
 };
 
