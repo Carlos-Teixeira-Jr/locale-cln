@@ -67,7 +67,7 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
         <Header />
       </div>
       <div className="flex flex-col max-w-5xl items-center mx-auto lg:pt-10 pt-[90px]">
-        <div className={`lg:mx-auto mx-5 mb-36 md:mb-5 mt-5 ${
+        <div className={`lg:mx-auto m-5 mb-36 md:mb-5 md:mt-0 lg:mt-5 ${
           isModalOpen ?
           'z-50' :
           'z-30'
@@ -78,12 +78,11 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
             onGalleryModalOpen={(isOpen: boolean) => setIsModalOpen(isOpen)}
           />
         </div>
-        <div className="lg:flex w-full justify-between">
+        <div className="md:flex w-full justify-between">
           <PropertyInfoTop propertyID={property} />
 
           <ContactBox
             propertyID={property}
-            href={`https://api.whatsapp.com/send/?phone=5553991664864&text=Ol%C3%A1%2C+estou+interessado+no+im%C3%B3vel+${property.address}.+Gostaria+de+mais+informa%C3%A7%C3%B5es.&type=phone_number&app_absent=0`}
           />
         </div>
 
@@ -94,7 +93,10 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
           />
         </div>
         {/* IMÓVEIS RELACIONADOS */}
-        <div className="grid sm:grid-cols-1 md:grid md:grid-cols-2 lg:flex lg:flex-row justify-center gap-9 mx-14 my-10 w-full">
+        <div 
+          // className="grid sm:grid-cols-1 md:grid md:grid-cols-2 lg:flex lg:flex-row justify-center gap-9 mx-14 my-10 w-full"
+          className='flex flex-col md:flex-row gap-5 justify-center m-5 lg:my-5 lg:mx-0'
+        >
           {relatedProperties.docs.length > 0 && relatedProperties?.docs.map((prop: IData) => (
             <PropertyCard
               key={prop._id}
@@ -109,7 +111,7 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
             />
           ))}
         </div>
-        <div className="lg:w-full md:h-fit mx-auto md:mb-32 drop-shadow-xl">
+        <div className="w-full md:h-fit mx-auto mb-20 drop-shadow-xl">
           <div id="static-map">
             <StaticMap
               width={1312}
@@ -123,7 +125,7 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
             className={
               backdropActive
                 ? 'hidden'
-                : 'md:w-full h-fit my-10 mx-auto md:mb-[150px] drop-shadow-xl'
+                : 'lg:w-full h-fit my-10 mx-auto drop-shadow-xl'
             }
           >
             <DynamicMap 

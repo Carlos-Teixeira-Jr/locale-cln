@@ -1,5 +1,6 @@
 import React from "react";
 import { Tooltip } from "react-tooltip";
+import { useIsMobile } from "../../../hooks/useIsMobile";
 
 export interface IFavouritePropertyTooltip {
   open: boolean;
@@ -11,10 +12,11 @@ const FavouritePropertyTooltip: React.FC<IFavouritePropertyTooltip> = ({
   anchorId
 }) => {
 
+  const isMobile = useIsMobile();
 
   return (
     <Tooltip
-      place="left"
+      place="top"
       style={{ 
         width: '300px',
         backgroundColor: '#F7F7F6', 

@@ -11,8 +11,8 @@ import Image from 'next/image';
 export interface IHeader extends React.ComponentPropsWithoutRef<'header'> {}
 
 const Header: React.FC<IHeader> = () => {
+  
   const { data: session } = useSession() as any;
-
   const router = useRouter();
   const [isBuy, setIsBuy] = useState(false);
   const [isRent, setIsRent] = useState(false);

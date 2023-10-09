@@ -4,6 +4,7 @@ import Modal from 'react-modal';
 import MessageModal from '../../atoms/modals/messageModal';
 import { useSession } from 'next-auth/react';
 import UserIcon from '../../atoms/icons/userIcon';
+import { capitalizeFirstLetter } from '../../../common/utils/strings/capitalizeFirstLetter';
 Modal.setAppElement('#__next');
 
 export interface IContactBox {
@@ -11,23 +12,26 @@ export interface IContactBox {
     src: string;
     nameA: string;
   };
-  href: string;
 }
 
 const ContactBox: React.FC<IContactBox> = (
   { propertyID }: any,
-  { href }: IContactBox
 ) => {
 
   const session = useSession() as any;
   const profilePicture = session.data?.user?.data?.picture;
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const owner = propertyID.ownerInfo.name;
 
   const handleWhatsappBtnClick = () => {
     const propertyStreet = propertyID.address.streetName;
     const propertyNumber = propertyID.address.streetNumber;
-    const propertyCity = propertyID.address.city;
-    window.open(`https://api.whatsapp.com/send/?phone=5553991775245&text=Ol%C3%A1%2C+estou+interessado+no+im%C3%B3vel+${propertyStreet}%2C+${propertyNumber}%2C+${propertyCity}.+Gostaria+de+mais+informa%C3%A7%C3%B5es.&type=phone_number&app_absent=0`, '_blank');
+    const propertyCity = capitalizeFirstLetter(propertyID.address.city);
+    const whatsappMessage = `Olá, gostaria de obter mais informações sobre o imóvel localizado em ${propertyStreet}, número ${propertyNumber}, na cidade de ${propertyCity}. 🏡✨`;
+
+    const whatsappLink = `https://api.whatsapp.com/send/?phone=5553991775245&text=${encodeURIComponent(whatsappMessage)}&type=phone_number&app_absent=0`;
+
+    window.open(whatsappLink, '_blank');
   };
 
   const buttons = [
@@ -49,7 +53,7 @@ const ContactBox: React.FC<IContactBox> = (
 
   return (
     <>
-      <div className="lg:w-fit md:h-fit md:pt-0 flex md:grid items-center justify-items-center align-middle justify lg:ml-2 mx-5 md:mx-0 mb-5 mt-5">
+      <div className="lg:w-fit md:h-fit md:pt-0 flex flex-col md:flex-row md:grid items-center justify-items-center align-middle justify lg:ml-2 m-5 lg:m-0">
         <div className="flex flex-col md:flex-row w-72 justify-between items-center">
           {profilePicture ? (
             <Image
@@ -67,10 +71,10 @@ const ContactBox: React.FC<IContactBox> = (
           )}
           
           <p className="w-48 h-fit text-quaternary font-extrabold text-2xl md:text-4xl text-center pt-3 md:pt-0 drop-shadow-lg">
-            {propertyID.ownerInfo.name}
+            {owner}
           </p>
         </div>
-        <div className="lg:grid md:grid-rows-2 md:items-center flex flex-col gap-4 md:grid-flow-col md:mt-5">
+        <div className='flex md:flex-col gap-4 mt-5'>
 
           {buttons.map((btn) => (
             <div 

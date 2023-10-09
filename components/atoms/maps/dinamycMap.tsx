@@ -11,7 +11,7 @@ const DynamicMap: FC<DynamicMapProps> = ({
 }) => {
   
   const containerStyle = {
-    width: 'full',
+    width: '100%',
     height: '400px',
     display: 'flex'
   };
@@ -27,11 +27,14 @@ const DynamicMap: FC<DynamicMapProps> = ({
   };
 
   return (
-    <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? ""}>
-      <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={15}>
-        <MarkerF position={markerPosition} />
-      </GoogleMap>
-    </LoadScript>
+    <div>
+      <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? ""}>
+        <GoogleMap mapContainerClassName='w-full h-[200px] md:h-96' center={center} zoom={15}>
+          <MarkerF position={markerPosition} />
+        </GoogleMap>
+      </LoadScript>
+    </div>
+    
   );
 };
 

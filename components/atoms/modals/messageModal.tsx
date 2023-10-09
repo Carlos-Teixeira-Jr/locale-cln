@@ -6,6 +6,7 @@ import validator from 'validator';
 import { toast } from 'react-toastify';
 import { IData } from '../../../common/interfaces/property/propertyData';
 import { capitalizeFirstLetter } from '../../../common/utils/strings/capitalizeFirstLetter';
+import { useIsMobile } from '../../../hooks/useIsMobile';
 Modal.setAppElement('#__next');
 
 export interface IMessageModal {
@@ -25,6 +26,7 @@ const MessageModal: React.FC<IMessageModal> = ({ isOpen, setModalIsOpen, propert
 
   const ownerName = capitalizeFirstLetter(propertyInfo?.ownerInfo.name) ;
   const portalClassName = `modal-${uuidv4()}`;
+  const isMobile = useIsMobile();
   
   const [formData, setFormData] = useState<IFormData>({
     name: '',
@@ -166,7 +168,7 @@ const MessageModal: React.FC<IMessageModal> = ({ isOpen, setModalIsOpen, propert
           marginRight: '-50%',
           transform: 'translate(-50%, -50%)',
           height: 'fit-content',
-          width: 'fit-content',
+          width: isMobile ? '90%' : 'fit-content',
           margin: '0 auto 0 auto',
           boxShadow: '0px 4px 4px 0px rgba(0, 0, 0, 0.25)',
         },
@@ -178,19 +180,19 @@ const MessageModal: React.FC<IMessageModal> = ({ isOpen, setModalIsOpen, propert
         </h1>
 
         {inputs.map((input) => (
-          <div key={input.key} className='p-2'>
+          <div key={input.key} className='py-2 md:p-2'>
             <h2 className="font-bold lg:text-lg text-quaternary h-fit mx-2">{input.label}</h2>
             {input.key === 'message' ? (
               <textarea
                 value={input.value}
-                className='w-full h-fit m-2 mb-0 rounded-[10px] border border-quaternary bg-tertiary p-1 required:border-red-500 mr-0 md:mx-auto text-md text-quaternary font-semibold'
+                className='w-full h-fit md:m-2 mb-0 rounded-[10px] border border-quaternary bg-tertiary p-1 required:border-red-500 mr-0 md:mx-auto text-md text-quaternary font-semibold'
                 onChange={input.onChange}
               />
             ) : (
               <input
                 type='text'
                 value={input.value}
-                className='w-full h-fit m-2 mb-0 rounded-[10px] border border-quaternary bg-tertiary p-1 required:border-red-500 mr-0 md:mx-auto text-xl text-quaternary font-semibold'
+                className='w-full h-fit md:m-2 mb-0 rounded-[10px] border border-quaternary bg-tertiary p-1 required:border-red-500 mr-0 md:mx-auto md:text-xl text-quaternary font-semibold'
                 onChange={input.onChange}
               />
             )}
@@ -200,21 +202,22 @@ const MessageModal: React.FC<IMessageModal> = ({ isOpen, setModalIsOpen, propert
           </div>
         ))}
 
-        <div className="flex flex-col lg:grid lg:grid-cols-2 items-center ml-2">
-          <div className="my-auto flex flex-row align-baseline">
+        <div className="flex flex-col lg:grid items-center">
+          <div className="my-auto flex flex-row align-baseline mb-2">
             <Link
               href="/userTerms"
               target="_blank"
               className="font-normal lg:text-sm text-sm leading-6 text-blue-600"
             >
-              Termos de uso &{'  '}
+              <p className='font-normal lg:text-sm text-sm leading-6 text-blue-600'>Termos de uso & política de privacidade</p>
+              {/* Termos de uso &{'  '}
             </Link>
             <Link
               href="/privacyPolicies"
               target="_blank"
               className="font-normal lg:text-sm text-sm leading-6 text-blue-600 ml-2"
             >
-              politica de privacidade
+              politica de privacidade */}
             </Link>
           </div>
           <div className="justify-center md:mb-2 lg:mb-auto">

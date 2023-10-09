@@ -36,22 +36,23 @@ const PropertyInfoTop: React.FC<IInfoTop> = ({ propertyID }: any) => {
     numGarage: any
   ) => [
     {
-      icon: AreaIcon,
+      // icon: AreaIcon,
+      icon: <AreaIcon/>,
       value: areaValue,
       description: 'm² area',
     },
     {
-      icon: BedroomIcon,
+      icon: <BedroomIcon/>,
       value: numBedrooms.amount,
       description: 'quarto',
     },
     {
-      icon: BathroomIcon,
+      icon: <BathroomIcon/>,
       value: numBathrooms.amount,
       description: 'banheiro',
     },
     {
-      icon: ParkingIcon,
+      icon: <ParkingIcon/>,
       value: numGarage.amount,
       description: 'garagem',
     },
