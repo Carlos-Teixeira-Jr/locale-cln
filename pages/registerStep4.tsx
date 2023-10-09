@@ -1,19 +1,12 @@
-import LocaleLogo from '../components/atoms/logos/locale';
 import LinearStepper from '../components/atoms/stepper/stepper';
 import Footer from '../components/organisms/footer/footer';
 import Header from '../components/organisms/header/header';
-import PasswordForm from '../components/organisms/register/passwordForm';
 import { NextPageWithLayout } from './page';
-import store from 'store';
 import { useRouter } from 'next/router';
 
 const RegisterStep4: NextPageWithLayout = () => {
 
   const router = useRouter();
-  const query = router.query;
-  const urlEmail = query.email as string;
-  const storedData = store.get('propertyData');
-  const email = urlEmail;
 
   return (
     <>

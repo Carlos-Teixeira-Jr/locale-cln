@@ -5,7 +5,9 @@ import Modal from 'react-modal';
 import BathroomIcon from '../../../atoms/icons/bathroomIcon';
 import BedroomIcon from '../../../atoms/icons/bedroomIcon';
 import DotIcon from '../../../atoms/icons/dotIcon';
+import NextCardIcon from '../../../atoms/icons/nextCardIcon';
 import ParkingIcon from '../../../atoms/icons/parkingIcon';
+import PreviousCardIcon from '../../../atoms/icons/previousCardIcon';
 import MessageModal from '../../../atoms/modals/messageModal';
 Modal.setAppElement('#__next');
 
@@ -83,8 +85,8 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
                 className="w-full"
               />
               {highlighted && (
-                <div className='bg-black absolute m-5 rounded-lg bg-opacity-50'>
-                  <p className='text-white p-2 h-fit font-semibold'>Destaque</p>
+                <div className="bg-black absolute m-5 rounded-lg bg-opacity-50">
+                  <p className="text-white p-2 h-fit font-semibold">Destaque</p>
                 </div>
               )}
             </div>
@@ -96,21 +98,7 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
                 className="z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
               >
                 <span className="hidden group-hover:inline-flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-[#D9D9D9]/80 group-hover:bg-white/50 group-focus:outline-none">
-                  <svg
-                    aria-hidden="true"
-                    className="hidden group-hover:block w-5 h-5 text-white sm:w-6 sm:h-6 dark:text-gray-800"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M15 19l-7-7 7-7"
-                    ></path>
-                  </svg>
+                  <PreviousCardIcon />
                   <span className="sr-only">Previous</span>
                 </span>
               </button>
@@ -120,21 +108,7 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
                 className="z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
               >
                 <span className="hidden group-hover:inline-flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-[#D9D9D9]/80 group-hover:bg-white/50 group-focus:outline-none">
-                  <svg
-                    aria-hidden="true"
-                    className="hidden group-hover:block w-5 h-5 text-white sm:w-6 sm:h-6 dark:text-gray-800"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M9 5l7 7-7 7"
-                    ></path>
-                  </svg>
+                  <NextCardIcon />
                   <span className="sr-only">Next</span>
                 </span>
               </button>
@@ -153,7 +127,7 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
             </div>
           </div>
 
-          <div 
+          <div
             // className="md:grid md:grid-rows-4 md:gap-4 md:col-span-2 md:ml-11 my-[17px] mx-[17px] md:mx-[17px]"
             className="md:flex md:flex-col md:gap-4 md:col-span-2 md:ml-11 my-auto mx-[17px] md:mx-[17px]"
           >

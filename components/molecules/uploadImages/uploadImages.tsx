@@ -5,41 +5,53 @@ import { DndProvider, DropTargetMonitor, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { v4 as uuidv4 } from 'uuid';
 import { resetObjectToEmptyStrings } from '../../../common/utils/resetObjects';
+import CameraIcon from '../../atoms/icons/cameraIcon';
+import TrashIcon from '../../atoms/icons/trashIcon';
 
 interface IImages {
   editarImages?: string[];
   onImagesUpdate: (updatedImages: string[]) => void;
   onErrorsInfo: OnErrorInfo
+  imagesInputRef: any
 }
 
 export type OnErrorInfo = {
-  prop: string
-  error: string
-}
+  prop: string;
+  error: string;
+};
 
-const UploadImages = ({ 
+const UploadImages = ({
   editarImages,
   onImagesUpdate,
-  onErrorsInfo
+  onErrorsInfo,
+  imagesInputRef
 }: IImages) => {
+
+  const imagesErrorScroll = useRef(imagesInputRef);
 
   const [images, setImages] = useState<any[]>(editarImages || []);
 
   const [error, setError] = useState<OnErrorInfo>({
     prop: '',
-    error: ''
+    error: '',
   });
+
+  useEffect(() => {
+    if (error.error !== '') {
+      imagesErrorScroll.current.scrollIntoView({ behavior: 'auto', block: 'center' });
+    }
+  }, [error])
 
   useEffect(() => {
     resetObjectToEmptyStrings(error);
     if (onErrorsInfo.prop === 'images') {
       setError(onErrorsInfo);
     }
-  }, [onErrorsInfo]);
+  }, [error, onErrorsInfo]);
 
   useEffect(() => {
-    onImagesUpdate(images.map(image => image.src));
-  }, [images]);
+    onImagesUpdate(images.map((image) => image.src));
+  }, [images, onImagesUpdate]);
 
   useEffect(() => {
     if (editarImages) {
@@ -49,7 +61,6 @@ const UploadImages = ({
 
   const handleAddImage = (event: any) => {
     const files = Array.from(event.target.files);
-
     if (files.length + images.length > 20) {
       alert('Você pode adicionar no máximo 20 imagens');
       return;
@@ -57,7 +68,6 @@ const UploadImages = ({
 
     files.forEach((file: any) => {
       const reader = new FileReader();
-
       reader.onloadend = () => {
         setImages((prevImages) => [
           ...prevImages,
@@ -84,20 +94,12 @@ const UploadImages = ({
   };
 
   return (
-    <div className="max-w-screen-md md:flex lg:block flex-column items-center justify-center mx-auto">
+    <div className="max-w-screen-md md:flex lg:block flex-column items-center justify-center mx-auto" ref={imagesErrorScroll}>
       <label
         className="flex flex-row items-center px-6 w-64 h-12 border rounded-[50px] bg-secondary cursor-pointer mt-4 mx-auto"
         htmlFor="uploadImages"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          height="20"
-          width="20"
-          fill="#F7F7F6"
-          className="mr-1"
-        >
-          <path d="M2.729 17.917q-.667 0-1.125-.459-.458-.458-.458-1.125V6.979q0-.667.458-1.125.458-.458 1.125-.458h2.438l1.541-1.667h4.917v3.083h2.25v2.271h3.104v7.25q0 .667-.458 1.125-.459.459-1.125.459Zm6.313-2.813q1.479 0 2.479-1t1-2.458q0-1.458-1-2.458-1-1-2.479-1-1.459 0-2.448 1-.99 1-.99 2.458 0 1.458.99 2.458.989 1 2.448 1Zm0-1.333q-.896 0-1.5-.615-.604-.614-.604-1.51t.604-1.511q.604-.614 1.5-.614.916 0 1.531.614.615.615.615 1.511 0 .896-.615 1.51-.615.615-1.531.615Zm6.604-7.063V5.062H14V3.729h1.646V2.062h1.333v1.667h1.667v1.333h-1.667v1.646Z" />
-        </svg>
+        <CameraIcon />
         <span className="font-bold text-quinary text-2xl">Adicionar Fotos</span>
       </label>
       <input
@@ -119,12 +121,16 @@ const UploadImages = ({
         className={`flex flex-col justify-center sm:max-w-7xl min-h-max bg-[#F7F7F6] border border-secondary gap-10 p-3 m-1 ${
           images.length === 0 ? 'hidden' : ''
         }`}
-        style={onErrorsInfo.prop === 'images' ? { border: '1px solid red' } : {}}
+        style={
+          onErrorsInfo.prop === 'images' ? { border: '1px solid red' } : {}
+        }
       >
         <DndProvider backend={HTML5Backend}>
-          <div 
+          <div
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
-            style={onErrorsInfo.prop === 'images' ? { border: '1px solid red' } : {}}
+            style={
+              onErrorsInfo.prop === 'images' ? { border: '1px solid red' } : {}
+            }
           >
             {images.map((image, index) => (
               <Image
@@ -140,7 +146,9 @@ const UploadImages = ({
         </DndProvider>
       </div>
       {error.prop === 'images' && (
-        <span className="text-red-500 text-xs flex justify-center">{error.error}</span>
+        <span className="text-red-500 text-xs flex justify-center">
+          {error.error}
+        </span>
       )}
       <p
         className={`text-quaternary text-sm font-medium mt-2 text-justify p-2 md:p-0 ${
@@ -181,10 +189,7 @@ const Image: React.FC<ImageProps> = ({
 
   const [, drop] = useDrop({
     accept: 'image',
-    hover(
-      item: any,
-      monitor: DropTargetMonitor
-    ) {
+    hover(item: any, monitor: DropTargetMonitor) {
       if (!ref.current) {
         return;
       }
@@ -245,14 +250,7 @@ const Image: React.FC<ImageProps> = ({
         className="absolute top-0 right-0 p-2 cursor-pointer"
         onClick={() => onRemove(id)}
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          height="24"
-          width="24"
-          fill="#F7F7F6"
-        >
-          <path d="M7.3 20.5q-.75 0-1.275-.525Q5.5 19.45 5.5 18.7V6h-1V4.5H9v-.875h6V4.5h4.5V6h-1v12.7q0 .75-.525 1.275-.525.525-1.275.525ZM9.4 17h1.5V8H9.4Zm3.7 0h1.5V8h-1.5Z" />
-        </svg>
+        <TrashIcon />
       </div>
       <span className="absolute bottom-0 left-0 p-1 px-3 text-white bg-black bg-opacity-50 rounded-3xl">
         {index === 0 ? 'Capa do anúncio' : index + 1}

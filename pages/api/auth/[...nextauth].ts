@@ -67,7 +67,7 @@ export default NextAuth({
     signIn: '/login'
   },
   callbacks: {
-    async signIn({user, account, profile}: any) {
+    async signIn({user, account}: any) {
 
       const provider = account.provider;
       const { email, name, image } = user;

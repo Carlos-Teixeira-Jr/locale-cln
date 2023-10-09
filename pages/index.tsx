@@ -214,6 +214,7 @@ export async function getStaticProps() {
     fetchJson(`${baseUrl}/property-type`),
     fetchJson(`${baseUrl}/location`),
   ]);
+  console.log("🚀 ~ file: index.tsx:218 ~ getStaticProps ~ propertyInfo:", propertyInfo)
 
   return {
     props: {
