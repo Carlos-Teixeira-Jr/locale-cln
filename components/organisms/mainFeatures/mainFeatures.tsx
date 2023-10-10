@@ -283,18 +283,20 @@ const MainFeatures: React.FC<IMainFeatures> = ({
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
   // Modal
   const handleCalcSizeArea = (value: number) => {
+    const checkValue = !Number.isNaN(value) ? value : 0;
     setPropertyFeaturesData({
       ...propertyFeaturesData,
-      size: { ...propertyFeaturesData.size, totalArea: value },
+      size: { ...propertyFeaturesData.size, totalArea: checkValue },
     });
   };
 
   return (
     <>
-      <div className="max-w-[1215px] mx-auto">
-        <div className="my-5 mx-4 lg:mx-0">
+      <div className="max-w-[1215px] mx-5">
+        <div className="my-5 mx-5 lg:mx-0">
           <label className="md:text-3xl text-2xl text-quaternary font-semibold leading-9 md:mx-0">
             O que você deseja?
           </label>
@@ -307,7 +309,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
             </button>
           </div>
         </div>
-        <div className="my-5 mx-4 lg:mx-0">
+        <div className="my-5 mx-5 lg:mx-0">
           <label className="md:text-3xl text-2xl text-quaternary font-semibold leading-9 md:mx-0">
             O seu imóvel é?
           </label>
@@ -360,13 +362,12 @@ const MainFeatures: React.FC<IMainFeatures> = ({
           </select>
         </div>
 
-        <div className="my-5 px-5 lg:ml-0">
+        <div className="my-5 px-5 lg:px-0 lg:ml-0">
           <h3 className="md:text-3xl text-2xl text-quaternary font-semibold leading-9 my-5">
             Dados do Imóvel:
           </h3>
-          <div className="md:flex">
-
-            <div className="flex flex-col md:w-full md:mr-5 mt-5 md:mt-0" ref={mainFeaturesErrorScroll.totalArea}>
+          <div className="md:flex gap-5">
+            <div className="flex flex-col md:w-full lg:mr-5 my-5 md:mt-0" ref={mainFeaturesErrorScroll.totalArea}>
               <label className="text-2xl font-normal text-quaternary leading-7">
                 Área Total
               </label>
@@ -481,14 +482,14 @@ const MainFeatures: React.FC<IMainFeatures> = ({
           </div>
         </div>
 
-        <div className="my-10">
+        <div className="my-10 px-5 lg:px-0">
 
-          <h3 className="text-3xl text-quaternary font-semibold leading-9 my-5 ml-5 lg:ml-0">
+          <h3 className="text-3xl text-quaternary font-semibold leading-9 my-5">
             Valores do Imóvel:
           </h3>
 
-          <div className="md:flex my-5 mx-4 md:ml-5 lg:ml-0">
-            <div className="flex flex-col md:w-96 md:pr-6" ref={mainFeaturesErrorScroll.description}>
+          <div className="md:flex my-5">
+            <div className="flex flex-col md:w-96 lg:pr-6" ref={mainFeaturesErrorScroll.description}>
               <label className="text-2xl font-normal text-quaternary leading-7">
                 {`${isBuy ? 'Valor do Imóvel' : 'Valor do Aluguel'}`}
               </label>
@@ -508,9 +509,9 @@ const MainFeatures: React.FC<IMainFeatures> = ({
             </div>
           </div>
 
-          <div className="my-10 px-5">
+          <div className="my-10">
             <div className="flex" ref={mainFeaturesErrorScroll.condominiumValue}>
-              <label className="text-2xl font-normal text-quaternary leading-7 ml-5 lg:ml-0">
+              <label className="text-2xl font-normal text-quaternary leading-7">
                 Condomínio{' '}
               </label>
               <p className="text-2xl font-light md:ml-2 text-quaternary leading-7">
@@ -518,7 +519,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                 (valor mensal)
               </p>
             </div>
-            <div className="lg:flex w-96 lg:ml-0">
+            <div className="lg:flex md:w-96 lg:ml-0">
               <div className='flex flex-col'>
                 <input
                   value={propertyFeaturesData.condominium ? maskedPrice(propertyFeaturesData.condominiumValue) : ''}
@@ -541,7 +542,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
               </div>
 
               <div
-                className={`lg:ml-5 w-12 h-12 border bg-tertiary rounded-[10px] mt-5 drop-shadow-lg cursor-pointer ${
+                className={`lg:ml-5 w-12 h-12 shrink-0 border bg-tertiary rounded-[10px] mt-5 drop-shadow-lg cursor-pointer ${
                   propertyFeaturesData.condominium ? 'border-secondary' : 'border-quaternary'
                 }`}
                 onClick={() => setPropertyFeaturesData({...propertyFeaturesData, condominium: !propertyFeaturesData.condominium})}
@@ -555,11 +556,11 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                 )}
                 
               </div>
-              <p className="text-xl md:text-2xl font-light text-quaternary leading-7 mt-2 md:mt-9  lg:ml-5">
+              <p className="text-xl md:text-2xl font-light text-quaternary leading-7 mt-2 lg:mt-9 lg:ml-5">
                 {!propertyFeaturesData.condominium ? 'Remover' : 'Aplicar'}
               </p>
             </div>
-            <div className="flex mt-10 ml-5 lg:ml-0" ref={mainFeaturesErrorScroll.iptuValue}>
+            <div className="flex mt-10 " ref={mainFeaturesErrorScroll.iptuValue}>
               <label className="text-2xl font-normal text-quaternary leading-7">
                 IPTU
               </label>
@@ -568,7 +569,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                 (valor anual)
               </p>
             </div>
-            <div className="lg:flex w-96 lg:ml-0">
+            <div className="lg:flex md:w-96 lg:ml-0">
               <div className='flex flex-col'>
                 <input
                   value={propertyFeaturesData.iptu ? maskedPrice(propertyFeaturesData.iptuValue) : ''}
@@ -605,7 +606,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                 )}
               </div>
               <p
-                className="text-xl md:text-2xl font-light text-quaternary leading-7 mt-2 md:mt-9 lg:ml-5"
+                className="text-xl md:text-2xl font-light text-quaternary leading-7 mt-2 lg:mt-9 lg:ml-5"
               >
                 {!propertyFeaturesData.iptu ? 'Aplicar' : 'Remover'}
               </p>

@@ -162,8 +162,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     event.preventDefault();
 
     const error = `Este campo é obrigatório.`;
-    const termsError = 'Você precisa marcar a caixa indicando que leu e concorda com os termos.'
-
     const planObj: IPlan | undefined = plans.find((plan) => plan._id === selectedPlan);
     const isPlanFree = planObj === undefined || planObj.name === 'Free';
 
@@ -363,114 +361,117 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
 
   return (
     <>
-      <div className="fixed z-50 top-0 w-auto md:w-full">
+      <div className="max-w-[1215px] mx-auto">
         <Header />
-      </div>
-      <div className="lg:mx-[100px] justify-center">
-        <div className="md:mt-36 mt-28 md:mb-5 mx-auto">
-          <LinearStepper isSubmited={false} sharedActiveStep={2} />
-        </div>
+        <div className="justify-center">
+          <div className="md:mt-26 mt-28 sm:mt-32 md:mb-8 lg:mb-2 mx-auto">
+            <LinearStepper isSubmited={false} sharedActiveStep={2} />
+          </div>
 
-        <div className="flex justify-center flex-col md:flex-row md:ml-14 ml-6 max-w-[1232px] absolute z-40 md:top-52">
-          {reversedCards.map(
-            ({ 
-              _id, 
-              name, 
-              price, 
-              highlightAd, 
-              commonAd, 
-              smartAd 
-            }: IPlan) => (
-              <PlansCardsHidden
-                key={_id}
-                selectedPlanCard={selectedPlan}
-                setSelectedPlanCard={(selectedCard: string) => {
-                  setSelectedPlan(selectedCard);
-                  const planObj = plans.find((plan) => plan._id === selectedCard);
-                  if (planObj && planObj?.name === 'Free') {
-                    setIsFreePlan(true)
-                  } else {
-                    setIsFreePlan(false)
-                  }
-                }}
-                isAdminPage={isAdminPage}
-                name={name}
-                price={price}
-                commonAd={commonAd}
-                highlightAd={highlightAd}
-                smartAd={smartAd}
-                id={_id} 
+          <div 
+            // className="flex justify-center flex-col md:flex-row md:ml-14 ml-6 md:top-52"
+            className='md:flex'
+          >
+            {reversedCards.map(
+              ({ 
+                _id, 
+                name, 
+                price, 
+                highlightAd, 
+                commonAd, 
+                smartAd 
+              }: IPlan) => (
+                <PlansCardsHidden
+                  key={_id}
+                  selectedPlanCard={selectedPlan}
+                  setSelectedPlanCard={(selectedCard: string) => {
+                    setSelectedPlan(selectedCard);
+                    const planObj = plans.find((plan) => plan._id === selectedCard);
+                    if (planObj && planObj?.name === 'Free') {
+                      setIsFreePlan(true)
+                    } else {
+                      setIsFreePlan(false)
+                    }
+                  }}
+                  isAdminPage={isAdminPage}
+                  name={name}
+                  price={price}
+                  commonAd={commonAd}
+                  highlightAd={highlightAd}
+                  smartAd={smartAd}
+                  id={_id} 
+                  isEdit={false} 
+                />
+              )
+            )}
+          </div>
+
+          <div className='lg:mx-0'>
+            <div className="flex justify-center flex-col">
+              <UserDataInputs 
                 isEdit={false} 
+                onUserDataUpdate={(updatedUserData: IUserDataComponent) => setUserDataForm(updatedUserData)} 
+                urlEmail={urlEmail ? urlEmail : undefined}
+                error={userDataErrors}
+                userDataInputRefs={userDataInputRefs}
               />
-            )
-          )}
-        </div>
+            </div>
 
-        <div className='mx-5 md:mx-0'>
-          <div className="max-w-[1536px] mt-[980px] md:mt-[1300px] lg:mt-80 flex justify-center flex-col">
-            <UserDataInputs 
-              isEdit={false} 
-              onUserDataUpdate={(updatedUserData: IUserDataComponent) => setUserDataForm(updatedUserData)} 
-              urlEmail={urlEmail ? urlEmail : undefined}
-              error={userDataErrors}
-              userDataInputRefs={userDataInputRefs}
+            <ChangeAddressCheckbox 
+              onAddressCheckboxChange={(value: boolean) => setIsSameAddress(value)}
+              address={addressData}
             />
-          </div>
 
-          <ChangeAddressCheckbox 
-            onAddressCheckboxChange={(value: boolean) => setIsSameAddress(value)}
-            address={addressData}
-          />
+            {!isSameAddress && (
+              <Address 
+                isEdit={false} 
+                address={addressData} 
+                onAddressUpdate={(address: IAddress) => setAddressData(address)} 
+                errors={addressErrors}
+                addressInputRefs={addressInputRefs}
+              />
+            )}
 
-          {!isSameAddress && (
-            <Address 
-              isEdit={false} 
-              address={addressData} 
-              onAddressUpdate={(address: IAddress) => setAddressData(address)} 
-              errors={addressErrors}
-              addressInputRefs={addressInputRefs}
+            {selectedPlan !== '' && (
+              (() => {
+                const planObj = plans.find((plan) => plan._id === selectedPlan);
+                if (planObj && planObj.name !== 'Free') {
+                  return (
+                    <CreditCard
+                      isEdit={false}
+                      onCreditCardUpdate={(creditCard) => {
+                        if (!isFreePlan) {
+                          setCreditCard(creditCard);
+                        }
+                      }}
+                      error={creditCardErrors}
+                      creditCardInputRefs={creditCardInputRefs}
+                    />
+                  );
+                }
+              })()
+            )}
+
+            <PaymentBoard 
+              onTermsChange={(value: boolean) => setTermsAreRead(value)}
+              selectedPlan={selectedPlan}
+              plans={plans}
+              termsError={termsError}
             />
-          )}
 
-          {selectedPlan !== '' && (
-            (() => {
-              const planObj = plans.find((plan) => plan._id === selectedPlan);
-              if (planObj && planObj.name !== 'Free') {
-                return (
-                  <CreditCard
-                    isEdit={false}
-                    onCreditCardUpdate={(creditCard) => {
-                      if (!isFreePlan) {
-                        setCreditCard(creditCard);
-                      }
-                    }}
-                    error={creditCardErrors}
-                    creditCardInputRefs={creditCardInputRefs}
-                  />
-                );
-              }
-            })()
-          )}
-
-          <PaymentBoard 
-            onTermsChange={(value: boolean) => setTermsAreRead(value)}
-            selectedPlan={selectedPlan}
-            plans={plans}
-            termsError={termsError}
-          />
-
-          <div className="flex self-end md:justify-end justify-center mt-14 mb-32">
-            <button className="bg-primary w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold text-2xl lg:text-3xl hover:bg-red-600 hover:text-white" onClick={handleSubmit}>
-                Continuar
-            </button>
+            <div className="flex self-end md:justify-end justify-center mt-14 mx-5 mb-32">
+              <button className="bg-primary w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold text-2xl lg:text-3xl hover:bg-red-600 hover:text-white" onClick={handleSubmit}>
+                  Continuar
+              </button>
+            </div>
           </div>
         </div>
+
+        <PaymentFailModal 
+          isOpen={failPaymentModalIsOpen} 
+          setModalIsOpen={setFailPaymentModalIsOpen}
+        />
       </div>
-
-      <PaymentFailModal 
-        isOpen={failPaymentModalIsOpen} 
-        setModalIsOpen={setFailPaymentModalIsOpen}
-      />
 
       <Footer smallPage={false} />
     </>

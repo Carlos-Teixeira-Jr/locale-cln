@@ -197,7 +197,7 @@ const Address: React.FC<IAddressComponent> = ({
   return (
     <div className="px-5 lg:mx-auto w-full mx-auto max-w-[1215px]">
       <form>
-        <div className="mt-10 mb-5 w-96">
+        <div className="mt-10 mb-5 md:w-96">
           <h3 className="md:text-[32px] text-2xl text-quaternary font-semibold  leading-9 my-5">
             Endereço do Imóvel
           </h3>
@@ -223,7 +223,7 @@ const Address: React.FC<IAddressComponent> = ({
             <a
               href="https://buscacepinter.correios.com.br/app/endereco/index.php"
               target="_blank"
-              className="text-secondary text-xl font-normal lg:mt-8 lg:mx-6 lg:ml-5 leading-8 mt-2 cursor-pointer"
+              className="text-secondary text-xl font-normal leading-8 mt-2 cursor-pointer"
               rel="noreferrer"
             >
               Não sei meu CEP

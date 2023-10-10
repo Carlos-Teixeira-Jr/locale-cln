@@ -6,7 +6,6 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { v4 as uuidv4 } from 'uuid';
 import CameraIcon from '../../atoms/icons/cameraIcon';
 import TrashIcon from '../../atoms/icons/trashIcon';
-import Compressor from 'compressorjs';
 
 interface IImages {
   editarImages?: string[];
@@ -76,41 +75,6 @@ const UploadImages = ({
       reader.readAsDataURL(file);
     });
   };
-  // const handleAddImage = async (event: any) => {
-  //   const files = Array.from(event.target.files);
-  //   if (files.length + images.length > 20) {
-  //     alert('Você pode adicionar no máximo 20 imagens');
-  //     return;
-  //   }
-
-  //   // Use um loop async/await para redimensionar e converter as imagens
-  //   for (const file of files) {
-  //     if (file instanceof File || file instanceof Blob) { // Verificação de tipo
-  //       try {
-  //         new Compressor(file as File, { // Conversão de tipo
-  //           quality: 0.6,
-  //           maxWidth: 800,
-  //           maxHeight: 800,
-  //           success(result) {
-  //             const reader = new FileReader();
-  //             reader.onloadend = () => {
-  //               setImages((prevImages) => [
-  //                 ...prevImages,
-  //                 { src: reader.result, id: uuidv4() },
-  //               ]);
-  //             };
-  //             reader.readAsDataURL(result);
-  //           },
-  //           error(error) {
-  //             console.error('Erro ao comprimir imagem:', error);
-  //           },
-  //         });
-  //       } catch (error) {
-  //         console.error('Erro ao comprimir imagem:', error);
-  //       }
-  //     }
-  //   }
-  // };
 
   const handleRemoveImage = (id: string) => {
     setImages(images.filter((image) => image.id !== id));

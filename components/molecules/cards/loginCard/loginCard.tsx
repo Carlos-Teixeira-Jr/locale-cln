@@ -318,7 +318,7 @@ const LoginCard: React.FC = () => {
 
       <div>
         <button
-          className="md:w-[400px] w-fit px-10 md:h-fit bg-primary p-2.5 gap-2.5 rounded-[50px] font-normal text-xl text-tertiary leading-6 my-5 transition-colors duration-300 hover:bg-red-600 hover:text-white"
+          className="md:w-[400px] w-full px-10 md:h-fit bg-primary p-2.5 gap-2.5 rounded-[50px] font-normal text-xl text-tertiary leading-6 my-5 transition-colors duration-300 hover:bg-red-600 hover:text-white"
           onClick={handleSubmit}
         >
           {isRegister ? 'Cadastrar' : 'Entrar'}
@@ -326,7 +326,7 @@ const LoginCard: React.FC = () => {
       </div>
 
       <p
-        className="text-secondary font-bold text-md my-4 cursor-pointer transition-colors duration-300 hover:text-yellow-600"
+        className="text-secondary font-bold text-md md:my-4 cursor-pointer transition-colors duration-300 hover:text-yellow-600"
         onClick={() => setForgotPasswordModalIsOpen(true)}
       >
         Esqueci minha senha
@@ -351,19 +351,19 @@ const LoginCard: React.FC = () => {
         </a>
       </div>
 
-      <div className="flex">
+      <div className="flex gap-10">
         <div>
           <SocialAuthButton 
             provider={'google'} 
             onClick={() => signIn('google')}
           />
         </div>
-        <div>
+        {/* <div>
           <SocialAuthButton 
             provider={'facebook'} 
             onClick={() => signIn('facebook')}
           />
-        </div>
+        </div> */}
       </div>
 
       <a

@@ -29,10 +29,11 @@ export interface IUser {
 }
 
 export interface IUserDataComponentErrors {
+  [key: string]: string;
   username: string;
   email: string;
   cpf: string;
-  cellPhone?: string;
-  phone?: string;
+  cellPhone?: any;
+  phone?: any;
 }
 

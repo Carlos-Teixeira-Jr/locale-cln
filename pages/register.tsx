@@ -203,7 +203,7 @@ const Register = () => {
 
   return (
     <>
-      <div className="fixed z-10 top-0 w-full">
+      <div>
         <Header />
       </div>
       <AreaCalculatorModal
@@ -216,8 +216,8 @@ const Register = () => {
           });
         }}
       />
-      <div className="lg:mx-24">
-        <div className="md:mt-[150px] mt-[120px] md:mb-10 lg:mb-2 w-full mx-auto lg:mx-24 max-w-[1536px] xl:mx-auto">
+      <div className="max-w-[1215px] mx-auto">
+        <div className="md:mt-[150px] mt-[120px] md:mb-10 lg:mb-2 w-full mx-auto lg:mx-24  xl:mx-auto">
           <LinearStepper isSubmited={false} sharedActiveStep={0} />
         </div>
 

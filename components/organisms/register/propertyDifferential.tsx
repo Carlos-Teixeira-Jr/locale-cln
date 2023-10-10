@@ -54,9 +54,9 @@ const PropertyDifferentials = ({
         Diferenciais do Imóvel
       </h2>
 
-      <div className="flex flex-wrap gap-x-10 mx-3">
+      <div className="flex flex-wrap sm:justify-between md:justify-start gap-x-9 sm:gap-x-10 mx-3">
         {propertyTags.map((tag, i) => (
-          <div className="flex my-5 w-[150px] max-w-[30%]" key={i}>
+          <div className="flex my-5 w-32 sm:w-40" key={i}>
             <div
               className="flex bg-tertiary border rounded-[10px] border-quaternary w-[30px] h-[30px] drop-shadow-xl cursor-pointer shrink-0 my-auto"
               onClick={() => {
@@ -303,7 +303,7 @@ const PropertyDifferentials = ({
       )}
       
       <div className='mx-3'>
-        <div className="flex mt-5">
+        <div className="flex mt-10 sm:mt-5">
           <h3 className="md:text-2xl text-xl text-quaternary font-bold leading-7 mt-1 md:mb-0 mb-3.5">
             Adicione o Link de um Vídeo
           </h3>
