@@ -218,8 +218,9 @@ const HomeFilter: React.FC<IHomeFilter> = ({
       query.location = JSON.stringify('todos');
     }
 
-    if (propertyType.propertyType !== 'todos') {
-      query.propertyType = JSON.stringify(propertyType);
+    if (propertyType.propertyType && propertyType.propertyType !== 'todos') {
+      query.propertyType = JSON.stringify(propertyType.propertyType);
+      query.propertySubtype = JSON.stringify(propertyType.propertySubtype);
     } else {
       query.propertyType = JSON.stringify('todos');
     }
@@ -293,8 +294,8 @@ const HomeFilter: React.FC<IHomeFilter> = ({
               />
             </div>
             <div 
-              className={`z-50 md:w-fit w-full h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md md:mt-20 ${
-                propTypeDropdownIsOpen
+              className={`z-50 md:w-fit w-full h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md mt-20 ${
+                !propTypeDropdownIsOpen
                 ? 'hidden '
                 : 'absolute'
               }`}

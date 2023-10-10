@@ -4,7 +4,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { DndProvider, DropTargetMonitor, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { v4 as uuidv4 } from 'uuid';
-import { resetObjectToEmptyStrings } from '../../../common/utils/resetObjects';
 import CameraIcon from '../../atoms/icons/cameraIcon';
 import TrashIcon from '../../atoms/icons/trashIcon';
 
@@ -43,7 +42,6 @@ const UploadImages = ({
   }, [error])
 
   useEffect(() => {
-    resetObjectToEmptyStrings(error);
     if (onErrorsInfo.prop === 'images') {
       setError(onErrorsInfo);
     }
@@ -74,9 +72,6 @@ const UploadImages = ({
           { src: reader.result, id: uuidv4() },
         ]);
       };
-
-      resetObjectToEmptyStrings(error);
-
       reader.readAsDataURL(file);
     });
   };
