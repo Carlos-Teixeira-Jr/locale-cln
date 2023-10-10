@@ -11,6 +11,8 @@ import ArrowDownIconcon from '../../atoms/icons/arrowDownIcon';
 import CheckIcon from '../../atoms/icons/checkIcon';
 import SearchIcon from '../../atoms/icons/searchIcon';
 import XIcon from '../../atoms/icons/xIcon';
+import ArrowDownIcon from '../../atoms/icons/arrowDownIcon';
+import propertyTypesData from '../../../data/propertyTypesData.json';
 
 interface IFilterListProps {
   propertyTypesProp: IPropertyTypes[];
@@ -39,7 +41,7 @@ const FilterList: React.FC<IFilterListProps> = ({
   const [isBuy, setIsBuy] = useState(true);
   const [isRent, setIsRent] = useState(false);
   // propertyType
-  const [propertyType, setPropertyType] = useState<string[]>([]);
+  //const [propertyType, setPropertyType] = useState<string[]>([]);
   // Lida apenas com o valor que aparecerá no input de localização;
   const [locationInput, setLocationInput] = useState('');
   // Lida com a formatação da lozalização e categoria da localização para mostrá-las no dropdown;
@@ -69,6 +71,13 @@ const FilterList: React.FC<IFilterListProps> = ({
   const [mobileFilterIsOpen, setMobileFilterIsOpen] = useState<boolean>(false);
 
   const [firstRender, setFirstRender] = useState(true);
+
+  const [propertyType, setPropertyType] = useState({
+    propertyType: '',
+    propertySubtype: ''
+  });
+
+  const [propTypeDropdownIsOpen, setPropTypeDropdownIsOpen] = useState(false);
 
   // ADTYPE
 
@@ -105,39 +114,51 @@ const FilterList: React.FC<IFilterListProps> = ({
 
   // PROPERTY TYPE
 
-  const togglePropertyTypeSelection = (name: string) => {
-    if (name === 'todos') {
-      const hasTodos = propertyType.some((item) => item === name);
-      if (hasTodos) {
-        setPropertyType(propertyType.filter((item) => item !== name));
-      } else {
-        setPropertyType([name]);
-      }
-    } else {
-      if (propertyType.includes(name)) {
-        setPropertyType(propertyType.filter((item: string) => item !== name));
-      } else {
-        setPropertyType([...propertyType, name]);
-      }
-    }
-  };
+  // const togglePropertyTypeSelection = (name: string) => {
+  //   if (name === 'todos') {
+  //     const hasTodos = propertyType.some((item) => item === name);
+  //     if (hasTodos) {
+  //       setPropertyType(propertyType.filter((item) => item !== name));
+  //     } else {
+  //       setPropertyType([name]);
+  //     }
+  //   } else {
+  //     if (propertyType.includes(name)) {
+  //       setPropertyType(propertyType.filter((item: string) => item !== name));
+  //     } else {
+  //       setPropertyType([...propertyType, name]);
+  //     }
+  //   }
+  // };
 
   // Insere o valor de propertyType nos parâmetros da URL;
   useEffect(() => {
     // Atualizar os parâmetros da URL
-    if (propertyType.length < 1) {
+    if (propertyType.propertyType) {
       if (!query.propertyType?.includes('todos')) {
         removeQueryParam('propertyType');
       }
     } else {
       const queryParams = {
         ...query,
-        propertyType: JSON.stringify([...propertyType]),
+        propertyType: JSON.stringify(propertyType.propertyType),
         page: 1,
       };
-      router.push({ query: queryParams }, undefined, { scroll: false });
+      //router.push({ query: queryParams }, undefined, { scroll: false });
     }
   }, [propertyType, query.propertyType]);
+
+  // Insere o valor de propertyType nos parâmetros da URL;
+  useEffect(() => {
+    // Atualizar os parâmetros da URL
+    
+    const queryParams = {
+      ...query,
+      propertySubtype: JSON.stringify(propertyType.propertySubtype),
+      page: 1,
+    };
+    //router.push({ query: queryParams }, undefined, { scroll: false });
+  }, [propertyType, query.propertySubtype]);
 
   // ADDRESS
 
@@ -566,7 +587,7 @@ const FilterList: React.FC<IFilterListProps> = ({
         </div>
 
         <div className="relative">
-          <div className="my-5">
+          {/* <div className="my-5">
             <label className='"font-normal text-base text-quaternary leading-[19px] mb-2"'>
               Qual o tipo do imóvel?
             </label>
@@ -651,7 +672,49 @@ const FilterList: React.FC<IFilterListProps> = ({
                   : []}
               </div>
             </div>
+          </div> */}
+
+          <div 
+            className="drop-shadow-lg lg:h-9 lg:w-64 lg:text-lg rounded-lg p-2 mb-1 border border-quaternary flex justify-between"
+            onClick={() => setPropTypeDropdownIsOpen(!propTypeDropdownIsOpen)}
+          >
+            <p className='text-quaternary text'>{propertyType.propertyType ? propertyType.propertyType : `Tipo de imóvel`}</p>
+            <ArrowDownIcon
+              className={`my-auto cursor-pointer ${
+                propTypeDropdownIsOpen
+                ? 'transform rotate-360 transition-transform duration-300 ease-in-out'
+                : 'transform rotate-180 transition-transform duration-300 ease-in-out'
+              }`}
+            />
           </div>
+          <div 
+            className={`z-50 md:w-fit w-full h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md mt-20 ${
+              !propTypeDropdownIsOpen
+              ? 'hidden '
+              : 'absolute'
+            }`}
+          >
+            {propertyTypesData.map((prop, index) => (
+              <div className='w-full rounded-t-8 bg-tertiary'>
+                <p className='text-quaternary lg:text-2xl p-1 text-center font-bold '>{prop.type}</p>
+                {propertyTypesData[index].subTypes.map((type) =>  (
+                  <div 
+                    className='text-center p-1 hover:bg-quaternary hover:text-tertiary'
+                    onClick={() => {
+                      setPropertyType({
+                        ...propertyType,
+                        propertyType: prop.type,
+                        propertySubtype: type
+                      });
+                    }}
+                  >
+                    {type}
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+          
         </div>
 
         <div className="flex flex-col my-5">

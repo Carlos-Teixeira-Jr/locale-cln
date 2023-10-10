@@ -335,6 +335,14 @@ export async function getServerSideProps(context: NextPageContext) {
     }
   }
 
+  if (query.propertySubtype) {
+    const propertySubtype = query.propertySubtype.toString();
+    const parsedPropertySubtype = JSON.parse(propertySubtype);
+    if (parsedPropertySubtype !== 'todos') {
+      filter.push({ propertySubtype: parsedPropertySubtype });
+    }
+  }
+
   if (query.tags) {
     filter.push({ tags: query.tags });
   }
