@@ -4,9 +4,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import { DndProvider, DropTargetMonitor, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { v4 as uuidv4 } from 'uuid';
-import { resetObjectToEmptyStrings } from '../../../common/utils/resetObjects';
 import CameraIcon from '../../atoms/icons/cameraIcon';
 import TrashIcon from '../../atoms/icons/trashIcon';
+import Compressor from 'compressorjs';
 
 interface IImages {
   editarImages?: string[];
@@ -43,7 +43,6 @@ const UploadImages = ({
   }, [error])
 
   useEffect(() => {
-    resetObjectToEmptyStrings(error);
     if (onErrorsInfo.prop === 'images') {
       setError(onErrorsInfo);
     }
@@ -51,7 +50,7 @@ const UploadImages = ({
 
   useEffect(() => {
     onImagesUpdate(images.map((image) => image.src));
-  }, [images, onImagesUpdate]);
+  }, [images]);
 
   useEffect(() => {
     if (editarImages) {
@@ -74,12 +73,44 @@ const UploadImages = ({
           { src: reader.result, id: uuidv4() },
         ]);
       };
-
-      resetObjectToEmptyStrings(error);
-
       reader.readAsDataURL(file);
     });
   };
+  // const handleAddImage = async (event: any) => {
+  //   const files = Array.from(event.target.files);
+  //   if (files.length + images.length > 20) {
+  //     alert('Você pode adicionar no máximo 20 imagens');
+  //     return;
+  //   }
+
+  //   // Use um loop async/await para redimensionar e converter as imagens
+  //   for (const file of files) {
+  //     if (file instanceof File || file instanceof Blob) { // Verificação de tipo
+  //       try {
+  //         new Compressor(file as File, { // Conversão de tipo
+  //           quality: 0.6,
+  //           maxWidth: 800,
+  //           maxHeight: 800,
+  //           success(result) {
+  //             const reader = new FileReader();
+  //             reader.onloadend = () => {
+  //               setImages((prevImages) => [
+  //                 ...prevImages,
+  //                 { src: reader.result, id: uuidv4() },
+  //               ]);
+  //             };
+  //             reader.readAsDataURL(result);
+  //           },
+  //           error(error) {
+  //             console.error('Erro ao comprimir imagem:', error);
+  //           },
+  //         });
+  //       } catch (error) {
+  //         console.error('Erro ao comprimir imagem:', error);
+  //       }
+  //     }
+  //   }
+  // };
 
   const handleRemoveImage = (id: string) => {
     setImages(images.filter((image) => image.id !== id));
@@ -94,7 +125,7 @@ const UploadImages = ({
   };
 
   return (
-    <div className="max-w-screen-md md:flex lg:block flex-column items-center justify-center mx-auto" ref={imagesErrorScroll}>
+    <div className="max-w-screen-md block mx-5 flex-column items-center justify-center lg:mx-auto" ref={imagesErrorScroll}>
       <label
         className="flex flex-row items-center px-6 w-64 h-12 border rounded-[50px] bg-secondary cursor-pointer mt-4 mx-auto"
         htmlFor="uploadImages"

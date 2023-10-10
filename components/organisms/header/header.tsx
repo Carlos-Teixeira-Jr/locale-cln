@@ -46,7 +46,7 @@ const Header: React.FC<IHeader> = () => {
 
   return (
     <div>
-      <div className="sticky top-0 w-full md:w-auto z-40 justify-between grid grid-cols-2 md:grid md:grid-cols-3 bg-tertiary h-fit shadow-md mr-6 ml-6 mt-8 p-2 rounded-[50px]">
+      <div className="sticky top-0 w-auto sm:w-full justify-between grid grid-cols-2 md:grid md:grid-cols-3 bg-tertiary h-fit shadow-md mr-6 ml-6 mt-8 p-2 rounded-[50px]">
         <Link
           href="/"
           className="relative flex items-center cursor-pointer my-auto ml-4"

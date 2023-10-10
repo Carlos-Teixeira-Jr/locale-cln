@@ -360,11 +360,11 @@ const MainFeatures: React.FC<IMainFeatures> = ({
           </select>
         </div>
 
-        <div className="my-5 ml-5 lg:ml-0">
+        <div className="my-5 px-5 lg:ml-0">
           <h3 className="md:text-3xl text-2xl text-quaternary font-semibold leading-9 my-5">
             Dados do Imóvel:
           </h3>
-          <div className="md:flex w-3/4">
+          <div className="md:flex">
 
             <div className="flex flex-col md:w-full md:mr-5 mt-5 md:mt-0" ref={mainFeaturesErrorScroll.totalArea}>
               <label className="text-2xl font-normal text-quaternary leading-7">
@@ -404,7 +404,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
               />
             </div>
 
-            <div className="flex flex-col lg:w-full">
+            <div className="flex flex-col md:w-full md:mr-5">
               <label className="text-2xl font-normal text-quaternary leading-7">
                 Área Útil (opcional)
               </label>
@@ -508,7 +508,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
             </div>
           </div>
 
-          <div className="my-10">
+          <div className="my-10 px-5">
             <div className="flex" ref={mainFeaturesErrorScroll.condominiumValue}>
               <label className="text-2xl font-normal text-quaternary leading-7 ml-5 lg:ml-0">
                 Condomínio{' '}
@@ -518,7 +518,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                 (valor mensal)
               </p>
             </div>
-            <div className="lg:flex w-96 lg:w-full mx-auto md::ml-5 lg:ml-0">
+            <div className="lg:flex w-96 lg:ml-0">
               <div className='flex flex-col'>
                 <input
                   value={propertyFeaturesData.condominium ? maskedPrice(propertyFeaturesData.condominiumValue) : ''}
@@ -568,7 +568,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                 (valor anual)
               </p>
             </div>
-            <div className="lg:flex w-96 mx-auto md:ml-5 lg:ml-0">
+            <div className="lg:flex w-96 lg:ml-0">
               <div className='flex flex-col'>
                 <input
                   value={propertyFeaturesData.iptu ? maskedPrice(propertyFeaturesData.iptuValue) : ''}

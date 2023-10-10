@@ -203,7 +203,7 @@ const Register = () => {
 
   return (
     <>
-      <div className="fixed z-10 top-0 w-auto md:w-full">
+      <div className="fixed z-10 top-0 w-full">
         <Header />
       </div>
       <AreaCalculatorModal
@@ -217,7 +217,7 @@ const Register = () => {
         }}
       />
       <div className="lg:mx-24">
-        <div className="md:mt-[150px] mt-[120px] md:mb-14 lg:mb-2 w-full mx-auto lg:mx-24 max-w-[1536px] xl:mx-auto">
+        <div className="md:mt-[150px] mt-[120px] md:mb-10 lg:mb-2 w-full mx-auto lg:mx-24 max-w-[1536px] xl:mx-auto">
           <LinearStepper isSubmited={false} sharedActiveStep={0} />
         </div>
 
@@ -253,7 +253,7 @@ const Register = () => {
           addressInputRefs={addressInputRefs}
         />
 
-        <div className="flex self-end md:justify-end justify-center mb-32 mt-16">
+        <div className="flex self-end md:justify-end justify-center px-5 mb-32 mt-16 max-w-[1215px] mx-auto">
           <button className="bg-primary w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold text-2xl lg:text-3xl hover:bg-red-600 hover:text-white" onClick={handleSubmit}>
               Continuar
           </button>

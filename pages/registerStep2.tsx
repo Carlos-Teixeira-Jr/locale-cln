@@ -26,11 +26,11 @@ const RegisterStep2: NextPageWithLayout = () => {
   const isCondominium =  storedData?.condominium ? true : false;
 
   // Verifica se o estado progress que determina em qual step o usuário está corresponde ao step atual;
-  useEffect(() => {
-    if (progress < 2) {
-      router.push('/register');
-    }
-  });
+  // useEffect(() => {
+  //   if (progress < 2) {
+  //     router.push('/register');
+  //   }
+  // });
 
   // Envia as mensagens de erros para o componente UploadImages;
   const [errorInfo, setErrorInfo] = useState({
@@ -94,8 +94,8 @@ const RegisterStep2: NextPageWithLayout = () => {
         <Header />
       </div>
 
-      <div className='lg:mx-24'>
-        <div className="md:mt-26 mt-[120px] md:mb-14 lg:mb-2 w-full mx-auto lg:mx-[100px] max-w-[1536px] xl:mx-auto">
+      <div className='lg:mx-24 flex flex-col items-center'>
+        <div className="md:mt-26 mt-32 md:mb-14 lg:mb-2 w-full mx-auto lg:mx-[100px] max-w-[1536px] xl:mx-auto">
           <LinearStepper isSubmited={false} sharedActiveStep={1} />
         </div>
         <div className="max-w-[1232px]" id="upload-images">

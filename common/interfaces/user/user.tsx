@@ -12,8 +12,8 @@ export interface IUserDataComponent {
   username: string;
   email: string;
   cpf: string;
-  cellPhone?: string;
-  phone?: string;
+  cellPhone: string;
+  phone: string;
 }
 
 export interface IUserData extends IUserDataComponent {

@@ -195,17 +195,17 @@ const Address: React.FC<IAddressComponent> = ({
   };
 
   return (
-    <div className="md:mx-0 lg:mx-auto w-96 md:w-full mx-auto max-w-[1215px]">
+    <div className="px-5 lg:mx-auto w-full mx-auto max-w-[1215px]">
       <form>
-        <div className="mt-10 mb-5">
+        <div className="mt-10 mb-5 w-96">
           <h3 className="md:text-[32px] text-2xl text-quaternary font-semibold  leading-9 my-5">
             Endereço do Imóvel
           </h3>
           <label className="text-xl font-normal text-quaternary leading-7">
             CEP
           </label>
-          <div className="md:flex grid grid-flow-row">
-            <div ref={addressInputsErrorScroll.zipCode}>
+          <div className="flex flex-col w-full">
+            <div ref={addressInputsErrorScroll.zipCode} className='flex flex-col w-full'>
               <input
                 className="border border-quaternary rounded-[10px] h-12 sm:w-1/3 md:w-full text-quaternary md:text-2xl text-xl font-bold px-5 drop-shadow-lg bg-tertiary mt-3"
                 type="cep"
@@ -223,7 +223,7 @@ const Address: React.FC<IAddressComponent> = ({
             <a
               href="https://buscacepinter.correios.com.br/app/endereco/index.php"
               target="_blank"
-              className="text-secondary text-xl font-normal md:mt-8 md:mx-6 md:ml-5 leading-8 mt-2 cursor-pointer"
+              className="text-secondary text-xl font-normal lg:mt-8 lg:mx-6 lg:ml-5 leading-8 mt-2 cursor-pointer"
               rel="noreferrer"
             >
               Não sei meu CEP
