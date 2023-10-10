@@ -1,5 +1,6 @@
 import {
   IAddress,
+  IData,
   IMetadata,
   IPrices,
   ISize,
@@ -13,18 +14,7 @@ import ParkingIcon from '../../atoms/icons/parkingIcon';
 import PropertyDetails from '../../atoms/propertyDetails/propertyDetails';
 
 interface IInfoTop {
-  propertyID: {
-    numBedrooms: IMetadata;
-    numBathrooms: IMetadata;
-    numGarage: IMetadata;
-    areaValue: ISize;
-    propertyType: propType;
-    streetName: string;
-    streetNumber: number;
-    neighborhood: string;
-    price: IPrices;
-    address: IAddress
-  };
+  propertyID: IData;
 }
 
 const PropertyInfoTop: React.FC<IInfoTop> = ({ propertyID }: any) => {

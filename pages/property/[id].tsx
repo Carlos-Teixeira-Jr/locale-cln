@@ -1,5 +1,5 @@
 import { NextPageContext } from 'next';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   IAddress,
   IData,
@@ -37,17 +37,23 @@ export interface IIDPage {
   ownerInfo: IOwnerInfo;
 }
 
+type RelatedProperties = {
+  docs: IData[],
+  page: number,
+  totalCount: number
+}
+
 interface IPropertyPage {
   property: IData
   isFavourite: boolean
-  relatedProperties: IData[]
+  relatedProperties: RelatedProperties
 }
 
 const PropertyPage: NextPageWithLayout<IPropertyPage> = ({ 
   property,
   isFavourite,
   relatedProperties
-}: any) => {
+}: IPropertyPage) => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [backdropActive, setBackdropActive] = useState(true);
