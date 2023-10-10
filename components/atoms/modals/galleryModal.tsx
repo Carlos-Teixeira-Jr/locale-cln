@@ -1,29 +1,33 @@
+import Image from 'next/image';
 import { useState } from 'react';
 import { AiOutlineClose } from 'react-icons/ai';
 import { BsChevronCompactLeft, BsChevronCompactRight } from 'react-icons/bs';
+import { IData } from '../../../common/interfaces/property/propertyData';
 
 export interface IGalleryModal {
-  setModalIsOpen: any;
-  props: any;
+  setModalIsOpen: (isOpen: boolean) => void;
+  property: IData;
+  selectedImage: number
 }
 
-const GalleryModal: React.FC<IGalleryModal> = ({ setModalIsOpen, props }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+const GalleryModal: React.FC<IGalleryModal> = ({ setModalIsOpen, property, selectedImage }) => {
+
+  const [currentIndex, setCurrentIndex] = useState(selectedImage);
 
   const prevImage = () => {
     const isFirstImage = currentIndex === 0;
-    const newIndex = isFirstImage ? props.images.length - 1 : currentIndex - 1;
+    const newIndex = isFirstImage ? property.images.length - 1 : currentIndex - 1;
     setCurrentIndex(newIndex);
   };
 
   const nextImage = () => {
-    const isLastImage = currentIndex === props.images.length - 1;
+    const isLastImage = currentIndex === property.images.length - 1;
     const newIndex = isLastImage ? 0 : currentIndex + 1;
     setCurrentIndex(newIndex);
   };
 
   return (
-    <div className="h-[95%] w-full -translate-y-[50%] top-1/2 py-20 mt-20 bg-black/90 absolute z-50 group inset-x-0">
+    <div className="h-fit w-full -translate-y-[50%] top-96 pt-20 pb-12 bg-black/90 absolute z-50 group inset-x-0">
       <div>
         <AiOutlineClose
           className="hidden group-hover:block absolute top-[4%] md:top-[5%] -translate-x-0 -translate-y-[50%] right-2 text-2xl rounded-full p-2 bg-black/20 text-white cursor-pointer"
@@ -31,14 +35,15 @@ const GalleryModal: React.FC<IGalleryModal> = ({ setModalIsOpen, props }) => {
           onClick={() => setModalIsOpen(false)}
         />
       </div>
-      <div
-        style={{
-          backgroundImage: `url(${props.images[currentIndex]})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'contain',
-        }}
-        className="m-auto max-w-[1000px] h-full rounded-2xl bg-center bg-cover duration-500"
-      ></div>
+      <div className='flex justify-center w-full'>
+        <Image 
+          src={property.images[currentIndex]} 
+          alt={''} 
+          width={300}
+          height={300}  
+          className=' rounded-3xl'   
+        />
+      </div>
       <div>
         <BsChevronCompactLeft
           onClick={prevImage}
@@ -56,7 +61,7 @@ const GalleryModal: React.FC<IGalleryModal> = ({ setModalIsOpen, props }) => {
       <div className="flex top-4 justify-center py-2">
         <div>
           <p className="font-bold text-[#5E646F] text-3xl mt-4">
-            {currentIndex + 1}/{props.images.length}
+            {currentIndex + 1}/{property.images.length}
           </p>
         </div>
       </div>
