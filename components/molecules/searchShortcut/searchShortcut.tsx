@@ -122,7 +122,7 @@ const SearchShortcut: React.FC<ISearchShortcut> = ({
 
   return (
     <>
-      <div className="overflow-x-scroll overflow-y-hidden scroll-smooth overflow-hidden md:overflow-hidden flex flex-row items-center max-w-[350px] md:max-w-[870px] h-[77px] bg-tertiary shadow-md mt-9 md:mt-12 mx-auto md:mx-2 lg:ml-8 rounded-[30px] px-2 gap-5">
+      <div className="overflow-x-scroll overflow-y-hidden scroll-smooth overflow-hidden md:overflow-hidden flex flex-row items-center max-w-[350px] md:max-w-[750px] h-[77px] bg-tertiary shadow-md mt-9 md:mt-12 mx-auto md:mx-2 lg:ml-8 rounded-[30px] px-2 gap-5">
         {/* Filter button */}
         <div
           onClick={() => onMobileFilterIsOpenChange(true)}
