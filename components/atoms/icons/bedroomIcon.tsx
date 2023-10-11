@@ -1,9 +1,15 @@
-import { IIcon } from "../../../common/interfaces/icons";
+import { IIcon } from '../../../common/interfaces/icons';
 
-export default function BedroomIcon({fill = "currentColor"}: IIcon) {
+export default function BedroomIcon({ fill = 'currentColor' }: IIcon) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" fill={fill} height="44" width="44">
-      <path d="M4 38V25.25q0-1.25.5-2.35T6 21.1v-5.8q0-2.25 1.525-3.775T11.3 10h9q1.1 0 2.05.5.95.5 1.65 1.35.7-.85 1.625-1.35.925-.5 2.025-.5h9q2.25 0 3.8 1.525Q42 13.05 42 15.3v5.8q1 .7 1.5 1.8t.5 2.35V38h-3v-4H7v4Zm21.5-17.75H39V15.3q0-1-.675-1.65Q37.65 13 36.65 13H27.5q-.85 0-1.425.7-.575.7-.575 1.6Zm-16.5 0h13.5V15.3q0-.9-.575-1.6-.575-.7-1.425-.7h-9.2q-.95 0-1.625.675T9 15.3ZM7 31h34v-5.75q0-.85-.575-1.425-.575-.575-1.425-.575H9q-.85 0-1.425.575Q7 24.4 7 25.25Zm34 0H7h34Z" />
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="38"
+      height="38"
+      viewBox="0 -960 960 960"
+      fill={fill}
+    >
+      <path d="M80-200v-240q0-27 11-49t29-39v-112q0-50 35-85t85-35h160q23 0 43 8.5t37 23.5q17-15 37-23.5t43-8.5h160q50 0 85 35t35 85v112q18 17 29 39t11 49v240h-80v-80H160v80H80zm440-360h240v-80q0-17-11.5-28.5T720-680H560q-17 0-28.5 11.5T520-640v80zm-320 0h240v-80q0-17-11.5-28.5T400-680H240q-17 0-28.5 11.5T200-640v80zm-40 200h640v-80q0-17-11.5-28.5T760-480H200q-17 0-28.5 11.5T160-440v80zm640 0H160h640z"></path>
     </svg>
   );
 }

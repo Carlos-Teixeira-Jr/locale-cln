@@ -1,21 +1,8 @@
 import { useState } from 'react';
 import Modal, { Styles } from 'react-modal';
+import { useIsMobile } from '../../../hooks/useIsMobile';
 
-const style: Styles | undefined = {
-  content: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    transform: 'translate(-50%, -50%)',
-    width: '40%',
-    backgroundColor: 'background.paper',
-    boxShadow: '0px 4px 4px 0px rgba(0, 0, 0, 0.25)',
-    borderRadius: '30px',
-    padding: '10px',
-  },
-};
+
 
 interface IAreaData {
   open: boolean;
@@ -38,12 +25,29 @@ export default function AreaCalculatorModal({
   const [area, setArea] = useState(0);
   const [areaWidth, setAreaWidth] = useState(0);
   const [areaLength, setAreaLength] = useState(0);
+  const isMobile = useIsMobile();
+
+  const style: Styles | undefined = {
+    content: {
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      right: 'auto',
+      bottom: 'auto',
+      transform: 'translate(-50%, -50%)',
+      width: isMobile ? '90%' : '40%',
+      backgroundColor: 'background.paper',
+      boxShadow: '0px 4px 4px 0px rgba(0, 0, 0, 0.25)',
+      borderRadius: '30px',
+      padding: '10px',
+    },
+  };
 
   const handleWidhtChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const width = parseInt(event.target.value);
     setAreaWidth(width);
     const area = width * areaLength;
-    setArea(area);
+    setArea(!Number.isNaN(area) ? area : 0);
     handleSize(area);
   };
 
@@ -51,7 +55,7 @@ export default function AreaCalculatorModal({
     const length = parseInt(event.target.value);
     setAreaLength(length);
     const area = length * areaWidth;
-    setArea(area);
+    setArea(!Number.isNaN(area) ? area : 0);
     handleSize(area);
   };
   return (

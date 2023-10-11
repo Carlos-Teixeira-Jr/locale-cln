@@ -51,11 +51,11 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
       className={`${
         isAdminPage
           ? 'md:flex lg:flex-row justify-center mb-10 mx-10 md:mx-auto'
-          : 'md:flex md:flex-col lg:flex-row justify-center md:mb-5 px-5 md:mx-auto z-40'
+          : 'md:flex md:flex-row justify-center md:mb-5 px-5 md:px-0 md:mx-auto'
       }`}
     >
       <div
-        className={`md:mx-auto my-5 lg:my-0 rounded-t-[35px] rounded-b-[30px] border-[5px] md:z-20 h-fit ${
+        className={`md:mx-auto my-5 lg:my-0 rounded-t-[35px] rounded-b-[30px] border-[5px] h-fit ${
           selectedPlanCard === id ? 'border-secondary' : 'border-none'
         }`}
       >
@@ -63,7 +63,7 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
           className={`flex bg-primary rounded-t-[30px] ${
             isAdminPage
               ? 'md:w-[250px] md:h-[66px]'
-              : 'md:w-72 md:h-fit py-2'
+              : 'md:w-60 md:h-fit py-2'
           }`}
         >
           <div className="flex items-center m-auto">
@@ -71,7 +71,7 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
               className={`${
                 isAdminPage
                   ? 'font-bold text-[35px] text-tertiary mr-2'
-                  : 'font-bold text-3xl text-tertiary mr-3'
+                  : 'font-bold text-3xl md:text-2xl text-tertiary mr-3'
               }`}
             >
               Plano
@@ -80,19 +80,19 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
               className={`${
                 isAdminPage
                   ? 'font-bold text-[35px] text-secondary'
-                  : 'font-bold text-3xl text-secondary'
+                  : 'font-bold text-3xl md:text-2xl text-secondary'
               }`}
             >
               {name === 'Locale Plus' ? (
                 <div className="">
-                  <div className="bg-tertiary rounded-full flex h-[39px] lg:mt-2">
+                  <div className="bg-tertiary rounded-full flex h-[33px] lg:mt-2">
                     <LocaleLogo
                       className="mt-0.5"
                       width={`${isAdminPage ? '90' : '100'}`}
                     />
                     <PlusIcon
                       fill="#F5BF5D"
-                      className="pb-[7px]"
+                      className="pb-[15px]"
                       width={`${isAdminPage ? '35' : '48'}`}
                     />
                   </div>
@@ -110,7 +110,7 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
               ? `md:w-[250px] ${
                   selectedCards.includes(id) ? 'h-fit' : 'h-fit'
                 }`
-              : `md:w-72 ${
+              : `md:w-60 ${
                   selectedCards.includes(id) ? 'h-fit' : 'h-fit'
                 }`
           }`}
@@ -247,7 +247,7 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
             }`}
           >
             <button
-              className={`rounded-[10px] text-tertiary md:ml-auto mx-auto mb-5 font-semibold ${
+              className={`rounded-[10px] text-tertiary mx-auto mb-5 font-semibold ${
                 isAdminPage
                   ? `${
                       selectedPlanCard === id
@@ -258,7 +258,7 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
                         }`
                         : 'bg-primary w-[180px] h-[44px] text-base'
                     }`
-                  : ` w-56 h-[66px] mt-5 text-2xl ${
+                  : `w-full h-[66px] mt-5 mx-5 text-2xl ${
                       selectedPlanCard === id
                         ? 'bg-secondary'
                         : 'bg-primary'

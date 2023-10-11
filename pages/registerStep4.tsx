@@ -1,29 +1,37 @@
+import { useEffect } from 'react';
 import LinearStepper from '../components/atoms/stepper/stepper';
 import Footer from '../components/organisms/footer/footer';
 import Header from '../components/organisms/header/header';
 import { NextPageWithLayout } from './page';
 import { useRouter } from 'next/router';
+import { useProgress } from '../context/registerProgress';
 
 const RegisterStep4: NextPageWithLayout = () => {
 
   const router = useRouter();
+  const { progress, updateProgress } = useProgress();
+
+  // Verifica se o estado progress que determina em qual step o usuário está corresponde ao step atual;
+  useEffect(() => {
+    if (progress < 4) {
+      router.push('/register');
+    }
+  });
 
   return (
     <>
-      <div className="fixed z-10 top-0 w-auto md:w-full">
-        <Header />
-      </div>
-      <div className="lg:mx-24">
-        <div className="md:mt-36 mt-32 md:mb-14 lg:mb-2 w-full mx-auto lg:mx-24 max-w-[1536px] xl:mx-auto">
+      <Header />
+      <div className="flex flex-col mx-auto max-w-[1215px]">
+        <div className="md:mt-26 mt-28 sm:mt-32 md:mb-8 lg:mb-2 w-full mx-auto xl:mx-auto">
           <LinearStepper isSubmited={false} sharedActiveStep={3} />
         </div>
 
         <div className="md:mx-20 md:mb-20 flex flex-col justify-center mx-auto">
-          <div className="flex flex-col m-5">
+          <div className="flex flex-col m-5 md:w-2/3 mx-auto">
             <h1 className="text-4xl text-red-500 text-center font-bold mb-5">
               Parabéns!!
             </h1>
-            <p className="font-medium text-lg text-quaternary inline-block">
+            <p className="font-medium text-lg lg:text-2xl text-quaternary inline-block mx-5">
               O anúncio do seu imóvel está pronto e seu cadastro quase
               finalizado! A senha da sua conta foi enviada para o seu e-mail.
             </p>
@@ -33,7 +41,6 @@ const RegisterStep4: NextPageWithLayout = () => {
 
         </div>
       </div>
-
       <Footer smallPage={false} />
     </>
   );
