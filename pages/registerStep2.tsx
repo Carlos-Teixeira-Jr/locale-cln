@@ -90,12 +90,9 @@ const RegisterStep2: NextPageWithLayout = () => {
 
   return (
     <>
-      <div className="fixed z-10 top-0 w-auto md:w-full">
-        <Header />
-      </div>
-
-      <div className='lg:mx-24'>
-        <div className="md:mt-26 mt-[120px] md:mb-14 lg:mb-2 w-full mx-auto lg:mx-[100px] max-w-[1536px] xl:mx-auto">
+      <Header />
+      <div className='flex flex-col mx-auto max-w-[1215px]'>
+        <div className="md:mt-26 mt-28 sm:mt-32 md:mb-8 lg:mb-2 w-full mx-auto xl:mx-auto">
           <LinearStepper isSubmited={false} sharedActiveStep={1} />
         </div>
         <div className="max-w-[1232px]" id="upload-images">
@@ -116,7 +113,7 @@ const RegisterStep2: NextPageWithLayout = () => {
           />
         </div>
 
-        <div className="flex self-end md:justify-end justify-center md:mb-32 mx-10">
+        <div className="flex self-end md:justify-end justify-center md:mb-32 mx-auto sm:mx-10 max-w-[1232px]">
           <button className="bg-primary w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold text-2xl lg:text-3xl hover:bg-red-600 hover:text-white" onClick={handleSubmit}>
               Continuar
           </button>

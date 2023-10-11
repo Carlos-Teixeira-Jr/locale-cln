@@ -98,7 +98,7 @@ const Home: NextPageWithLayout<IHome> = ({
           />
         </div>
 
-        <div className="md:absolute flex justify-center md:justify-end xl:justify-center2 xl:max-w-[1536px] xl:pl-[600px] mt-[55px] lg:pr-11 lg:mr-28 lg:top-20 md:top-[25px] lg:left-0 md:p-4 w-full">
+        <div className="md:absolute flex justify-center md:justify-end xl:justify-center2 xl:max-w-[1536px] xl:pl-[600px] mt-12 lg:pr-11 lg:mr-28 lg:top-20 md:top-[25px] lg:left-0 md:p-4 w-full">
           <HomeFilter
             isBuyProp={isBuy}
             isRentProp={isRent}

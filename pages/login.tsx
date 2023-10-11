@@ -10,17 +10,13 @@ const LoginPage: NextPageWithLayout = () => {
 
   return (
     <>
+      <Header />
       <div>
-        <Header />
-        <div className="flex-grow">
-          <div className="flex justify-center mt-5 md:mt-[17px]">
-            <LoginCard />
-          </div>
-          <div>
-            <Footer smallPage={false} />
-          </div>
+        <div className="h-screen flex justify-center items-center mt-5">
+          <LoginCard />
         </div>
       </div>
+      <Footer smallPage={false} />
     </>
   );
 };

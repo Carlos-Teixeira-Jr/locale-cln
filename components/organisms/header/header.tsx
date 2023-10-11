@@ -46,14 +46,14 @@ const Header: React.FC<IHeader> = () => {
 
   return (
     <div>
-      <div className="sticky top-0 w-full md:w-auto z-40 justify-between grid grid-cols-2 md:grid md:grid-cols-3 bg-tertiary h-fit shadow-md mr-6 ml-6 mt-8 p-2 rounded-[50px]">
+      <div className="top-0 fixed z-10 w-[95%] justify-between grid grid-cols-2 md:grid md:grid-cols-3 bg-tertiary h-fit shadow-md mt-8 p-2 rounded-[50px] left-1/2 transform -translate-x-1/2">
         <Link
           href="/"
           className="relative flex items-center cursor-pointer my-auto ml-4"
         >
           <LocaleLogo />
         </Link>
-        <div className="hidden lg:flex lg:flex-row lg:items-center justify-between space-x-2 text-lg ml-5 md:ml-0 font-bold text-quaternary">
+        <div className="hidden md:flex md:flex-row md:items-center justify-between space-x-2 text-lg ml-5 md:ml-0 font-bold text-quaternary">
           <Link
             className={`cursor-pointer ${
               isBuy
