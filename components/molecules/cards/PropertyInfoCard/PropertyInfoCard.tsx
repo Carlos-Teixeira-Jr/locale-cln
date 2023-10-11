@@ -72,7 +72,7 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
   return (
     <>
       <Link href={href}>
-        <div className="md:w-[870px] md:h-[265px] bg-tertiary md:grid md:grid-cols-3 rounded-[30px] overflow-hidden drop-shadow-lg my-[29px] md:mx-[35px] mx-2 flex flex-col md:max-w-full">
+        <div className="md:w-[760px] md:h-[265px] bg-tertiary md:grid md:grid-cols-3 rounded-[30px] overflow-hidden drop-shadow-lg my-[29px] md:mx-[35px] mx-2 flex flex-col">
           <div className="group relative md:h-[200px]">
             {/* Images */}
             <div className="flex flex-row w-full overflow-hidden scroll-smooth rounded-tl-[30px] md:h-[265px] h-[250px]">
@@ -142,7 +142,7 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
                 {location}
               </p>
             </div>
-            <div className="grid grid-auto-cols grid-flow-col gap-4">
+            <div className="grid grid-auto-cols grid-flow-col gap-3 pb-6 md:pb-0 lg:pb-0">
               <div className="grid grid-auto-cols grid-flow-col gap-1">
                 <div className="md:w-[30px] h-[30px]">
                   <BedroomIcon fill="#6B7280" />
@@ -169,10 +169,10 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
               </div>
               <div>
                 <button
-                  className="bg-primary md:w-[200px] md:h-[47px] rounded-full md:p-2.5 gap-2.5"
+                  className="bg-primary md:w-[200px] md:h-[50px] rounded-full "
                   onClick={handleMessageBtnClick}
                 >
-                  <p className="md:w-[176px] md:h-[24px] font-normal text-sm px-2 lg:text-xl text-tertiary flex mx-auto my-auto align-middle justify-center mb-1">
+                  <p className="md:w-[176px] md:h-[24px] font-normal text-sm px-2 md:text-lg lg:text-xl text-tertiary flex mx-auto my-1 align-middle justify-center py-0 sm:py-1 md:py-0 lg:py-0 xl:py-0 mb-1 md:mb-1 lg:mb-0">
                     Enviar Mensagem
                   </p>
                 </button>
