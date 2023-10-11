@@ -138,7 +138,11 @@ const Search: NextPageWithLayout<ISearch> = ({
             </div>
 
             <div className="flex flex-col">
-              <div className={`${mobileFilterIsOpen ? 'hidden' : ''}`}>
+              <div
+                className={`${
+                  mobileFilterIsOpen ? 'hidden' : ''
+                } md:hidden lg:visible xl:visible`}
+              >
                 <SearchShortcut
                   onMobileFilterIsOpenChange={handleMobileFilterIsOpen}
                 />
