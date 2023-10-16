@@ -5,7 +5,6 @@ import {
   ILocation,
   ILocationProp,
 } from '../../../common/interfaces/locationDropdown';
-import { IPropertyTypes } from '../../../common/interfaces/property/propertyTypes';
 import { ITagsData } from '../../../common/interfaces/tagsData';
 import CheckIcon from '../../atoms/icons/checkIcon';
 import SearchIcon from '../../atoms/icons/searchIcon';
@@ -581,7 +580,12 @@ const FilterList: React.FC<IFilterListProps> = ({
           >
             {propertyTypesData.map((prop, index) => (
               <div className='w-full rounded-t-8 bg-tertiary'>
-                <p className='text-quaternary lg:text-2xl p-1 text-center font-bold '>Todos</p>
+                <p 
+                  className='text-center p-1 hover:bg-quaternary hover:text-tertiary font-normal text-lg'
+                  onClick={() => handlePropertyTypeSelection("todos", "todos")}
+                >
+                  Todos
+                </p>
                 <p className='text-quaternary lg:text-2xl p-1 text-center font-bold '>{prop.type}</p>
                 {propertyTypesData[index].subTypes.map((type) =>  (
                   <div 
