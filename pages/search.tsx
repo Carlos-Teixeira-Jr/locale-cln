@@ -46,6 +46,8 @@ const Search: NextPageWithLayout<ISearch> = ({
   const router = useRouter();
   const query = router.query;
 
+  const [openDropdown, setOpenDropdown] = useState(false);
+
   // userLocation
   const { latitude, longitude, location } = useTrackLocation();
   // mobile
@@ -122,9 +124,9 @@ const Search: NextPageWithLayout<ISearch> = ({
   return (
     <div>
       <Header />
-      <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center mt-14">
         <div className="lg:flex justify-center max-w-[1232px]">
-          <div className="flex flex-col md:flex-row mt-[-16px] md:mt-0">
+          <div className="flex flex-col md:flex-row mt-[-16px] md:mt-0 ">
             <div className="mx-auto">
               <FilterList
                 propertyTypesProp={propertyTypes}
@@ -138,18 +140,14 @@ const Search: NextPageWithLayout<ISearch> = ({
             </div>
 
             <div className="flex flex-col">
-              <div
-                className={`${
-                  mobileFilterIsOpen ? 'hidden' : ''
-                } md:hidden lg:visible xl:visible`}
-              >
+              <div className={`${mobileFilterIsOpen ? 'hidden' : ''}`}>
                 <SearchShortcut
                   onMobileFilterIsOpenChange={handleMobileFilterIsOpen}
                 />
               </div>
 
-              <div className="flex flex-row items-center justify-evenly px-26 mt-2 md:mt-0 mr-0">
-                <h3 className="text-quaternary text-sm md:text-base leading-5 font-extrabold text-justify -ml-2">
+              <div className="flex flex-row items-center justify-between px-5 gap-8 mt-2 md:mt-0">
+                <h3 className="text-quaternary text-sm md:text-base leading-5 font-extrabold md:ml-4 text-justify">
                   {propertyInfo.totalCount} Imóveis encontrados com base na
                   pesquisa
                 </h3>
@@ -180,8 +178,8 @@ const Search: NextPageWithLayout<ISearch> = ({
                   <div ref={ref} onClick={() => setOpen(!open)}>
                     <div className="flex flex-row items-center justify-around cursor-pointer mb-6 bg-tertiary sm:max-w-[188px] md:w-[188px] h-[44px] font-bold text-sm md:text-lg text-quaternary leading-5 shadow-lg p-[10px] border border-quaternary rounded-[30px] mt-7 md:mr-4 ml-2">
                       <span>Ordenar Por</span>
-                      <span>
-                        <ArrowDropdownIcon />
+                      <span onClick={() => setOpenDropdown(!openDropdown)}>
+                        <ArrowDropdownIcon open={openDropdown} />
                       </span>
                     </div>
                     {open && <DropdownOrderBy />}
