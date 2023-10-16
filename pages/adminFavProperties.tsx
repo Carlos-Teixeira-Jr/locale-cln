@@ -9,10 +9,12 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import { fetchJson } from '../common/utils/fetchJson';
 import { IOwnerProperties } from '../common/interfaces/properties/propertiesList';
 import { IData } from '../common/interfaces/property/propertyData';
+import Pagination from '../components/atoms/pagination/pagination';
+import { IFavProperties } from '../common/interfaces/properties/favouriteProperties';
 
 interface IAdminFavProperties {
   ownerProperties: IOwnerProperties
-  favouriteProperties: IData[]
+  favouriteProperties: IFavProperties
 }
 
 const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
@@ -21,6 +23,7 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
 }) => {
 
   const isOwner = ownerProperties?.docs?.length === 0 ? false : true;
+  const totalPages = favouriteProperties.totalPages;
 
   return (
     <>
@@ -36,11 +39,11 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
             <h1 className="font-extrabold text-2xl md:text-4xl text-quaternary md:mb-5 text-center">
               Imóveis Favoritos
             </h1>
-            {/* <Pagination 
-              totalPages={0} 
-            />   */}
+            <Pagination 
+              totalPages={totalPages} 
+            />  
             <div className="flex flex-col md:flex-row flex-wrap gap-20 my-5">
-              {favouriteProperties?.length > 0 && favouriteProperties.map(
+              {favouriteProperties?.docs.length > 0 && favouriteProperties.docs.map(
                 ({
                   _id,
                   prices,
@@ -55,8 +58,8 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
                   images={images}
                   location={`${address.city}, ${address.uf} - ${address.streetName}`}
                   favorited={highlighted} 
-                  _id={_id} 
-                  prices={prices[0]} 
+                  id={_id} 
+                  prices={prices} 
                   highlighted={highlighted} 
                 />
               ))}
@@ -164,6 +167,7 @@ export async function getServerSideProps(context:GetServerSidePropsContext) {
         },
         body: JSON.stringify({
           id: userId,
+          page: 1
         })
       })
       .then((res) => res.json())
