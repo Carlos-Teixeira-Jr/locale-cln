@@ -49,7 +49,7 @@ const UploadImages = ({
 
   useEffect(() => {
     onImagesUpdate(images.map((image) => image.src));
-  }, [images, onImagesUpdate]);
+  }, [images]);
 
   useEffect(() => {
     if (editarImages) {
@@ -89,7 +89,7 @@ const UploadImages = ({
   };
 
   return (
-    <div className="max-w-screen-md md:flex lg:block flex-column items-center justify-center mx-auto" ref={imagesErrorScroll}>
+    <div className="max-w-screen-md block mx-5 flex-column items-center justify-center lg:mx-auto" ref={imagesErrorScroll}>
       <label
         className="flex flex-row items-center px-6 w-64 h-12 border rounded-[50px] bg-secondary cursor-pointer mt-4 mx-auto"
         htmlFor="uploadImages"

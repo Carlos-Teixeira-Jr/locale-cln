@@ -34,7 +34,7 @@ const PaymentBoard: React.FC<IPaymentBoard> = ({
   }, [terms]);
 
   return (
-    <div>
+    <div className="mx-5">
       <div
         className="mt-10 bg-tertiary border border-quaternary md:py-5 md:px-56 p-5 flex flex-col"
       >
@@ -64,7 +64,7 @@ const PaymentBoard: React.FC<IPaymentBoard> = ({
           </span>
         </div>
       </div>
-      <div className="lg:flex justify-between md:my-2">
+      <div className="lg:flex justify-between my-2">
         <div className="flex my-auto">
           <div
             className=" w-8 h-8 shrink-0 border border-quaternary bg-tertiary rounded-[10px] drop-shadow-lg my-auto cursor-pointer"
@@ -85,7 +85,7 @@ const PaymentBoard: React.FC<IPaymentBoard> = ({
           </div>
           <div className="flex flex-col">
             <p
-              className="mx-5 md:text-lg font-normal leading-7 my-auto"
+              className="mx-5 text-quaternary text-xs md:text-lg font-normal my-auto"
               style={errors ? { color: 'red' } : {}}
               id="terms"
             >

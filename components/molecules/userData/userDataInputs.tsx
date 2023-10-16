@@ -73,7 +73,7 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
 
   // Realiza o auto-scroll para o input que apresenta erro;
   useEffect(() => {
-    const scrollToError = (errorKey: string) => {
+    const scrollToError = (errorKey: keyof typeof userDataErrors) => {
       if (userDataErrors[errorKey] !== '' && userDataInputRefs[errorKey]?.current) {
         userDataErrorScroll[errorKey]?.current.scrollIntoView({ behavior: 'auto', block: 'center' });
       }
@@ -184,7 +184,7 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
   ];
 
   return (
-    <div>
+    <div className='mx-5'>
       <h1 className="md:text-3xl text-2xl leading-10 text-quaternary font-bold md:mb-10">
         {isEdit ? 'Dados Pessoais' : 'Informações para contratação'}
       </h1>
@@ -226,7 +226,7 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
             ))}
           </div>
 
-          <div className="my-5 mx-auto flex w-full gap-10">
+          <div className="my-5 mx-auto flex flex-col md:flex-row w-full gap-5 md:gap-10">
             {inputs.slice(3).map((input: Input) => (
               <div key={input.key} className="w-full" ref={input.ref}>
                 <h3 className="text-xl font-normal text-quaternary leading-7">

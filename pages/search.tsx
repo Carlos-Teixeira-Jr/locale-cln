@@ -122,7 +122,7 @@ const Search: NextPageWithLayout<ISearch> = ({
       <Header />
       <div className="flex items-center justify-center">
         <div className="lg:flex justify-center max-w-[1232px]">
-          <div className="flex flex-col md:flex-row mt-[-16px] md:mt-0 ">
+          <div className="flex flex-col md:flex-row mt-[-16px] md:mt-0">
             <div className="mx-auto">
               <FilterList
                 locationProp={locations}
@@ -135,14 +135,18 @@ const Search: NextPageWithLayout<ISearch> = ({
             </div>
 
             <div className="flex flex-col">
-              <div className={`${mobileFilterIsOpen ? 'hidden' : ''}`}>
+              <div
+                className={`${
+                  mobileFilterIsOpen ? 'hidden' : ''
+                } md:hidden lg:visible xl:visible`}
+              >
                 <SearchShortcut
                   onMobileFilterIsOpenChange={handleMobileFilterIsOpen}
                 />
               </div>
 
-              <div className="flex flex-row items-center justify-between px-5 gap-8 mt-2 md:mt-0">
-                <h3 className="text-quaternary text-sm md:text-base leading-5 font-extrabold md:ml-4 text-justify">
+              <div className="flex flex-row items-center justify-evenly px-26 mt-2 md:mt-0 mr-0">
+                <h3 className="text-quaternary text-sm md:text-base leading-5 font-extrabold text-justify -ml-2">
                   {propertyInfo.totalCount} Imóveis encontrados com base na
                   pesquisa
                 </h3>
@@ -238,30 +242,31 @@ const Search: NextPageWithLayout<ISearch> = ({
                     mobileFilterIsOpen ? 'hidden' : ''
                   }`}
                 >
-                  {propertyInfo.docs && propertyInfo?.docs.map(
-                    ({
-                      _id,
-                      prices,
-                      description,
-                      address,
-                      images,
-                      metadata,
-                      highlighted,
-                    }: IData) => (
-                      <PropertyCard
-                        key={_id}
-                        prices={prices}
-                        description={description}
-                        images={images}
-                        location={address.streetName}
-                        bedrooms={metadata[0].amount}
-                        bathrooms={metadata[1].amount}
-                        parking_spaces={metadata[2].amount}
-                        id={_id}
-                        highlighted={highlighted}
-                      />
-                    )
-                  )}
+                  {propertyInfo.docs &&
+                    propertyInfo?.docs.map(
+                      ({
+                        _id,
+                        prices,
+                        description,
+                        address,
+                        images,
+                        metadata,
+                        highlighted,
+                      }: IData) => (
+                        <PropertyCard
+                          key={_id}
+                          prices={prices}
+                          description={description}
+                          images={images}
+                          location={address.streetName}
+                          bedrooms={metadata[0].amount}
+                          bathrooms={metadata[1].amount}
+                          parking_spaces={metadata[2].amount}
+                          id={_id}
+                          highlighted={highlighted}
+                        />
+                      )
+                    )}
                 </div>
               ) : (
                 <div

@@ -28,7 +28,7 @@ const ChangeAddressCheckbox: React.FC<IChangeAddressCheckbox> = ({
   }, [isSameAddress])
 
   return (
-    <div>
+    <div className="mx-5">
       <h2 className="md:text-3xl text-2xl leading-10 text-quaternary font-bold md:mb-10">
         Endereço de cobrança
       </h2>

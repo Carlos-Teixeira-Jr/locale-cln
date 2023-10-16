@@ -518,7 +518,7 @@ const FilterList: React.FC<IFilterListProps> = ({
 
   return (
     <div
-      className={`lg:block max-w-[403px] h-fit bg-tertiary shadow-md rounded-[30px] px-2 md:px-5 md:py-8 pt-8 pb-2 md:ml-7 mt-12 ${
+      className={`lg:block max-w-[400px] h-fit bg-tertiary shadow-md rounded-[30px] px-2 md:px-5 md:py-8 pt-8 pb-2 md:ml-7 mt-12 ${
         !mobileFilterIsOpen ? 'hidden' : ''
       }`}
     >
