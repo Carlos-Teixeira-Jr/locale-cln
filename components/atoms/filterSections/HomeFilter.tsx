@@ -52,10 +52,6 @@ const HomeFilter: React.FC<IHomeFilter> = ({
   const [inputValue, setInputValue] = useState('');
   const [allLocations, setAllLocations] = useState(false);
 
-  useEffect(() => {
-    console.log("🚀 ~ file: HomeFilter.tsx:62 ~ propertyType:", propertyType)
-  }, [propertyType])
-
   //// AD TYPE ////
 
   const handleBuy = () => {
@@ -223,6 +219,7 @@ const HomeFilter: React.FC<IHomeFilter> = ({
       query.propertySubtype = JSON.stringify(propertyType.propertySubtype);
     } else {
       query.propertyType = JSON.stringify('todos');
+      query.propertySubtype = JSON.stringify('todos');
     }
 
     router.push({
@@ -284,7 +281,7 @@ const HomeFilter: React.FC<IHomeFilter> = ({
               className="drop-shadow-lg lg:h-9 lg:w-64 lg:text-lg rounded-lg p-2 mb-1 border border-quaternary flex justify-between"
               onClick={() => setPropTypeDropdownIsOpen(!propTypeDropdownIsOpen)}
             >
-              <p className='text-quaternary text'>{propertyType.propertyType ? propertyType.propertyType : `Tipo de imóvel`}</p>
+              <p className='text-quaternary text'>{propertyType.propertyType ? propertyType.propertySubtype : `Tipo de imóvel`}</p>
               <ArrowDownIcon
                 className={`my-auto cursor-pointer ${
                   propTypeDropdownIsOpen
@@ -312,6 +309,7 @@ const HomeFilter: React.FC<IHomeFilter> = ({
                           propertyType: prop.type,
                           propertySubtype: type
                         });
+                        setPropTypeDropdownIsOpen(false);
                       }}
                     >
                       {type}
