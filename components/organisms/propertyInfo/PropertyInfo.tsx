@@ -41,12 +41,6 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [favourited, setFavourited] = useState(isFavourite);
   const router = useRouter();
-
-  useEffect(() => {
-    console.log("🚀 ~ file: PropertyInfo.tsx:34 ~ isFavourite:", isFavourite)
-
-  }, [isFavourite])
-  
   
   const handleCopy = async () => {
     setTooltipIsVisible(true);
@@ -181,11 +175,11 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
             </button>
           )}
 
-          {isFavourite && (
+          {!userIsLogged && (
             <FavouritePropertyTooltip 
               open={favPropTooltipIsVisible} 
               onRequestClose={hideFavTooltip} 
-              anchorId={'fav-property-tooltip'}            
+              anchorId={'fav-property-tooltip'} 
             />
           )}
 

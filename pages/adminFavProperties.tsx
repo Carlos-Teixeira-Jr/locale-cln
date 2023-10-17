@@ -20,7 +20,6 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
   favouriteProperties,
   properties
 }) => {
-  console.log("🚀 ~ file: adminFavProperties.tsx:21 ~ favouriteProperties:", favouriteProperties)
 
   const isOwner = properties?.docs?.length > 0 ? true : false;
 

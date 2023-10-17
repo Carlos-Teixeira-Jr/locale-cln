@@ -173,7 +173,6 @@ export async function getServerSideProps(context: NextPageContext) {
 
         if (favourites.docs.length > 0) {
           isFavourite = favourites.docs.some((prop: any) => prop._id === propertyId);
-          console.log("🚀 ~ file: [id].tsx:176 ~ getServerSideProps ~ isFavourite:", isFavourite)
         } else {
           isFavourite = false;
         }
