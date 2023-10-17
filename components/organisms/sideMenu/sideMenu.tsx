@@ -18,9 +18,8 @@ type Options = {
 }
 
 type SideMenuProps = {
-  isMobileProp: boolean;
   isOwnerProp: boolean;
-  notifications: [];
+  notifications?: [];
 };
 
 const SideMenu: React.FC<SideMenuProps> = ({ 
@@ -120,7 +119,7 @@ const SideMenu: React.FC<SideMenuProps> = ({
             width="35"
             height="35"
           />
-          {notifications?.length > 0 && (
+          {notifications && notifications?.length > 0 && (
             <div className="absolute top-100 mt-4 ml-[0.4rem] left-10">
               <div
                 data-nots={notifications?.length}
