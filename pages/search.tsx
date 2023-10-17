@@ -120,7 +120,7 @@ const Search: NextPageWithLayout<ISearch> = ({
   return (
     <div>
       <Header />
-      <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center mt-16">
         <div className="lg:flex justify-center max-w-[1232px]">
           <div className="flex flex-col md:flex-row mt-[-16px] md:mt-0">
             <div className="mx-auto">
@@ -151,39 +151,41 @@ const Search: NextPageWithLayout<ISearch> = ({
                   pesquisa
                 </h3>
                 {/* SearchView - start*/}
-                {!isMobile && (
-                  <div className="flex flex-row items-center gap-1 mr-[-30px]">
-                    <button
-                      onClick={handleList}
-                      className={`w-[47px] h-[44px] border border-[#6B7280] rounded-[10px] ${
-                        list && 'border-[#F5BF5D] shadow-inner'
-                      }`}
-                    >
-                      <ListIcon list={list} />
-                    </button>
-                    <button
-                      onClick={handleGrid}
-                      className={`w-[47px] h-[44px] border border-[#6B7280] rounded-[10px] ${
-                        grid && 'border-[#F5BF5D] shadow-inner'
-                      }`}
-                    >
-                      <GridIcon grid={grid} />
-                    </button>
-                  </div>
-                )}
-
-                {/* SearchView - end*/}
-                {!isMobile && (
-                  <div ref={ref} onClick={() => setOpen(!open)}>
-                    <div className="flex flex-row items-center justify-around cursor-pointer mb-6 bg-tertiary sm:max-w-[188px] md:w-[188px] h-[44px] font-bold text-sm md:text-lg text-quaternary leading-5 shadow-lg p-[10px] border border-quaternary rounded-[30px] mt-7 md:mr-4 ml-2">
-                      <span>Ordenar Por</span>
-                      <span>
-                        <ArrowDropdownIcon />
-                      </span>
+                <div className="flex flex-row justify-around items-center gap-8">
+                  {!isMobile && (
+                    <div className="flex flex-row items-center gap-1 mr-[-30px]">
+                      <button
+                        onClick={handleList}
+                        className={`w-[47px] h-[44px] border border-[#6B7280] rounded-[10px] ${
+                          list && 'border-[#F5BF5D] shadow-inner'
+                        }`}
+                      >
+                        <ListIcon list={list} />
+                      </button>
+                      <button
+                        onClick={handleGrid}
+                        className={`w-[47px] h-[44px] border border-[#6B7280] rounded-[10px] ${
+                          grid && 'border-[#F5BF5D] shadow-inner'
+                        }`}
+                      >
+                        <GridIcon grid={grid} />
+                      </button>
                     </div>
-                    {open && <DropdownOrderBy />}
-                  </div>
-                )}
+                  )}
+
+                  {/* SearchView - end*/}
+                  {!isMobile && (
+                    <div ref={ref} onClick={() => setOpen(!open)}>
+                      <div className="flex flex-row items-center justify-around cursor-pointer mb-6 bg-tertiary sm:max-w-[188px] md:w-[188px] h-[44px] font-bold text-sm md:text-lg text-quaternary leading-5 shadow-lg p-[10px] border border-quaternary rounded-[30px] mt-7 md:mr-4 ml-2">
+                        <span>Ordenar Por</span>
+                        <span>
+                          <ArrowDropdownIcon />
+                        </span>
+                      </div>
+                      {open && <DropdownOrderBy />}
+                    </div>
+                  )}
+                </div>
               </div>
 
               {!mobileFilterIsOpen &&
