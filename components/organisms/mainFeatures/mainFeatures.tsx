@@ -5,6 +5,8 @@ import propertyTypesData from '../../../data/propertyTypesData.json';
 import { ISize, announcementSubtype, announcementType, propSubtype, propType } from '../../../common/interfaces/property/propertyData';
 import { IEditPropertyMainFeatures } from '../../../common/interfaces/property/editPropertyData';
 import AreaCalculatorModal from '../../molecules/areaModal/areaModal';
+import ArrowDownIcon from '../../atoms/icons/arrowDownIcon';
+import { capitalizeFirstLetter } from '../../../common/utils/strings/capitalizeFirstLetter';
 
 export type MainFeaturesErrors = {
   description: string,
@@ -75,6 +77,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
   const [garageNumCount, setGarageNumCount] = useState(isEdit ? editarNumGarage : 0);
   const [dependenciesNumCount, setDependenciesNumCount] = useState(isEdit ? editarNumDependencies : 0);
   const [suitesNumCount, setSuitesNumCount] = useState(isEdit ? editarNumSuite : 0);
+  const [propTypeDropdownIsOpen, setPropTypeDropdownIsOpen] = useState(true);
 
   const [propertyFeaturesData, setPropertyFeaturesData] = useState<IEditPropertyMainFeatures>({
     _id: isEdit ? propertyId : '',
@@ -203,6 +206,15 @@ const MainFeatures: React.FC<IMainFeatures> = ({
     isResidential ? 'bg-secondary text-quinary' : 'bg-tertiary text-quaternary'
   }`;
 
+  const handlePropertyTypeSelection = (type: string, subType: string) => {
+    setPropertyFeaturesData({
+      ...propertyFeaturesData,
+      propertyType: type,
+      propertySubtype: subType
+    });
+    setPropTypeDropdownIsOpen(!propTypeDropdownIsOpen);
+  }
+
   const handleAddClick = (key: string, counter: number, setCounter: Dispatch<SetStateAction<number>>) => {
     setCounter(counter + 1);
     const updatedMetadata = propertyFeaturesData.metadata.map(item => {
@@ -329,37 +341,47 @@ const MainFeatures: React.FC<IMainFeatures> = ({
           </div>
         </div>
 
-        <div className="mt-10 md:my-10 md:flex grid grid-flow-row md:justify-between mx-5 lg:mx-0">
-          <select
-            required
-            className="border border-quaternary rounded-[10px] h-12 md:w-fit mb-10 md:mb-0 md:mr-5 text-quaternary text-xl font-bold px-5 drop-shadow-lg bg-tertiary"
-            onChange={(e) => {
-              const selectedValue = e.target.value;
-              const selectedType = propertyTypesData.find(typeObj => typeObj.subTypes.includes(selectedValue));
-
-              if (selectedType) {
-                setPropertyFeaturesData({
-                  ...propertyFeaturesData,
-                  propertyType: selectedType.type,
-                  propertySubtype: selectedValue
-                });
-              }
-            }}
-            value={propertyFeaturesData.propertySubtype}
-          >
-            {propertyTypesData.map((typeObj) => (
-              <optgroup 
-                key={typeObj.key} 
-                label={typeObj.type}
+        <div 
+          className="drop-shadow-lg lg:h-12 md:w-96 lg:text-lg rounded-lg p-2 border border-quaternary flex justify-between mt-10"
+          onClick={() => setPropTypeDropdownIsOpen(!propTypeDropdownIsOpen)}
+        >
+          <p className='text-quaternary text'>{propertyFeaturesData.propertyType ? capitalizeFirstLetter(propertyFeaturesData.propertySubtype) : `Tipo de imóvel`}</p>
+          <ArrowDownIcon
+            className={`my-auto cursor-pointer ${
+              propTypeDropdownIsOpen
+              ? 'transform rotate-360 transition-transform duration-300 ease-in-out'
+              : 'transform rotate-180 transition-transform duration-300 ease-in-out'
+            }`}
+          />
+        </div>
+        <div 
+          className={` md:w-fit w-full h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md ${
+            propTypeDropdownIsOpen
+            ? 'hidden '
+            : ''
+          }`}
+        >
+          {propertyTypesData.map((prop, index) => (
+            <div className='w-96 rounded-t-8 text-quaternary bg-tertiary'>
+              <p 
+                className='text-center p-1 hover:bg-quaternary hover:text-tertiary font-normal text-lg'
+                onClick={() => handlePropertyTypeSelection("todos", "todos")}
               >
-                {typeObj.subTypes.map((subType, index) => (
-                  <option key={index} value={subType}>
-                    {subType}
-                  </option>
-                ))}
-              </optgroup>
-            ))}
-          </select>
+                Todos
+              </p>
+              <p className='text-quaternary lg:text-2xl p-1 text-center font-bold '>
+                {prop.type}
+              </p>
+              {propertyTypesData[index].subTypes.map((type) =>  (
+                <div 
+                  className='text-center p-1 hover:bg-quaternary hover:text-tertiary font-normal text-lg'
+                  onClick={() => handlePropertyTypeSelection(prop.type, type)}
+                >
+                  {type}
+                </div>
+              ))}
+            </div>
+          ))}
         </div>
 
         <div className="my-5 px-5 lg:px-0 lg:ml-0">
