@@ -109,13 +109,10 @@ const Home: NextPageWithLayout<IHome> = ({
           />
         </div>
 
-        <div className="flex max-w-[1232px] justify-center sm:items-center md:items-center lg:items-start xl:items-start flex-col m-auto">
+        <div className="max-w-[1232px] flex sm:items-center md:items-center flex-col m-auto">
           <h3 className="sm:text-base md:text-2xl font-bold text-quaternary text-left mt-5 ml-5">
             O que você procura a um clique de distância
           </h3>
-        </div>
-
-        <div className="max-w-[1232px] flex sm:items-center md:items-center lg:items-start xl:items-start flex-col m-auto">
           <div className="mb-10">
             <AccessCard transactionType={transactionType} />
           </div>
