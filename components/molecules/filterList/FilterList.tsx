@@ -74,7 +74,7 @@ const FilterList: React.FC<IFilterListProps> = ({
 
   // Lida com o switcher de aluguel/compra quando o valor já vem do filtro da homepage;
   useEffect(() => {
-    if (query.adType === 'aluguel') {
+    if (query.adType === 'alugar') {
       setIsRent(true);
       setIsBuy(false);
     }
@@ -83,14 +83,14 @@ const FilterList: React.FC<IFilterListProps> = ({
   const handleBuy = () => {
     setIsBuy(true);
     setIsRent(false);
-    const queryParams = { ...query, adType: 'compra', page: 1 };
+    const queryParams = { ...query, adType: 'comprar', page: 1 };
     router.push({ query: queryParams }, undefined, { scroll: false });
   };
 
   const handleRent = () => {
     setIsBuy(false);
     setIsRent(true);
-    const queryParams = { ...query, adType: 'aluguel', page: 1 };
+    const queryParams = { ...query, adType: 'alugar', page: 1 };
     router.push({ query: queryParams }, undefined, { scroll: false });
   };
 

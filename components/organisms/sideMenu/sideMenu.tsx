@@ -18,7 +18,6 @@ type Options = {
 }
 
 type SideMenuProps = {
-  isMobileProp: boolean;
   isOwnerProp: boolean;
   notifications: [];
 };
@@ -31,13 +30,9 @@ const SideMenu: React.FC<SideMenuProps> = ({
   const router = useRouter();
   const [activeButton, setActiveButton] = useState('');
   const isMobile = useIsMobile();
-  const [isOwner, setIsOwner] = useState(false);
-
-  // Determina se o usuário já posssui algum anúncio;
-  useEffect(() => {
-    setIsOwner(isOwnerProp)
-  }, [isOwnerProp]);
-
+  console.log("🚀 ~ file: sideMenu.tsx:33 ~ isMobile:", isMobile)
+  const isOwner = isOwnerProp;
+  
   useEffect(() => {
     const path = router.pathname;
 
@@ -145,7 +140,8 @@ const SideMenu: React.FC<SideMenuProps> = ({
             if (
               isOwner ||
               id === 'favourites-button' ||
-              id === 'notifications-button'
+              id === 'notifications-button' ||
+              id === 'my-data-button'
             ) {
               return (
                 <Link href={link} key={key}>

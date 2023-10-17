@@ -8,11 +8,19 @@ import UserIcon from '../../atoms/icons/userIcon';
 import { useSession } from 'next-auth/react';
 import { useIsMobile } from '../../../hooks/useIsMobile';
 
-const AdminHeader: React.FC = () => {
+interface IAdminHeader {
+  isOwnerProp: boolean
+}
+
+const AdminHeader: React.FC<IAdminHeader> = ({
+  isOwnerProp
+}) => {
+  
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const { data: session } = useSession() as any;
   const isMobile = useIsMobile();
+  const isOwner = isOwnerProp;
   
   return (
     <div className="flex flex-row fixed top-0 w-full z-50 justify-between bg-tertiary h-20 drop-shadow-md">
@@ -22,13 +30,13 @@ const AdminHeader: React.FC = () => {
       >
         <LocaleLogo />
       </Link>
-      <div className="flex flex-row items-center md:px-10">
+      <div className="flex flex-row items-center lg:px-10">
         <div className="flex items-center mr-2 md:mr-10">
           <Link href={''} className="font-medium text-base text-secondary">
             Precisa de Ajuda?
           </Link>
         </div>
-        <div className="flex items-center justify-center max-w-[50px] max-h-[50px] cursor-pointer" onClick={() => setOpen(!isMobile ? !open : false)}>
+        <div className="flex items-center justify-center max-w-[50px] max-h-[50px] cursor-pointer shrink-0" onClick={() => setOpen(!isMobile ? !open : false)}>
           {session?.user?.data.picture ? (
             <Image
               src={
@@ -49,12 +57,15 @@ const AdminHeader: React.FC = () => {
           )}
         </div>
         <div ref={ref} onClick={() => setOpen(!open)}>
-          <button className="visible md:hidden cursor-pointer decoration-transparent ml-4">
-            <MenuIcon />
+          <button className="visible lg:hidden cursor-pointer decoration-transparent mx-5">
+            <MenuIcon 
+              width={isMobile ? 24 : 50}
+              height={isMobile ? 24 : 50}
+            />
           </button>
         </div>
       </div>
-      {open && <DropdownAdmin/>}
+      {open && <DropdownAdmin isOwnerProp={isOwner}/>}
     </div>
   );
 };

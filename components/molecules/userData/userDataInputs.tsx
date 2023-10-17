@@ -41,7 +41,7 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
   const userDataErrorScroll = {
     ...userDataInputRefs
   };
-
+  
   const [errorModalIsOpen, setErrorModalIsOpen] = useState(false);
   const [succesModalIsOpen, setSuccesModalIsOpen] = useState(false);
 
