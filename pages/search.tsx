@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import { ILocation } from '../common/interfaces/locationDropdown';
 import { IData } from '../common/interfaces/property/propertyData';
-import { IPropertyTypes } from '../common/interfaces/property/propertyTypes';
 import { ITagsData } from '../common/interfaces/tagsData';
 import DropdownOrderBy from '../components/atoms/dropdowns/dropdownOrderBy';
 import ArrowDropdownIcon from '../components/atoms/icons/arrowDropdownIcon';
@@ -21,6 +20,7 @@ import Header from '../components/organisms/header/header';
 import useTrackLocation from '../hooks/trackLocation';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { NextPageWithLayout } from './page';
+import { fetchJson } from '../common/utils/fetchJson';
 
 export interface IPropertyInfo {
   docs: IData[];
@@ -31,14 +31,12 @@ export interface IPropertyInfo {
 
 export interface ISearch {
   propertyInfo: IPropertyInfo;
-  propertyTypes: IPropertyTypes[];
   locations: ILocation[];
   tagsData: ITagsData[];
 }
 
 const Search: NextPageWithLayout<ISearch> = ({
   propertyInfo,
-  propertyTypes,
   locations,
   tagsData,
 }) => {
@@ -127,7 +125,6 @@ const Search: NextPageWithLayout<ISearch> = ({
           <div className="flex flex-col md:flex-row mt-[-16px] md:mt-0">
             <div className="mx-auto">
               <FilterList
-                propertyTypesProp={propertyTypes}
                 locationProp={locations}
                 tagsProp={tagsData}
                 mobileFilterIsOpenProp={mobileFilterIsOpen}
@@ -324,9 +321,10 @@ const Search: NextPageWithLayout<ISearch> = ({
 export default Search;
 
 export async function getServerSideProps(context: NextPageContext) {
-  const { query } = context;
 
+  const { query } = context;
   const filter = [];
+  const baseUrl = process.env.BASE_API_URL;
 
   if (query.adType) {
     filter.push({ adType: query.adType });
@@ -337,6 +335,14 @@ export async function getServerSideProps(context: NextPageContext) {
     const parsedPropertyType = JSON.parse(propertyType);
     if (parsedPropertyType !== 'todos') {
       filter.push({ propertyType: parsedPropertyType });
+    }
+  }
+
+  if (query.propertySubtype) {
+    const propertySubtype = query.propertySubtype.toString();
+    const parsedPropertySubtype = JSON.parse(propertySubtype);
+    if (parsedPropertySubtype !== 'todos') {
+      filter.push({ propertySubtype: parsedPropertySubtype });
     }
   }
 
@@ -408,15 +414,12 @@ export async function getServerSideProps(context: NextPageContext) {
   }
 
   //// OTHER FETCHES ////
-  const propertyTypes = await fetch('http://localhost:3001/property-type')
+
+  const locations = await fetch(`${baseUrl}/location`)
     .then((res) => res.json())
     .catch(() => ({}));
 
-  const locations = await fetch('http://localhost:3001/location')
-    .then((res) => res.json())
-    .catch(() => ({}));
-
-  const tagsData = await fetch('http://localhost:3001/tag')
+  const tagsData = await fetch(`${baseUrl}/tag`)
     .then((res) => res.json())
     .catch(() => ({}));
 
@@ -425,7 +428,7 @@ export async function getServerSideProps(context: NextPageContext) {
 
   if (query.code) {
     try {
-      const url = `http://localhost:3001/property/announcementCode/${query.code}`;
+      const url = `${baseUrl}/property/announcementCode/${query.code}`;
 
       propertyInfo = await fetch(url)
         .then((res) => res.json())
@@ -436,16 +439,18 @@ export async function getServerSideProps(context: NextPageContext) {
       );
     }
   } else {
-    const url = `http://localhost:3001/property/filter/?page=${currentPage}&limit=5&filter=${encodedFilter}${
+    const url = `${baseUrl}/property/filter/?page=${currentPage}&limit=5&filter=${encodedFilter}${
       encodedSort ? `&sort=${encodedSort}` : ``
     }&need_count=true`;
-    propertyInfo = await fetch(url).then((res) => res.json());
+    propertyInfo = await fetch(url)
+      .then((res) => res.json())
+      .catch(() => {}),
+    fetchJson(url);
   }
 
   return {
     props: {
       propertyInfo,
-      propertyTypes,
       locations,
       tagsData,
     },

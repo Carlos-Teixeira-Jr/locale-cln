@@ -58,7 +58,7 @@ const AccessCard = ({ transactionType }: IAccessCard) => {
   ];
 
   return (
-    <div className="lg:w-[1200px] lg:h-[278px] w-full m-auto">
+    <div className="w-full lg:h-[278px] m-auto">
       <div className="rounded-[30px] bg-tertiary m-auto p-4 drop-shadow-2xl md:w-fit">
         <div className="md:flex lg:flex-row justify-between">
           {cardsContent.map(
