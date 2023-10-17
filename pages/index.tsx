@@ -122,7 +122,7 @@ const Home: NextPageWithLayout<IHome> = ({
           </div>
 
           <div className="flex max-w-[1232px]  justify-start text-left">
-            <h3 className="sm:text-base md:text-2xl font-bold text-quaternary text-left ml-5">
+            <h3 className="sm:text-base md:text-2xl font-bold text-quaternary text-center md:text-left ml-5">
               {propertiesByLocation.length != 0
                 ? 'Veja os imóveis mais próximos de você!'
                 : 'Veja os imóveis em destaque!'}
@@ -130,8 +130,8 @@ const Home: NextPageWithLayout<IHome> = ({
           </div>
           <div className="flex sm:flex-col max-w-[1232px] justify-center items-center md:flex-row  mb-3 px-2">
             <div className="flex flex-row px-4">
-              <div className="flex flex-col m-auto align-middle mt-[9px]">
-                <div className="sm:grid sm:grid-cols-1 md:grid md:grid-cols-2 lg:flex lg:flex-row justify-center gap-9 mx-14">
+              <div className="flex flex-col m-auto align-middle mt-2">
+                <div className="sm:grid sm:grid-cols-1 md:grid md:grid-cols-2 lg:flex lg:flex-row justify-center gap-9">
                   {/* ISSO COMENTADO ABAIXO É O CÓDIGO QUE RENDERIZA APENAS OS CARDS REFERENTES A LOCALIZAÇÃO DO USUÁRIO */}
                   {propertiesByLocation.docs
                     ? propertiesByLocation.docs.map(
