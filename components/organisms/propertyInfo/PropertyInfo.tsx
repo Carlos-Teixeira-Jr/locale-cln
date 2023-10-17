@@ -1,6 +1,6 @@
 import clipboardy from 'clipboardy';
 import { useRouter } from 'next/router';
-import React, { MouseEvent, useState } from 'react';
+import React, { MouseEvent, useEffect, useState } from 'react';
 import 'react-tooltip/dist/react-tooltip.css';
 import {
   IData,
@@ -41,7 +41,12 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [favourited, setFavourited] = useState(isFavourite);
   const router = useRouter();
-  const isMobile = useIsMobile();
+
+  useEffect(() => {
+    console.log("🚀 ~ file: PropertyInfo.tsx:34 ~ isFavourite:", isFavourite)
+
+  }, [isFavourite])
+  
   
   const handleCopy = async () => {
     setTooltipIsVisible(true);

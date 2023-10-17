@@ -8,9 +8,11 @@ import { destroyCookie } from 'nookies';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { fetchJson } from '../common/utils/fetchJson';
 import { IData, IPropertyInfo } from '../common/interfaces/property/propertyData';
+import { IFavProperties } from '../common/interfaces/properties/favouriteProperties';
+import Pagination from '../components/atoms/pagination/pagination';
 
 interface IAdminFavProperties {
-  favouriteProperties: IData[]
+  favouriteProperties: IFavProperties
   properties: IPropertyInfo
 }
 
@@ -18,6 +20,7 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
   favouriteProperties,
   properties
 }) => {
+  console.log("🚀 ~ file: adminFavProperties.tsx:21 ~ favouriteProperties:", favouriteProperties)
 
   const isOwner = properties?.docs?.length > 0 ? true : false;
 
@@ -36,11 +39,11 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
             <h1 className="font-extrabold text-2xl md:text-4xl text-quaternary md:mb-5 text-center">
               Imóveis Favoritos
             </h1>
-            {/* <Pagination 
-              totalPages={0} 
-            />   */}
+            <Pagination 
+              totalPages={favouriteProperties?.totalPages} 
+            />  
             <div className="flex flex-col md:flex-row flex-wrap md:gap-10 lg:gap-20 my-5 justify-center">
-              {favouriteProperties?.length > 0 && favouriteProperties.map(
+              {favouriteProperties?.docs.length > 0 && favouriteProperties.docs.map(
                 ({
                   _id,
                   prices,

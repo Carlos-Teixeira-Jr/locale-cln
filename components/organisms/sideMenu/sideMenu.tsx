@@ -138,7 +138,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications }) => {
   return (
     <>
       {!isMobile && (
-        <div className="w-fit min-h-screen bg-tertiary px-2 drop-shadow-xl pt-20 left-0">
+        <div className="w-fit min-h-screen bg-tertiary px-2 drop-shadow-xl left-0">
           {options.map(({ key, id, icon, title, link }: Options) => {
             if (
               isOwner ||
