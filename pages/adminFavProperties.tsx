@@ -152,6 +152,7 @@ export async function getServerSideProps(context:GetServerSidePropsContext) {
         },
         body: JSON.stringify({
           id: userId,
+          page: 1
         })
       })
       .then((res) => res.json())

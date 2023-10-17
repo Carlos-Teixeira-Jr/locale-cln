@@ -98,7 +98,7 @@ const Home: NextPageWithLayout<IHome> = ({
           />
         </div>
 
-        <div className="md:absolute flex justify-center md:justify-end xl:justify-center2 xl:max-w-[1536px] xl:pl-[600px] mt-12 lg:pr-11 lg:mr-28 lg:top-20 md:top-[25px] lg:left-0 md:p-4 w-full">
+        <div className="md:absolute flex flex-col md:flex-row justify-center md:justify-end xl:justify-center xl:pl-[600px]  md:mt-20 lg:pr-11 lg:mr-28 lg:top-20 md:top-[25px] lg:left-0 md:p-4 md:mx-auto w-full p-5 md:inset-x-0 lg:inset-x-10">
           <HomeFilter
             isBuyProp={isBuy}
             isRentProp={isRent}
@@ -121,7 +121,7 @@ const Home: NextPageWithLayout<IHome> = ({
           </div>
 
           <div className="flex max-w-[1232px]  justify-start text-left">
-            <h3 className="sm:text-base md:text-2xl font-bold text-quaternary text-left ml-5">
+            <h3 className="sm:text-base md:text-2xl font-bold text-quaternary text-center md:text-left ml-5">
               {propertiesByLocation.length != 0
                 ? 'Veja os imóveis mais próximos de você!'
                 : 'Veja os imóveis em destaque!'}
@@ -129,8 +129,8 @@ const Home: NextPageWithLayout<IHome> = ({
           </div>
           <div className="flex sm:flex-col max-w-[1232px] justify-center items-center md:flex-row  mb-3 px-2">
             <div className="flex flex-row px-4">
-              <div className="flex flex-col m-auto align-middle mt-[9px]">
-                <div className="sm:grid sm:grid-cols-1 md:grid md:grid-cols-2 lg:flex lg:flex-row justify-center gap-9 mx-14">
+              <div className="flex flex-col m-auto align-middle mt-2">
+                <div className="sm:grid sm:grid-cols-1 md:grid md:grid-cols-2 lg:flex lg:flex-row justify-center gap-9">
                   {/* ISSO COMENTADO ABAIXO É O CÓDIGO QUE RENDERIZA APENAS OS CARDS REFERENTES A LOCALIZAÇÃO DO USUÁRIO */}
                   {propertiesByLocation.docs
                     ? propertiesByLocation.docs.map(
@@ -201,7 +201,7 @@ export async function getStaticProps() {
   const baseUrl = process.env.BASE_API_URL;
 
   const [propertyInfo, propertyTypes, locations] = await Promise.all([
-    fetch(`${baseUrl}/property?page=1&limit=3`)
+    fetch(`${baseUrl}/property/filter/?page=1&limit=3`)
       .then((res) => res.json())
       .catch(() => []),
     fetch(`${baseUrl}/property-type`)
