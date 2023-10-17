@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { ILocation } from '../common/interfaces/locationDropdown';
 import { IData } from '../common/interfaces/property/propertyData';
 import { ITagsData } from '../common/interfaces/tagsData';
-import DropdownOrderBy from '../components/atoms/dropdowns/dropdownOrderBy';
+import { fetchJson } from '../common/utils/fetchJson';
 import ArrowDropdownIcon from '../components/atoms/icons/arrowDropdownIcon';
 import CloseIcon from '../components/atoms/icons/closeIcon';
 import GridIcon from '../components/atoms/icons/gridIcon';
@@ -20,7 +20,6 @@ import Header from '../components/organisms/header/header';
 import useTrackLocation from '../hooks/trackLocation';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { NextPageWithLayout } from './page';
-import { fetchJson } from '../common/utils/fetchJson';
 
 export interface IPropertyInfo {
   docs: IData[];
@@ -171,78 +170,108 @@ const Search: NextPageWithLayout<ISearch> = ({
                     </div>
                   )}
 
-                {/* SearchView - end*/}
-                {!isMobile && (
-                  <div ref={ref} onClick={() => setOpen(!open)}>
-                    <div className="flex flex-row items-center justify-around cursor-pointer mb-6 bg-tertiary sm:max-w-[188px] md:w-[188px] h-[44px] font-bold text-sm md:text-lg text-quaternary leading-5 shadow-lg p-[10px] border border-quaternary rounded-[30px] mt-7 md:mr-4 ml-2">
-                      <span>Ordenar Por</span>
-                      <span onClick={() => setOpenDropdown(!openDropdown)}>
-                        <ArrowDropdownIcon open={openDropdown} />
-                      </span>
-
+                  {/* SearchView - end*/}
+                  {!isMobile && (
+                    <div ref={ref} onClick={() => setOpen(!open)}>
+                      <div className="flex flex-row items-center justify-around cursor-pointer mb-6 bg-tertiary sm:max-w-[188px] md:w-[188px] h-[44px] font-bold text-sm md:text-lg text-quaternary leading-5 shadow-lg p-[10px] border border-quaternary rounded-[30px] mt-7 md:mr-4 ml-2">
+                        <span>Ordenar Por</span>
+                        <span onClick={() => setOpenDropdown(!openDropdown)}>
+                          <ArrowDropdownIcon open={openDropdown} />
+                        </span>
+                      </div>
                     </div>
                   )}
                 </div>
-              </div>
 
-              {!mobileFilterIsOpen &&
-                propertyInfo.docs &&
-                propertyInfo.docs.length > 0 && (
-                  <div className="mx-auto mb-5">
-                    <Pagination totalPages={propertyInfo.totalPages} />
+                {!mobileFilterIsOpen &&
+                  propertyInfo.docs &&
+                  propertyInfo.docs.length > 0 && (
+                    <div className="mx-auto mb-5">
+                      <Pagination totalPages={propertyInfo.totalPages} />
+                    </div>
+                  )}
+
+                {propertyInfo?.docs?.length === 0 && (
+                  <div className="flex flex-col mt-5">
+                    <h2 className="text-quaternary text-sm md:text-base lg:text-2xl leading-5 font-bold md:ml-4 text-justify px-5">
+                      Oops! Não encontramos nenhum resultado para essa busca.
+                    </h2>
+                    <div className="flex flex-col mx-auto justify-center my-5 md:my-10">
+                      <LocationIcon width="100" height="100" fill="#F75D5F" />
+                      <CloseIcon
+                        fill="red"
+                        width="100"
+                        height="100"
+                        className="ml-1"
+                      />
+                    </div>
+                    <h2 className="text-quaternary text-sm md:text-base lg:text-2xl leading-5 font-bold md:ml-4 text-justify px-5">
+                      Você pode tentar remover alguns filtros para tentar
+                      encontrar algum resultado.
+                    </h2>
                   </div>
                 )}
 
-              {propertyInfo?.docs?.length === 0 && (
-                <div className="flex flex-col mt-5">
-                  <h2 className="text-quaternary text-sm md:text-base lg:text-2xl leading-5 font-bold md:ml-4 text-justify px-5">
-                    Oops! Não encontramos nenhum resultado para essa busca.
-                  </h2>
-                  <div className="flex flex-col mx-auto justify-center my-5 md:my-10">
-                    <LocationIcon width="100" height="100" fill="#F75D5F" />
-                    <CloseIcon
-                      fill="red"
-                      width="100"
-                      height="100"
-                      className="ml-1"
-                    />
+                {!propertyInfo.docs && (
+                  <div className="flex flex-col mt-5">
+                    <h2 className="text-quaternary text-sm md:text-base lg:text-2xl leading-5 font-bold md:ml-4 text-justify px-5">
+                      Oops! Não encontramos nenhum imóvel referente ao código
+                      informado.
+                    </h2>
+                    <div className="flex flex-col mx-auto justify-center my-5 md:my-10">
+                      <LocationIcon width="100" height="100" fill="#F75D5F" />
+                      <CloseIcon
+                        fill="red"
+                        width="100"
+                        height="100"
+                        className="ml-1"
+                      />
+                    </div>
+                    <h2 className="text-quaternary text-sm md:text-base lg:text-2xl leading-5 font-bold md:ml-4 text-justify px-5">
+                      Verifique se o código está correto e tente novamente.
+                    </h2>
                   </div>
-                  <h2 className="text-quaternary text-sm md:text-base lg:text-2xl leading-5 font-bold md:ml-4 text-justify px-5">
-                    Você pode tentar remover alguns filtros para tentar
-                    encontrar algum resultado.
-                  </h2>
-                </div>
-              )}
+                )}
 
-              {!propertyInfo.docs && (
-                <div className="flex flex-col mt-5">
-                  <h2 className="text-quaternary text-sm md:text-base lg:text-2xl leading-5 font-bold md:ml-4 text-justify px-5">
-                    Oops! Não encontramos nenhum imóvel referente ao código
-                    informado.
-                  </h2>
-                  <div className="flex flex-col mx-auto justify-center my-5 md:my-10">
-                    <LocationIcon width="100" height="100" fill="#F75D5F" />
-                    <CloseIcon
-                      fill="red"
-                      width="100"
-                      height="100"
-                      className="ml-1"
-                    />
+                {grid ? (
+                  <div
+                    className={`sm:grid sm:grid-cols-1 md:grid md:grid-cols-2  justify-center gap-9 mx-14 ${
+                      mobileFilterIsOpen ? 'hidden' : ''
+                    }`}
+                  >
+                    {propertyInfo.docs &&
+                      propertyInfo?.docs.map(
+                        ({
+                          _id,
+                          prices,
+                          description,
+                          address,
+                          images,
+                          metadata,
+                          highlighted,
+                        }: IData) => (
+                          <PropertyCard
+                            key={_id}
+                            prices={prices}
+                            description={description}
+                            images={images}
+                            location={address.streetName}
+                            bedrooms={metadata[0].amount}
+                            bathrooms={metadata[1].amount}
+                            parking_spaces={metadata[2].amount}
+                            id={_id}
+                            highlighted={highlighted}
+                          />
+                        )
+                      )}
                   </div>
-                  <h2 className="text-quaternary text-sm md:text-base lg:text-2xl leading-5 font-bold md:ml-4 text-justify px-5">
-                    Verifique se o código está correto e tente novamente.
-                  </h2>
-                </div>
-              )}
-
-              {grid ? (
-                <div
-                  className={`sm:grid sm:grid-cols-1 md:grid md:grid-cols-2  justify-center gap-9 mx-14 ${
-                    mobileFilterIsOpen ? 'hidden' : ''
-                  }`}
-                >
-                  {propertyInfo.docs &&
-                    propertyInfo?.docs.map(
+                ) : (
+                  <div
+                    className={`lg:float-right${
+                      mobileFilterIsOpen ? 'hidden' : ''
+                    }`}
+                  >
+                    {propertyInfo?.docs.map(
                       ({
                         _id,
                         prices,
@@ -252,67 +281,37 @@ const Search: NextPageWithLayout<ISearch> = ({
                         metadata,
                         highlighted,
                       }: IData) => (
-                        <PropertyCard
+                        <PropertyInfoCard
+                          _id={_id}
                           key={_id}
-                          prices={prices}
+                          href={`/property/${_id}`}
+                          prices={prices[0].value.toString()}
                           description={description}
                           images={images}
                           location={address.streetName}
                           bedrooms={metadata[0].amount}
                           bathrooms={metadata[1].amount}
                           parking_spaces={metadata[2].amount}
-                          id={_id}
                           highlighted={highlighted}
                         />
                       )
                     )}
-                </div>
-              ) : (
-                <div
-                  className={`lg:float-right${
-                    mobileFilterIsOpen ? 'hidden' : ''
-                  }`}
-                >
-                  {propertyInfo?.docs.map(
-                    ({
-                      _id,
-                      prices,
-                      description,
-                      address,
-                      images,
-                      metadata,
-                      highlighted,
-                    }: IData) => (
-                      <PropertyInfoCard
-                        _id={_id}
-                        key={_id}
-                        href={`/property/${_id}`}
-                        prices={prices[0].value.toString()}
-                        description={description}
-                        images={images}
-                        location={address.streetName}
-                        bedrooms={metadata[0].amount}
-                        bathrooms={metadata[1].amount}
-                        parking_spaces={metadata[2].amount}
-                        highlighted={highlighted}
-                      />
-                    )
-                  )}
-                </div>
-              )}
-
-              {!mobileFilterIsOpen &&
-                propertyInfo.docs &&
-                propertyInfo.docs.length > 0 && (
-                  <div className="mx-auto mt-5">
-                    <Pagination totalPages={propertyInfo.totalPages} />
                   </div>
                 )}
+
+                {!mobileFilterIsOpen &&
+                  propertyInfo.docs &&
+                  propertyInfo.docs.length > 0 && (
+                    <div className="mx-auto mt-5">
+                      <Pagination totalPages={propertyInfo.totalPages} />
+                    </div>
+                  )}
+              </div>
             </div>
           </div>
         </div>
+        <Footer smallPage={false} />
       </div>
-      <Footer smallPage={false} />
     </div>
   );
 };
@@ -320,7 +319,6 @@ const Search: NextPageWithLayout<ISearch> = ({
 export default Search;
 
 export async function getServerSideProps(context: NextPageContext) {
-
   const { query } = context;
   const filter = [];
   const baseUrl = process.env.BASE_API_URL;
@@ -441,10 +439,10 @@ export async function getServerSideProps(context: NextPageContext) {
     const url = `${baseUrl}/property/filter/?page=${currentPage}&limit=5&filter=${encodedFilter}${
       encodedSort ? `&sort=${encodedSort}` : ``
     }&need_count=true`;
-    propertyInfo = await fetch(url)
+    (propertyInfo = await fetch(url)
       .then((res) => res.json())
-      .catch(() => {}),
-    fetchJson(url);
+      .catch(() => {})),
+      fetchJson(url);
   }
 
   return {
