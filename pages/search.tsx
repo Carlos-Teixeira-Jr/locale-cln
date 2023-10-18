@@ -106,16 +106,6 @@ const Search: NextPageWithLayout<ISearch> = ({
     setGrid(false);
   };
 
-  //// GEOLOCATION ////
-
-  // Insere a latitude e longitude do usuário nos parametros da URL quando esteliberar a geolocalização;
-  useEffect(() => {
-    if (latitude && longitude) {
-      const queryParams = { ...query, latitude, longitude };
-      router.push({ query: queryParams }, undefined, { scroll: false });
-    }
-  }, [latitude, longitude, query, router]);
-
   return (
     <div>
       <Header />
@@ -380,13 +370,6 @@ export async function getServerSideProps(context: NextPageContext) {
       const parsedLocation = JSON.parse(location);
       filter.push({ locationFilter: parsedLocation });
     }
-  }
-  if (query.latitude && query.longitude) {
-    const formattedGeolocation = {
-      latitude: query.latitude,
-      longitude: query.longitude,
-    };
-    filter.push({ geolocation: formattedGeolocation });
   }
 
   const encodedFilter = decodeURIComponent(JSON.stringify(filter));
