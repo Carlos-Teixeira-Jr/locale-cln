@@ -82,7 +82,7 @@ const FilterList: React.FC<IFilterListProps> = ({
       setIsRent(true);
       setIsBuy(false);
     }
-  }, [query]);
+  }, [query.adType]);
 
   const handleBuy = () => {
     setIsBuy(true);

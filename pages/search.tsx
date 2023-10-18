@@ -39,9 +39,20 @@ const Search: NextPageWithLayout<ISearch> = ({
   locations,
   tagsData,
 }) => {
+
   const ref = useRef<HTMLDivElement>(null);
+
   const router = useRouter();
   const query = router.query;
+
+  const [currentPage, setCurrentPage] = useState(
+    router.query.page !== undefined && typeof query.page === 'string' ? parseInt(query.page) : 1
+  );
+
+  useEffect(() => {
+    // Atualize a URL quando currentPage mudar
+    router.push({ query: { page: currentPage } });
+  }, [currentPage]);
 
   // userLocation
   const { latitude, longitude, location } = useTrackLocation();
@@ -177,7 +188,7 @@ const Search: NextPageWithLayout<ISearch> = ({
                 propertyInfo.docs &&
                 propertyInfo.docs.length > 0 && (
                   <div className="mx-auto mb-5">
-                    <Pagination totalPages={propertyInfo.totalPages} />
+                    <Pagination totalPages={propertyInfo.totalPages} setCurrentPage={setCurrentPage} currentPage={currentPage}/>
                   </div>
                 )}
 
@@ -290,10 +301,10 @@ const Search: NextPageWithLayout<ISearch> = ({
               )}
 
               {!mobileFilterIsOpen &&
-                propertyInfo.docs &&
-                propertyInfo.docs.length > 0 && (
+                propertyInfo?.docs &&
+                propertyInfo?.docs.length > 0 && (
                   <div className="mx-auto mt-5">
-                    <Pagination totalPages={propertyInfo.totalPages} />
+                    <Pagination totalPages={propertyInfo?.totalPages} setCurrentPage={setCurrentPage} currentPage={currentPage} />
                   </div>
                 )}
             </div>
@@ -421,10 +432,11 @@ export async function getServerSideProps(context: NextPageContext) {
     const url = `${baseUrl}/property/filter/?page=${currentPage}&limit=5&filter=${encodedFilter}${
       encodedSort ? `&sort=${encodedSort}` : ``
     }&need_count=true`;
-    (propertyInfo = await fetch(url)
+
+
+    propertyInfo = await fetch(url)
       .then((res) => res.json())
-      .catch(() => {})),
-      fetchJson(url);
+      .catch(() => {});
   }
 
   return {
