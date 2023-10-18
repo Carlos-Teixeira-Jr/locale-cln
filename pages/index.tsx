@@ -33,6 +33,7 @@ const Home: NextPageWithLayout<IHome> = ({
   propertyTypes,
   locations,
 }) => {
+  console.log('🚀 ~ file: index.tsx:36 ~ propertyInfo:', propertyInfo);
   const { latitude, longitude, location } = useTrackLocation();
   const [propertiesByLocation, setPropertiesByLocation] = useState<any>([]);
   const [propertiesByLocationError, setPropertiesByLocationError] =
@@ -196,6 +197,7 @@ export default Home;
 
 export async function getStaticProps() {
   const baseUrl = process.env.BASE_API_URL;
+  console.log('🚀 ~ file: index.tsx:203 ~ getStaticProps ~ baseUrl:', baseUrl);
 
   const [propertyInfo, propertyTypes, locations] = await Promise.all([
     fetch(`${baseUrl}/property/filter/?page=1&limit=3`)
