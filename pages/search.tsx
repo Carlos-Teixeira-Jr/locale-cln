@@ -3,10 +3,9 @@ import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import { ILocation } from '../common/interfaces/locationDropdown';
 import { IData } from '../common/interfaces/property/propertyData';
-import { IPropertyTypes } from '../common/interfaces/property/propertyTypes';
 import { ITagsData } from '../common/interfaces/tagsData';
+import { fetchJson } from '../common/utils/fetchJson';
 import DropdownOrderBy from '../components/atoms/dropdowns/dropdownOrderBy';
-import ArrowDropdownIcon from '../components/atoms/icons/arrowDropdownIcon';
 import CloseIcon from '../components/atoms/icons/closeIcon';
 import GridIcon from '../components/atoms/icons/gridIcon';
 import ListIcon from '../components/atoms/icons/listIcon';
@@ -31,14 +30,12 @@ export interface IPropertyInfo {
 
 export interface ISearch {
   propertyInfo: IPropertyInfo;
-  propertyTypes: IPropertyTypes[];
   locations: ILocation[];
   tagsData: ITagsData[];
 }
 
 const Search: NextPageWithLayout<ISearch> = ({
   propertyInfo,
-  propertyTypes,
   locations,
   tagsData,
 }) => {
@@ -122,12 +119,11 @@ const Search: NextPageWithLayout<ISearch> = ({
   return (
     <div>
       <Header />
-      <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center mt-20">
         <div className="lg:flex justify-center max-w-[1232px]">
-          <div className="flex flex-col md:flex-row mt-[-16px] md:mt-0">
+          <div className="flex flex-col md:flex-row mt-[-16px]. md:mt-0">
             <div className="mx-auto">
               <FilterList
-                propertyTypesProp={propertyTypes}
                 locationProp={locations}
                 tagsProp={tagsData}
                 mobileFilterIsOpenProp={mobileFilterIsOpen}
@@ -180,9 +176,7 @@ const Search: NextPageWithLayout<ISearch> = ({
                   <div ref={ref} onClick={() => setOpen(!open)}>
                     <div className="flex flex-row items-center justify-around cursor-pointer mb-6 bg-tertiary sm:max-w-[188px] md:w-[188px] h-[44px] font-bold text-sm md:text-lg text-quaternary leading-5 shadow-lg p-[10px] border border-quaternary rounded-[30px] mt-7 md:mr-4 ml-2">
                       <span>Ordenar Por</span>
-                      <span>
-                        <ArrowDropdownIcon />
-                      </span>
+                      <span>{/* <ArrowDropdownIcon /> */}</span>
                     </div>
                     {open && <DropdownOrderBy />}
                   </div>
@@ -325,8 +319,8 @@ export default Search;
 
 export async function getServerSideProps(context: NextPageContext) {
   const { query } = context;
-
   const filter = [];
+  const baseUrl = process.env.BASE_API_URL;
 
   if (query.adType) {
     filter.push({ adType: query.adType });
@@ -337,6 +331,14 @@ export async function getServerSideProps(context: NextPageContext) {
     const parsedPropertyType = JSON.parse(propertyType);
     if (parsedPropertyType !== 'todos') {
       filter.push({ propertyType: parsedPropertyType });
+    }
+  }
+
+  if (query.propertySubtype) {
+    const propertySubtype = query.propertySubtype.toString();
+    const parsedPropertySubtype = JSON.parse(propertySubtype);
+    if (parsedPropertySubtype !== 'todos') {
+      filter.push({ propertySubtype: parsedPropertySubtype });
     }
   }
 
@@ -408,15 +410,12 @@ export async function getServerSideProps(context: NextPageContext) {
   }
 
   //// OTHER FETCHES ////
-  const propertyTypes = await fetch('http://localhost:3001/property-type')
+
+  const locations = await fetch(`${baseUrl}/location`)
     .then((res) => res.json())
     .catch(() => ({}));
 
-  const locations = await fetch('http://localhost:3001/location')
-    .then((res) => res.json())
-    .catch(() => ({}));
-
-  const tagsData = await fetch('http://localhost:3001/tag')
+  const tagsData = await fetch(`${baseUrl}/tag`)
     .then((res) => res.json())
     .catch(() => ({}));
 
@@ -425,7 +424,7 @@ export async function getServerSideProps(context: NextPageContext) {
 
   if (query.code) {
     try {
-      const url = `http://localhost:3001/property/announcementCode/${query.code}`;
+      const url = `${baseUrl}/property/announcementCode/${query.code}`;
 
       propertyInfo = await fetch(url)
         .then((res) => res.json())
@@ -436,16 +435,18 @@ export async function getServerSideProps(context: NextPageContext) {
       );
     }
   } else {
-    const url = `http://localhost:3001/property/filter/?page=${currentPage}&limit=5&filter=${encodedFilter}${
+    const url = `${baseUrl}/property/filter/?page=${currentPage}&limit=5&filter=${encodedFilter}${
       encodedSort ? `&sort=${encodedSort}` : ``
     }&need_count=true`;
-    propertyInfo = await fetch(url).then((res) => res.json());
+    (propertyInfo = await fetch(url)
+      .then((res) => res.json())
+      .catch(() => {})),
+      fetchJson(url);
   }
 
   return {
     props: {
       propertyInfo,
-      propertyTypes,
       locations,
       tagsData,
     },

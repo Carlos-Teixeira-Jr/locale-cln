@@ -301,8 +301,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({ property }) =
       <div className="flex flex-row justify-center lg:justify-end xl:justify-end 2xl:justify-center">
         <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:flex">
           <SideMenu
-            isOwnerProp={property !== undefined && true}
-          />
+            isOwnerProp={property !== undefined && true} isMobileProp={false} notifications={[]}          />
         </div>
         <div className="flex flex-col items-center mt-16 max-w-[900px] px-2 md:px-10">
           <h1 className="font-bold text-2xl lg:text-3xl text-quaternary my-10 mx-auto">

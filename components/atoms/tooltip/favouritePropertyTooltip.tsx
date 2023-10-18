@@ -11,9 +11,6 @@ export interface IFavouritePropertyTooltip {
 const FavouritePropertyTooltip: React.FC<IFavouritePropertyTooltip> = ({
   anchorId
 }) => {
-
-  const isMobile = useIsMobile();
-
   return (
     <Tooltip
       place="top"

@@ -34,7 +34,7 @@ const Pagination: React.FC<IPagination> = ({ totalPages }) => {
   }, [currentPage, query, router]);
 
   return (
-    <div className="flex flex-row items-center gap-2 mt-2 md:ml-6 h-[40px]">
+    <div className="flex flex-row items-center gap-2 mt-2 h-10">
       {!isMobile ? (
         <>
           <div

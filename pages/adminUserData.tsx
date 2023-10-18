@@ -38,6 +38,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   properties,
   ownerData
 }) => {
+  console.log("🚀 ~ file: adminUserData.tsx:41 ~ ownerData:", ownerData.user)
   const router = useRouter();
   const isOwner = properties?.docs?.length > 0 ? true : false;
   const [selectedPlan, setSelectedPlan] = useState(ownerData?.owner ? ownerData?.owner?.plan : '');
@@ -249,7 +250,8 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
         {!isMobile && (
           <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:flex">
             <SideMenu 
-              isOwnerProp={isOwner}
+              isOwnerProp={isOwner} 
+              notifications={[]}            
             />
           </div>
         )}

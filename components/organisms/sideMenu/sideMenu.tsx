@@ -2,12 +2,12 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { ReactNode, useEffect, useState } from 'react';
 
+import { useIsMobile } from '../../../hooks/useIsMobile';
 import BellIcon from '../../atoms/icons/bellIcon';
 import HeartIcon from '../../atoms/icons/heartIcon';
 import MailIcon from '../../atoms/icons/mailIcon';
 import MyAnnouncesIcon from '../../atoms/icons/myAnnouncesIcon';
 import UserIcon from '../../atoms/icons/userIcon';
-import { useIsMobile } from '../../../hooks/useIsMobile';
 
 type Options = {
   key: string, 
@@ -18,26 +18,17 @@ type Options = {
 }
 
 type SideMenuProps = {
-  isMobileProp: boolean;
   isOwnerProp: boolean;
-  notifications: [];
+  notifications?: [];
 };
 
-const SideMenu: React.FC<SideMenuProps> = ({ 
-  isOwnerProp,
-  notifications 
-}) => {
-
+const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications }) => {
+  
   const router = useRouter();
   const [activeButton, setActiveButton] = useState('');
   const isMobile = useIsMobile();
-  const [isOwner, setIsOwner] = useState(false);
-
-  // Determina se o usuário já posssui algum anúncio;
-  useEffect(() => {
-    setIsOwner(isOwnerProp)
-  }, [isOwnerProp]);
-
+  const isOwner = isOwnerProp;
+  
   useEffect(() => {
     const path = router.pathname;
 
@@ -58,60 +49,68 @@ const SideMenu: React.FC<SideMenuProps> = ({
     {
       key: 'myAnnounces',
       id: 'my-announces-button',
-      icon: <MyAnnouncesIcon
-        fill={`${activeButton === 'my-announces-button' ? '#F5BF5D' : '#6B7280'
+      icon: (
+        <MyAnnouncesIcon
+          fill={`${
+            activeButton === 'my-announces-button' ? '#F5BF5D' : '#6B7280'
           }`}
-        className="my-auto mr-5"
-        width='35'
-        height='35'
-      />,
+          className="my-auto mr-5"
+          width="35"
+          height="35"
+        />
+      ),
       title: 'Meus Anúncios',
-      link: '/admin'
+      link: '/admin',
     },
     {
       key: 'myData',
       id: 'my-data-button',
-      icon: <UserIcon
-        fill={`${activeButton === 'my-data-button' ? '#F5BF5D' : '#6B7280'
-          }`}
-        className="my-auto mr-5"
-        width='35'
-        height='35'
-      />,
+      icon: (
+        <UserIcon
+          fill={`${activeButton === 'my-data-button' ? '#F5BF5D' : '#6B7280'}`}
+          className="my-auto mr-5"
+          width="35"
+          height="35"
+        />
+      ),
       title: 'Meus Dados',
-      link: '/adminUserData'
+      link: '/adminUserData',
     },
     {
       key: 'myFavourites',
       id: 'favourites-button',
-      icon: <HeartIcon
-        fill={`${activeButton === 'favourites-button' ? '#F5BF5D' : '#6B7280'
+      icon: (
+        <HeartIcon
+          fill={`${
+            activeButton === 'favourites-button' ? '#F5BF5D' : '#6B7280'
           }`}
-        className="my-auto mr-5"
-        width='35'
-        height='35'
-      />,
+          className="my-auto mr-5"
+          width="35"
+          height="35"
+        />
+      ),
       title: 'Meus Favoritos',
-      link: '/adminFavProperties'
+      link: '/adminFavProperties',
     },
     {
       key: 'myMessages',
       id: 'messages-button',
-      icon: <MailIcon
-        fill={`${activeButton === 'messages-button' ? '#F5BF5D' : '#6B7280'
-          }`}
-        className="my-auto mr-5"
-        width='35'
-        height='35'
-      />,
+      icon: (
+        <MailIcon
+          fill={`${activeButton === 'messages-button' ? '#F5BF5D' : '#6B7280'}`}
+          className="my-auto mr-5"
+          width="35"
+          height="35"
+        />
+      ),
       title: 'Minhas Mensagens',
-      link: '/adminMessages'
+      link: '/adminMessages',
     },
     {
       key: 'myNotifications',
       id: 'notifications-button',
       icon: (
-        <div className="flex items-center justify-around ">
+        <div className="flex items-center justify-around pr-5">
           <BellIcon
             fill={`${
               activeButton === 'notifications-button' ? '#F5BF5D' : '#6B7280'
@@ -120,7 +119,7 @@ const SideMenu: React.FC<SideMenuProps> = ({
             width="35"
             height="35"
           />
-          {notifications?.length > 0 && (
+          {notifications && notifications?.length > 0 && (
             <div className="absolute top-100 mt-4 ml-[0.4rem] left-10">
               <div
                 data-nots={notifications?.length}
@@ -132,20 +131,20 @@ const SideMenu: React.FC<SideMenuProps> = ({
         </div>
       ),
       title: 'Minhas Notificações',
-      link: '/adminNotifications'
-    }
+      link: '/adminNotifications',
+    },
   ];
 
   return (
     <>
       {!isMobile && (
-        <div className="w-fit min-h-screen bg-tertiary px-2 drop-shadow-xl pt-5 left-0">
-
+        <div className="w-fit min-h-screen bg-tertiary px-2 drop-shadow-xl left-0">
           {options.map(({ key, id, icon, title, link }: Options) => {
             if (
               isOwner ||
               id === 'favourites-button' ||
-              id === 'notifications-button'
+              id === 'notifications-button' ||
+              id === 'my-data-button'
             ) {
               return (
                 <Link href={link} key={key}>
@@ -156,8 +155,11 @@ const SideMenu: React.FC<SideMenuProps> = ({
                     >
                       {icon}
                       <h2
-                        className={`text-xl font-bold leading-7 my-auto transition-colors duration-300 ${activeButton === id ? 'text-secondary hover:text-yellow' : 'text-quaternary hover:text-gray-700'
-                          }`}
+                        className={`text-xl font-bold leading-7 my-auto transition-colors duration-300 ${
+                          activeButton === id
+                            ? 'text-secondary hover:text-yellow'
+                            : 'text-quaternary hover:text-gray-700'
+                        }`}
                       >
                         {title}
                       </h2>
