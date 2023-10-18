@@ -33,6 +33,7 @@ const Home: NextPageWithLayout<IHome> = ({
   propertyTypes,
   locations,
 }) => {
+  console.log("🚀 ~ file: index.tsx:36 ~ propertyInfo:", propertyInfo)
   const { latitude, longitude, location } = useTrackLocation();
   const [propertiesByLocation, setPropertiesByLocation] = useState<any>([]);
   const [propertiesByLocationError, setPropertiesByLocationError] =
@@ -98,15 +99,15 @@ const Home: NextPageWithLayout<IHome> = ({
           />
         </div>
 
-        <div className="md:absolute flex flex-col md:flex-row justify-center md:justify-end xl:justify-center xl:pl-[600px]  md:mt-20 lg:pr-11 lg:mr-28 lg:top-20 md:top-[25px] lg:left-0 md:p-4 md:mx-auto w-full p-5 md:inset-x-0 lg:inset-x-10">
-          <HomeFilter
+        <div className="md:absolute flex justify-center md:justify-end xl:justify-center2 xl:max-w-[1536px] xl:pl-[600px] mt-12 lg:pr-11 lg:mr-28 lg:top-20 md:top-[25px] lg:left-0 md:p-4 w-full">
+          {/* <HomeFilter
             isBuyProp={isBuy}
             isRentProp={isRent}
             setBuyProp={handleSetBuy}
             setRentProp={handleSetRent}
             propertyTypesProp={propertyTypes}
             locationProp={locations}
-          />
+          /> */}
         </div>
 
         <div className="flex max-w-[1232px] justify-center sm:items-center md:items-center lg:items-start xl:items-start flex-col m-auto">
@@ -199,6 +200,7 @@ export default Home;
 
 export async function getStaticProps() {
   const baseUrl = process.env.BASE_API_URL;
+  console.log("🚀 ~ file: index.tsx:203 ~ getStaticProps ~ baseUrl:", baseUrl)
 
   const [propertyInfo, propertyTypes, locations] = await Promise.all([
     fetch(`${baseUrl}/property/filter/?page=1&limit=3`)
