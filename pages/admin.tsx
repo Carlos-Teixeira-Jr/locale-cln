@@ -21,6 +21,7 @@ interface AdminPageProps {
 const AdminPage: NextPageWithLayout<AdminPageProps> = ({
   ownerProperties,
 }) => {
+  console.log("🚀 ~ file: admin.tsx:24 ~ ownerProperties:", ownerProperties)
 
   const {data: session} = useSession() as any;
   const [isOwner, setIsOwner] = useState<boolean>(false);
@@ -32,11 +33,12 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
   
   return (
     <div>
-      <AdminHeader/>
+      <AdminHeader isOwnerProp={isOwner}/>
       <div className="flex flex-row items-center justify-evenly">
         <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:flex">
           <SideMenu 
-            isOwnerProp={isOwner}
+            isOwnerProp={isOwner} 
+            notifications={[]}          
           />
         </div>
         <div className="flex flex-col items-center mt-24 lg:ml-[305px]">
@@ -170,10 +172,19 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       fetchJson(`${baseUrl}/property/owner-properties`),
     ]);
 
-    return {
-      props: {
-        ownerProperties,
-      },
-    };
+    if (ownerProperties.docs?.length === 0) {
+      return {
+        redirect: {
+          destination: '/adminFavProperties',
+          permanent: false
+        }
+      }
+    } else {
+      return {
+        props: {
+          ownerProperties,
+        },
+      };
+    }
   }
 }

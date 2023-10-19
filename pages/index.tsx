@@ -99,7 +99,7 @@ const Home: NextPageWithLayout<IHome> = ({
           />
         </div>
 
-        <div className="md:absolute flex justify-center md:justify-end xl:justify-center2 xl:max-w-[1536px] xl:pl-[600px] mt-12 lg:pr-11 lg:mr-28 lg:top-20 md:top-[25px] lg:left-0 md:p-4 w-full">
+        <div className="md:absolute flex flex-col md:flex-row justify-center md:justify-end xl:justify-center xl:pl-[600px] md:mt-20 lg:pr-11 lg:top-20 md:top-[25px] lg:left-0 md:p-4 md:mx-auto w-full p-5 md:inset-x-0 lg:inset-x-10">
           <HomeFilter
             isBuyProp={isBuy}
             isRentProp={isRent}
@@ -110,13 +110,10 @@ const Home: NextPageWithLayout<IHome> = ({
           />
         </div>
 
-        <div className="flex max-w-[1232px] justify-center sm:items-center md:items-center lg:items-start xl:items-start flex-col m-auto">
+        <div className="max-w-[1232px] flex sm:items-center md:items-center flex-col m-auto">
           <h3 className="sm:text-base md:text-2xl font-bold text-quaternary text-left mt-5 ml-5">
             O que você procura a um clique de distância
           </h3>
-        </div>
-
-        <div className="max-w-[1232px] flex sm:items-center md:items-center lg:items-start xl:items-start flex-col m-auto">
           <div className="mb-10">
             <AccessCard transactionType={transactionType} />
           </div>

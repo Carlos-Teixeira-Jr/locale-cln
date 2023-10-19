@@ -32,7 +32,6 @@ export interface IFormData {
 }
 
 const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
-  _id,
   prices,
   description,
   bedrooms,
@@ -132,7 +131,7 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
             className="md:flex md:flex-col md:gap-4 md:col-span-2 md:ml-11 my-auto mx-[17px] md:mx-[17px]"
           >
             <div className="md:w-[218px] h-[44px] top-[17px] left-[336px] font-bold text-3xl text-[#000000] leading-10">
-              R$ ${prices}
+              R$ {prices},00
             </div>
             <p className="font-medium text-xs leading-4 text-quaternary md:w-[383px] h-fit">
               {description}
@@ -183,7 +182,7 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
       </Link>
 
       {modalIsOpen && (
-        <MessageModal isOpen={modalIsOpen} setModalIsOpen={setModalIsOpen} />
+        <MessageModal isOpen={modalIsOpen} setModalIsOpen={setModalIsOpen} propertyInfo={undefined} />
       )}
     </>
   );

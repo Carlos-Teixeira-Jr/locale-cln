@@ -8,33 +8,28 @@ import TwoArrowRightIcon from '../icons/twoArrowRightIcon';
 
 export interface IPagination {
   totalPages: number;
+  setCurrentPage: any
+  currentPage: number
 }
 
-const Pagination: React.FC<IPagination> = ({ totalPages }) => {
+const Pagination: React.FC<IPagination> = ({ 
+  totalPages, 
+  currentPage, 
+  setCurrentPage 
+}) => {
+  console.log("🚀 ~ file: pagination.tsx:20 ~ totalPages:", totalPages)
+
   const router = useRouter();
   const query = router.query;
   const [pages, setPages] = useState<number | undefined>();
   const isMobile = useIsMobile();
-  const [currentPage, setCurrentPage] = useState<number>(
-    query.page !== undefined ? parseInt(query.page.toString()) : 1
-  );
 
   useEffect(() => {
     setPages(totalPages);
   }, [totalPages]);
 
-  useEffect(() => {
-    const queryParams = { ...query, page: currentPage };
-    if (
-      query.page !== undefined &&
-      parseInt(query.page?.toString()) !== currentPage
-    ) {
-      router.push({ query: queryParams }, undefined, { scroll: false });
-    }
-  }, [currentPage, query, router]);
-
   return (
-    <div className="flex flex-row items-center gap-2 mt-2 md:ml-6 h-[40px]">
+    <div className="flex flex-row items-center gap-2 mt-2 h-10">
       {!isMobile ? (
         <>
           <div

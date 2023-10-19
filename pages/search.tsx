@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react';
 import { ILocation } from '../common/interfaces/locationDropdown';
 import { IData } from '../common/interfaces/property/propertyData';
 import { ITagsData } from '../common/interfaces/tagsData';
-import { fetchJson } from '../common/utils/fetchJson';
 import DropdownOrderBy from '../components/atoms/dropdowns/dropdownOrderBy';
 import CloseIcon from '../components/atoms/icons/closeIcon';
 import GridIcon from '../components/atoms/icons/gridIcon';
@@ -17,9 +16,9 @@ import FilterList from '../components/molecules/filterList/FilterList';
 import SearchShortcut from '../components/molecules/searchShortcut/searchShortcut';
 import Footer from '../components/organisms/footer/footer';
 import Header from '../components/organisms/header/header';
-import useTrackLocation from '../hooks/trackLocation';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { NextPageWithLayout } from './page';
+import ArrowDropdownIcon from '../components/atoms/icons/arrowDropdownIcon';
 
 export interface IPropertyInfo {
   docs: IData[];
@@ -39,12 +38,14 @@ const Search: NextPageWithLayout<ISearch> = ({
   locations,
   tagsData,
 }) => {
+  console.log("🚀 ~ file: search.tsx:41 ~ propertyInfo:", propertyInfo)
+
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const query = router.query;
 
-  // userLocation
-  const { latitude, longitude, location } = useTrackLocation();
+  const [currentPage, setCurrentPage] = useState(1);
+
   // mobile
   const [open, setOpen] = useState(false);
   const isMobile = useIsMobile();
@@ -53,6 +54,29 @@ const Search: NextPageWithLayout<ISearch> = ({
   // grid or list
   const [grid, setGrid] = useState(false);
   const [list, setList] = useState(true);
+
+  //// PAGE ////
+
+  useEffect(() => {
+    if (router.query.page !== undefined && typeof query.page === 'string') {
+      const parsedPage = parseInt(query.page)
+      setCurrentPage(parsedPage)
+    }
+  })
+
+  useEffect(() => {
+    // Check if the page parameter in the URL matches the current page
+    const pageQueryParam = router.query.page !== undefined && typeof query.page === 'string' ? parseInt(query.page) : 1;
+
+    // Only update the URL if the page parameter is different from the current page
+    if (pageQueryParam !== currentPage) {
+      const queryParams = {
+        ...query,
+        page: currentPage
+      };
+      router.push({ query: queryParams }, undefined, { scroll: false });
+    }
+  }, [currentPage]);
 
   //// FILTER ON MOBILE ////
 
@@ -109,9 +133,9 @@ const Search: NextPageWithLayout<ISearch> = ({
   return (
     <div>
       <Header />
-      <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center mt-20">
         <div className="lg:flex justify-center max-w-[1232px]">
-          <div className="flex flex-col md:flex-row mt-[-16px] md:mt-0">
+          <div className="flex flex-col md:flex-row mt-[-16px]. md:mt-0">
             <div className="mx-auto">
               <FilterList
                 locationProp={locations}
@@ -166,7 +190,7 @@ const Search: NextPageWithLayout<ISearch> = ({
                   <div ref={ref} onClick={() => setOpen(!open)}>
                     <div className="flex flex-row items-center justify-around cursor-pointer mb-6 bg-tertiary sm:max-w-[188px] md:w-[188px] h-[44px] font-bold text-sm md:text-lg text-quaternary leading-5 shadow-lg p-[10px] border border-quaternary rounded-[30px] mt-7 md:mr-4 ml-2">
                       <span>Ordenar Por</span>
-                      <span>{/* <ArrowDropdownIcon /> */}</span>
+                      <span><ArrowDropdownIcon open={false} /></span>
                     </div>
                     {open && <DropdownOrderBy />}
                   </div>
@@ -177,9 +201,10 @@ const Search: NextPageWithLayout<ISearch> = ({
                 propertyInfo.docs &&
                 propertyInfo.docs.length > 0 && (
                   <div className="mx-auto mb-5">
-                    <Pagination totalPages={propertyInfo.totalPages} />
+                    <Pagination totalPages={propertyInfo.totalPages} setCurrentPage={setCurrentPage} currentPage={currentPage}/>
                   </div>
-                )}
+                )
+              }
 
               {propertyInfo?.docs?.length === 0 && (
                 <div className="flex flex-col mt-5">
@@ -290,12 +315,13 @@ const Search: NextPageWithLayout<ISearch> = ({
               )}
 
               {!mobileFilterIsOpen &&
-                propertyInfo.docs &&
-                propertyInfo.docs.length > 0 && (
+                propertyInfo?.docs &&
+                propertyInfo?.docs.length > 0 && (
                   <div className="mx-auto mt-5">
-                    <Pagination totalPages={propertyInfo.totalPages} />
+                    <Pagination totalPages={propertyInfo?.totalPages} setCurrentPage={setCurrentPage} currentPage={currentPage} />
                   </div>
-                )}
+                )
+              }
             </div>
           </div>
         </div>
@@ -421,10 +447,11 @@ export async function getServerSideProps(context: NextPageContext) {
     const url = `${baseUrl}/property/filter/?page=${currentPage}&limit=5&filter=${encodedFilter}${
       encodedSort ? `&sort=${encodedSort}` : ``
     }&need_count=true`;
-    (propertyInfo = await fetch(url)
+
+
+    propertyInfo = await fetch(url)
       .then((res) => res.json())
-      .catch(() => {})),
-      fetchJson(url);
+      .catch(() => ({}));
   }
 
   return {
