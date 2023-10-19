@@ -181,9 +181,9 @@ const HomeFilter: React.FC<IHomeFilter> = ({
   const handleFindBtnClick = () => {
     let adType;
     if (isBuy) {
-      adType = 'compra';
+      adType = 'comprar';
     } else if (isRent) {
-      adType = 'aluguel';
+      adType = 'alugar';
     }
 
     const query: Iquery = {

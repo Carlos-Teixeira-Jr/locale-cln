@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react';
 import { ILocation } from '../common/interfaces/locationDropdown';
 import { IData } from '../common/interfaces/property/propertyData';
 import { ITagsData } from '../common/interfaces/tagsData';
-import { fetchJson } from '../common/utils/fetchJson';
 import DropdownOrderBy from '../components/atoms/dropdowns/dropdownOrderBy';
 import CloseIcon from '../components/atoms/icons/closeIcon';
 import GridIcon from '../components/atoms/icons/gridIcon';
@@ -17,9 +16,9 @@ import FilterList from '../components/molecules/filterList/FilterList';
 import SearchShortcut from '../components/molecules/searchShortcut/searchShortcut';
 import Footer from '../components/organisms/footer/footer';
 import Header from '../components/organisms/header/header';
-import useTrackLocation from '../hooks/trackLocation';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { NextPageWithLayout } from './page';
+import ArrowDropdownIcon from '../components/atoms/icons/arrowDropdownIcon';
 
 export interface IPropertyInfo {
   docs: IData[];
@@ -39,23 +38,14 @@ const Search: NextPageWithLayout<ISearch> = ({
   locations,
   tagsData,
 }) => {
+  console.log("🚀 ~ file: search.tsx:41 ~ propertyInfo:", propertyInfo)
 
   const ref = useRef<HTMLDivElement>(null);
-
   const router = useRouter();
   const query = router.query;
 
-  const [currentPage, setCurrentPage] = useState(
-    router.query.page !== undefined && typeof query.page === 'string' ? parseInt(query.page) : 1
-  );
+  const [currentPage, setCurrentPage] = useState(1);
 
-  useEffect(() => {
-    // Atualize a URL quando currentPage mudar
-    router.push({ query: { page: currentPage } });
-  }, [currentPage]);
-
-  // userLocation
-  const { latitude, longitude, location } = useTrackLocation();
   // mobile
   const [open, setOpen] = useState(false);
   const isMobile = useIsMobile();
@@ -64,6 +54,29 @@ const Search: NextPageWithLayout<ISearch> = ({
   // grid or list
   const [grid, setGrid] = useState(false);
   const [list, setList] = useState(true);
+
+  //// PAGE ////
+
+  useEffect(() => {
+    if (router.query.page !== undefined && typeof query.page === 'string') {
+      const parsedPage = parseInt(query.page)
+      setCurrentPage(parsedPage)
+    }
+  })
+
+  useEffect(() => {
+    // Check if the page parameter in the URL matches the current page
+    const pageQueryParam = router.query.page !== undefined && typeof query.page === 'string' ? parseInt(query.page) : 1;
+
+    // Only update the URL if the page parameter is different from the current page
+    if (pageQueryParam !== currentPage) {
+      const queryParams = {
+        ...query,
+        page: currentPage
+      };
+      router.push({ query: queryParams }, undefined, { scroll: false });
+    }
+  }, [currentPage]);
 
   //// FILTER ON MOBILE ////
 
@@ -177,7 +190,7 @@ const Search: NextPageWithLayout<ISearch> = ({
                   <div ref={ref} onClick={() => setOpen(!open)}>
                     <div className="flex flex-row items-center justify-around cursor-pointer mb-6 bg-tertiary sm:max-w-[188px] md:w-[188px] h-[44px] font-bold text-sm md:text-lg text-quaternary leading-5 shadow-lg p-[10px] border border-quaternary rounded-[30px] mt-7 md:mr-4 ml-2">
                       <span>Ordenar Por</span>
-                      <span>{/* <ArrowDropdownIcon /> */}</span>
+                      <span><ArrowDropdownIcon open={false} /></span>
                     </div>
                     {open && <DropdownOrderBy />}
                   </div>
@@ -190,7 +203,8 @@ const Search: NextPageWithLayout<ISearch> = ({
                   <div className="mx-auto mb-5">
                     <Pagination totalPages={propertyInfo.totalPages} setCurrentPage={setCurrentPage} currentPage={currentPage}/>
                   </div>
-                )}
+                )
+              }
 
               {propertyInfo?.docs?.length === 0 && (
                 <div className="flex flex-col mt-5">
@@ -306,7 +320,8 @@ const Search: NextPageWithLayout<ISearch> = ({
                   <div className="mx-auto mt-5">
                     <Pagination totalPages={propertyInfo?.totalPages} setCurrentPage={setCurrentPage} currentPage={currentPage} />
                   </div>
-                )}
+                )
+              }
             </div>
           </div>
         </div>
@@ -436,7 +451,7 @@ export async function getServerSideProps(context: NextPageContext) {
 
     propertyInfo = await fetch(url)
       .then((res) => res.json())
-      .catch(() => {});
+      .catch(() => ({}));
   }
 
   return {

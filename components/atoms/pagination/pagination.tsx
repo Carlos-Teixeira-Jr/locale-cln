@@ -17,13 +17,12 @@ const Pagination: React.FC<IPagination> = ({
   currentPage, 
   setCurrentPage 
 }) => {
+  console.log("🚀 ~ file: pagination.tsx:20 ~ totalPages:", totalPages)
 
   const router = useRouter();
   const query = router.query;
   const [pages, setPages] = useState<number | undefined>();
   const isMobile = useIsMobile();
-
-  console.log("🚀 ~ file: pagination.tsx:21 ~ currentPage:", currentPage)
 
   useEffect(() => {
     setPages(totalPages);
