@@ -72,7 +72,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   const session = await getSession(context) as any;
   const userId = session?.user.data._id;
-  const baseUrl = process.env.BASE_API_URL;
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
 
   const [notifications, properties] = await Promise.all([
     fetch(`${baseUrl}/notification/${userId}`, {

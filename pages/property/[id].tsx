@@ -152,7 +152,7 @@ export async function getServerSideProps(context: NextPageContext) {
   const session = await getSession(context) as any;
   const userId = session?.user.data._id;
   const propertyId = context.query.id;
-  const baseUrl = process.env.BASE_API_URL;
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
   let isFavourite: boolean = false;
 
   if(userId) {

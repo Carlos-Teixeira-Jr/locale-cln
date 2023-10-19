@@ -12,7 +12,7 @@ const LoginPage: NextPageWithLayout = () => {
     <>
       <Header />
       <div>
-        <div className="h-screen flex justify-center items-center mt-5">
+        <div className="h-screen flex justify-center items-center mt-10 lg:mt-24">
           <LoginCard />
         </div>
       </div>

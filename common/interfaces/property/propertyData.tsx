@@ -55,8 +55,6 @@ export interface IMetadata {
   amount: number;
 }
 export interface IGeolocation {
-  //_id: string;
-  //type: string;
   coordinates: number[];
 }
 

@@ -22,7 +22,7 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
 }) => {
 
   const isOwner = properties?.docs?.length > 0 ? true : false;
-
+  
   return (
     <>
       <AdminHeader isOwnerProp={isOwner}/>
@@ -144,7 +144,7 @@ export async function getServerSideProps(context:GetServerSidePropsContext) {
       }
     }
 
-    const baseUrl = process.env.BASE_API_URL;
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
 
     const [favouriteProperties, properties] = await Promise.all([
       fetch(`${baseUrl}/user/favourite`, {

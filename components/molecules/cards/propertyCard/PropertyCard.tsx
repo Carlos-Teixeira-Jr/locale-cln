@@ -40,7 +40,7 @@ const PropertyCard: React.FC<IPropertyCard> = ({
 }) => {
 
   const {data: session} = useSession() as any;
-  const userId = session?.user.data.id;
+  const userId = session?.user.data.id || session?.user?.data._id;
   const [currentIndex, setCurrentIndex] = useState(0);
   const [expanded, setExpanded] = useState(false);
   const [isExpandable, setIsExpandable] = useState(false);
@@ -109,9 +109,10 @@ const PropertyCard: React.FC<IPropertyCard> = ({
   const formattedPrice = formatCurrency(price);
 
   const handleFavouriteIcon = async () => {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
     try {
       toast.loading(`Enviando...`)
-      const response = await fetch(`http://localhost:3001/user/edit-favourite`, {
+      const response = await fetch(`${baseUrl}/user/edit-favourite`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
