@@ -38,7 +38,6 @@ const Search: NextPageWithLayout<ISearch> = ({
   locations,
   tagsData,
 }) => {
-  console.log("🚀 ~ file: search.tsx:41 ~ propertyInfo:", propertyInfo)
 
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();

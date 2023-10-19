@@ -17,7 +17,6 @@ const Pagination: React.FC<IPagination> = ({
   currentPage, 
   setCurrentPage 
 }) => {
-  console.log("🚀 ~ file: pagination.tsx:20 ~ totalPages:", totalPages)
 
   const router = useRouter();
   const query = router.query;

@@ -46,8 +46,9 @@ const FilterList: React.FC<IFilterListProps> = ({
   const [locationInput, setLocationInput] = useState('');
   // Lida com a formatação da lozalização e categoria da localização para mostrá-las no dropdown;
   const [filteredLocations, setFilteredLocations] = useState<ILocation[]>([]);
-  const [location, setLocation] = useState<ILocation[]>([]);
   const [initialLocation, setInitialLocation] = useState<ILocation[]>([]);
+  const [location, setLocation] = useState<ILocation[]>(initialLocation);
+  console.log("🚀 ~ file: FilterList.tsx:51 ~ location:", location)
   const [allLocations, setAllLocations] = useState(false);
 
   // prices
@@ -220,15 +221,20 @@ const FilterList: React.FC<IFilterListProps> = ({
     if (query.location) {
       const locationParamString = query.location.toString();
       locationParam = JSON.parse(locationParamString);
+
+      setLocation([
+        ...location,
+        { name: locationParam[0].name, category: locationParam[0].category }
+      ])
     }
 
-    if (locationParam) {
-      setInitialLocation([
-        ...location,
-        { name: locationParam[0].name, category: locationParam[0].category },
-      ]);
-    }
-  }, []);
+    // if (locationParam) {
+    //   setInitialLocation([
+    //     ...location,
+    //     { name: locationParam[0].name, category: locationParam[0].category },
+    //   ]);
+    // }
+  },[query.location]);
 
   // // Insere e remove as opções selecionadas de location nos parâmetros da URL;
   // useEffect(() => {
@@ -271,34 +277,34 @@ const FilterList: React.FC<IFilterListProps> = ({
   
     // Só atualizar a URL se o parâmetro de localização for diferente da localização atual
     if (locationQueryParam !== currentLocation) {
-      if (location.length < 1) {
+      if (locationQueryParam.length === 0) {
         if (!query.location?.includes('todos')) {
           removeQueryParam('location');
         }
       } else {
-        const translatedLocations: { category: string; name: string[] }[] = [];
+        // const translatedLocations: { category: string; name: string[] }[] = [];
   
-        location.forEach((loc) => {
-          if (!allLocations) {
-            const { name, category } = loc;
-            const formattedCategory = categoryMappings[category] || category;
-            const existingLocation = translatedLocations.find(
-              (item) => item.category === formattedCategory
-            );
-            if (existingLocation) {
-              existingLocation.name.push(...name);
-            } else {
-              translatedLocations.push({ category: formattedCategory, name });
-            }
-          }
-        });
+        // location.forEach((loc) => {
+        //   if (!allLocations) {
+        //     const { name, category } = loc;
+        //     const formattedCategory = categoryMappings[category] || category;
+        //     const existingLocation = translatedLocations.find(
+        //       (item) => item.category === formattedCategory
+        //     );
+        //     if (existingLocation) {
+        //       existingLocation.name.push(...name);
+        //     } else {
+        //       translatedLocations.push({ category: formattedCategory, name });
+        //     }
+        //   }
+        // });
   
-        const queryParams = {
-          ...query,
-          location: JSON.stringify([...translatedLocations]),
-          page: 1,
-        };
-        router.push({ query: queryParams }, undefined, { scroll: false });
+        // const queryParams = {
+        //   ...query,
+        //   location: JSON.stringify([...translatedLocations]),
+        //   page: 1,
+        // };
+        // router.push({ query: queryParams }, undefined, { scroll: false });
       }
     }
   }, [location, query.location]);
