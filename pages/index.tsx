@@ -207,7 +207,7 @@ export async function getStaticProps() {
     fetch(`${baseUrl}/location`)
       .then((res) => res.json())
       .catch(() => []),
-    fetchJson(`${baseUrl}/property?page=1&limit=3`),
+    fetchJson(`${baseUrl}/property/filter/?page=1&limit=3`),
     fetchJson(`${baseUrl}/property-type`),
     fetchJson(`${baseUrl}/location`),
   ]);
