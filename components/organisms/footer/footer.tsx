@@ -21,19 +21,23 @@ const Footer = ({ smallPage }: IFooter) => {
 
             <ul className="list-none mb-0 text-center">
               <li className="transition duration-300 ease-in-out transform hover:scale-125">
-                <a href="#!" className="text-gray-800" tabIndex={0}>
+                <Link
+                  href="/search?adType=comprar"
+                  className="text-gray-800"
+                  tabIndex={0}
+                >
                   Venda
-                </a>
+                </Link>
               </li>
               <li className="transition duration-300 ease-in-out transform hover:scale-125">
-                <a href="#!" className="text-gray-800">
+                <Link href="/search?adType=alugar" className="text-gray-800">
                   Aluguel
-                </a>
+                </Link>
               </li>
               <li className="transition duration-300 ease-in-out transform hover:scale-125">
-                <a href="#!" className="text-gray-800">
+                <Link href="/search?adType=alugar" className="text-gray-800">
                   Encontre imóveis
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -43,19 +47,19 @@ const Footer = ({ smallPage }: IFooter) => {
 
             <ul className="list-none mb-0 text-center">
               <li className="transition duration-300 ease-in-out transform hover:scale-125">
-                <a href="#!" className="text-gray-800">
+                <Link href="/announcement" className="text-gray-800">
                   Locale PRO
-                </a>
+                </Link>
               </li>
               <li className="transition duration-300 ease-in-out transform hover:scale-125">
-                <a href="#!" className="text-gray-800">
+                <Link href="/announcement" className="text-gray-800">
                   Planos de anúncio
-                </a>
+                </Link>
               </li>
               <li className="transition duration-300 ease-in-out transform hover:scale-125">
-                <a href="#!" className="text-gray-800">
+                <Link href="/announcement" className="text-gray-800">
                   Venda seu imóvel
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
