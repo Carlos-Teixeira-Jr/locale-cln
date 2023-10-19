@@ -336,7 +336,7 @@ export default Search;
 export async function getServerSideProps(context: NextPageContext) {
   const { query } = context;
   const filter = [];
-  const baseUrl = process.env.BASE_API_URL;
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
 
   if (query.adType) {
     filter.push({ adType: query.adType });

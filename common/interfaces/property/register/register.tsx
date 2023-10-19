@@ -66,6 +66,7 @@ export interface ICreateProperty_propertyData {
   condominiumTags: string[]
   prices: IPrices[]
   youtubeLink: string
+  highlighted: boolean
 }
 
 export interface ICreateProperty_userData {

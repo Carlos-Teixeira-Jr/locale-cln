@@ -555,7 +555,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       }
     }
 
-    const baseUrl = process.env.BASE_API_URL;
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
 
     const [property] = await Promise.all([
       fetch(`${baseUrl}/property/${propertyId}?isEdit=${isEdit}`)

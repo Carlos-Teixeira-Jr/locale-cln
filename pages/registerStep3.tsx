@@ -295,7 +295,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         geolocation: {
           type: "Point",
           coordinates: propertyDataStep3.geolocation
-        }
+        },
+        highlighted: false
       };
 
       try {
