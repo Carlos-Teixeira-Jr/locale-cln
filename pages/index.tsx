@@ -196,6 +196,7 @@ const Home: NextPageWithLayout<IHome> = ({
 export default Home;
 
 export async function getStaticProps() {
+
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
 
   const [propertyInfo, propertyTypes, locations] = await Promise.all([
