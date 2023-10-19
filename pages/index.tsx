@@ -40,9 +40,6 @@ const Home: NextPageWithLayout<IHome> = ({
     useState(null);
   const [isBuy, setIsBuy] = useState(true);
   const [isRent, setIsRent] = useState(false);
-  const [transactionType, setTransactionType] = useState<TransactionType>(
-    TransactionType.BUY
-  );
 
   //Altera o valor de isBuy sempre que o valor correspondente é alterado no componente HomeFilter;
   const handleSetBuy = (value: boolean) => {
@@ -115,7 +112,7 @@ const Home: NextPageWithLayout<IHome> = ({
             O que você procura a um clique de distância
           </h3>
           <div className="mb-10">
-            <AccessCard transactionType={transactionType} />
+            <AccessCard />
           </div>
 
           <div className="flex max-w-[1232px]  justify-start text-left">
@@ -196,7 +193,6 @@ const Home: NextPageWithLayout<IHome> = ({
 export default Home;
 
 export async function getStaticProps() {
-
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
 
   const [propertyInfo, propertyTypes, locations] = await Promise.all([
