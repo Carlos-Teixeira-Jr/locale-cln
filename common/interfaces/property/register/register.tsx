@@ -1,5 +1,3 @@
-import { IPlan } from "../../plans/plans";
-import { ITagsData } from "../../tagsData";
 import { announcementType, announcementSubtype, propType, propSubtype, IAddress, IMetadata, ISize, IPrices, IGeolocation } from "../propertyData";
 
 export interface IRegisterMainFeatures {
@@ -54,7 +52,7 @@ export interface IRegisterPropertyData_Step3 {
 }
 
 export interface ICreateProperty_propertyData {
-  adType: string
+  adType: announcementType
   adSubtype: string
   propertyType: string
   propertySubtype: string

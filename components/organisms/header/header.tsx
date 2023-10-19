@@ -60,7 +60,7 @@ const Header: React.FC<IHeader> = () => {
                 ? 'border-b-4  border-red-400'
                 : 'hover:border-b-4  border-red-400'
             }`}
-            href="/search?buyOrRent=venda"
+            href="/search?adType=comprar"
           >
             Comprar
           </Link>
@@ -70,7 +70,7 @@ const Header: React.FC<IHeader> = () => {
                 ? 'border-b-4  border-red-400'
                 : 'hover:border-b-4  border-red-400'
             }`}
-            href="/search?buyOrRent=aluguel"
+            href="/search?adType=alugar"
           >
             Alugar
           </Link>

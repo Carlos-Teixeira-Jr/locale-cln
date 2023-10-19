@@ -2,12 +2,7 @@ import { IAddress, IMetadata, IPrices, ISize, announcementSubtype, announcementT
 
 export type AddressErrors = {
   zipCode: string
-  // city: string
-  // uf: string
-  // streetName: string
   number: string
-  // neighborhood: string
-  // complement: string
 }
 
 export interface ISizeErrors {
@@ -23,7 +18,7 @@ export interface IPricesErrors {
 
 export interface IEditPropertyData {
   id: string
-  adType: string
+  adType: announcementType
   adSubtype: string
   propertyType: string
   propertySubtype: string
