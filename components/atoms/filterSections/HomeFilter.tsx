@@ -224,7 +224,9 @@ const HomeFilter: React.FC<IHomeFilter> = ({
 
     router.push({
       pathname: '/search',
-      query,
+      query
+    }, undefined, {
+      shallow: false
     });
   };
 

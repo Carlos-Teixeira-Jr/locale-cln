@@ -19,6 +19,7 @@ import Header from '../components/organisms/header/header';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { NextPageWithLayout } from './page';
 import ArrowDropdownIcon from '../components/atoms/icons/arrowDropdownIcon';
+import { stringify } from 'querystring';
 
 export interface IPropertyInfo {
   docs: IData[];
@@ -41,7 +42,7 @@ const Search: NextPageWithLayout<ISearch> = ({
 
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const query = router.query;
+  const query = router.query as any;
 
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -53,6 +54,31 @@ const Search: NextPageWithLayout<ISearch> = ({
   // grid or list
   const [grid, setGrid] = useState(false);
   const [list, setList] = useState(true);
+  // location
+  const [location, setLocation] = useState<any>(query.location);
+
+  useEffect(() => {
+    console.log("🚀 ~ file: search.tsx:79 ~ location:", location)
+
+    const queryParams = {
+      ...query,
+      location: JSON.stringify(location)
+    }
+    router.push({ query: queryParams }, undefined, { scroll: false });
+  }, [location])
+
+  // Remove parametros da URL da query e faz o refresh para que seja feita uma nova requisição a partir da url atualizada;
+  const removeQueryParam = (param: string) => {
+    const { pathname } = router;
+    const params = new URLSearchParams(stringify(query));
+    params.delete(param);
+    params.set('page', '1');
+    router.replace({ pathname, query: params.toString() }, undefined, {
+      shallow: false,
+      scroll: false,
+    });
+  };
+  
 
   //// PAGE ////
 
@@ -143,6 +169,7 @@ const Search: NextPageWithLayout<ISearch> = ({
                 isMobileProp={isMobile}
                 onMobileFilterIsOpenChange={handleMobileFilterClose}
                 onSearchBtnClick={handleFilterSearchBtn}
+                locationChangeProp={(loc) => setLocation(loc)}
               />
             </div>
 
@@ -285,7 +312,7 @@ const Search: NextPageWithLayout<ISearch> = ({
                     mobileFilterIsOpen ? 'hidden' : ''
                   }`}
                 >
-                  {propertyInfo?.docs.map(
+                  {propertyInfo?.docs?.map(
                     ({
                       _id,
                       prices,
