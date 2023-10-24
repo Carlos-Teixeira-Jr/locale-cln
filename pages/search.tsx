@@ -51,21 +51,28 @@ const Search: NextPageWithLayout<ISearch> = ({
   const isMobile = useIsMobile();
   const [mobileFilterIsOpen, setMobileFilterIsOpen] = useState<boolean>(false);
   const [isSearchBtnClicked, setIsSearchBtnClicked] = useState(false);
+  
   // grid or list
   const [grid, setGrid] = useState(false);
   const [list, setList] = useState(true);
+
   // location
-  const [location, setLocation] = useState<any>(query.location);
+  const queryParsed = query.location ? JSON.parse(query.location) : [];
+  const [location, setLocation] = useState<any>(queryParsed);
 
+  // Insere ou remove as location no url query params;
   useEffect(() => {
-    console.log("🚀 ~ file: search.tsx:79 ~ location:", location)
-
-    const queryParams = {
-      ...query,
-      location: JSON.stringify(location)
+    if (location.length > 0) {
+      const queryParams = {
+        ...query,
+        location: JSON.stringify(location)
+      }
+      router.push({ query: queryParams }, undefined, { scroll: false });
+    } else {
+      removeQueryParam('location');
     }
-    router.push({ query: queryParams }, undefined, { scroll: false });
-  }, [location])
+    
+  }, [location]);
 
   // Remove parametros da URL da query e faz o refresh para que seja feita uma nova requisição a partir da url atualizada;
   const removeQueryParam = (param: string) => {
@@ -99,7 +106,7 @@ const Search: NextPageWithLayout<ISearch> = ({
         ...query,
         page: currentPage
       };
-      router.push({ query: queryParams }, undefined, { scroll: false });
+      router.push({ query: queryParams }, undefined, { scroll: false, shallow: true });
     }
   }, [currentPage]);
 
@@ -488,3 +495,7 @@ export async function getServerSideProps(context: NextPageContext) {
     },
   };
 }
+function removeQueryParam(arg0: string) {
+  throw new Error('Function not implemented.');
+}
+

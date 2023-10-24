@@ -226,7 +226,7 @@ const HomeFilter: React.FC<IHomeFilter> = ({
       pathname: '/search',
       query
     }, undefined, {
-      shallow: false
+      shallow: true
     });
   };
 

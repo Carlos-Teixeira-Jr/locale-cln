@@ -31,50 +31,58 @@ const FilterList: React.FC<IFilterListProps> = ({
   onSearchBtnClick,
   locationChangeProp
 }) => {
+
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const query = router.query;
+  const query = router.query as any;
 
   // adType
   const [isBuy, setIsBuy] = useState(true);
   const [isRent, setIsRent] = useState(false);
+
   // propertyType
   const [propertyType, setPropertyType] = useState({
     propertyType: query.propertyType,
     propertySubtype: typeof query.propertySubtype === 'string' ? query.propertySubtype.replace(/"/g,"") : query.propertySubtype
   });
   const [propTypeDropdownIsOpen, setPropTypeDropdownIsOpen] = useState(false);
+  
+  // Location
   // Lida apenas com o valor que aparecerá no input de localização;
   const [locationInput, setLocationInput] = useState('');
   // Lida com a formatação da lozalização e categoria da localização para mostrá-las no dropdown;
   const [filteredLocations, setFilteredLocations] = useState<ILocation[]>([]);
-  const [location, setLocation] = useState<ILocation[]>([]);
-  const [initialLocation, setInitialLocation] = useState<ILocation[]>([]);
+  const queryParsed = query.location ? JSON.parse(query.location) : [];
+  const [location, setLocation] = useState<ILocation[]>(queryParsed);
   const [allLocations, setAllLocations] = useState(false);
-
+  
   // prices
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
+
   // condominium
   const [minCondominium, setMinCondominium] = useState('');
   const [maxCondominium, setMaxCondominium] = useState('');
+
   // metadata
   const [bedrooms, setBedrooms] = useState(0);
   const [bathrooms, setBathrooms] = useState(0);
   const [parkingSpaces, setParkingSpaces] = useState(0);
+
   // tags
   const tagsData: ITagsData[] = tagsProp;
+
   // code
   const [codeToSearch, setCodeToSearch] = useState('');
+
   // dropdown
   const [open, setOpen] = useState(false);
   const [openLocationDropdown, setOpenLocationDropdown] = useState(false);
+
   // mobile
   const [mobileFilterIsOpen, setMobileFilterIsOpen] = useState<boolean>(false);
 
   const [firstRender, setFirstRender] = useState(true);
-
-  const [locFirstRender, setLocFirstRender] = useState(true)
 
   // ADTYPE
 
@@ -209,21 +217,13 @@ const FilterList: React.FC<IFilterListProps> = ({
       // Caso a opção selecionada pertença a uma categoria ainda não inserida em location, apenas é inserido um objeto com o name e category selecionados;
     } else {
       setLocation([...location, { name: [name], category: categoryMappings[category] }]);
-      // const queryParams = {
-      //   ...query,
-      //   location: JSON.stringify(location)
-      // }
-
-      // router.push({query: queryParams}, undefined, {scroll: false})
     }
   };
 
+  // Envia os valores de location para a Search sempre que houver uma alteração no
   useEffect(() => {
-    if (!firstRender) {
-      locationChangeProp(location)
-    }
-  }, [location])
-  
+    locationChangeProp(location)
+  }, [location]);
 
   //// METADATA ////
 
