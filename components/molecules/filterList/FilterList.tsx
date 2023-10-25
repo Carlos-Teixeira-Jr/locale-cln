@@ -477,7 +477,7 @@ const FilterList: React.FC<IFilterListProps> = ({
 
   return (
     <div
-      className={`lg:block max-w-[400px] h-fit bg-tertiary shadow-md rounded-[30px] px-2 md:px-5 md:py-8 pt-8 pb-2 md:ml-7 mt-12 ${
+      className={`lg:block md:w-full lg:max-w-[400px] h-fit bg-tertiary shadow-md rounded-[30px] px-2 md:px-5 md:py-8 pt-8 pb-2 md:px-10 lg:ml-7 mt-12 ${
         !mobileFilterIsOpen ? 'hidden' : ''
       }`}
     >
@@ -495,144 +495,174 @@ const FilterList: React.FC<IFilterListProps> = ({
         </div>
       )}
 
-      {/* Basic info */}
-      <div>
-        <h3 className="font-normal text-base text-quaternary leading-[19px] mb-2 ">
-          O que procura?
-        </h3>
-        <div className="flex flex-row rounded-full border border-quaternary mb-6 h-9 max-w-[354px]">
-          <div>
-            <button className={buyBtnClassName} onClick={handleBuy}>
-              Comprar
-            </button>
-          </div>
-          <div>
-            <button className={rentBtnClassName} onClick={handleRent}>
-              Alugar
-            </button>
-          </div>
-        </div>
-
-        <div className="relative">
+      <div className='flex lg:flex-col justify-between'>
+        {/* Basic info */}
+        <div>
           <h3 className="font-normal text-base text-quaternary leading-[19px] mb-2 ">
-            Qual o tipo?
+            O que procura?
           </h3>
+          <div className="flex flex-row rounded-full border border-quaternary mb-6 h-fit max-w-[354px]">
+            <div>
+              <button className={buyBtnClassName} onClick={handleBuy}>
+                Comprar
+              </button>
+            </div>
+            <div>
+              <button className={rentBtnClassName} onClick={handleRent}>
+                Alugar
+              </button>
+            </div>
+          </div>
 
-          <div 
-            className="drop-shadow-lg lg:h-12 w-full lg:text-lg rounded-xl p-2 mb-1 border border-quaternary flex justify-between"
-            onClick={() => setPropTypeDropdownIsOpen(!propTypeDropdownIsOpen)}
-          >
-            <p className='text-quaternary text'>{propertyType.propertyType !== 'todos' ? propertyType.propertySubtype : `todos`}</p>
-            <ArrowDownIcon
-              className={`my-auto cursor-pointer ${
-                propTypeDropdownIsOpen
-                ? 'transform rotate-360 transition-transform duration-300 ease-in-out'
-                : 'transform rotate-180 transition-transform duration-300 ease-in-out'
+          <div className="relative">
+            <h3 className="font-normal text-base text-quaternary leading-[19px] mb-2 ">
+              Qual o tipo?
+            </h3>
+
+            <div 
+              className="drop-shadow-lg h-12 w-full lg:text-lg rounded-xl p-2 mb-1 border border-quaternary flex justify-between"
+              onClick={() => setPropTypeDropdownIsOpen(!propTypeDropdownIsOpen)}
+            >
+              <p className='text-quaternary text'>{propertyType.propertyType !== 'todos' ? propertyType.propertySubtype : `todos`}</p>
+              <ArrowDownIcon
+                className={`my-auto cursor-pointer ${
+                  propTypeDropdownIsOpen
+                  ? 'transform rotate-360 transition-transform duration-300 ease-in-out'
+                  : 'transform rotate-180 transition-transform duration-300 ease-in-out'
+                }`}
+              />
+            </div>
+            <div 
+              className={`z-50 w-full h-fit rounded-xl bg-tertiary overflow-hidden text-quaternary cursor-pointer shadow-md ${
+                !propTypeDropdownIsOpen
+                ? 'hidden '
+                : 'absolute'
               }`}
-            />
-          </div>
-          <div 
-            className={`z-50 w-full h-fit rounded-xl bg-tertiary overflow-hidden text-quaternary cursor-pointer shadow-md ${
-              !propTypeDropdownIsOpen
-              ? 'hidden '
-              : 'absolute'
-            }`}
-          >
-            {propertyTypesData.map((prop, index) => (
-              <div className='w-full rounded-t-8 bg-tertiary'>
-                <p 
-                  className='text-center p-1 hover:bg-quaternary hover:text-tertiary font-normal text-lg'
-                  onClick={() => handlePropertyTypeSelection("todos", "todos")}
-                >
-                  Todos
-                </p>
-                <p className='text-quaternary lg:text-2xl p-1 text-center font-bold '>{prop.type}</p>
-                {propertyTypesData[index].subTypes.map((type) =>  (
-                  <div 
-                    className='text-center p-1 hover:bg-quaternary hover:text-tertiary'
-                    onClick={() =>  handlePropertyTypeSelection(prop.type, type)}
+            >
+              {propertyTypesData.map((prop, index) => (
+                <div className='w-full rounded-t-8 bg-tertiary'>
+                  <p 
+                    className='text-center p-1 hover:bg-quaternary hover:text-tertiary font-normal text-lg'
+                    onClick={() => handlePropertyTypeSelection("todos", "todos")}
                   >
-                    {type}
-                  </div>
-                ))}
-              </div>
-            ))}
-          </div>
-          
-        </div>
-
-        <div className="flex flex-col my-5">
-          <label className="font-normal text-base text-quaternary leading-[19px] mb-2">
-            Onde?
-          </label>
-          <input
-            className="bg-transparent w-full font-normal text-base text-quaternary leading-[19px] shadow-lg p-3 border border-quaternary rounded-xl outline-none"
-            placeholder="Digite um bairro, cidade, rua..."
-            onChange={(event: ChangeEvent<HTMLInputElement>) => {
-              const value = event.target.value;
-              setLocationInput(value !== 'todos' ? value : '');
-              filterLocation(value);
-              setOpenLocationDropdown(
-                value !== '' && locationInput.length > 1 ? true : false
-              );
-            }}
-            value={locationInput}
-          />
-          <div
-            className={`z-50 w-full h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md ${
-              openLocationDropdown ? 'md:flex' : 'hidden'
-            }`}
-            ref={ref}
-          >
-            <div className="flex flex-col w-full text-center font-normal text-base text-quaternary leading-5">
-              <div
-                className="flex rounded-t-xl hover:bg-quaternary hover:text-tertiary"
-                onClick={() => {
-                  setAllLocations(!allLocations);
-                  setLocation([]);
-                }}
-              >
-                <div
-                  className={`w-[20px] h-[20px] shrink-0 my-auto border border-quaternary rounded-[3px] bg-white mx-2`}
-                >
-                  {allLocations && (
-                    <CheckIcon
-                      width="20"
-                      height="20"
-                      fill="#F5BF5D"
-                      viewBox="40 126 960 960"
-                    />
-                  )}
+                    Todos
+                  </p>
+                  <p className='text-quaternary lg:text-2xl p-1 text-center font-bold '>{prop.type}</p>
+                  {propertyTypesData[index].subTypes.map((type) =>  (
+                    <div 
+                      className='text-center p-1 hover:bg-quaternary hover:text-tertiary'
+                      onClick={() =>  handlePropertyTypeSelection(prop.type, type)}
+                    >
+                      {type}
+                    </div>
+                  ))}
                 </div>
-                <span
-                  id="todos"
-                  className="translate-x-[1px] w-full h-[50px] py-3"
-                >
-                  Todos
-                </span>
-              </div>
+              ))}
+            </div>
+            
+          </div>
 
-              {Object.entries(categorizedLocations).map(
-                ([category, locations]) => (
-                  <div key={category} className="w-full py-2 h-fit">
-                    <h3 className="font-bold text-xl ml-[20px]">{category}</h3>
-                    {locations.map(({ name }: ILocation) => (
-                      <div
-                        key={`${category}-${name}`}
-                        className="flex flex-col hover:bg-quaternary hover:text-tertiary px-2"
-                      >
-                        {Array.isArray(name) ? (
-                          name.map((option: string) => (
+          <div className="flex flex-col my-5">
+            <label className="font-normal text-base text-quaternary leading-[19px] mb-2">
+              Onde?
+            </label>
+            <input
+              className="bg-transparent w-full font-normal text-base text-quaternary leading-[19px] shadow-lg p-3 border border-quaternary rounded-xl outline-none"
+              placeholder="Digite um bairro, cidade, rua..."
+              onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                const value = event.target.value;
+                setLocationInput(value !== 'todos' ? value : '');
+                filterLocation(value);
+                setOpenLocationDropdown(
+                  value !== '' && locationInput.length > 1 ? true : false
+                );
+              }}
+              value={locationInput}
+            />
+            <div
+              className={`z-50 w-full h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md ${
+                openLocationDropdown ? 'md:flex' : 'hidden'
+              }`}
+              ref={ref}
+            >
+              <div className="flex flex-col w-full text-center font-normal text-base text-quaternary leading-5">
+                <div
+                  className="flex rounded-t-xl hover:bg-quaternary hover:text-tertiary"
+                  onClick={() => {
+                    setAllLocations(!allLocations);
+                    setLocation([]);
+                  }}
+                >
+                  <div
+                    className={`w-[20px] h-[20px] shrink-0 my-auto border border-quaternary rounded-[3px] bg-white mx-2`}
+                  >
+                    {allLocations && (
+                      <CheckIcon
+                        width="20"
+                        height="20"
+                        fill="#F5BF5D"
+                        viewBox="40 126 960 960"
+                      />
+                    )}
+                  </div>
+                  <span
+                    id="todos"
+                    className="translate-x-[1px] w-full h-[50px] py-3"
+                  >
+                    Todos
+                  </span>
+                </div>
+
+                {Object.entries(categorizedLocations).map(
+                  ([category, locations]) => (
+                    <div key={category} className="w-full py-2 h-fit">
+                      <h3 className="font-bold text-xl ml-[20px]">{category}</h3>
+                      {locations.map(({ name }: ILocation) => (
+                        <div
+                          key={`${category}-${name}`}
+                          className="flex flex-col hover:bg-quaternary hover:text-tertiary px-2"
+                        >
+                          {Array.isArray(name) ? (
+                            name.map((option: string) => (
+                              <div
+                                key={option}
+                                className="flex h-[50px]"
+                                onClick={() => {
+                                  toggleLocation(option, category);
+                                }}
+                              >
+                                <div className="w-[20px] h-[20px] shrink-0 my-auto border border-quaternary rounded-[3px] bg-tertiary">
+                                  {(location.some((obj) =>
+                                    obj.name.includes(option)
+                                  ) ||
+                                    allLocations) && (
+                                    <CheckIcon
+                                      width="20"
+                                      height="20"
+                                      fill="#F5BF5D"
+                                      viewBox="40 126 960 960"
+                                    />
+                                  )}
+                                </div>
+                                <span
+                                  id={option}
+                                  className="translate-x-[1px] w-full h-fit py-1.5 px-2 flex justify-center my-auto"
+                                >
+                                  {option.charAt(0).toUpperCase() +
+                                    option.slice(1).toLowerCase()}
+                                </span>
+                              </div>
+                            ))
+                          ) : (
                             <div
-                              key={option}
                               className="flex h-[50px]"
                               onClick={() => {
-                                toggleLocation(option, category);
+                                toggleLocation(name, category);
                               }}
                             >
                               <div className="w-[20px] h-[20px] shrink-0 my-auto border border-quaternary rounded-[3px] bg-tertiary">
                                 {(location.some((obj) =>
-                                  obj.name.includes(option)
+                                  obj.name.includes(name)
                                 ) ||
                                   allLocations) && (
                                   <CheckIcon
@@ -644,303 +674,289 @@ const FilterList: React.FC<IFilterListProps> = ({
                                 )}
                               </div>
                               <span
-                                id={option}
+                                id={name}
                                 className="translate-x-[1px] w-full h-fit py-1.5 px-2 flex justify-center my-auto"
                               >
-                                {option.charAt(0).toUpperCase() +
-                                  option.slice(1).toLowerCase()}
+                                {name.charAt(0).toUpperCase() +
+                                  name.slice(1).toLowerCase()}
                               </span>
                             </div>
-                          ))
-                        ) : (
-                          <div
-                            className="flex h-[50px]"
-                            onClick={() => {
-                              toggleLocation(name, category);
-                            }}
-                          >
-                            <div className="w-[20px] h-[20px] shrink-0 my-auto border border-quaternary rounded-[3px] bg-tertiary">
-                              {(location.some((obj) =>
-                                obj.name.includes(name)
-                              ) ||
-                                allLocations) && (
-                                <CheckIcon
-                                  width="20"
-                                  height="20"
-                                  fill="#F5BF5D"
-                                  viewBox="40 126 960 960"
-                                />
-                              )}
-                            </div>
-                            <span
-                              id={name}
-                              className="translate-x-[1px] w-full h-fit py-1.5 px-2 flex justify-center my-auto"
-                            >
-                              {name.charAt(0).toUpperCase() +
-                                name.slice(1).toLowerCase()}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                )
-              )}
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )
+                )}
+              </div>
             </div>
+          </div>
+        </div>
+
+        {/* Characteristics */}
+        <div className='md:mt-[87px] lg:mt-0'>
+          <h3 className="font-normal text-base text-quaternary leading-[19px] md:mb-2 lg:my-2">
+            Preço
+          </h3>
+          <div className="flex flex-row md:mb-3">
+            <input
+              value={maskedPrice(minPrice)}
+              placeholder="Min."
+              className={
+                'bg-transparent outline-none w-full h-12 font-normal text-base text-quaternary leading-[19px] lg:mb-11 shadow-lg p-3 border border-quaternary rounded-xl'
+              }
+              onChange={(e) => setMinPrice(maskedPrice(e.target.value))}
+            />
+            <span className="px-3 md:px-6 mt-2 text-quaternary">a</span>
+            <input
+              value={maskedPrice(maxPrice)}
+              placeholder="Max."
+              className={
+                'bg-transparent outline-none w-full h-12 font-normal text-base text-quaternary leading-[19px] lg:mb-11 shadow-lg p-3 border border-quaternary rounded-xl'
+              }
+              onChange={(e) => setMaxPrice(maskedPrice(e.target.value))}
+            />
+          </div>
+
+          <h3 className="font-normal text-base text-quaternary leading-[19px] mb-2">
+            Condomínio
+          </h3>
+          <div className="flex flex-row">
+            <input
+              value={maskedPrice(minCondominium)}
+              placeholder="Min."
+              className={
+                'bg-transparent outline-none w-full h-12 font-normal text-base text-quaternary leading-[19px] lg:mb-11 shadow-lg p-3 border border-quaternary rounded-xl'
+              }
+              onChange={(e) => setMinCondominium(maskedPrice(e.target.value))}
+            />
+            <span className="px-3 md:px-6 mt-2 text-quaternary">a</span>
+            <input
+              value={maskedPrice(maxCondominium)}
+              placeholder="Max."
+              className={
+                'bg-transparent outline-none w-full h-12 font-normal text-base text-quaternary leading-[19px] lg:mb-11 shadow-lg p-3 border border-quaternary rounded-xl'
+              }
+              onChange={(e) => setMaxCondominium(maskedPrice(e.target.value))}
+            />
           </div>
         </div>
       </div>
 
-      {/* Characteristics */}
-      <div>
-        <h3 className="font-normal text-base text-quaternary leading-[19px] my-2">
-          Preço
-        </h3>
-        <div className="flex flex-row">
-          <input
-            value={maskedPrice(minPrice)}
-            placeholder="Min."
-            className={
-              'bg-transparent outline-none w-full font-normal text-base text-quaternary leading-[19px] mb-11 shadow-lg p-3 border border-quaternary rounded-xl'
-            }
-            onChange={(e) => setMinPrice(maskedPrice(e.target.value))}
-          />
-          <span className="px-3 md:px-6 mt-2 text-quaternary">a</span>
-          <input
-            value={maskedPrice(maxPrice)}
-            placeholder="Max."
-            className={
-              'bg-transparent outline-none w-full font-normal text-base text-quaternary leading-[19px] mb-11 shadow-lg p-3 border border-quaternary rounded-xl'
-            }
-            onChange={(e) => setMaxPrice(maskedPrice(e.target.value))}
-          />
-        </div>
-
-        <h3 className="font-normal text-base text-quaternary leading-[19px] mb-2">
-          Condomínio
-        </h3>
-        <div className="flex flex-row">
-          <input
-            value={maskedPrice(minCondominium)}
-            placeholder="Min."
-            className={
-              'bg-transparent outline-none w-full font-normal text-base text-quaternary leading-[19px] mb-11 shadow-lg p-3 border border-quaternary rounded-xl'
-            }
-            onChange={(e) => setMinCondominium(maskedPrice(e.target.value))}
-          />
-          <span className="px-3 md:px-6 mt-2 text-quaternary">a</span>
-          <input
-            value={maskedPrice(maxCondominium)}
-            placeholder="Max."
-            className={
-              'bg-transparent outline-none w-full font-normal text-base text-quaternary leading-[19px] mb-11 shadow-lg p-3 border border-quaternary rounded-xl'
-            }
-            onChange={(e) => setMaxCondominium(maskedPrice(e.target.value))}
-          />
-        </div>
-
-        <h3 className="font-normal text-base text-quaternary leading-[19px] mb-2">
-          Quartos
-        </h3>
+      <div className='md:flex lg:flex-col justify-between md:mt-5'>
         <div>
-          <button
-            className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-11 shadow-lg p-3 border border-quaternary rounded-xl mr-14 hover:bg-secondary hover:text-tertiary hover:border-secondary"
-            onClick={() => setBedrooms(bedrooms != 1 ? 1 : 0)}
-            style={
-              bedrooms === 1
-                ? {
-                    background: '#F5BF5D',
-                    border: '1px solid #F5BF5D',
-                    font: '#F7F7F6',
-                  }
-                : {}
-            }
-          >
-            1+
-          </button>
-          <button
-            className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-11 shadow-lg p-3 border border-quaternary rounded-xl mr-14 hover:bg-secondary hover:text-tertiary hover:border-secondary"
-            onClick={() => setBedrooms(bedrooms != 2 ? 2 : 0)}
-            style={
-              bedrooms === 2
-                ? {
-                    background: '#F5BF5D',
-                    border: '1px solid #F5BF5D',
-                    font: '#F7F7F6',
-                  }
-                : {}
-            }
-          >
-            2+
-          </button>
-          <button
-            className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-11 shadow-lg p-3 border border-quaternary rounded-xl mr-14 hover:bg-secondary hover:text-tertiary hover:border-secondary"
-            onClick={() => setBedrooms(bedrooms != 3 ? 3 : 0)}
-            style={
-              bedrooms === 3
-                ? {
-                    background: '#F5BF5D',
-                    border: '1px solid #F5BF5D',
-                    font: '#F7F7F6',
-                  }
-                : {}
-            }
-          >
-            3+
-          </button>
-          <button
-            className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
-            onClick={() => {
-              setBedrooms(bedrooms != 4 ? 4 : 0);
-            }}
-            style={
-              bedrooms === 4
-                ? {
-                    background: '#F5BF5D',
-                    border: '1px solid #F5BF5D',
-                    font: '#F7F7F6',
-                  }
-                : {}
-            }
-          >
-            4+
-          </button>
+          <h3 className="font-normal text-base text-quaternary leading-[19px] mb-2">
+            Quartos
+          </h3>
+          <div className='md:flex lg:justify-between gap-5'>
+            <button
+              className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
+              onClick={() => setBedrooms(bedrooms != 1 ? 1 : 0)}
+              style={
+                bedrooms === 1
+                  ? {
+                      background: '#F5BF5D',
+                      border: '1px solid #F5BF5D',
+                      font: '#F7F7F6',
+                    }
+                  : {}
+              }
+            >
+              1+
+            </button>
+            <button
+              className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
+              onClick={() => setBedrooms(bedrooms != 2 ? 2 : 0)}
+              style={
+                bedrooms === 2
+                  ? {
+                      background: '#F5BF5D',
+                      border: '1px solid #F5BF5D',
+                      font: '#F7F7F6',
+                    }
+                  : {}
+              }
+            >
+              2+
+            </button>
+            <button
+              className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
+              onClick={() => setBedrooms(bedrooms != 3 ? 3 : 0)}
+              style={
+                bedrooms === 3
+                  ? {
+                      background: '#F5BF5D',
+                      border: '1px solid #F5BF5D',
+                      font: '#F7F7F6',
+                    }
+                  : {}
+              }
+            >
+              3+
+            </button>
+            <button
+              className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
+              onClick={() => {
+                setBedrooms(bedrooms != 4 ? 4 : 0);
+              }}
+              style={
+                bedrooms === 4
+                  ? {
+                      background: '#F5BF5D',
+                      border: '1px solid #F5BF5D',
+                      font: '#F7F7F6',
+                    }
+                  : {}
+              }
+            >
+              4+
+            </button>
+          </div>
         </div>
 
-        <h3 className="font-normal text-base text-quaternary leading-[19px] mb-2">
-          Banheiros
-        </h3>
+        <div className="w-1 h-20 mt-2 border-l border-quaternary lg:hidden"></div>
+
         <div>
-          <button
-            className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-11 shadow-lg p-3 border border-quaternary rounded-xl mr-14 hover:bg-secondary hover:text-tertiary hover:border-secondary"
-            onClick={() => setBathrooms(bathrooms != 1 ? 1 : 0)}
-            style={
-              bathrooms === 1
-                ? {
-                    background: '#F5BF5D',
-                    border: '1px solid #F5BF5D',
-                    font: '#F7F7F6',
-                  }
-                : {}
-            }
-          >
-            1+
-          </button>
-          <button
-            className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-11 shadow-lg p-3 border border-quaternary rounded-xl mr-14 hover:bg-secondary hover:text-tertiary hover:border-secondary"
-            onClick={() => setBathrooms(bathrooms != 2 ? 2 : 0)}
-            style={
-              bathrooms === 2
-                ? {
-                    background: '#F5BF5D',
-                    border: '1px solid #F5BF5D',
-                    font: '#F7F7F6',
-                  }
-                : {}
-            }
-          >
-            2+
-          </button>
-          <button
-            className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-11 shadow-lg p-3 border border-quaternary rounded-xl mr-14 hover:bg-secondary hover:text-tertiary hover:border-secondary"
-            onClick={() => setBathrooms(bathrooms != 3 ? 3 : 0)}
-            style={
-              bathrooms === 3
-                ? {
-                    background: '#F5BF5D',
-                    border: '1px solid #F5BF5D',
-                    font: '#F7F7F6',
-                  }
-                : {}
-            }
-          >
-            3+
-          </button>
-          <button
-            className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
-            onClick={() => setBathrooms(bathrooms != 4 ? 4 : 0)}
-            style={
-              bathrooms === 4
-                ? {
-                    background: '#F5BF5D',
-                    border: '1px solid #F5BF5D',
-                    font: '#F7F7F6',
-                  }
-                : {}
-            }
-          >
-            4+
-          </button>
+          <h3 className="font-normal text-base text-quaternary leading-[19px] mb-2">
+            Banheiros
+          </h3>
+          <div className='md:flex lg:justify-between gap-5'>
+            <button
+              className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
+              onClick={() => setBathrooms(bathrooms != 1 ? 1 : 0)}
+              style={
+                bathrooms === 1
+                  ? {
+                      background: '#F5BF5D',
+                      border: '1px solid #F5BF5D',
+                      font: '#F7F7F6',
+                    }
+                  : {}
+              }
+            >
+              1+
+            </button>
+            <button
+              className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
+              onClick={() => setBathrooms(bathrooms != 2 ? 2 : 0)}
+              style={
+                bathrooms === 2
+                  ? {
+                      background: '#F5BF5D',
+                      border: '1px solid #F5BF5D',
+                      font: '#F7F7F6',
+                    }
+                  : {}
+              }
+            >
+              2+
+            </button>
+            <button
+              className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
+              onClick={() => setBathrooms(bathrooms != 3 ? 3 : 0)}
+              style={
+                bathrooms === 3
+                  ? {
+                      background: '#F5BF5D',
+                      border: '1px solid #F5BF5D',
+                      font: '#F7F7F6',
+                    }
+                  : {}
+              }
+            >
+              3+
+            </button>
+            <button
+              className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
+              onClick={() => setBathrooms(bathrooms != 4 ? 4 : 0)}
+              style={
+                bathrooms === 4
+                  ? {
+                      background: '#F5BF5D',
+                      border: '1px solid #F5BF5D',
+                      font: '#F7F7F6',
+                    }
+                  : {}
+              }
+            >
+              4+
+            </button>
+          </div>
         </div>
 
-        <h3 className="font-normal text-base text-quaternary leading-[19px] mb-2">
-          Vagas de garagem
-        </h3>
+        <div className="w-1 h-20 mt-2 border-l border-quaternary lg:hidden"></div>
+
         <div>
-          <button
-            className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-11 shadow-lg p-3 border border-quaternary rounded-xl mr-14 hover:bg-secondary hover:text-tertiary hover:border-secondary"
-            onClick={() => setParkingSpaces(parkingSpaces != 1 ? 1 : 0)}
-            style={
-              parkingSpaces === 1
-                ? {
-                    background: '#F5BF5D',
-                    border: '1px solid #F5BF5D',
-                    font: '#F7F7F6',
-                  }
-                : {}
-            }
-          >
-            1+
-          </button>
-          <button
-            className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-11 shadow-lg p-3 border border-quaternary rounded-xl mr-14 hover:bg-secondary hover:text-tertiary hover:border-secondary"
-            onClick={() => setParkingSpaces(parkingSpaces != 2 ? 2 : 0)}
-            style={
-              parkingSpaces === 2
-                ? {
-                    background: '#F5BF5D',
-                    border: '1px solid #F5BF5D',
-                    font: '#F7F7F6',
-                  }
-                : {}
-            }
-          >
-            2+
-          </button>
-          <button
-            className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-11 shadow-lg p-3 border border-quaternary rounded-xl mr-14 hover:bg-secondary hover:text-tertiary hover:border-secondary"
-            onClick={() => setParkingSpaces(parkingSpaces != 3 ? 3 : 0)}
-            style={
-              parkingSpaces === 3
-                ? {
-                    background: '#F5BF5D',
-                    border: '1px solid #F5BF5D',
-                    font: '#F7F7F6',
-                  }
-                : {}
-            }
-          >
-            3+
-          </button>
-          <button
-            className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
-            onClick={() => setParkingSpaces(parkingSpaces != 4 ? 4 : 0)}
-            style={
-              parkingSpaces === 4
-                ? {
-                    background: '#F5BF5D',
-                    border: '1px solid #F5BF5D',
-                    font: '#F7F7F6',
-                  }
-                : {}
-            }
-          >
-            4+
-          </button>
+          <h3 className="font-normal text-base text-quaternary leading-[19px] mb-2">
+            Vagas de garagem
+          </h3>
+          <div className='md:flex lg:justify-between gap-5'>
+            <button
+              className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
+              onClick={() => setParkingSpaces(parkingSpaces != 1 ? 1 : 0)}
+              style={
+                parkingSpaces === 1
+                  ? {
+                      background: '#F5BF5D',
+                      border: '1px solid #F5BF5D',
+                      font: '#F7F7F6',
+                    }
+                  : {}
+              }
+            >
+              1+
+            </button>
+            <button
+              className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
+              onClick={() => setParkingSpaces(parkingSpaces != 2 ? 2 : 0)}
+              style={
+                parkingSpaces === 2
+                  ? {
+                      background: '#F5BF5D',
+                      border: '1px solid #F5BF5D',
+                      font: '#F7F7F6',
+                    }
+                  : {}
+              }
+            >
+              2+
+            </button>
+            <button
+              className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
+              onClick={() => setParkingSpaces(parkingSpaces != 3 ? 3 : 0)}
+              style={
+                parkingSpaces === 3
+                  ? {
+                      background: '#F5BF5D',
+                      border: '1px solid #F5BF5D',
+                      font: '#F7F7F6',
+                    }
+                  : {}
+              }
+            >
+              3+
+            </button>
+            <button
+              className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
+              onClick={() => setParkingSpaces(parkingSpaces != 4 ? 4 : 0)}
+              style={
+                parkingSpaces === 4
+                  ? {
+                      background: '#F5BF5D',
+                      border: '1px solid #F5BF5D',
+                      font: '#F7F7F6',
+                    }
+                  : {}
+              }
+            >
+              4+
+            </button>
+          </div>
         </div>
+      </div>
 
         <div className="border border-b-quaternary mb-9" />
 
+      <div>
         {/* Other filters */}
         <div>
           <h3 className="font-normal text-base text-quaternary leading-[19px] mb-3">
@@ -985,7 +1001,7 @@ const FilterList: React.FC<IFilterListProps> = ({
         </div>
 
         {/* Search by code */}
-        <div>
+        <div className='md:w-1/2 lg:w-full'>
           <h3 className="font-normal text-base text-quaternary leading-[19px] mb-3">
             Buscar imóvel por código
           </h3>

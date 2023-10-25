@@ -134,8 +134,8 @@ const Search: NextPageWithLayout<ISearch> = ({
       <Header />
       <div className="flex items-center justify-center mt-20">
         <div className="lg:flex justify-center max-w-[1232px]">
-          <div className="flex flex-col md:flex-row mt-[-16px]. md:mt-0">
-            <div className="mx-auto">
+          <div className="flex flex-col lg:flex-row mt-[-16px]. md:mt-0">
+            <div className="mx-auto md:w-full">
               <FilterList
                 locationProp={locations}
                 tagsProp={tagsData}
