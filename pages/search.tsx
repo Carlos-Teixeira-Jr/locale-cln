@@ -59,6 +59,7 @@ const Search: NextPageWithLayout<ISearch> = ({
   // location
   const queryParsed = query.location ? JSON.parse(query.location) : [];
   const [location, setLocation] = useState<any>(queryParsed);
+  console.log("🚀 ~ file: search.tsx:62 ~ location:", location)
 
   // Insere ou remove as location no url query params;
   useEffect(() => {
