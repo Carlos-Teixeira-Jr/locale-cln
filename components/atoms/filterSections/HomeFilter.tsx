@@ -224,7 +224,9 @@ const HomeFilter: React.FC<IHomeFilter> = ({
 
     router.push({
       pathname: '/search',
-      query,
+      query
+    }, undefined, {
+      shallow: true
     });
   };
 
@@ -278,10 +280,10 @@ const HomeFilter: React.FC<IHomeFilter> = ({
               <label>Qual o tipo do imóvel?</label>
 
               <div 
-                className="drop-shadow-lg lg:h-9 lg:w-64 lg:text-lg rounded-lg p-2 mb-1 border border-quaternary flex justify-between"
+                className="drop-shadow-lg lg:h-9 lg:w-64 lg:text-lg text-quaternary rounded-lg p-2 mb-1 border border-quaternary flex justify-between"
                 onClick={() => setPropTypeDropdownIsOpen(!propTypeDropdownIsOpen)}
               >
-                <p className='text-quaternary text'>{propertyType.propertyType ? propertyType.propertySubtype : `Tipo de imóvel`}</p>
+                <p className='self-center'>{propertyType.propertyType ? propertyType.propertySubtype : `Tipo de imóvel`}</p>
                 <ArrowDownIcon
                   className={`my-auto cursor-pointer ${
                     propTypeDropdownIsOpen
@@ -334,7 +336,7 @@ const HomeFilter: React.FC<IHomeFilter> = ({
             <div className="flex flex-col lg:mt-0 gap-2">
               <label className="text-base">Onde?</label>
               <input
-                className="drop-shadow-lg lg:h-9 lg:text-lg rounded-lg p-2 mb-1"
+                className="drop-shadow-lg lg:h-9 lg:text-lg rounded-lg p-2 mb-1 placeholder:text-sm"
                 placeholder="Digite um bairro, cidade, rua..."
                 onChange={(event: ChangeEvent<HTMLInputElement>) => {
                   const newName = event.target.value;

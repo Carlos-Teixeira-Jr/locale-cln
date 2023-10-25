@@ -19,6 +19,7 @@ interface IFilterListProps {
   isMobileProp: boolean;
   onMobileFilterIsOpenChange: (isOpen: boolean) => void;
   onSearchBtnClick: () => void;
+  locationChangeProp: (loc: ILocation[]) => void;
 }
 
 const FilterList: React.FC<IFilterListProps> = ({
@@ -28,51 +29,60 @@ const FilterList: React.FC<IFilterListProps> = ({
   isMobileProp,
   onMobileFilterIsOpenChange,
   onSearchBtnClick,
+  locationChangeProp
 }) => {
+
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const query = router.query;
+  const query = router.query as any;
 
   // adType
   const [isBuy, setIsBuy] = useState(true);
   const [isRent, setIsRent] = useState(false);
+
   // propertyType
   const [propertyType, setPropertyType] = useState({
     propertyType: query.propertyType,
     propertySubtype: typeof query.propertySubtype === 'string' ? query.propertySubtype.replace(/"/g,"") : query.propertySubtype
   });
   const [propTypeDropdownIsOpen, setPropTypeDropdownIsOpen] = useState(false);
+  
+  // Location
   // Lida apenas com o valor que aparecerá no input de localização;
   const [locationInput, setLocationInput] = useState('');
   // Lida com a formatação da lozalização e categoria da localização para mostrá-las no dropdown;
   const [filteredLocations, setFilteredLocations] = useState<ILocation[]>([]);
-  const [location, setLocation] = useState<ILocation[]>([]);
-  const [initialLocation, setInitialLocation] = useState<ILocation[]>([]);
+  const queryParsed = query.location ? JSON.parse(query.location) : [];
+  const [location, setLocation] = useState<ILocation[]>(queryParsed);
   const [allLocations, setAllLocations] = useState(false);
-
+  
   // prices
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
+
   // condominium
   const [minCondominium, setMinCondominium] = useState('');
   const [maxCondominium, setMaxCondominium] = useState('');
+
   // metadata
   const [bedrooms, setBedrooms] = useState(0);
   const [bathrooms, setBathrooms] = useState(0);
   const [parkingSpaces, setParkingSpaces] = useState(0);
+
   // tags
   const tagsData: ITagsData[] = tagsProp;
+
   // code
   const [codeToSearch, setCodeToSearch] = useState('');
+
   // dropdown
   const [open, setOpen] = useState(false);
   const [openLocationDropdown, setOpenLocationDropdown] = useState(false);
+
   // mobile
   const [mobileFilterIsOpen, setMobileFilterIsOpen] = useState<boolean>(false);
 
   const [firstRender, setFirstRender] = useState(true);
-
-
 
   // ADTYPE
 
@@ -170,139 +180,50 @@ const FilterList: React.FC<IFilterListProps> = ({
 
   // Insere e remove os objetos de location ao clicar nas opções do dropdown;
   const toggleLocation = (name: string, category: string) => {
-    // Procura no array location um objeto que tenha a categoria igual a selecionada;da
-    const existingCategory = location.find(
-      (item) => item.category === category
-    );
+    // Procura no array location um objeto que tenha a categoria igual a selecionada;
+    const existingCategory = location.find((item) => item.category === categoryMappings[category]);
 
     if (existingCategory) {
       // Verifica se já existe um objeto com a categoria selecionada, então apenas atualizamos o array name dentro do objeto dessa categoria;
-      const updatedLocation = location
-        .map((item) => {
-          if (item.category === category) {
+      const updatedLocation = location.map((item) => {
+          if (item.category === categoryMappings[category]) {
             // Verifica se o name selecionado já está presente no array name do objeto com a categoria selecionada;
-            if (item.name.includes(name)) {
-              // Se já existir esse name, ele é removido do array;
-              const updatedName = item.name.filter(
-                (itemName: string) => itemName !== name
-              );
-              // Se o name removido for o ultimo do array, retornamos um valor null para posteriormente remover todo o objeto da categoria correspondente;
-              if (updatedName.length === 0) {
-                return null; // Retorna null para filtrar o objeto do array
-              } else {
-                // Se não for o ultimo, então retornamos um novo array name com o novo name selecionado;
-                return {
-                  ...item,
-                  name: updatedName,
-                };
-              }
+          if (item.name.includes(name)) {
+            // Se já existir esse name, ele é removido do array;
+            const updatedName = item.name.filter((itemName: string) => itemName !== name);
+            // Se o name removido for o ultimo do array, retornamos um valor null para posteriormente remover todo o objeto da categoria correspondente;
+            if (updatedName.length === 0) {
+              return null; // Retorna null para filtrar o objeto do array
             } else {
-              // Se não houver o name no array retornamos um novo array name com o novo name selecionado;
+              // Se não for o ultimo, então retornamos um novo array name com o novo name selecionado;
               return {
                 ...item,
-                name: [...item.name, name],
+                name: updatedName,
               };
             }
+          } else {
+            // Se não houver o name no array retornamos um novo array name com o novo name selecionado;
+            return {
+              ...item,
+              name: [...item.name, name],
+            };
           }
-          return item;
-          // O filter remove os objetos que tenham retoornado null no map acima para removê-los de updatedLocation;
-        })
-        .filter(Boolean) as ILocation[];
+        }
+        return item;
+        // O filter remove os objetos que tenham retoornado null no map acima para removê-los de updatedLocation;
+      })
+      .filter(Boolean) as ILocation[];
       setLocation(updatedLocation);
       // Caso a opção selecionada pertença a uma categoria ainda não inserida em location, apenas é inserido um objeto com o name e category selecionados;
     } else {
-      setLocation([...location, { name: [name], category }]);
+      setLocation([...location, { name: [name], category: categoryMappings[category] }]);
     }
   };
 
+  // Envia os valores de location para a Search sempre que houver uma alteração no
   useEffect(() => {
-    let locationParam;
-    if (query.location) {
-      const locationParamString = query.location.toString();
-      locationParam = JSON.parse(locationParamString);
-    }
-
-    if (locationParam) {
-      setInitialLocation([
-        ...location,
-        { name: locationParam[0].name, category: locationParam[0].category },
-      ]);
-    }
-  }, []);
-
-  // // Insere e remove as opções selecionadas de location nos parâmetros da URL;
-  // useEffect(() => {
-  //   // Atualizar os parâmetros da URL
-  //   if (location.length < 1) {
-  //     if (!query.location?.includes('todos')) {
-  //       removeQueryParam('location');
-  //     }
-  //   } else {
-  //     const translatedLocations: { category: string; name: string[] }[] = [];
-
-  //     location.forEach((loc) => {
-  //       if (!allLocations) {
-  //         const { name, category } = loc;
-  //         const formattedCategory = categoryMappings[category] || category;
-  //         const existingLocation = translatedLocations.find(
-  //           (item) => item.category === formattedCategory
-  //         );
-  //         if (existingLocation) {
-  //           existingLocation.name.push(...name);
-  //         } else {
-  //           translatedLocations.push({ category: formattedCategory, name });
-  //         }
-  //       }
-  //     });
-
-  //     const queryParams = {
-  //       ...query,
-  //       location: JSON.stringify([...translatedLocations]),
-  //       page: 1,
-  //     };
-  //     router.push({ query: queryParams }, undefined, { scroll: false });
-  //   }
-  // }, [location, query.location]);
-
-  useEffect(() => {
-    // Verificar se o parâmetro de localização na URL corresponde à localização atual
-    const locationQueryParam = JSON.stringify(query.location) || '[]';
-    const currentLocation = JSON.stringify(location);
-  
-    // Só atualizar a URL se o parâmetro de localização for diferente da localização atual
-    if (locationQueryParam !== currentLocation) {
-      if (location.length < 1) {
-        if (!query.location?.includes('todos')) {
-          removeQueryParam('location');
-        }
-      } else {
-        const translatedLocations: { category: string; name: string[] }[] = [];
-  
-        location.forEach((loc) => {
-          if (!allLocations) {
-            const { name, category } = loc;
-            const formattedCategory = categoryMappings[category] || category;
-            const existingLocation = translatedLocations.find(
-              (item) => item.category === formattedCategory
-            );
-            if (existingLocation) {
-              existingLocation.name.push(...name);
-            } else {
-              translatedLocations.push({ category: formattedCategory, name });
-            }
-          }
-        });
-  
-        const queryParams = {
-          ...query,
-          location: JSON.stringify([...translatedLocations]),
-          page: 1,
-        };
-        router.push({ query: queryParams }, undefined, { scroll: false });
-      }
-    }
-  }, [location, query.location]);
-  
+    locationChangeProp(location)
+  }, [location]);
 
   //// METADATA ////
 

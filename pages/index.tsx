@@ -33,7 +33,7 @@ const Home: NextPageWithLayout<IHome> = ({
   propertyTypes,
   locations,
 }) => {
-  console.log('🚀 ~ file: index.tsx:36 ~ propertyInfo:', propertyInfo);
+
   const { latitude, longitude, location } = useTrackLocation();
   const [propertiesByLocation, setPropertiesByLocation] = useState<any>([]);
   const [propertiesByLocationError, setPropertiesByLocationError] =
@@ -205,7 +205,7 @@ export async function getStaticProps() {
     fetch(`${baseUrl}/location`)
       .then((res) => res.json())
       .catch(() => []),
-    fetchJson(`${baseUrl}/property?page=1&limit=3`),
+    fetchJson(`${baseUrl}/property/filter/?page=1&limit=3`),
     fetchJson(`${baseUrl}/property-type`),
     fetchJson(`${baseUrl}/location`),
   ]);
