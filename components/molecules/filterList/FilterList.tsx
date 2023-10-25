@@ -54,7 +54,6 @@ const FilterList: React.FC<IFilterListProps> = ({
   const [filteredLocations, setFilteredLocations] = useState<ILocation[]>([]);
   const queryParsed = query.location ? JSON.parse(query.location) : [];
   const [location, setLocation] = useState<ILocation[]>(queryParsed);
-  console.log("🚀 ~ file: FilterList.tsx:57 ~ location:", location)
   const [allLocations, setAllLocations] = useState(false);
   
   // prices
