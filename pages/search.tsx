@@ -296,8 +296,8 @@ const Search: NextPageWithLayout<ISearch> = ({
                       address,
                       images,
                       metadata,
-                      highlighted,
-                    }: IData) => (
+                      highlighted
+                    }: IData, index) => (
                       <PropertyInfoCard
                         _id={_id}
                         key={_id}
@@ -310,6 +310,7 @@ const Search: NextPageWithLayout<ISearch> = ({
                         bathrooms={metadata[1].amount}
                         parking_spaces={metadata[2].amount}
                         highlighted={highlighted}
+                        propertyInfo={propertyInfo?.docs[index]}
                       />
                     )
                   )}

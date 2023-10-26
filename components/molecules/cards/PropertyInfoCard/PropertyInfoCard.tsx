@@ -9,6 +9,7 @@ import NextCardIcon from '../../../atoms/icons/nextCardIcon';
 import ParkingIcon from '../../../atoms/icons/parkingIcon';
 import PreviousCardIcon from '../../../atoms/icons/previousCardIcon';
 import MessageModal from '../../../atoms/modals/messageModal';
+import { IData } from '../../../../common/interfaces/property/propertyData';
 Modal.setAppElement('#__next');
 
 export interface IPropertyInfoCard {
@@ -22,6 +23,7 @@ export interface IPropertyInfoCard {
   location: string;
   href: string;
   highlighted: boolean;
+  propertyInfo: IData
 }
 
 export interface IFormData {
@@ -41,6 +43,7 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
   location,
   href,
   highlighted,
+  propertyInfo
 }) => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -185,7 +188,7 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
         <MessageModal 
           isOpen={modalIsOpen} 
           setModalIsOpen={setModalIsOpen} 
-          propertyInfo={undefined}
+          propertyInfo={propertyInfo}
          />
       )}
     </>
