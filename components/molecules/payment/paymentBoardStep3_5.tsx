@@ -55,7 +55,7 @@ const PaymentBoard_Step3_5 = ({
               PARCELAS
             </h2>
           </div>
-          <div className="flex flex-col items-center">
+          <div className="flex flex-col items-end">
             {cardFlag === '' ? (
               <h2 className="text-quaternary text-lg md:text-2xl font-medium mb-4">
                 Cartão de crédito

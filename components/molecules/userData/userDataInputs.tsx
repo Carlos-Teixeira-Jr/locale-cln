@@ -46,9 +46,9 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
   const [succesModalIsOpen, setSuccesModalIsOpen] = useState(false);
 
   const [formData, setFormData] = useState<IUserDataComponent>({
-    username: userData ? userData.user.username : '',
-    email: userData ? userData.user.email : '',
-    cpf: userData ? userData.user.cpf : '',
+    username: userData ? userData?.user?.username : '',
+    email: userData ? userData?.user?.email : '',
+    cpf: userData ? userData?.user?.cpf : '',
     cellPhone: userData && userData.owner ? userData.owner.cellPhone : '',
     phone: userData && userData.owner ? userData.owner.phone : '',
   });
@@ -135,7 +135,29 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
         }
         setFormData({ ...formData, cpf: maskedValue });
       },
-    },        
+    },
+    {
+      key: 'phone',
+      label: 'Telefone',
+      value: formData.phone,
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        const input = event.target;
+        const value = input.value;
+        const maskedValue = applyNumericMask(value, '(99) 9999-9999');
+        const selectionStart = input.selectionStart || 0;
+        const selectionEnd = input.selectionEnd || 0;
+        const previousValue = input.value;
+        // Verifica se o cursor está no final da string ou se um caractere foi removido
+        if (selectionStart === previousValue.length || previousValue.length > maskedValue.length) {
+          input.value = maskedValue;
+        } else {
+          // Caso contrário, restaura o valor anterior e move o cursor para a posição correta
+          input.value = previousValue;
+          input.setSelectionRange(selectionStart, selectionEnd);
+        }
+        setFormData({ ...formData, phone: maskedValue });
+      },
+    },   
     {
       key: 'cellPhone',
       label: 'Celular',
@@ -157,28 +179,6 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
           input.setSelectionRange(selectionStart, selectionEnd);
         }
         setFormData({ ...formData, cellPhone: maskedValue });
-      },
-    },    
-    {
-      key: 'phone',
-      label: 'Telefone',
-      value: formData.phone,
-      onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        const input = event.target;
-        const value = input.value;
-        const maskedValue = applyNumericMask(value, '(99) 9999-9999');
-        const selectionStart = input.selectionStart || 0;
-        const selectionEnd = input.selectionEnd || 0;
-        const previousValue = input.value;
-        // Verifica se o cursor está no final da string ou se um caractere foi removido
-        if (selectionStart === previousValue.length || previousValue.length > maskedValue.length) {
-          input.value = maskedValue;
-        } else {
-          // Caso contrário, restaura o valor anterior e move o cursor para a posição correta
-          input.value = previousValue;
-          input.setSelectionRange(selectionStart, selectionEnd);
-        }
-        setFormData({ ...formData, phone: maskedValue });
       },
     },
   ];

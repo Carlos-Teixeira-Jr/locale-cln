@@ -2,8 +2,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 import Cards, { Focused } from 'react-credit-cards';
 import { applyNumericMask } from "../../../common/utils/masks/numericMask";
 import { toast } from "react-toastify";
-import { OnErrorInfo } from "../uploadImages/uploadImages";
-import { resetObjectToEmptyStrings } from "../../../common/utils/resetObjects";
+import 'react-credit-cards/es/styles-compiled.css';
 
 export type CreditCardForm = {
   cardName: string;
@@ -207,9 +206,10 @@ const CreditCard = ({
           ))}
         </form>
       </div>
+      
       {isEdit && (
         <div className="flex my-10 justify-center">
-          <button className="bg-primary w-fit h-16 item text-quinary rounded-[10px] py-5 px-20 gap-3 text-2xl font-extrabold" onClick={handleSubmit}>
+          <button className="bg-primary w-fit h-16 item text-quinary rounded-[10px] py-5 px-20 lg:ml-8 gap-3 text-2xl font-extrabold" onClick={handleSubmit}>
             Atualizar
           </button>
         </div>

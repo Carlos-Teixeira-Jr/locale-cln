@@ -243,7 +243,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   return (
     <div className="max-w-[412px] md:max-w-[912px] lg:max-w-[1024px] xl:max-w-[1536px] mx-auto">
       <div className="fixed z-50 top-0 w-full inset-x-0">
-        <AdminHeader/>
+        <AdminHeader isOwnerProp={isOwner}/>
       </div>
 
       <div className="flex flex-row items-center justify-center w-full xl:justify-center">
@@ -268,11 +268,11 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                 userDataInputRefs={userDataInputRefs}
               />
 
-              <h2 className="md:text-3xl text-2xl leading-10 text-quaternary font-bold mb-5 md:mb-10">
+              <h2 className="md:text-3xl text-2xl leading-10 text-quaternary font-bold mb-5 md:mb-10 lg:mx-5">
                 Dados de Cobrança
               </h2> 
 
-              <div className="absolute z-40 inset-x-1 xl:inset-x-auto md:flex gap-8">
+              <div className="absolute z-40 inset-x-1 xl:inset-x-auto md:flex gap-8 lg:mx-5">
                 {reversedCards.map(
                   ({
                     _id,
@@ -315,7 +315,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
               </div>
             </div>
 
-            <div className="lg:float-right flex md:justify-end justify-center md:w-[90%] mb-10 md:mr-16">
+            <div className="lg:float-right flex md:justify-end justify-center md:w-[90%] lg:w-full mb-10 md:mr-16 lg:mr-5">
               <button
                 className="bg-primary w-fit h-16 item text-quinary rounded-[10px] py-5 px-20 text-xl md:text-2xl font-extrabold transition-colors duration-300 hover:bg-red-600 hover:text-white"
                 onClick={handleUpdateBtn}
@@ -324,7 +324,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
               </button>
             </div>
 
-            <div className='md:pt-20 pt-0.5 mb-20'>
+            {/* <div className='md:pt-20 pt-0.5 mb-20'>
               <label
                 className="flex flex-row items-center justify-between sm:min-w-[300px] md:min-w-[620px] lg:min-w-[600px] xl:min-w-[800px] 2xl:min-w-[1000px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 md:text-3xl text-xl text-quaternary font-bold transition bg-opacity-90 hover:bg-gray-300"
               >
@@ -352,7 +352,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                   />
                 )}
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
