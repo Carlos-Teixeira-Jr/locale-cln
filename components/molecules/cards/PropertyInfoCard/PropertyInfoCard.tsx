@@ -71,7 +71,7 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
   return (
     <>
       <Link href={href}>
-        <div className="md:w-[760px] md:h-[265px] bg-tertiary md:grid md:grid-cols-3 rounded-[30px] overflow-hidden drop-shadow-lg my-[29px] md:mx-[35px] mx-2 flex flex-col">
+        <div className="md:w-full. md:h-[265px] bg-tertiary md:grid md:grid-cols-3 rounded-[30px] overflow-hidden drop-shadow-lg my-[29px] md:mx-[35px] mx-2 flex flex-col">
           <div className="group relative md:h-[200px]">
             {/* Images */}
             <div className="flex flex-row w-full overflow-hidden scroll-smooth rounded-tl-[30px] md:h-[265px] h-[250px]">
@@ -182,7 +182,11 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
       </Link>
 
       {modalIsOpen && (
-        <MessageModal isOpen={modalIsOpen} setModalIsOpen={setModalIsOpen} propertyInfo={undefined} />
+        <MessageModal 
+          isOpen={modalIsOpen} 
+          setModalIsOpen={setModalIsOpen} 
+          propertyInfo={undefined}
+         />
       )}
     </>
   );

@@ -108,11 +108,11 @@ const FilterList: React.FC<IFilterListProps> = ({
   };
 
   // Estilos do switch button de compra/aluguel;
-  const buyBtnClassName = `lg:w-44 md:w-32 w-40 h-[34px] md:h-fit lg:h-[34px] rounded-full border-black text-quaternary font-bold text-xl transition-all ${
+  const buyBtnClassName = `w-full h-[34px] md:h-fit lg:h-[34px] rounded-full border-black text-quaternary font-bold lg:text-lg transition-all ${
     isBuy ? 'bg-secondary text-quinary border' : 'bg-tertiary  text-quaternary'
   }`;
 
-  const rentBtnClassName = `lg:w-44 w-32 w-40 h-[34px] md:h-fit lg:h-[34px] rounded-full border-black text-quaternary font-bold text-xl transition-all ${
+  const rentBtnClassName = `w-full h-[34px] md:h-fit lg:h-[34px] rounded-full border-black text-quaternary font-bold lg:text-lg transition-all ${
     isRent ? 'bg-secondary text-quinary border' : 'bg-tertiary text-quaternary'
   }`;
 
@@ -477,7 +477,7 @@ const FilterList: React.FC<IFilterListProps> = ({
 
   return (
     <div
-      className={`lg:block md:w-full lg:max-w-[400px] h-fit bg-tertiary shadow-md rounded-[30px] px-2 md:px-5 md:py-8 pt-8 pb-2 md:px-10 lg:ml-7 mt-12 ${
+      className={`lg:block md:w-full lg:max-w-[400px] h-fit bg-tertiary shadow-md rounded-[30px] px-2 md:px-5 md:py-8 pt-8 pb-2 lg:ml-7 mt-12 ${
         !mobileFilterIsOpen ? 'hidden' : ''
       }`}
     >
@@ -495,19 +495,19 @@ const FilterList: React.FC<IFilterListProps> = ({
         </div>
       )}
 
-      <div className='flex lg:flex-col justify-between'>
+      <div className='flex flex-col md:flex-row lg:flex-col justify-between'>
         {/* Basic info */}
         <div>
           <h3 className="font-normal text-base text-quaternary leading-[19px] mb-2 ">
             O que procura?
           </h3>
-          <div className="flex flex-row rounded-full border border-quaternary mb-6 h-fit max-w-[354px]">
-            <div>
+          <div className="flex flex-row rounded-full border border-quaternary lg:h-9 w-full mx-auto md:mt-3 lg:mt-2 justify-center mb-5">
+            <div className='w-full'>
               <button className={buyBtnClassName} onClick={handleBuy}>
                 Comprar
               </button>
             </div>
-            <div>
+            <div className='w-full'>
               <button className={rentBtnClassName} onClick={handleRent}>
                 Alugar
               </button>
@@ -694,15 +694,15 @@ const FilterList: React.FC<IFilterListProps> = ({
 
         {/* Characteristics */}
         <div className='md:mt-[87px] lg:mt-0'>
-          <h3 className="font-normal text-base text-quaternary leading-[19px] md:mb-2 lg:my-2">
+          <h3 className="font-normal text-base text-quaternary leading-[19px] mb-2 lg:my-2">
             Preço
           </h3>
-          <div className="flex flex-row md:mb-3">
+          <div className="flex flex-row mb-5 md:mb-3">
             <input
               value={maskedPrice(minPrice)}
               placeholder="Min."
               className={
-                'bg-transparent outline-none w-full h-12 font-normal text-base text-quaternary leading-[19px] lg:mb-11 shadow-lg p-3 border border-quaternary rounded-xl'
+                'bg-transparent outline-none w-full h-12 font-normal text-base text-quaternary leading-[19px] lg:mb-2 shadow-lg p-3 border border-quaternary rounded-xl'
               }
               onChange={(e) => setMinPrice(maskedPrice(e.target.value))}
             />
@@ -711,7 +711,7 @@ const FilterList: React.FC<IFilterListProps> = ({
               value={maskedPrice(maxPrice)}
               placeholder="Max."
               className={
-                'bg-transparent outline-none w-full h-12 font-normal text-base text-quaternary leading-[19px] lg:mb-11 shadow-lg p-3 border border-quaternary rounded-xl'
+                'bg-transparent outline-none w-full h-12 font-normal text-base text-quaternary leading-[19px] lg:mb-2 shadow-lg p-3 border border-quaternary rounded-xl'
               }
               onChange={(e) => setMaxPrice(maskedPrice(e.target.value))}
             />
@@ -725,7 +725,7 @@ const FilterList: React.FC<IFilterListProps> = ({
               value={maskedPrice(minCondominium)}
               placeholder="Min."
               className={
-                'bg-transparent outline-none w-full h-12 font-normal text-base text-quaternary leading-[19px] lg:mb-11 shadow-lg p-3 border border-quaternary rounded-xl'
+                'bg-transparent outline-none w-full h-12 font-normal text-base text-quaternary leading-[19px] lg:mb-2 shadow-lg p-3 border border-quaternary rounded-xl'
               }
               onChange={(e) => setMinCondominium(maskedPrice(e.target.value))}
             />
@@ -734,7 +734,7 @@ const FilterList: React.FC<IFilterListProps> = ({
               value={maskedPrice(maxCondominium)}
               placeholder="Max."
               className={
-                'bg-transparent outline-none w-full h-12 font-normal text-base text-quaternary leading-[19px] lg:mb-11 shadow-lg p-3 border border-quaternary rounded-xl'
+                'bg-transparent outline-none w-full h-12 font-normal text-base text-quaternary leading-[19px] mb-5 lg:mb-2 shadow-lg p-3 border border-quaternary rounded-xl'
               }
               onChange={(e) => setMaxCondominium(maskedPrice(e.target.value))}
             />
@@ -742,14 +742,14 @@ const FilterList: React.FC<IFilterListProps> = ({
         </div>
       </div>
 
-      <div className='md:flex lg:flex-col justify-between md:mt-5'>
+      <div className='md:flex lg:flex-col gap-2 justify-between md:mt-5'>
         <div>
           <h3 className="font-normal text-base text-quaternary leading-[19px] mb-2">
             Quartos
           </h3>
-          <div className='md:flex lg:justify-between gap-5'>
+          <div className='flex justify-between gap-5'>
             <button
-              className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
+              className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-5 md:mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
               onClick={() => setBedrooms(bedrooms != 1 ? 1 : 0)}
               style={
                 bedrooms === 1
@@ -764,7 +764,7 @@ const FilterList: React.FC<IFilterListProps> = ({
               1+
             </button>
             <button
-              className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
+              className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-5 md:mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
               onClick={() => setBedrooms(bedrooms != 2 ? 2 : 0)}
               style={
                 bedrooms === 2
@@ -779,7 +779,7 @@ const FilterList: React.FC<IFilterListProps> = ({
               2+
             </button>
             <button
-              className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
+              className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-5 md:mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
               onClick={() => setBedrooms(bedrooms != 3 ? 3 : 0)}
               style={
                 bedrooms === 3
@@ -794,7 +794,7 @@ const FilterList: React.FC<IFilterListProps> = ({
               3+
             </button>
             <button
-              className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
+              className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-5 md:mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
               onClick={() => {
                 setBedrooms(bedrooms != 4 ? 4 : 0);
               }}
@@ -813,15 +813,15 @@ const FilterList: React.FC<IFilterListProps> = ({
           </div>
         </div>
 
-        <div className="w-1 h-20 mt-2 border-l border-quaternary lg:hidden"></div>
+        <div className="w-1 h-16 mt-5 border-l border-quaternary hidden md:flex lg:hidden"></div>
 
         <div>
           <h3 className="font-normal text-base text-quaternary leading-[19px] mb-2">
             Banheiros
           </h3>
-          <div className='md:flex lg:justify-between gap-5'>
+          <div className='flex justify-between gap-5'>
             <button
-              className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
+              className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-5 md:mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
               onClick={() => setBathrooms(bathrooms != 1 ? 1 : 0)}
               style={
                 bathrooms === 1
@@ -836,7 +836,7 @@ const FilterList: React.FC<IFilterListProps> = ({
               1+
             </button>
             <button
-              className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
+              className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-5 md:mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
               onClick={() => setBathrooms(bathrooms != 2 ? 2 : 0)}
               style={
                 bathrooms === 2
@@ -851,7 +851,7 @@ const FilterList: React.FC<IFilterListProps> = ({
               2+
             </button>
             <button
-              className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
+              className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-5 md:mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
               onClick={() => setBathrooms(bathrooms != 3 ? 3 : 0)}
               style={
                 bathrooms === 3
@@ -866,7 +866,7 @@ const FilterList: React.FC<IFilterListProps> = ({
               3+
             </button>
             <button
-              className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
+              className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-5 md:mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
               onClick={() => setBathrooms(bathrooms != 4 ? 4 : 0)}
               style={
                 bathrooms === 4
@@ -883,15 +883,15 @@ const FilterList: React.FC<IFilterListProps> = ({
           </div>
         </div>
 
-        <div className="w-1 h-20 mt-2 border-l border-quaternary lg:hidden"></div>
+        <div className="w-1 h-16 mt-5 border-l border-quaternary hidden md:flex lg:hidden"></div>
 
         <div>
           <h3 className="font-normal text-base text-quaternary leading-[19px] mb-2">
             Vagas de garagem
           </h3>
-          <div className='md:flex lg:justify-between gap-5'>
+          <div className='flex justify-between gap-5'>
             <button
-              className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
+              className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-5 md:mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
               onClick={() => setParkingSpaces(parkingSpaces != 1 ? 1 : 0)}
               style={
                 parkingSpaces === 1
@@ -906,7 +906,7 @@ const FilterList: React.FC<IFilterListProps> = ({
               1+
             </button>
             <button
-              className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
+              className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-5 md:mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
               onClick={() => setParkingSpaces(parkingSpaces != 2 ? 2 : 0)}
               style={
                 parkingSpaces === 2
@@ -921,7 +921,7 @@ const FilterList: React.FC<IFilterListProps> = ({
               2+
             </button>
             <button
-              className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
+              className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-5 md:mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
               onClick={() => setParkingSpaces(parkingSpaces != 3 ? 3 : 0)}
               style={
                 parkingSpaces === 3
@@ -936,7 +936,7 @@ const FilterList: React.FC<IFilterListProps> = ({
               3+
             </button>
             <button
-              className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
+              className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-5 md:mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
               onClick={() => setParkingSpaces(parkingSpaces != 4 ? 4 : 0)}
               style={
                 parkingSpaces === 4
