@@ -157,6 +157,9 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
 =======
     setAddressData(property ? property.address : '')
   },[]);
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
   useEffect(() => {
