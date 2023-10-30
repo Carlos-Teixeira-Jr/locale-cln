@@ -50,7 +50,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
   const { progress, updateProgress } = useProgress();
   const storedData = store.get('propertyData');
   const storedPlan = store.get('plans');
-  const choosedPlan = storedPlan?.id ? storedPlan?.id : '';
+  const choosedPlan = storedPlan ? storedPlan : '';
   const propertyAddress = storedData?.address ? storedData.address : {};
 
   // Lida com o autoscroll das validações de erro dos inputs;

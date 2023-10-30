@@ -1,11 +1,12 @@
 import Link from 'next/link';
 import { useState } from 'react';
+import store from 'store';
 import LocationIcon from '../../../atoms/icons/location';
 import PlusIcon from '../../../atoms/icons/plusIcon';
 import LocaleLogo from '../../../atoms/logos/locale';
 
 export interface IPlansCard {
-  id: string;
+  _id: string;
   name: string;
   price: number;
   commonAd: number;
@@ -14,7 +15,7 @@ export interface IPlansCard {
 }
 
 const PlansCards: React.FC<IPlansCard> = ({
-  id,
+  _id,
   name,
   price,
   commonAd,
@@ -22,10 +23,16 @@ const PlansCards: React.FC<IPlansCard> = ({
   smartAd,
 }) => {
   const [getPlan, setGetPlan] = useState('645a46d4388b9fbde84b6e8a');
+  const getUserPlan = (planId: string) => {
+    setGetPlan(planId);
+    console.log(_id);
+    console.log(getPlan);
+    store.set('plans', planId);
+  };
   return (
     <div
       className="md:flex justify-center my-10"
-      onClick={() => setGetPlan(id)}
+      onClick={() => getUserPlan(_id)}
     >
       <Link href={'/register'}>
         <div className="md:mx-5 my-5 md:my-0">
