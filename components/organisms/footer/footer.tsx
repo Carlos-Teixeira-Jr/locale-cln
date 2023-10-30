@@ -91,7 +91,7 @@ const Footer = ({ smallPage }: IFooter) => {
             <ul className="list-none mb-0">
               <li>
                 <Link
-                  href="https://www.instagram.com/localeimoveis/"
+                  href="https://www.instagram.com/locale_imoveis/"
                   target="blank"
                   className="text-gray-800"
                 >
