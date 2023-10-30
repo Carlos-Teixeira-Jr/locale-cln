@@ -169,17 +169,14 @@ const CreditCard = ({
     // }
 
     setErrors(newErrors);
-    console.log("🚀 ~ file: creditCard.tsx:171 ~ handleSubmit ~ newErrors:", newErrors)
-
-    console.log("erros fora", errors)
 
     if(Object.values(errors).every((error) => error === '')) {
       try {
-        console.log("erros", errors);
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
         const formattedCardNumber = creditCardFormData.cardNumber.replace(/\D/g, '');
         setCreditCardFormData({...creditCardFormData, cardNumber: formattedCardNumber});
         toast.loading('Enviando...');
-        const response = await fetch('http://localhost:3001/api-de-pagamento', {
+        const response = await fetch(`${baseUrl}/`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
