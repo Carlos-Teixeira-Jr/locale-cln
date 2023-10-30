@@ -148,10 +148,12 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
 
   // // Busca o endereço do imóvel armazenado no local storage e atualiza o valor de addressData sempre que há o componente de endereço é aberto ou fechado - isso é necessário para que o componente ChangeAddressCheckbox recupere o endereço do localStorage quando a opção é alterada;
   useEffect(() => {
-    if (!isSameAddress) {
-      setAddressData(property ? property.address : '');
-    }
-  }, [isSameAddress, property]);
+    //   if (!isSameAddress) {
+    //     setAddressData(property ? property.address : '');
+    //   }
+    // }, [isSameAddress, property]);
+    setAddressData(property ? property.address : '')
+  },[]);
 
   useEffect(() => {
     const url = router.pathname;
