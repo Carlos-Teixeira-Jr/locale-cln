@@ -84,6 +84,7 @@ const RegisterStep35: NextPageWithLayout<IRegisterStep35> = ({
                 className="bg-primary w-full md:w-96 h-16 rounded transition-colors duration-300 hover:bg-red-600 hover:text-white"
                 onClick={() => {
                   updateProgress(5);
+                  store.clearAll();
                   if (!urlEmail) {
                     router.push('/registerStep4');
                   } else {

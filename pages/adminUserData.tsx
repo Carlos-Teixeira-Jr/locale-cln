@@ -38,7 +38,8 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   properties,
   ownerData
 }) => {
-  console.log("🚀 ~ file: adminUserData.tsx:41 ~ ownerData:", ownerData.user)
+  console.log("🚀 ~ file: adminUserData.tsx:41 ~ ownerData:", ownerData)
+
   const router = useRouter();
   const isOwner = properties?.docs?.length > 0 ? true : false;
   const [selectedPlan, setSelectedPlan] = useState(ownerData?.owner ? ownerData?.owner?.plan : '');
@@ -47,6 +48,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const isEdit = true;
   const isMobile = useIsMobile();
   const reversedCards = [...plans].reverse();
+  const creditCardInfo = ownerData?.owner?.creditCardInfo;
 
   const [formData, setFormData] = useState<IUserDataComponent>({
     username: '',
@@ -324,7 +326,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
               </button>
             </div>
 
-            {/* <div className='md:pt-20 pt-0.5 mb-20'>
+            <div className='md:pt-20 pt-0.5 mb-20'>
               <label
                 className="flex flex-row items-center justify-between sm:min-w-[300px] md:min-w-[620px] lg:min-w-[600px] xl:min-w-[800px] 2xl:min-w-[1000px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 md:text-3xl text-xl text-quaternary font-bold transition bg-opacity-90 hover:bg-gray-300"
               >
@@ -349,10 +351,12 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                     isEdit={true} 
                     error={creditCardErrors}
                     creditCardInputRefs={creditCardInputRefs}
+                    creditCardInfo={creditCardInfo}
                   />
                 )}
               </div>
-            </div> */}
+            </div>
+
           </div>
         </div>
       </div>

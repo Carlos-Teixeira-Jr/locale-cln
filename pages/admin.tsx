@@ -21,7 +21,6 @@ interface AdminPageProps {
 const AdminPage: NextPageWithLayout<AdminPageProps> = ({
   ownerProperties,
 }) => {
-  console.log("🚀 ~ file: admin.tsx:24 ~ ownerProperties:", ownerProperties)
 
   const {data: session} = useSession() as any;
   const [isOwner, setIsOwner] = useState<boolean>(false);
@@ -49,6 +48,8 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
 
             <Pagination 
               totalPages={ownerProperties.totalPages} 
+              setCurrentPage={undefined} 
+              currentPage={0}
             />
           </div>
 

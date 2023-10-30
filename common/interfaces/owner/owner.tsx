@@ -1,6 +1,10 @@
-import { IAddress } from "../property/propertyData"
 import { User } from "../user/user"
 
+export interface ICreditCardInfo {
+  creditCardBrand: string
+  creditCardNumber: string
+  creditCardToken: string
+}
 
 type Owner = {
   _id: string
@@ -8,6 +12,7 @@ type Owner = {
   cellPhone: string
   phone: string
   plan: string
+  creditCardInfo: ICreditCardInfo
 }
 
 export interface IOwnerData {

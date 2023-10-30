@@ -51,6 +51,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
   const { progress, updateProgress } = useProgress();
   const storedData = store.get('propertyData');
   const propertyAddress = storedData?.address ? storedData.address : {};
+  const [paymentError, setPaymentError] = useState('')
 
   // Lida com o autoscroll das validações de erro dos inputs;
   const userDataInputRefs = {
@@ -148,10 +149,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
 
   // // Busca o endereço do imóvel armazenado no local storage e atualiza o valor de addressData sempre que há o componente de endereço é aberto ou fechado - isso é necessário para que o componente ChangeAddressCheckbox recupere o endereço do localStorage quando a opção é alterada;
   useEffect(() => {
-    //   if (!isSameAddress) {
-    //     setAddressData(property ? property.address : '');
-    //   }
-    // }, [isSameAddress, property]);
     setAddressData(property ? property.address : '')
   },[]);
 
@@ -351,7 +348,9 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
           }
         } else {
           toast.dismiss();
+          const error = await response.json();
           console.error(response);
+          setPaymentError(error.message)
           setFailPaymentModalIsOpen(true);
         }
       } catch (error) {
@@ -472,6 +471,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         <PaymentFailModal 
           isOpen={failPaymentModalIsOpen} 
           setModalIsOpen={setFailPaymentModalIsOpen}
+          paymentError={paymentError}
         />
       </div>
 
