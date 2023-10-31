@@ -4,7 +4,9 @@ import { applyNumericMask } from "../../../common/utils/masks/numericMask";
 import { toast } from "react-toastify";
 import 'react-credit-cards/es/styles-compiled.css';
 import { ICreditCardInfo } from "../../../common/interfaces/owner/owner";
-import { cardNumber } from "../../atoms/masks/masksCalculatorModal";
+import { IUserDataComponent } from "../../../common/interfaces/user/user";
+import { IPlan } from "../../../common/interfaces/plans/plans";
+import { IAddress } from "../../../common/interfaces/property/propertyData";
 
 export type CreditCardForm = {
   cardName: string;
@@ -20,6 +22,10 @@ interface ICreditCard {
   error: any
   creditCardInputRefs?: any
   creditCardInfo?: ICreditCardInfo
+  userInfo?: IUserDataComponent
+  customerId?: any
+  selectedPlan?: IPlan
+  userAddress?: IAddress 
 }
 
 const CreditCard = ({
@@ -27,7 +33,11 @@ const CreditCard = ({
   onCreditCardUpdate,
   error,
   creditCardInputRefs,
-  creditCardInfo
+  creditCardInfo,
+  userInfo,
+  customerId,
+  selectedPlan,
+  userAddress
 }: ICreditCard) => {
 
   const creditCardErrorScroll = {
@@ -158,15 +168,6 @@ const CreditCard = ({
     if (!creditCardFormData.expiry) newErrors.expiry = emptyFieldError;
     if (!creditCardFormData.cvc) newErrors.cvc = emptyFieldError;
 
-    // if (!creditCardFormData.cardNumber || creditCardFormData.cardNumber.length < 16) {
-    //   setErrors((prevErrors) => ({...prevErrors, cardNumber: emptyFieldError}));
-    // }
-    // if (!creditCardFormData.expiry) {
-    //   setErrors((prevErrors) => ({...prevErrors, expiry: emptyFieldError}));
-    // }
-    // if (!creditCardFormData.cvc || creditCardFormData.cardNumber.length < 3) {
-    //   setErrors((prevErrors) => ({...prevErrors, cvc: emptyFieldError}));
-    // }
 
     setErrors(newErrors);
 
@@ -176,19 +177,33 @@ const CreditCard = ({
         const formattedCardNumber = creditCardFormData.cardNumber.replace(/\D/g, '');
         setCreditCardFormData({...creditCardFormData, cardNumber: formattedCardNumber});
         toast.loading('Enviando...');
-        const response = await fetch(`${baseUrl}/`, {
+
+        const formattedCpf = userInfo?.cpf.replace(/[.-]/g, '');
+
+        const body = {
+          ...creditCardFormData,
+          cpf: formattedCpf,
+          email: userInfo?.email,
+          phone: userInfo?.cellPhone,
+          customer: customerId,
+          value: selectedPlan?.price,
+          address: userAddress
+        }
+
+        const response = await fetch(`${baseUrl}/user/edit-credit-card`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify(creditCardFormData)
+          body: JSON.stringify(body)
         });
+
         if(response.ok) {
           toast.dismiss();
           toast.success('Dados do cartão atualizados com sucesso.');
         } else {
           toast.dismiss();
-          toast.success('Não foi possível atualizar os dados de cartão de crédito. Por favor, tente mais tarde.');
+          toast.error('Não foi possível atualizar os dados de cartão de crédito. Por favor, tente mais tarde.');
         }
       } catch (error) {
         toast.dismiss();

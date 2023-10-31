@@ -50,6 +50,8 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const reversedCards = [...plans].reverse();
   const creditCardInfo = ownerData?.owner?.creditCardInfo;
 
+  const planObj = plans.find((plan) => plan._id === selectedPlan);
+
   const [formData, setFormData] = useState<IUserDataComponent>({
     username: '',
     email: '',
@@ -352,6 +354,10 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                     error={creditCardErrors}
                     creditCardInputRefs={creditCardInputRefs}
                     creditCardInfo={creditCardInfo}
+                    userInfo={formData}
+                    customerId={ownerData?.owner?.customerId}
+                    selectedPlan={planObj}
+                    userAddress={address}
                   />
                 )}
               </div>

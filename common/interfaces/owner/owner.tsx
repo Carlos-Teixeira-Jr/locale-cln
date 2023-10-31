@@ -13,6 +13,7 @@ type Owner = {
   phone: string
   plan: string
   creditCardInfo: ICreditCardInfo
+  customerId: string
 }
 
 export interface IOwnerData {
