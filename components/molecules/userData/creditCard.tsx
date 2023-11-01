@@ -3,7 +3,7 @@ import Cards, { Focused } from 'react-credit-cards';
 import { applyNumericMask } from "../../../common/utils/masks/numericMask";
 import { toast } from "react-toastify";
 import 'react-credit-cards/es/styles-compiled.css';
-import { ICreditCardInfo } from "../../../common/interfaces/owner/owner";
+import { ICreditCardInfo, IOwnerData } from "../../../common/interfaces/owner/owner";
 import { IUserDataComponent } from "../../../common/interfaces/user/user";
 import { IPlan } from "../../../common/interfaces/plans/plans";
 import { IAddress } from "../../../common/interfaces/property/propertyData";
@@ -26,6 +26,7 @@ interface ICreditCard {
   customerId?: any
   selectedPlan?: IPlan
   userAddress?: IAddress 
+  ownerData?: IOwnerData
 }
 
 const CreditCard = ({
@@ -37,7 +38,8 @@ const CreditCard = ({
   userInfo,
   customerId,
   selectedPlan,
-  userAddress
+  userAddress,
+  ownerData
 }: ICreditCard) => {
 
   const creditCardErrorScroll = {
@@ -186,8 +188,9 @@ const CreditCard = ({
           email: userInfo?.email,
           phone: userInfo?.cellPhone,
           customer: customerId,
-          value: selectedPlan?.price,
-          address: userAddress
+          plan: selectedPlan,
+          address: userAddress,
+          owner: ownerData?.owner
         }
 
         const response = await fetch(`${baseUrl}/user/edit-credit-card`, {
@@ -257,7 +260,7 @@ const CreditCard = ({
       
       {isEdit && (
         <div className="flex my-10 justify-center">
-          <button className="bg-primary w-fit h-16 item text-quinary rounded-[10px] py-5 px-20 lg:ml-8 gap-3 text-2xl font-extrabold" onClick={handleSubmit}>
+          <button className="bg-primary w-fit h-16 item text-quinary rounded-[10px] py-5 px-20 lg:ml-8 gap-3 text-2xl font-extrabold transition-colors duration-300 hover:bg-red-600 hover:text-white" onClick={handleSubmit}>
             Atualizar
           </button>
         </div>

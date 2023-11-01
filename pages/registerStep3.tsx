@@ -276,7 +276,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         username: userDataForm.username,
         email: userDataForm.email,
         address: !isSameAddress && storedData.address ? storedData.address : addressData,
-        cpf: userDataForm.cpf
+        cpf: userDataForm.cpf.replace(/\D/g, ''),
       };
 
       const propertyData: ICreateProperty_propertyData = {

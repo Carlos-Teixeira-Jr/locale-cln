@@ -358,6 +358,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                     customerId={ownerData?.owner?.customerId}
                     selectedPlan={planObj}
                     userAddress={address}
+                    ownerData={ownerData}
                   />
                 )}
               </div>
