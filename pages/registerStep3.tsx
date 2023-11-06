@@ -1,12 +1,8 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { useEffect, useState, MouseEvent, useRef } from 'react';
-import LinearStepper from '../components/atoms/stepper/stepper';
-import PlansCardsHidden from '../components/molecules/cards/plansCards/plansCardHidden';
-import Footer from '../components/organisms/footer/footer';
-import Header from '../components/organisms/header/header';
-import UserDataInputs from '../components/molecules/userData/userDataInputs';
-import { NextPageWithLayout } from './page';
+import { MouseEvent, useEffect, useRef, useState } from 'react';
+import { toast } from 'react-toastify';
+import store from 'store';
 import { IPlan } from '../common/interfaces/plans/plans';
 import { IAddress } from '../common/interfaces/property/propertyData';
 import {
@@ -17,15 +13,19 @@ import {
 import { IUserDataComponent } from '../common/interfaces/user/user';
 import { geocodeAddress } from '../common/utils/geocodeAddress';
 import PaymentFailModal from '../components/atoms/modals/paymentFailModal';
+import LinearStepper from '../components/atoms/stepper/stepper';
 import Address from '../components/molecules/address/address';
 import ChangeAddressCheckbox from '../components/molecules/address/changeAddressCheckbox';
+import PlansCardsHidden from '../components/molecules/cards/plansCards/plansCardHidden';
 import PaymentBoard from '../components/molecules/payment/paymentBoard';
 import CreditCard, {
   CreditCardForm,
 } from '../components/molecules/userData/creditCard';
+import UserDataInputs from '../components/molecules/userData/userDataInputs';
+import Footer from '../components/organisms/footer/footer';
+import Header from '../components/organisms/header/header';
 import { useProgress } from '../context/registerProgress';
-import { toast } from 'react-toastify';
-import store from 'store';
+import { NextPageWithLayout } from './page';
 
 interface IRegisterStep3Props {
   selectedPlanCard: string;
@@ -34,22 +34,23 @@ interface IRegisterStep3Props {
 }
 
 type BodyReq = {
-  propertyData: ICreateProperty_propertyData,
-  userData: ICreateProperty_userData,
-  plan: string,
-  isPlanFree: boolean,
-  phone: string,
-  cellPhone: string
-  creditCardData?: CreditCardForm
-}
+  propertyData: ICreateProperty_propertyData;
+  userData: ICreateProperty_userData;
+  plan: string;
+  isPlanFree: boolean;
+  phone: string;
+  cellPhone: string;
+  creditCardData?: CreditCardForm;
+};
 
 const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
-
   const router = useRouter();
   const query = router.query;
   const urlEmail = query.email as string;
   const { progress, updateProgress } = useProgress();
   const storedData = store.get('propertyData');
+  const storedPlan = store.get('plans');
+  const choosedPlan = storedPlan ? storedPlan : '';
   const propertyAddress = storedData?.address ? storedData.address : {};
   const [paymentError, setPaymentError] = useState('')
 
@@ -81,8 +82,11 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
   const { data: session } = useSession() as any;
   const userId = session?.user?.data._id;
 
-  const [coordinates, setCoordinates] = useState<{ lat: number; lng: number } | null>(null);
-  const [selectedPlan, setSelectedPlan] = useState('');
+  const [coordinates, setCoordinates] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState(choosedPlan);
   const freePlan = '645a46d4388b9fbde84b6e8a';
   const reversedCards = [...plans].reverse();
   const [isAdminPage, setIsAdminPage] = useState(false);
@@ -115,7 +119,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     streetNumber: '',
     complement: '',
     neighborhood: '',
-    uf: ''
+    uf: '',
   });
 
   const [addressErrors, setAddressErrors] = useState({
@@ -123,7 +127,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     city: '',
     streetName: '',
     streetNumber: '',
-    uf: ''
+    uf: '',
   });
 
   const [creditCard, setCreditCard] = useState<CreditCardForm>({
@@ -139,7 +143,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     cvc: '',
     expiry: '',
   });
-  
+
   // Verifica se o estado progress que determina em qual step o usuário está corresponde ao step atual;
   useEffect(() => {
     if (progress < 3) {
@@ -163,7 +167,9 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     event.preventDefault();
 
     const error = `Este campo é obrigatório.`;
-    const planObj: IPlan | undefined = plans.find((plan) => plan._id === selectedPlan);
+    const planObj: IPlan | undefined = plans.find(
+      (plan) => plan._id === selectedPlan
+    );
     const isPlanFree = planObj === undefined || planObj.name === 'Free';
 
     setUserDataErrors({
@@ -178,7 +184,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
       city: '',
       streetName: '',
       streetNumber: '',
-      uf: ''
+      uf: '',
     });
 
     setTermsError('');
@@ -195,7 +201,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
       city: '',
       streetName: '',
       streetNumber: '',
-      uf: ''
+      uf: '',
     };
 
     const newCreditCardErrors = {
@@ -228,30 +234,33 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     setUserDataErrors(newUserDataErrors);
     setAddressErrors(newAddressErrors);
     setCreditCardErrors(newCreditCardErrors);
-    
+
     // Combina os erros de registro e endereço em um único objeto de erros
     const combinedErrors = {
       ...newAddressErrors,
       ...newUserDataErrors,
-      ...newCreditCardErrors
+      ...newCreditCardErrors,
     };
 
     // Verifica se algum dos valores do objeto de erros combinados não é uma string vazia
-    const hasErrors = Object.values(combinedErrors).some((error) => error !== '');
+    const hasErrors = Object.values(combinedErrors).some(
+      (error) => error !== ''
+    );
 
     if (!hasErrors && termsAreRead) {
-
       try {
         const result = await geocodeAddress(addressData);
 
         if (result !== null) {
           setCoordinates(result);
         } else {
-          console.log('Não foi possível buscar as coordenadas geográficas do imóvel')
+          console.log(
+            'Não foi possível buscar as coordenadas geográficas do imóvel'
+          );
         }
       } catch (error) {
-        console.error(error)
-      }      
+        console.error(error);
+      }
 
       const storedData = store.get('propertyData');
 
@@ -265,10 +274,12 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         city: addressData.city,
         uf: addressData.uf,
         streetName: addressData.streetName,
-        geolocation: coordinates ? [coordinates?.lat, coordinates?.lng] : [-52.1872864, -32.1013804],
+        geolocation: coordinates
+          ? [coordinates?.lat, coordinates?.lng]
+          : [-52.1872864, -32.1013804],
         plan: selectedPlan !== '' ? selectedPlan : freePlan,
         isPlanFree,
-        propertyAddress
+        propertyAddress,
       };
 
       const userData: ICreateProperty_userData = {
@@ -284,7 +295,10 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         adSubtype: storedData.adSubtype,
         propertyType: storedData.propertyType,
         propertySubtype: storedData.propertySubtype,
-        address: !isSameAddress && storedData.address ? storedData.address : addressData,
+        address:
+          !isSameAddress && storedData.address
+            ? storedData.address
+            : addressData,
         description: storedData.description,
         metadata: storedData.metadata,
         images: storedData.images,
@@ -294,10 +308,10 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         prices: storedData.prices,
         youtubeLink: storedData.youtubeLink,
         geolocation: {
-          type: "Point",
-          coordinates: propertyDataStep3.geolocation
+          type: 'Point',
+          coordinates: propertyDataStep3.geolocation,
         },
-        highlighted: false
+        highlighted: false,
       };
 
       try {
@@ -310,7 +324,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
           phone: userDataForm.cellPhone,
           cellPhone: userDataForm.phone
         };
-        
+
         if (!isPlanFree) {
           body.creditCardData = creditCard;
         }
@@ -319,21 +333,21 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(body)
+          body: JSON.stringify(body),
         });
 
         if (response.ok) {
           const data = await response.json();
           const paymentData = {
             cardBrand: data.creditCardBrand ? data.creditCardBrand : 'Free',
-            value: data.paymentValue ? data.paymentValue : '00'
+            value: data.paymentValue ? data.paymentValue : '00',
           };
           store.set('creditCard', paymentData);
           toast.dismiss();
           store.set('propertyData', {
             propertyDataStep3,
             storedData,
-            paymentData
+            paymentData,
           });
           updateProgress(4);
           if (!urlEmail) {
@@ -342,8 +356,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
             router.push({
               pathname: '/registerStep35',
               query: {
-                email: urlEmail
-              }
+                email: urlEmail,
+              },
             });
           }
         } else {
@@ -354,8 +368,10 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
           setFailPaymentModalIsOpen(true);
         }
       } catch (error) {
-        toast.dismiss()
-        toast.error("Não foi possivel se conectar ao servidor. Por favor, tente novamente mais tarde.")
+        toast.dismiss();
+        toast.error(
+          'Não foi possivel se conectar ao servidor. Por favor, tente novamente mais tarde.'
+        );
         console.error(error);
       }
     } else {
@@ -372,26 +388,23 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
             <LinearStepper isSubmited={false} sharedActiveStep={2} />
           </div>
 
-          <div className='md:flex'>
+          <div
+            className="md:flex"
+          >
             {reversedCards.map(
-              ({ 
-                _id, 
-                name, 
-                price, 
-                highlightAd, 
-                commonAd, 
-                smartAd 
-              }: IPlan) => (
+              ({ _id, name, price, highlightAd, commonAd, smartAd }: IPlan) => (
                 <PlansCardsHidden
                   key={_id}
                   selectedPlanCard={selectedPlan}
                   setSelectedPlanCard={(selectedCard: string) => {
                     setSelectedPlan(selectedCard);
-                    const planObj = plans.find((plan) => plan._id === selectedCard);
+                    const planObj = plans.find(
+                      (plan) => plan._id === selectedCard
+                    );
                     if (planObj && planObj?.name === 'Free') {
-                      setIsFreePlan(true)
+                      setIsFreePlan(true);
                     } else {
-                      setIsFreePlan(false)
+                      setIsFreePlan(false);
                     }
                   }}
                   isAdminPage={isAdminPage}
@@ -400,40 +413,44 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
                   commonAd={commonAd}
                   highlightAd={highlightAd}
                   smartAd={smartAd}
-                  id={_id} 
-                  isEdit={false} 
+                  id={_id}
+                  isEdit={false}
                 />
               )
             )}
           </div>
 
-          <div className='lg:mx-0'>
+          <div className="lg:mx-0">
             <div className="flex justify-center flex-col">
-              <UserDataInputs 
-                isEdit={false} 
-                onUserDataUpdate={(updatedUserData: IUserDataComponent) => setUserDataForm(updatedUserData)} 
+              <UserDataInputs
+                isEdit={false}
+                onUserDataUpdate={(updatedUserData: IUserDataComponent) =>
+                  setUserDataForm(updatedUserData)
+                }
                 urlEmail={urlEmail ? urlEmail : undefined}
                 error={userDataErrors}
                 userDataInputRefs={userDataInputRefs}
               />
             </div>
 
-            <ChangeAddressCheckbox 
-              onAddressCheckboxChange={(value: boolean) => setIsSameAddress(value)}
+            <ChangeAddressCheckbox
+              onAddressCheckboxChange={(value: boolean) =>
+                setIsSameAddress(value)
+              }
               address={addressData}
             />
 
             {!isSameAddress && (
-              <Address 
-                isEdit={false} 
-                address={addressData} 
-                onAddressUpdate={(address: IAddress) => setAddressData(address)} 
+              <Address
+                isEdit={false}
+                address={addressData}
+                onAddressUpdate={(address: IAddress) => setAddressData(address)}
                 errors={addressErrors}
                 addressInputRefs={addressInputRefs}
               />
             )}
 
-            {selectedPlan !== '' && (
+            {selectedPlan !== '' &&
               (() => {
                 const planObj = plans.find((plan) => plan._id === selectedPlan);
                 if (planObj && planObj.name !== 'Free') {
@@ -450,10 +467,9 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
                     />
                   );
                 }
-              })()
-            )}
+              })()}
 
-            <PaymentBoard 
+            <PaymentBoard
               onTermsChange={(value: boolean) => setTermsAreRead(value)}
               selectedPlan={selectedPlan}
               plans={plans}
@@ -461,15 +477,18 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
             />
 
             <div className="flex self-end md:justify-end justify-center mt-14 mx-5 mb-32">
-              <button className="bg-primary w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold text-2xl lg:text-3xl hover:bg-red-600 hover:text-white" onClick={handleSubmit}>
-                  Continuar
+              <button
+                className="bg-primary w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold text-2xl lg:text-3xl hover:bg-red-600 hover:text-white"
+                onClick={handleSubmit}
+              >
+                Continuar
               </button>
             </div>
           </div>
         </div>
 
-        <PaymentFailModal 
-          isOpen={failPaymentModalIsOpen} 
+        <PaymentFailModal
+          isOpen={failPaymentModalIsOpen}
           setModalIsOpen={setFailPaymentModalIsOpen}
           paymentError={paymentError}
         />

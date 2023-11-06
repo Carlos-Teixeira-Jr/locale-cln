@@ -8,7 +8,6 @@ import { NextPageWithLayout } from './page';
 
 const AnnouncementPage: NextPageWithLayout = ({ plans }: any) => {
   const reversedCards = [...plans].reverse();
-
   return (
     <>
       <div className="fixed z-10 top-0 md:w-full">
@@ -38,23 +37,17 @@ const AnnouncementPage: NextPageWithLayout = ({ plans }: any) => {
         </h1>
 
         {/* <PlansCards /> */}
-        <div className='md:flex justify-center'>
+        <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 justify-center max-w-[1232px] items-center mx-auto">
           {reversedCards.map(
-            ({
-              id,
-              name,
-              price,
-              highlightAd,
-              commonAd,
-              smartAd,
-            }: any) => (
+            ({ _id, name, price, highlightAd, commonAd, smartAd }: any) => (
               <PlansCards
-                key={id}
+                key={_id}
                 name={name}
                 price={price}
                 commonAd={commonAd}
                 highlightAd={highlightAd}
                 smartAd={smartAd}
+                _id={_id}
               />
             )
           )}
