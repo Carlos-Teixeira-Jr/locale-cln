@@ -8,12 +8,15 @@ export interface ICreditCardInfo {
 
 type Owner = {
   _id: string
+  name: string
   adCredits: number
   cellPhone: string
   phone: string
   plan: string
   creditCardInfo: ICreditCardInfo
   customerId: string
+  isNewCreditCard: boolean
+  newCreditCardData: any
 }
 
 export interface IOwnerData {

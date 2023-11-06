@@ -7,6 +7,7 @@ import { ICreditCardInfo, IOwnerData } from "../../../common/interfaces/owner/ow
 import { IUserDataComponent } from "../../../common/interfaces/user/user";
 import { IPlan } from "../../../common/interfaces/plans/plans";
 import { IAddress } from "../../../common/interfaces/property/propertyData";
+import { useRouter } from "next/router";
 
 export type CreditCardForm = {
   cardName: string;
@@ -45,6 +46,8 @@ const CreditCard = ({
   const creditCardErrorScroll = {
     ...creditCardInputRefs
   }
+
+  const router = useRouter();
 
   const [focus, setFocus] = useState<Focused | undefined>();
   const actualCreditCardNumber = creditCardInfo ? `---- ---- ---- ${creditCardInfo?.creditCardNumber}` : '';
@@ -162,9 +165,6 @@ const CreditCard = ({
     const invalidCardNumberError = 'Insira o número completo do cartão';
     const regex = /^----/;
 
-    console.log("🚀 ~ file: creditCard.tsx:154 ~ handleSubmit ~ regex.test(creditCardFormData.cardNumber):", regex.test(creditCardFormData.cardNumber))
-
-
     if (!creditCardFormData.cardName) newErrors.cardName = emptyFieldError;
     if (regex.test(creditCardFormData.cardNumber)) newErrors.cardNumber = invalidCardNumberError;
     if (!creditCardFormData.expiry) newErrors.expiry = emptyFieldError;
@@ -189,7 +189,8 @@ const CreditCard = ({
           phone: userInfo?.cellPhone,
           plan: selectedPlan,
           address: userAddress,
-          owner: ownerData?.owner
+          owner: ownerData?.owner,
+          customerId
         }
 
         const response = await fetch(`${baseUrl}/user/edit-credit-card`, {
@@ -203,6 +204,7 @@ const CreditCard = ({
         if(response.ok) {
           toast.dismiss();
           toast.success('Dados do cartão atualizados com sucesso.');
+          router.push('/admin')
         } else {
           toast.dismiss();
           toast.error('Não foi possível atualizar os dados de cartão de crédito. Por favor, tente mais tarde.');
