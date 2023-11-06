@@ -1,10 +1,5 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { TransactionType } from '../../../../pages';
-
-export interface IAccessCard {
-  transactionType: TransactionType;
-}
 
 export interface ICardsContent {
   key: string;
@@ -14,14 +9,10 @@ export interface ICardsContent {
   description: string;
   title: string;
 }
-const AccessCard = ({ transactionType }: IAccessCard) => {
+const AccessCard = () => {
   const cardsContent = [
     {
-      link: `/search?tags=mobiliado&${
-        transactionType === TransactionType.BUY
-          ? 'adType=compra'
-          : 'adType=aluguel'
-      }`,
+      link: '/search?page=1&tags=mobiliado',
       key: 'furnished',
       src: '/images/card-mobiliados.png',
       alt: 'Imóveis mobiliados',
@@ -30,11 +21,7 @@ const AccessCard = ({ transactionType }: IAccessCard) => {
         'Encontre imóveis mobiliados perto de você e que cabem no seu bolso',
     },
     {
-      link: `/search?tags=aceita+pets&${
-        transactionType === TransactionType.BUY
-          ? 'adType=compra'
-          : 'adType=aluguel'
-      }`,
+      link: 'search?tags=aceita+pets&page=1',
       key: 'petsCard',
       src: '/images/card-pets.png',
       alt: 'Imóveis que aceitam pets',
@@ -43,11 +30,7 @@ const AccessCard = ({ transactionType }: IAccessCard) => {
         'Encontre imóveis que aceitam pets perto de você e que cabem no seu bolso',
     },
     {
-      link: `/search?minSize=999&${
-        transactionType === TransactionType.BUY
-          ? 'adType=compra'
-          : 'adType=aluguel'
-      }`,
+      link: '/search?minSize=100&page=1',
       key: 'bigHouses',
       src: '/images/card-casa-grande.png',
       alt: 'casas grandes',
@@ -58,7 +41,7 @@ const AccessCard = ({ transactionType }: IAccessCard) => {
   ];
 
   return (
-    <div className="lg:w-[1200px] lg:h-[278px] w-full m-auto">
+    <div className="w-full lg:h-[278px] m-auto">
       <div className="rounded-[30px] bg-tertiary m-auto p-4 drop-shadow-2xl md:w-fit">
         <div className="md:flex lg:flex-row justify-between">
           {cardsContent.map(

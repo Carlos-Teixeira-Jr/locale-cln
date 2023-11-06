@@ -5,58 +5,60 @@ import NotificationCard, {
 } from '../components/molecules/cards/notificationCard/notificationCard';
 import AdminHeader from '../components/organisms/adminHeader/adminHeader';
 import SideMenu from '../components/organisms/sideMenu/sideMenu';
+import { useIsMobile } from '../hooks/useIsMobile';
+import { IPropertyInfo } from '../common/interfaces/property/propertyData';
+import { getSession } from 'next-auth/react';
+import { GetServerSidePropsContext, GetStaticPropsContext } from 'next';
+import { fetchJson } from '../common/utils/fetchJson';
 
-const MessageNotifications = ({ dataNot }: any) => {
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    function handleResize() {
-      setIsMobile(window.innerWidth < 1000);
-    }
+interface IMessageNotifications {
+  properties: IPropertyInfo
+  notifications: any
+}
 
-    handleResize();
+const MessageNotifications = ({ 
+  notifications, 
+  properties 
+}: IMessageNotifications) => {
 
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
+  const isMobile = useIsMobile();
+  const isOwner = properties?.docs?.length > 0 ? true : false;
 
   return (
     <main>
       <AdminHeader />
+      <div className="flex flex-row items-center justify-evenly">
+        <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:flex">
+          {!isMobile ? (
+            <SideMenu
+              isOwnerProp={isOwner}
+              notifications={notifications}
+            />
+          ) : (
+            ''
+          )}
+          <div className="flex flex-col w-full max-w-[1232px] xl:mx-auto">
+            <h1 className="text-2xl md:text-5xl text-quaternary font-bold mt-28 ml-8">
+              Notificações
+            </h1>
+            <div className="flex justify-center">
+              <Pagination totalPages={0} />
+            </div>
 
-      <div className="lg:flex">
-        {!isMobile ? (
-          <SideMenu
-            isMobileProp={false}
-            isOwnerProp={false}
-            notifications={dataNot}
-          />
-        ) : (
-          ''
-        )}
-        <div className="flex flex-col w-full max-w-[1232px] xl:mx-auto">
-          <h1 className="text-2xl md:text-5xl text-quaternary font-bold mt-28 ml-8">
-            Notificações
-          </h1>
-          <div className="flex justify-center">
-            <Pagination totalPages={0} />
-          </div>
+            {/* <div className="mx-10">
+              {notifications.map(({ description, _id, title }: INotification) => (
+                <NotificationCard
+                  key={_id}
+                  description={description}
+                  title={title}
+                  _id={_id}
+                />
+              ))}
+            </div> */}
 
-          <div className="mx-10">
-            {dataNot.map(({ description, _id, title }: INotification) => (
-              <NotificationCard
-                key={_id}
-                description={description}
-                title={title}
-                _id={_id}
-              />
-            ))}
-          </div>
-
-          <div className="flex justify-center mb-10">
-            <Pagination totalPages={0} />
+            <div className="flex justify-center mb-10">
+              <Pagination totalPages={0} />
+            </div>
           </div>
         </div>
       </div>
@@ -66,22 +68,41 @@ const MessageNotifications = ({ dataNot }: any) => {
 
 export default MessageNotifications;
 
-export async function getStaticProps() {
-  const notifications = await fetch(
-    `http://localhost:3001/notification/64da04b6052b4d12939684b0`,
-    {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+
+  const session = await getSession(context) as any;
+  const userId = session?.user.data._id;
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+
+  const [notifications, properties] = await Promise.all([
+    fetch(`${baseUrl}/notification/${userId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
-    }
-  );
-
-  const dataNot = await notifications.json();
+    })
+    .then((res) => res.json())
+    .catch(() => []),
+    fetch(`${baseUrl}/property/owner-properties`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        ownerId: userId,
+        page: 1
+      })
+    })
+    .then((res) => res.json())
+    .catch(() => []),
+    fetchJson(`${baseUrl}/notification/${userId}`),
+    fetchJson(`${baseUrl}/property/owner-properties`)
+  ])
 
   return {
     props: {
-      dataNot,
+      notifications,
+      properties
     },
   };
 }

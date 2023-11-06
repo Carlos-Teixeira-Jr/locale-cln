@@ -7,40 +7,42 @@ import { getSession } from 'next-auth/react';
 import { destroyCookie } from 'nookies';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { fetchJson } from '../common/utils/fetchJson';
-import { IOwnerProperties } from '../common/interfaces/properties/propertiesList';
-import { IData } from '../common/interfaces/property/propertyData';
+import { IData, IPropertyInfo } from '../common/interfaces/property/propertyData';
+import { IFavProperties } from '../common/interfaces/properties/favouriteProperties';
+import Pagination from '../components/atoms/pagination/pagination';
 
 interface IAdminFavProperties {
-  ownerProperties: IOwnerProperties
-  favouriteProperties: IData[]
+  favouriteProperties: IFavProperties
+  properties: IPropertyInfo
 }
 
 const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
-  ownerProperties,
-  favouriteProperties
+  favouriteProperties,
+  properties
 }) => {
 
-  const isOwner = ownerProperties?.docs?.length === 0 ? false : true;
-
+  const isOwner = properties?.docs?.length > 0 ? true : false;
+  
   return (
     <>
-      <AdminHeader/>
+      <AdminHeader isOwnerProp={isOwner}/>
       <div className="flex flex-row items-center justify-evenly">
         <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:flex">
           <SideMenu 
             isOwnerProp={isOwner}
+            notifications={[]}          
           />
         </div>
-        <div className="flex flex-col items-center mt-24 lg:ml-[32%]">
-          <div className="flex flex-col items-center mb-5">
+        <div className="flex flex-col items-center mt-24 w-full lg:pl-72">
+          <div className="flex flex-col items-center mb-5 max-w-[1215px]">
             <h1 className="font-extrabold text-2xl md:text-4xl text-quaternary md:mb-5 text-center">
               Imóveis Favoritos
             </h1>
-            {/* <Pagination 
-              totalPages={0} 
-            />   */}
-            <div className="flex flex-col md:flex-row flex-wrap gap-20 my-5">
-              {favouriteProperties?.length > 0 && favouriteProperties.map(
+            <Pagination 
+              totalPages={favouriteProperties?.totalPages} 
+            />  
+            <div className="flex flex-col md:flex-row flex-wrap md:gap-10 lg:gap-20 my-5 justify-center">
+              {favouriteProperties?.docs.length > 0 && favouriteProperties.docs.map(
                 ({
                   _id,
                   prices,
@@ -55,13 +57,13 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
                   images={images}
                   location={`${address.city}, ${address.uf} - ${address.streetName}`}
                   favorited={highlighted} 
-                  _id={_id} 
-                  prices={prices[0]} 
+                  id={_id} 
+                  prices={prices} 
                   highlighted={highlighted} 
                 />
               ))}
               
-            </div>
+            </div> 
             {/* <Pagination 
               totalPages={0} 
             /> */}
@@ -142,9 +144,21 @@ export async function getServerSideProps(context:GetServerSidePropsContext) {
       }
     }
 
-    const baseUrl = process.env.BASE_API_URL;
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
 
-    const [ownerProperties, favouriteProperties] = await Promise.all([
+    const [favouriteProperties, properties] = await Promise.all([
+      fetch(`${baseUrl}/user/favourite`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          id: userId,
+          page: 1
+        })
+      })
+      .then((res) => res.json())
+      .catch(() => []),
       fetch(`${baseUrl}/property/owner-properties`, {
         method: 'POST',
         headers: {
@@ -155,27 +169,16 @@ export async function getServerSideProps(context:GetServerSidePropsContext) {
           page: 1
         })
       })
-        .then((res) => res.json())
-        .catch(() => []),
-      fetch(`${baseUrl}/user/favourite`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          id: userId,
-        })
-      })
       .then((res) => res.json())
       .catch(() => []),
-      fetchJson(`${baseUrl}/property/owner-properties`),
       fetchJson(`${baseUrl}/user/favourite`),
+      fetchJson(`${baseUrl}/property/owner-properties`)
     ]);
 
     return {
       props: {
-        ownerProperties,
-        favouriteProperties
+        favouriteProperties,
+        properties
       }
     }
   }

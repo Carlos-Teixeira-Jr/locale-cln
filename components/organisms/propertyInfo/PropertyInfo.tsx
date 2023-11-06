@@ -1,6 +1,6 @@
 import clipboardy from 'clipboardy';
 import { useRouter } from 'next/router';
-import React, { MouseEvent, useState } from 'react';
+import React, { MouseEvent, useEffect, useState } from 'react';
 import 'react-tooltip/dist/react-tooltip.css';
 import {
   IData,
@@ -41,7 +41,6 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [favourited, setFavourited] = useState(isFavourite);
   const router = useRouter();
-  const isMobile = useIsMobile();
   
   const handleCopy = async () => {
     setTooltipIsVisible(true);
@@ -176,11 +175,11 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
             </button>
           )}
 
-          {isFavourite && (
+          {!userIsLogged && (
             <FavouritePropertyTooltip 
               open={favPropTooltipIsVisible} 
               onRequestClose={hideFavTooltip} 
-              anchorId={'fav-property-tooltip'}            
+              anchorId={'fav-property-tooltip'} 
             />
           )}
 

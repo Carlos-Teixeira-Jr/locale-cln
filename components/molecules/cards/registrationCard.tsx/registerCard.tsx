@@ -138,7 +138,7 @@ const RegisterCard: React.FC = () => {
             }}
           />
         </div>
-        <div>
+        {/* <div>
           <SocialAuthButton
             provider='facebook'
             onClick={() => {
@@ -146,11 +146,11 @@ const RegisterCard: React.FC = () => {
               signIn('facebook', {callbackUrl: '/register'});
             }}
           />
-        </div>
+        </div> */}
       </div>
       <a
         className="font-bold text-xs md:max-w-[300px] lg:max-w-fit text-center text-quaternary mx-5 my-5 md:my-5 md:mx-5 relative inline-block group transition-colors duration-300 hover:text-secondary"
-        href="/termos-de-uso"
+        href="/userTerms"
         target="_blank"
         rel="noreferrer"
       >

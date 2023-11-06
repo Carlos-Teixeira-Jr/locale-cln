@@ -54,6 +54,7 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
   isFavourite,
   relatedProperties
 }: IPropertyPage) => {
+  console.log("🚀 ~ file: [id].tsx:57 ~ isFavourite:", isFavourite)
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [backdropActive, setBackdropActive] = useState(true);
@@ -98,9 +99,7 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
             isFavourite={isFavourite}
           />
         </div>
-        {/* IMÓVEIS RELACIONADOS */}
         <div 
-          // className="grid sm:grid-cols-1 md:grid md:grid-cols-2 lg:flex lg:flex-row justify-center gap-9 mx-14 my-10 w-full"
           className='flex flex-col md:flex-row gap-5 justify-center m-5 lg:my-5 lg:mx-0'
         >
           {relatedProperties.docs.length > 0 && relatedProperties?.docs.map((prop: IData) => (
@@ -153,31 +152,35 @@ export async function getServerSideProps(context: NextPageContext) {
   const session = await getSession(context) as any;
   const userId = session?.user.data._id;
   const propertyId = context.query.id;
-  const baseUrl = process.env.BASE_API_URL;
-  let isFavourite: boolean;
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+  let isFavourite: boolean = false;
 
   if(userId) {
-    const fetchFavourites = await fetch(`${baseUrl}/user/favourite`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        id: userId,
-      })
-    });
+    try {
+      const fetchFavourites = await fetch(`${baseUrl}/user/favourite`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          id: userId,
+          page: 1
+        })
+      });
 
-    if (fetchFavourites.ok) {
-      const favourites = await fetchFavourites.json();
+      if (fetchFavourites.ok) {
+        const favourites = await fetchFavourites.json();
 
-      if (favourites.length > 0) {
-
-        isFavourite = favourites.some((prop: any) => prop._id === propertyId);
+        if (favourites.docs.length > 0) {
+          isFavourite = favourites.docs.some((prop: any) => prop._id === propertyId);
+        } else {
+          isFavourite = false;
+        }
       } else {
         isFavourite = false;
       }
-    } else {
-      isFavourite = false;
+    } catch (error) {
+      console.log(error)
     }
   } else {
     isFavourite = false;

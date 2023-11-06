@@ -5,66 +5,80 @@ import {
   ILocation,
   ILocationProp,
 } from '../../../common/interfaces/locationDropdown';
-import { IPropertyTypes } from '../../../common/interfaces/property/propertyTypes';
 import { ITagsData } from '../../../common/interfaces/tagsData';
-import ArrowDownIconcon from '../../atoms/icons/arrowDownIcon';
 import CheckIcon from '../../atoms/icons/checkIcon';
 import SearchIcon from '../../atoms/icons/searchIcon';
 import XIcon from '../../atoms/icons/xIcon';
+import ArrowDownIcon from '../../atoms/icons/arrowDownIcon';
+import propertyTypesData from '../../../data/propertyTypesData.json';
 
 interface IFilterListProps {
-  propertyTypesProp: IPropertyTypes[];
   locationProp: ILocationProp[];
   tagsProp: ITagsData[];
   mobileFilterIsOpenProp: boolean;
   isMobileProp: boolean;
   onMobileFilterIsOpenChange: (isOpen: boolean) => void;
   onSearchBtnClick: () => void;
+  locationChangeProp: (loc: ILocation[]) => void;
 }
 
 const FilterList: React.FC<IFilterListProps> = ({
-  propertyTypesProp,
   locationProp,
   tagsProp,
   mobileFilterIsOpenProp,
   isMobileProp,
   onMobileFilterIsOpenChange,
   onSearchBtnClick,
+  locationChangeProp
 }) => {
+
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const query = router.query;
+  const query = router.query as any;
 
   // adType
   const [isBuy, setIsBuy] = useState(true);
   const [isRent, setIsRent] = useState(false);
+
   // propertyType
-  const [propertyType, setPropertyType] = useState<string[]>([]);
+  const [propertyType, setPropertyType] = useState({
+    propertyType: query.propertyType,
+    propertySubtype: typeof query.propertySubtype === 'string' ? query.propertySubtype.replace(/"/g,"") : query.propertySubtype
+  });
+  const [propTypeDropdownIsOpen, setPropTypeDropdownIsOpen] = useState(false);
+  
+  // Location
   // Lida apenas com o valor que aparecerá no input de localização;
   const [locationInput, setLocationInput] = useState('');
   // Lida com a formatação da lozalização e categoria da localização para mostrá-las no dropdown;
   const [filteredLocations, setFilteredLocations] = useState<ILocation[]>([]);
-  const [location, setLocation] = useState<ILocation[]>([]);
-  const [initialLocation, setInitialLocation] = useState<ILocation[]>([]);
+  const queryParsed = query.location ? JSON.parse(query.location) : [];
+  const [location, setLocation] = useState<ILocation[]>(queryParsed);
   const [allLocations, setAllLocations] = useState(false);
-
+  
   // prices
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
+
   // condominium
   const [minCondominium, setMinCondominium] = useState('');
   const [maxCondominium, setMaxCondominium] = useState('');
+
   // metadata
   const [bedrooms, setBedrooms] = useState(0);
   const [bathrooms, setBathrooms] = useState(0);
   const [parkingSpaces, setParkingSpaces] = useState(0);
+
   // tags
   const tagsData: ITagsData[] = tagsProp;
+
   // code
   const [codeToSearch, setCodeToSearch] = useState('');
+
   // dropdown
   const [open, setOpen] = useState(false);
   const [openLocationDropdown, setOpenLocationDropdown] = useState(false);
+
   // mobile
   const [mobileFilterIsOpen, setMobileFilterIsOpen] = useState<boolean>(false);
 
@@ -74,23 +88,23 @@ const FilterList: React.FC<IFilterListProps> = ({
 
   // Lida com o switcher de aluguel/compra quando o valor já vem do filtro da homepage;
   useEffect(() => {
-    if (query.adType === 'aluguel') {
+    if (query.adType === 'alugar') {
       setIsRent(true);
       setIsBuy(false);
     }
-  }, [query]);
+  }, [query.adType]);
 
   const handleBuy = () => {
     setIsBuy(true);
     setIsRent(false);
-    const queryParams = { ...query, adType: 'compra', page: 1 };
+    const queryParams = { ...query, adType: 'comprar', page: 1 };
     router.push({ query: queryParams }, undefined, { scroll: false });
   };
 
   const handleRent = () => {
     setIsBuy(false);
     setIsRent(true);
-    const queryParams = { ...query, adType: 'aluguel', page: 1 };
+    const queryParams = { ...query, adType: 'alugar', page: 1 };
     router.push({ query: queryParams }, undefined, { scroll: false });
   };
 
@@ -105,39 +119,23 @@ const FilterList: React.FC<IFilterListProps> = ({
 
   // PROPERTY TYPE
 
-  const togglePropertyTypeSelection = (name: string) => {
-    if (name === 'todos') {
-      const hasTodos = propertyType.some((item) => item === name);
-      if (hasTodos) {
-        setPropertyType(propertyType.filter((item) => item !== name));
-      } else {
-        setPropertyType([name]);
-      }
-    } else {
-      if (propertyType.includes(name)) {
-        setPropertyType(propertyType.filter((item: string) => item !== name));
-      } else {
-        setPropertyType([...propertyType, name]);
-      }
-    }
-  };
+  const handlePropertyTypeSelection = (type: string, subType: string) => {
+    setPropertyType({
+      ...propertyType,
+      propertyType: type,
+      propertySubtype: subType
+    });
 
-  // Insere o valor de propertyType nos parâmetros da URL;
-  useEffect(() => {
-    // Atualizar os parâmetros da URL
-    if (propertyType.length < 1) {
-      if (!query.propertyType?.includes('todos')) {
-        removeQueryParam('propertyType');
-      }
-    } else {
-      const queryParams = {
-        ...query,
-        propertyType: JSON.stringify([...propertyType]),
-        page: 1,
-      };
-      router.push({ query: queryParams }, undefined, { scroll: false });
-    }
-  }, [propertyType, query.propertyType]);
+    const propertyTypeQueryParams = {
+      ...query,
+      propertyType: JSON.stringify(type),
+      propertySubtype: JSON.stringify(subType),
+      page: 1,
+    };
+
+    setPropTypeDropdownIsOpen(false);
+    router.push({ query: propertyTypeQueryParams }, undefined, { scroll: false });
+  }
 
   // ADDRESS
 
@@ -182,99 +180,50 @@ const FilterList: React.FC<IFilterListProps> = ({
 
   // Insere e remove os objetos de location ao clicar nas opções do dropdown;
   const toggleLocation = (name: string, category: string) => {
-    // Procura no array location um objeto que tenha a categoria igual a selecionada;da
-    const existingCategory = location.find(
-      (item) => item.category === category
-    );
+    // Procura no array location um objeto que tenha a categoria igual a selecionada;
+    const existingCategory = location.find((item) => item.category === categoryMappings[category]);
 
     if (existingCategory) {
       // Verifica se já existe um objeto com a categoria selecionada, então apenas atualizamos o array name dentro do objeto dessa categoria;
-      const updatedLocation = location
-        .map((item) => {
-          if (item.category === category) {
+      const updatedLocation = location.map((item) => {
+          if (item.category === categoryMappings[category]) {
             // Verifica se o name selecionado já está presente no array name do objeto com a categoria selecionada;
-            if (item.name.includes(name)) {
-              // Se já existir esse name, ele é removido do array;
-              const updatedName = item.name.filter(
-                (itemName: string) => itemName !== name
-              );
-              // Se o name removido for o ultimo do array, retornamos um valor null para posteriormente remover todo o objeto da categoria correspondente;
-              if (updatedName.length === 0) {
-                return null; // Retorna null para filtrar o objeto do array
-              } else {
-                // Se não for o ultimo, então retornamos um novo array name com o novo name selecionado;
-                return {
-                  ...item,
-                  name: updatedName,
-                };
-              }
+          if (item.name.includes(name)) {
+            // Se já existir esse name, ele é removido do array;
+            const updatedName = item.name.filter((itemName: string) => itemName !== name);
+            // Se o name removido for o ultimo do array, retornamos um valor null para posteriormente remover todo o objeto da categoria correspondente;
+            if (updatedName.length === 0) {
+              return null; // Retorna null para filtrar o objeto do array
             } else {
-              // Se não houver o name no array retornamos um novo array name com o novo name selecionado;
+              // Se não for o ultimo, então retornamos um novo array name com o novo name selecionado;
               return {
                 ...item,
-                name: [...item.name, name],
+                name: updatedName,
               };
             }
+          } else {
+            // Se não houver o name no array retornamos um novo array name com o novo name selecionado;
+            return {
+              ...item,
+              name: [...item.name, name],
+            };
           }
-          return item;
-          // O filter remove os objetos que tenham retoornado null no map acima para removê-los de updatedLocation;
-        })
-        .filter(Boolean) as ILocation[];
+        }
+        return item;
+        // O filter remove os objetos que tenham retoornado null no map acima para removê-los de updatedLocation;
+      })
+      .filter(Boolean) as ILocation[];
       setLocation(updatedLocation);
       // Caso a opção selecionada pertença a uma categoria ainda não inserida em location, apenas é inserido um objeto com o name e category selecionados;
     } else {
-      setLocation([...location, { name: [name], category }]);
+      setLocation([...location, { name: [name], category: categoryMappings[category] }]);
     }
   };
 
+  // Envia os valores de location para a Search sempre que houver uma alteração no
   useEffect(() => {
-    let locationParam;
-    if (query.location) {
-      const locationParamString = query.location.toString();
-      locationParam = JSON.parse(locationParamString);
-    }
-
-    if (locationParam) {
-      setInitialLocation([
-        ...location,
-        { name: locationParam[0].name, category: locationParam[0].category },
-      ]);
-    }
-  }, []);
-
-  // Insere e remove as opções selecionadas de location nos parâmetros da URL;
-  useEffect(() => {
-    // Atualizar os parâmetros da URL
-    if (location.length < 1) {
-      if (!query.location?.includes('todos')) {
-        removeQueryParam('location');
-      }
-    } else {
-      const translatedLocations: { category: string; name: string[] }[] = [];
-
-      location.forEach((loc) => {
-        if (!allLocations) {
-          const { name, category } = loc;
-          const formattedCategory = categoryMappings[category] || category;
-          const existingLocation = translatedLocations.find(
-            (item) => item.category === formattedCategory
-          );
-          if (existingLocation) {
-            existingLocation.name.push(...name);
-          } else {
-            translatedLocations.push({ category: formattedCategory, name });
-          }
-        }
-      });
-
-      const queryParams = {
-        ...query,
-        location: JSON.stringify([...translatedLocations]),
-        page: 1,
-      };
-      router.push({ query: queryParams }, undefined, { scroll: false });
-    }
-  }, [location, query.location]);
+    locationChangeProp(location)
+  }, [location]);
 
   //// METADATA ////
 
@@ -566,92 +515,51 @@ const FilterList: React.FC<IFilterListProps> = ({
         </div>
 
         <div className="relative">
-          <div className="my-5">
-            <label className='"font-normal text-base text-quaternary leading-[19px] mb-2"'>
-              Qual o tipo do imóvel?
-            </label>
-            <div
-              className="flex flex-row items-center justify-between cursor-pointer bg-tertiary md:w-[360px] h-[44px] font-normal text-sm md:text-base text-quaternary leading-5 shadow-lg p-3 border border-quaternary rounded-xl mt-2"
-              ref={ref}
-              onClick={() => setOpen(!open)}
-            >
-              <p>
-                {propertyType?.length > 0
-                  ? propertyType[propertyType.length - 1]
-                  : 'Todos'}
-              </p>
-              <ArrowDownIconcon
-                width="15"
-                height="15"
-                className={`my-auto ${
-                  open
-                    ? 'transform rotate-180 transition-transform duration-300 ease-in-out'
-                    : 'transition-transform duration-300 ease-in-out'
-                }`}
-              />
-            </div>
-            <div
-              className={`absolute z-50 w-full h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md ${
-                open ? 'md:flex' : 'hidden'
-              }`}
-            >
-              <div className="flex flex-col w-full text-center font-normal text-base text-quaternary leading-5">
-                <div
-                  className="flex rounded-t-xl hover:bg-quaternary hover:text-tertiary"
-                  onClick={() => togglePropertyTypeSelection('todos')}
-                >
-                  <div className="w-[20px] h-[20px] shrink-0 my-auto border border-quaternary rounded-[3px] bg-tertiary m-2">
-                    {propertyType.includes('todos') && (
-                      <CheckIcon
-                        width="20"
-                        height="20"
-                        fill="#F5BF5D"
-                        viewBox="40 126 960 960"
-                      />
-                    )}
-                  </div>
-                  <span
-                    id="todos"
-                    className="translate-x-[1px] w-full h-[50px] py-3"
-                  >
-                    Todos
-                  </span>
-                </div>
+          <h3 className="font-normal text-base text-quaternary leading-[19px] mb-2 ">
+            Qual o tipo?
+          </h3>
 
-                {propertyTypesProp
-                  ? propertyTypesProp?.map(
-                      ({ _id, name }: IPropertyTypes, index: number) => (
-                        <div
-                          key={index}
-                          className="flex hover:bg-quaternary hover:text-tertiary"
-                          onClick={() => togglePropertyTypeSelection(name)}
-                        >
-                          <div className="w-[20px] h-[20px] shrink-0 my-auto border border-quaternary rounded-[3px] bg-tertiary m-2">
-                            {(propertyType.includes(name) ||
-                              propertyType[0] === 'todos') && (
-                              <CheckIcon
-                                width="20"
-                                height="20"
-                                fill="#F5BF5D"
-                                viewBox="40 126 960 960"
-                              />
-                            )}
-                          </div>
-                          <span
-                            id={name}
-                            key={_id}
-                            className="translate-x-[1px] w-full h-[50px]  py-3"
-                          >
-                            {name?.charAt(0).toUpperCase() +
-                              name?.slice(1).toLowerCase()}
-                          </span>
-                        </div>
-                      )
-                    )
-                  : []}
-              </div>
-            </div>
+          <div 
+            className="drop-shadow-lg lg:h-12 w-full lg:text-lg rounded-xl p-2 mb-1 border border-quaternary flex justify-between"
+            onClick={() => setPropTypeDropdownIsOpen(!propTypeDropdownIsOpen)}
+          >
+            <p className='text-quaternary text'>{propertyType.propertyType !== 'todos' ? propertyType.propertySubtype : `todos`}</p>
+            <ArrowDownIcon
+              className={`my-auto cursor-pointer ${
+                propTypeDropdownIsOpen
+                ? 'transform rotate-360 transition-transform duration-300 ease-in-out'
+                : 'transform rotate-180 transition-transform duration-300 ease-in-out'
+              }`}
+            />
           </div>
+          <div 
+            className={`z-50 w-full h-fit rounded-xl bg-tertiary overflow-hidden text-quaternary cursor-pointer shadow-md ${
+              !propTypeDropdownIsOpen
+              ? 'hidden '
+              : 'absolute'
+            }`}
+          >
+            {propertyTypesData.map((prop, index) => (
+              <div className='w-full rounded-t-8 bg-tertiary'>
+                <p 
+                  className='text-center p-1 hover:bg-quaternary hover:text-tertiary font-normal text-lg'
+                  onClick={() => handlePropertyTypeSelection("todos", "todos")}
+                >
+                  Todos
+                </p>
+                <p className='text-quaternary lg:text-2xl p-1 text-center font-bold '>{prop.type}</p>
+                {propertyTypesData[index].subTypes.map((type) =>  (
+                  <div 
+                    className='text-center p-1 hover:bg-quaternary hover:text-tertiary'
+                    onClick={() =>  handlePropertyTypeSelection(prop.type, type)}
+                  >
+                    {type}
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+          
         </div>
 
         <div className="flex flex-col my-5">
@@ -670,10 +578,6 @@ const FilterList: React.FC<IFilterListProps> = ({
               );
             }}
             value={locationInput}
-            // value={location.length > 0
-            //   ? location[0].name[0]
-            //   : locationInput
-            // }
           />
           <div
             className={`z-50 w-full h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md ${

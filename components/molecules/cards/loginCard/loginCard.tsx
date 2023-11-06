@@ -368,7 +368,7 @@ const LoginCard: React.FC = () => {
 
       <a
         className="font-bold text-xs text-quaternary mx-5 my-5 md:my-0 md:mb-4 md:mx-4 pt-2 relative inline-block group transition-colors duration-300 hover:text-secondary"
-        href="/termos-de-uso"
+        href="/userTerms"
         target="_blank"
         rel="noreferrer"
       >
