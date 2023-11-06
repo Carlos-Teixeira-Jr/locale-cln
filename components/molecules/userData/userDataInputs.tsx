@@ -99,7 +99,6 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
       ref: userDataErrorScroll.username,
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
-        // Permite letras, espaços e acentos
         const maskedValue = value.replace(/[^A-Za-z\sÀ-ú]/g, '');
         setFormData({ ...formData, username: maskedValue });
       },

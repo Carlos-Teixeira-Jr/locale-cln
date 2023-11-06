@@ -43,7 +43,6 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   properties,
   ownerData,
 }) => {
-  console.log("🚀 ~ file: adminUserData.tsx:46 ~ ownerData:", ownerData)
 
   const router = useRouter();
   const isOwner = properties?.docs?.length > 0 ? true : false;
@@ -247,10 +246,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
         }
       } catch (error) {
         toast.dismiss();
-        toast.error(
-          'Não foi possível se conectar ao servidor. Por favor, tente novamente mais tarde.'
-        );
-        console.error('Houve um erro na resposta da chamada', error);
+        toast.error('Não foi possível se conectar ao servidor. Por favor, tente novamente mais tarde.');
       }
     } else {
       toast.error('Algum campo obrigatório não foi preenchido.');
