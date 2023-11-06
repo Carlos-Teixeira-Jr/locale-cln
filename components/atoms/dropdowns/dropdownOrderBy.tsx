@@ -40,7 +40,7 @@ const DropdownOrderBy: React.FC = () => {
   ];
 
   return (
-    <div className="hidden md:flex absolute z-50 top-[253px] max-w-[210px] h-[200px] rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md">
+    <div className="hidden md:flex absolute z-50 max-w-[210px] h-[200px] rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md">
       <div className="flex flex-col text-center font-normal text-base text-quaternary leading-5">
         {dropdownOptions.map((option) => (
           <span

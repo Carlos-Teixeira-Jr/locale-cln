@@ -39,9 +39,6 @@ const Home: NextPageWithLayout<IHome> = ({
     useState(null);
   const [isBuy, setIsBuy] = useState(true);
   const [isRent, setIsRent] = useState(false);
-  const [transactionType, setTransactionType] = useState<TransactionType>(
-    TransactionType.BUY
-  );
 
   //Altera o valor de isBuy sempre que o valor correspondente é alterado no componente HomeFilter;
   const handleSetBuy = (value: boolean) => {
@@ -98,7 +95,7 @@ const Home: NextPageWithLayout<IHome> = ({
           />
         </div>
 
-        <div className="md:absolute flex flex-col md:flex-row justify-center md:justify-end xl:justify-center xl:pl-[600px] md:mt-20 lg:pr-11 lg:top-20 md:top-[25px] lg:left-0 md:p-4 md:mx-auto w-full p-5 md:inset-x-0 lg:inset-x-10">
+        <div className="md:absolute flex flex-col md:flex-row justify-center md:justify-end lg:justify-end xl:justify-end xl:pl-[600px] md:mt-20 lg:pr-11 lg:top-20 md:top-[25px] lg:left-0 md:p-4 md:mx-auto w-full p-5 md:inset-x-0 lg:inset-x-10">
           <HomeFilter
             isBuyProp={isBuy}
             isRentProp={isRent}
@@ -114,7 +111,7 @@ const Home: NextPageWithLayout<IHome> = ({
             O que você procura a um clique de distância
           </h3>
           <div className="mb-10">
-            <AccessCard transactionType={transactionType} />
+            <AccessCard />
           </div>
 
           <div className="flex max-w-[1232px]  justify-start text-left">
@@ -195,7 +192,7 @@ const Home: NextPageWithLayout<IHome> = ({
 export default Home;
 
 export async function getStaticProps() {
-  const baseUrl = process.env.BASE_API_URL;
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
 
   const [propertyInfo, propertyTypes, locations] = await Promise.all([
     fetch(`${baseUrl}/property/filter/?page=1&limit=3`)
@@ -207,7 +204,7 @@ export async function getStaticProps() {
     fetch(`${baseUrl}/location`)
       .then((res) => res.json())
       .catch(() => []),
-    fetchJson(`${baseUrl}/property?page=1&limit=3`),
+    fetchJson(`${baseUrl}/property/filter/?page=1&limit=3`),
     fetchJson(`${baseUrl}/property-type`),
     fetchJson(`${baseUrl}/location`),
   ]);

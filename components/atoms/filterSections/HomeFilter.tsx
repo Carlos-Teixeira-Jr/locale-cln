@@ -6,9 +6,14 @@ import {
   ILocationProp,
 } from '../../../common/interfaces/locationDropdown';
 import { IPropertyTypes } from '../../../common/interfaces/property/propertyTypes';
+import {
+  categoryMappings,
+  categoryTranslations,
+  translateLocations,
+} from '../../../common/utils/translateLocations';
+import propertyTypesData from '../../../data/propertyTypesData.json';
 import ArrowDownIcon from '../icons/arrowDownIcon';
 import CheckIcon from '../icons/checkIcon';
-import propertyTypesData from '../../../data/propertyTypesData.json';
 
 export interface IHomeFilter extends React.ComponentPropsWithoutRef<'div'> {
   isBuyProp: boolean;
@@ -35,18 +40,16 @@ const HomeFilter: React.FC<IHomeFilter> = ({
   locationProp,
   ...homeFilterProps
 }) => {
-
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const [isBuy, setIsBuy] = useState(true);
   const [isRent, setIsRent] = useState(false);
   const [propertyType, setPropertyType] = useState({
     propertyType: '',
-    propertySubtype: ''
+    propertySubtype: '',
   });
   const [propTypeDropdownIsOpen, setPropTypeDropdownIsOpen] = useState(false);
   const [location, setLocation] = useState<ILocation[]>([]);
-  const [open, setOpen] = useState(false);
   const [openLocationDropdown, setOpenLocationDropdown] = useState(false);
   const [filteredLocations, setFilteredLocations] = useState<ILocation[]>([]);
   const [inputValue, setInputValue] = useState('');
@@ -69,12 +72,16 @@ const HomeFilter: React.FC<IHomeFilter> = ({
   };
 
   // Estilos do switch button de aluguel/compra;
-  const buyBtnClassName = `w-full h-[34px] md:h-fit lg:h-[34px] rounded-full border-black text-quaternary font-bold lg:text-lg transition-all ${
-    isBuy ? 'bg-secondary text-quinary border' : 'bg-tertiary  text-quaternary'
+  const buyBtnClassName = `w-full h-[34px] md:h-fit lg:h-[33px] rounded-full border-black text-quaternary font-bold lg:text-lg transition-all ${
+    isBuy
+      ? 'bg-secondary text-quinary border border-secondary'
+      : 'bg-tertiary  text-quaternary'
   }`;
 
-  const rentBtnClassName = `w-full h-[34px] md:h-fit lg:h-[34px] rounded-full border-black text-quaternary font-bold lg:text-lg transition-all ${
-    isRent ? 'bg-secondary text-quinary border' : 'bg-tertiary text-quaternary'
+  const rentBtnClassName = `w-full h-[34px] md:h-fit lg:h-[33px] rounded-full border-black text-quaternary font-bold lg:text-lg transition-all ${
+    isRent
+      ? 'bg-secondary text-quinary border border-secondary'
+      : 'bg-tertiary text-quaternary'
   }`;
 
   //// ADDRESS ////
@@ -85,22 +92,6 @@ const HomeFilter: React.FC<IHomeFilter> = ({
       location.name.toLowerCase().startsWith(value.toLowerCase())
     );
     setFilteredLocations(filtered);
-  };
-
-  // Traduz o nome das categorias de endereço do inglês para o portugues para mostrar no dropdown;
-  const categoryTranslations: Record<string, string> = {
-    city: 'Cidade',
-    state: 'Estado',
-    streetName: 'Rua',
-    neighborhood: 'Bairro',
-  };
-
-  // Lida com a retradução para o inglês pois é dessa forma que a rota realiza a busca;
-  const categoryMappings: Record<string, string> = {
-    Cidade: 'city',
-    Estado: 'state',
-    Rua: 'streetName',
-    Bairro: 'neighborhood',
   };
 
   // Reorganiza filteredLocations para que se torne um objeto onde cada prop é representa uma categoria em forma de um array com todas as strings de localização referentes à essa categoria;
@@ -179,53 +170,32 @@ const HomeFilter: React.FC<IHomeFilter> = ({
   };
 
   const handleFindBtnClick = () => {
-    let adType;
-    if (isBuy) {
-      adType = 'compra';
-    } else if (isRent) {
-      adType = 'aluguel';
-    }
+    const adType = isBuy ? 'comprar' : isRent ? 'alugar' : undefined;
 
-    const query: Iquery = {
+    const query = {
       adType,
       page: 1,
+      location: translateLocations(location, allLocations, categoryMappings),
+      propertyType:
+        propertyType.propertyType && propertyType.propertyType !== 'todos'
+          ? JSON.stringify(propertyType.propertyType)
+          : JSON.stringify('todos'),
+      propertySubtype:
+        propertyType.propertyType && propertyType.propertyType !== 'todos'
+          ? JSON.stringify(propertyType.propertySubtype)
+          : JSON.stringify('todos'),
     };
 
-    const translatedLocations: { category: string; name: string[] }[] = [];
-
-    if (location.length > 0 && !allLocations) {
-      location.forEach((loc) => {
-        if (!allLocations) {
-          const { name, category } = loc;
-          // Traduz o nome das categories de volta para o inglês para facilitar a busca no back;
-          const formattedCategory = categoryMappings[category] || category;
-          const existingLocation = translatedLocations.find(
-            (item) => item.category === formattedCategory
-          );
-          if (existingLocation) {
-            existingLocation.name.push(...name);
-          } else {
-            translatedLocations.push({ category: formattedCategory, name });
-          }
-        }
-      });
-      query.location = JSON.stringify(translatedLocations);
-    } else {
-      query.location = JSON.stringify('todos');
-    }
-
-    if (propertyType.propertyType && propertyType.propertyType !== 'todos') {
-      query.propertyType = JSON.stringify(propertyType.propertyType);
-      query.propertySubtype = JSON.stringify(propertyType.propertySubtype);
-    } else {
-      query.propertyType = JSON.stringify('todos');
-      query.propertySubtype = JSON.stringify('todos');
-    }
-
-    router.push({
-      pathname: '/search',
-      query,
-    });
+    router.push(
+      {
+        pathname: '/search',
+        query,
+      },
+      undefined,
+      {
+        shallow: true,
+      }
+    );
   };
 
   //// FUNCTIONALITIES ////
@@ -246,222 +216,229 @@ const HomeFilter: React.FC<IHomeFilter> = ({
 
   return (
     <>
-    <div
-      className="flex flex-col md:flex-row gap-4 bg-tertiary lg:p-4 p-3 text-quaternary w-full md:w-fit lg:h-fit rounded-[30px] shadow-lg"
-      {...homeFilterProps}
-    >
-      <div className="relative">
+      <div
+        className="flex flex-col md:flex-row gap-4 bg-tertiary lg:p-4 p-3 text-quaternary w-full md:w-fit lg:h-fit rounded-[30px] shadow-lg"
+        {...homeFilterProps}
+      >
+        <div className="relative">
+          <h1 className="font-bold md:text-lg lg:text-xl text-xl lg:pb-4 mb-5 md:mb-0 text-center">
+            Encontre o lar dos seus sonhos sem sair de casa
+          </h1>
 
-        <h1 className="font-bold md:text-lg lg:text-xl text-xl lg:pb-4 mb-5 md:mb-0 text-center">
-          Encontre o lar dos seus sonhos sem sair de casa
-        </h1>
-
-        <div className='flex flex-col md:flex-row gap-5 justify-center'>
-          <div className='flex flex-col gap-5'>
-            <div className="w-full mx-auto flex flex-col gap-2 md:gap-0">
-              <label className="text-base">O que procura?</label>
-              <div className="flex flex-row rounded-full border border-quaternary lg:h-9 w-full mx-auto md:mt-3 lg:mt-2 justify-center">
-                <div className='w-full'>
-                  <button className={buyBtnClassName} onClick={handleBuy}>
-                    Comprar
-                  </button>
-                </div>
-                <div className='w-full'>
-                  <button className={rentBtnClassName} onClick={handleRent}>
-                    Alugar
-                  </button>
+          <div className="flex flex-col md:flex-row gap-5 justify-center">
+            <div className="flex flex-col gap-5">
+              <div className="w-full mx-auto flex flex-col gap-2 md:gap-0">
+                <label className="text-base">O que procura?</label>
+                <div className="flex flex-row rounded-full border border-quaternary lg:h-9 w-full mx-auto md:mt-3 lg:mt-2 justify-center">
+                  <div className="w-full">
+                    <button className={buyBtnClassName} onClick={handleBuy}>
+                      Comprar
+                    </button>
+                  </div>
+                  <div className="w-full">
+                    <button className={rentBtnClassName} onClick={handleRent}>
+                      Alugar
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="lg:w-56 w-full lg:mr-10 flex flex-col gap-2">
-              <label>Qual o tipo do imóvel?</label>
+              <div className="lg:w-56 w-full lg:mr-10 flex flex-col gap-2">
+                <label>Qual o tipo do imóvel?</label>
 
-              <div 
-                className="drop-shadow-lg lg:h-9 lg:w-64 lg:text-lg rounded-lg p-2 mb-1 border border-quaternary flex justify-between"
-                onClick={() => setPropTypeDropdownIsOpen(!propTypeDropdownIsOpen)}
-              >
-                <p className='text-quaternary text'>{propertyType.propertyType ? propertyType.propertySubtype : `Tipo de imóvel`}</p>
-                <ArrowDownIcon
-                  className={`my-auto cursor-pointer ${
-                    propTypeDropdownIsOpen
-                    ? 'transform rotate-360 transition-transform duration-300 ease-in-out'
-                    : 'transform rotate-180 transition-transform duration-300 ease-in-out'
+                <div
+                  className="drop-shadow-lg lg:h-9 lg:w-64 lg:text-lg text-quaternary rounded-lg p-2 mb-1 border border-quaternary flex justify-between"
+                  onClick={() =>
+                    setPropTypeDropdownIsOpen(!propTypeDropdownIsOpen)
+                  }
+                >
+                  <p className="self-center">
+                    {propertyType.propertyType
+                      ? propertyType.propertySubtype
+                      : `Tipo de imóvel`}
+                  </p>
+                  <ArrowDownIcon
+                    className={`my-auto cursor-pointer ${
+                      propTypeDropdownIsOpen
+                        ? 'transform rotate-360 transition-transform duration-300 ease-in-out'
+                        : 'transform rotate-180 transition-transform duration-300 ease-in-out'
+                    }`}
+                  />
+                </div>
+                <div
+                  className={`z-50 md:w-fit w-full h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md mt-20 ${
+                    !propTypeDropdownIsOpen ? 'hidden ' : 'absolute'
                   }`}
-                />
-              </div>
-              <div 
-                className={`z-50 md:w-fit w-full h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md mt-20 ${
-                  !propTypeDropdownIsOpen
-                  ? 'hidden '
-                  : 'absolute'
-                }`}
-              >
-                {propertyTypesData.map((prop, index) => (
-                  <div className='w-full rounded-t-8 bg-tertiary'>
-                    <p className='text-quaternary lg:text-2xl p-1 text-center font-bold '>{prop.type}</p>
-                    {propertyTypesData[index].subTypes.map((type) =>  (
-                      <div 
-                        className='text-center p-1 hover:bg-quaternary hover:text-tertiary'
-                        onClick={() => {
-                          setPropertyType({
-                            ...propertyType,
-                            propertyType: prop.type,
-                            propertySubtype: type
-                          });
-                          setPropTypeDropdownIsOpen(false);
-                        }}
-                      >
-                        {type}
-                      </div>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <div className='flex flex-col-reverse md:flex-col gap-5'>
-            <div className='w-full'>
-              <button
-                className="bg-primary rounded-full w-full h-12 md:h-fit lg:h-[34px] md:mt-9 lg:mt-8 float-right text-tertiary text-xl shadow-md hover:bg-red-600 hover:text-tertiary hover:shadow-lg transition-all duration-200 active:bg-primary-dark active:text-tertiary active:shadow-none focus:outline-none"
-                onClick={handleFindBtnClick}
-              >
-                Buscar
-              </button>
-            </div>
-            
-            <div className="flex flex-col lg:mt-0 gap-2">
-              <label className="text-base">Onde?</label>
-              <input
-                className="drop-shadow-lg lg:h-9 lg:text-lg rounded-lg p-2 mb-1"
-                placeholder="Digite um bairro, cidade, rua..."
-                onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                  const newName = event.target.value;
-                  setInputValue(newName);
-                  filterLocation(newName);
-                  setOpenLocationDropdown(newName.length > 0 ? true : false);
-                }}
-                value={location.length > 0 ? location[0].name[0] : inputValue}
-              />
-              <div
-                className={`z-50 w-full md:w-48 mt-20 h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md ${
-                  openLocationDropdown ? 'absolute' : 'hidden'
-                }`}
-                ref={ref}
-              >
-                <div className="flex flex-col w-full text-center font-normal text-base text-quaternary leading-5">
-                  <div
-                    className="flex hover:bg-quaternary hover:text-tertiary"
-                    onClick={() => {
-                      setAllLocations(!allLocations);
-                      setLocation([]);
-                    }}
-                  >
-                    <div
-                      className={`w-[20px] h-[20px] shrink-0 my-auto border border-quaternary rounded-[3px] bg-white mx-2`}
-                    >
-                      {allLocations && (
-                        <CheckIcon
-                          width="20"
-                          height="20"
-                          fill="#F5BF5D"
-                          viewBox="40 126 960 960"
-                        />
-                      )}
+                >
+                  {propertyTypesData.map((prop, index) => (
+                    <div className="w-full rounded-t-8 bg-tertiary" key={index}>
+                      <p className="text-quaternary lg:text-2xl p-1 text-center font-bold ">
+                        {prop.type}
+                      </p>
+                      {propertyTypesData[index].subTypes.map((type) => (
+                        <div
+                          key={type}
+                          className="text-center p-1 hover:bg-quaternary hover:text-tertiary"
+                          onClick={() => {
+                            setPropertyType({
+                              ...propertyType,
+                              propertyType: prop.type,
+                              propertySubtype: type,
+                            });
+                            setPropTypeDropdownIsOpen(false);
+                          }}
+                        >
+                          {type}
+                        </div>
+                      ))}
                     </div>
-                    <span
-                      id="todos"
-                      className="translate-x-[1px] w-full h-[50px] rounded-t-xl py-3"
-                    >
-                      Todos
-                    </span>
-                  </div>
+                  ))}
+                </div>
+              </div>
+            </div>
 
-                  {Object.entries(categorizedLocations).map(
-                    ([category, locations]) => (
-                      <div key={category} className="w-full py-2 h-fit">
-                        <h3 className="font-bold text-xl ml-[20px]">
-                          {category}
-                        </h3>
-                        {locations.map(({ name }: ILocation, index: number) => (
-                          <div
-                            key={`${index}-${name}`}
-                            className="flex flex-col hover:bg-quaternary hover:text-tertiary px-2"
-                          >
-                            {Array.isArray(name) ? (
-                              name?.map((option: string, idx: number) => (
-                                <div
-                                  key={`${option}-${idx}`}
-                                  className={`flex h-[50px]`}
-                                  onClick={() => {
-                                    toggleLocation(option, category);
-                                  }}
-                                >
-                                  <div className="w-[20px] h-[20px] shrink-0 my-auto border border-quaternary rounded-[3px] bg-tertiary">
-                                    {(location.some((obj) =>
-                                      obj.name.includes(option)
-                                    ) ||
-                                      allLocations) && (
-                                      <CheckIcon
-                                        width="20"
-                                        height="20"
-                                        fill="#F5BF5D"
-                                        viewBox="40 126 960 960"
-                                      />
-                                    )}
-                                  </div>
-                                  <span
-                                    id={option}
-                                    className={`translate-x-[1px] w-full h-fit py-1.5 px-2 flex justify-center my-auto`}
-                                  >
-                                    {option.charAt(0).toUpperCase() +
-                                      option.slice(1).toLowerCase()}
-                                  </span>
-                                </div>
-                              ))
-                            ) : (
-                              <div
-                                className="flex h-[50px]"
-                                onClick={() => {
-                                  toggleLocation(name, category);
-                                }}
-                              >
-                                <div className="w-[20px] h-[20px] shrink-0 my-auto border border-quaternary rounded-[3px] bg-tertiary">
-                                  {(location.some((obj) =>
-                                    obj.name.includes(name)
-                                  ) ||
-                                    allLocations) && (
-                                    <CheckIcon
-                                      width="20"
-                                      height="20"
-                                      fill="#F5BF5D"
-                                      viewBox="40 126 960 960"
-                                    />
-                                  )}
-                                </div>
-                                <span
-                                  id={name}
-                                  className="translate-x-[1px] w-full h-fit py-1.5 px-2 flex justify-center my-auto"
-                                >
-                                  {name?.charAt(0).toUpperCase() +
-                                    name?.slice(1).toLowerCase()}
-                                </span>
-                              </div>
-                            )}
-                          </div>
-                        ))}
+            <div className="flex flex-col-reverse md:flex-col gap-5">
+              <div className="w-full">
+                <button
+                  className="bg-primary rounded-full w-full h-12 md:h-fit lg:h-[34px] md:mt-9 lg:mt-8 float-right text-tertiary text-xl shadow-md hover:bg-red-600 hover:text-tertiary hover:shadow-lg transition-all duration-200 active:bg-primary-dark active:text-tertiary active:shadow-none focus:outline-none"
+                  onClick={handleFindBtnClick}
+                >
+                  Buscar
+                </button>
+              </div>
+
+              <div className="flex flex-col lg:mt-0 gap-2">
+                <label className="text-base">Onde?</label>
+                <input
+                  className="lg:h-9 lg:text-lg border bg-transparent border-quaternary rounded-lg p-2 mt-[0.1rem] placeholder:text-sm"
+                  placeholder="Digite um bairro, cidade, rua..."
+                  onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                    const newName = event.target.value;
+                    setInputValue(newName);
+                    filterLocation(newName);
+                    setOpenLocationDropdown(newName.length > 0 ? true : false);
+                  }}
+                  value={location.length > 0 ? location[0].name[0] : inputValue}
+                />
+                <div
+                  className={`z-50 w-full md:w-48 mt-20 h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md ${
+                    openLocationDropdown ? 'absolute' : 'hidden'
+                  }`}
+                  ref={ref}
+                >
+                  <div className="flex flex-col w-full text-center font-normal text-base text-quaternary leading-5">
+                    <div
+                      className="flex hover:bg-quaternary hover:text-tertiary"
+                      onClick={() => {
+                        setAllLocations(!allLocations);
+                        setLocation([]);
+                      }}
+                    >
+                      <div
+                        className={`w-[20px] h-[20px] shrink-0 my-auto border border-quaternary rounded-[3px] bg-white mx-2`}
+                      >
+                        {allLocations && (
+                          <CheckIcon
+                            width="20"
+                            height="20"
+                            fill="#F5BF5D"
+                            viewBox="40 126 960 960"
+                          />
+                        )}
                       </div>
-                    )
-                  )}
+                      <span
+                        id="todos"
+                        className="translate-x-[1px] w-full h-[50px] rounded-t-xl py-3"
+                      >
+                        Todos
+                      </span>
+                    </div>
+
+                    {Object.entries(categorizedLocations).map(
+                      ([category, locations]) => (
+                        <div key={category} className="w-full py-2 h-fit">
+                          <h3 className="font-bold text-xl ml-[20px]">
+                            {category}
+                          </h3>
+                          {locations.map(
+                            ({ name }: ILocation, index: number) => (
+                              <div
+                                key={`${index}-${name}`}
+                                className="flex flex-col hover:bg-quaternary hover:text-tertiary px-2"
+                              >
+                                {Array.isArray(name) ? (
+                                  name?.map((option: string, idx: number) => (
+                                    <div
+                                      key={`${option}-${idx}`}
+                                      className={`flex h-[50px]`}
+                                      onClick={() => {
+                                        toggleLocation(option, category);
+                                      }}
+                                    >
+                                      <div className="w-[20px] h-[20px] shrink-0 my-auto border border-quaternary rounded-[3px] bg-tertiary">
+                                        {(location.some((obj) =>
+                                          obj.name.includes(option)
+                                        ) ||
+                                          allLocations) && (
+                                          <CheckIcon
+                                            width="20"
+                                            height="20"
+                                            fill="#F5BF5D"
+                                            viewBox="40 126 960 960"
+                                          />
+                                        )}
+                                      </div>
+                                      <span
+                                        id={option}
+                                        className={`translate-x-[1px] w-full h-fit py-1.5 px-2 flex justify-center my-auto`}
+                                      >
+                                        {option.charAt(0).toUpperCase() +
+                                          option.slice(1).toLowerCase()}
+                                      </span>
+                                    </div>
+                                  ))
+                                ) : (
+                                  <div
+                                    className="flex h-[50px]"
+                                    onClick={() => {
+                                      toggleLocation(name, category);
+                                    }}
+                                  >
+                                    <div className="w-[20px] h-[20px] shrink-0 my-auto border border-quaternary rounded-[3px] bg-tertiary">
+                                      {(location.some((obj) =>
+                                        obj.name.includes(name)
+                                      ) ||
+                                        allLocations) && (
+                                        <CheckIcon
+                                          width="20"
+                                          height="20"
+                                          fill="#F5BF5D"
+                                          viewBox="40 126 960 960"
+                                        />
+                                      )}
+                                    </div>
+                                    <span
+                                      id={name}
+                                      className="translate-x-[1px] w-full h-fit py-1.5 px-2 flex justify-center my-auto"
+                                    >
+                                      {name?.charAt(0).toUpperCase() +
+                                        name?.slice(1).toLowerCase()}
+                                    </span>
+                                  </div>
+                                )}
+                              </div>
+                            )
+                          )}
+                        </div>
+                      )
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
       </div>
-    </div>
     </>
   );
 };
