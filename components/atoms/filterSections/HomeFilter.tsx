@@ -6,11 +6,14 @@ import {
   ILocationProp,
 } from '../../../common/interfaces/locationDropdown';
 import { IPropertyTypes } from '../../../common/interfaces/property/propertyTypes';
+import {
+  categoryMappings,
+  categoryTranslations,
+  translateLocations,
+} from '../../../common/utils/translateLocations';
 import propertyTypesData from '../../../data/propertyTypesData.json';
 import ArrowDownIcon from '../icons/arrowDownIcon';
 import CheckIcon from '../icons/checkIcon';
-import propertyTypesData from '../../../data/propertyTypesData.json';
-import { categoryMappings, categoryTranslations, translateLocations } from '../../../common/utils/translateLocations';
 
 export interface IHomeFilter extends React.ComponentPropsWithoutRef<'div'> {
   isBuyProp: boolean;
@@ -165,10 +168,10 @@ const HomeFilter: React.FC<IHomeFilter> = ({
       setLocation([...location, { name: [name], category }]);
     }
   };
-  
+
   const handleFindBtnClick = () => {
     const adType = isBuy ? 'comprar' : isRent ? 'alugar' : undefined;
-  
+
     const query = {
       adType,
       page: 1,
