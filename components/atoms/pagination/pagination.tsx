@@ -72,7 +72,7 @@ const Pagination: React.FC<IPagination> = ({
         <div
           onClick={() => setCurrentPage(i + 1)}
           key={i}
-          className={`w-[33px] h-[33px] bg-[#F7F7F6] cursor-pointer border rounded-[30px] border-[#6B7280] text-[#6B7280] font-extrabold text-lg px-2 text-center hover:text-[#F7F7F6] hover:bg-[#F5BF5D] hover:text-2xl hover:border-none hover:w-[40px] hover:h-[38px] ${
+          className={`w-[2.2rem] h-[2.1rem] bg-[#F7F7F6] cursor-pointer rounded-full border-secondary text-[#6B7280] font-extrabold text-lg py-[0.2rem] text-center hover:text-[#F7F7F6] hover:bg-[#F5BF5D] hover:text-2xl hover:border-none hover:w-[40px] hover:h-[38px] ${
             query.page !== undefined &&
             i === parseInt(query?.page?.toString()) - 1
               ? 'bg-[#F5BF5D] text-2xl border-none w-[38px] h-[38px]'
