@@ -9,6 +9,8 @@ import { IPropertyTypes } from '../../../common/interfaces/property/propertyType
 import propertyTypesData from '../../../data/propertyTypesData.json';
 import ArrowDownIcon from '../icons/arrowDownIcon';
 import CheckIcon from '../icons/checkIcon';
+import propertyTypesData from '../../../data/propertyTypesData.json';
+import { categoryMappings, categoryTranslations, translateLocations } from '../../../common/utils/translateLocations';
 
 export interface IHomeFilter extends React.ComponentPropsWithoutRef<'div'> {
   isBuyProp: boolean;
@@ -45,7 +47,6 @@ const HomeFilter: React.FC<IHomeFilter> = ({
   });
   const [propTypeDropdownIsOpen, setPropTypeDropdownIsOpen] = useState(false);
   const [location, setLocation] = useState<ILocation[]>([]);
-  const [open, setOpen] = useState(false);
   const [openLocationDropdown, setOpenLocationDropdown] = useState(false);
   const [filteredLocations, setFilteredLocations] = useState<ILocation[]>([]);
   const [inputValue, setInputValue] = useState('');
@@ -88,22 +89,6 @@ const HomeFilter: React.FC<IHomeFilter> = ({
       location.name.toLowerCase().startsWith(value.toLowerCase())
     );
     setFilteredLocations(filtered);
-  };
-
-  // Traduz o nome das categorias de endereço do inglês para o portugues para mostrar no dropdown;
-  const categoryTranslations: Record<string, string> = {
-    city: 'Cidade',
-    state: 'Estado',
-    streetName: 'Rua',
-    neighborhood: 'Bairro',
-  };
-
-  // Lida com a retradução para o inglês pois é dessa forma que a rota realiza a busca;
-  const categoryMappings: Record<string, string> = {
-    Cidade: 'city',
-    Estado: 'state',
-    Rua: 'streetName',
-    Bairro: 'neighborhood',
   };
 
   // Reorganiza filteredLocations para que se torne um objeto onde cada prop é representa uma categoria em forma de um array com todas as strings de localização referentes à essa categoria;
@@ -180,50 +165,23 @@ const HomeFilter: React.FC<IHomeFilter> = ({
       setLocation([...location, { name: [name], category }]);
     }
   };
-
+  
   const handleFindBtnClick = () => {
-    let adType;
-    if (isBuy) {
-      adType = 'comprar';
-    } else if (isRent) {
-      adType = 'alugar';
-    }
-
-    const query: Iquery = {
+    const adType = isBuy ? 'comprar' : isRent ? 'alugar' : undefined;
+  
+    const query = {
       adType,
       page: 1,
+      location: translateLocations(location, allLocations, categoryMappings),
+      propertyType:
+        propertyType.propertyType && propertyType.propertyType !== 'todos'
+          ? JSON.stringify(propertyType.propertyType)
+          : JSON.stringify('todos'),
+      propertySubtype:
+        propertyType.propertyType && propertyType.propertyType !== 'todos'
+          ? JSON.stringify(propertyType.propertySubtype)
+          : JSON.stringify('todos'),
     };
-
-    const translatedLocations: { category: string; name: string[] }[] = [];
-
-    if (location.length > 0 && !allLocations) {
-      location.forEach((loc) => {
-        if (!allLocations) {
-          const { name, category } = loc;
-          // Traduz o nome das categories de volta para o inglês para facilitar a busca no back;
-          const formattedCategory = categoryMappings[category] || category;
-          const existingLocation = translatedLocations.find(
-            (item) => item.category === formattedCategory
-          );
-          if (existingLocation) {
-            existingLocation.name.push(...name);
-          } else {
-            translatedLocations.push({ category: formattedCategory, name });
-          }
-        }
-      });
-      query.location = JSON.stringify(translatedLocations);
-    } else {
-      query.location = JSON.stringify('todos');
-    }
-
-    if (propertyType.propertyType && propertyType.propertyType !== 'todos') {
-      query.propertyType = JSON.stringify(propertyType.propertyType);
-      query.propertySubtype = JSON.stringify(propertyType.propertySubtype);
-    } else {
-      query.propertyType = JSON.stringify('todos');
-      query.propertySubtype = JSON.stringify('todos');
-    }
 
     router.push(
       {

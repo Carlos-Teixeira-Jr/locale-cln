@@ -19,7 +19,8 @@ import Header from '../components/organisms/header/header';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { NextPageWithLayout } from './page';
 import ArrowDropdownIcon from '../components/atoms/icons/arrowDropdownIcon';
-import { stringify } from 'querystring';
+import { removeQueryParam } from '../common/utils/removeQueryParams';
+import { handleClickOutside } from '../common/utils/clickOutsideDropdownHandler';
 
 export interface IPropertyInfo {
   docs: IData[];
@@ -50,6 +51,7 @@ const Search: NextPageWithLayout<ISearch> = ({
   const [open, setOpen] = useState(false);
   const isMobile = useIsMobile();
   const [mobileFilterIsOpen, setMobileFilterIsOpen] = useState<boolean>(false);
+  console.log("🚀 ~ file: search.tsx:54 ~ mobileFilterIsOpen:", mobileFilterIsOpen)
   const [isSearchBtnClicked, setIsSearchBtnClicked] = useState(false);
   
   // grid or list
@@ -69,23 +71,10 @@ const Search: NextPageWithLayout<ISearch> = ({
       }
       router.push({ query: queryParams }, undefined, { scroll: false });
     } else {
-      removeQueryParam('location');
+      removeQueryParam('location', router, query);
     }
     
   }, [location]);
-
-  // Remove parametros da URL da query e faz o refresh para que seja feita uma nova requisição a partir da url atualizada;
-  const removeQueryParam = (param: string) => {
-    const { pathname } = router;
-    const params = new URLSearchParams(stringify(query));
-    params.delete(param);
-    params.set('page', '1');
-    router.replace({ pathname, query: params.toString() }, undefined, {
-      shallow: false,
-      scroll: false,
-    });
-  };
-  
 
   //// PAGE ////
 
@@ -106,26 +95,11 @@ const Search: NextPageWithLayout<ISearch> = ({
         ...query,
         page: currentPage
       };
-      router.push({ query: queryParams }, undefined, { scroll: false, shallow: true });
+      router.push({ query: queryParams }, undefined, { scroll: false });
     }
   }, [currentPage]);
 
   //// FILTER ON MOBILE ////
-
-  // Mobile: quando os filtros são abertos no componente de atalhos essa função recebe essa informação e altera o valor de mobileFilterIsOpen para enviar esse valor para o componente de filtragem para que o mesmo seja aberto;
-  const handleMobileFilterIsOpen = (isOpen: boolean) => {
-    setMobileFilterIsOpen(isOpen);
-  };
-
-  //Mobile: Quando os filtros são fechados no componente de filtragem essa função é ativada e muda o valor do estado que controla a abertura dos filtros para false;
-  const handleMobileFilterClose = (isClosed: boolean) => {
-    setMobileFilterIsOpen(isClosed);
-  };
-
-  // Lida com o botão de 'buscar' do filtro quando aberto no mobile;
-  const handleFilterSearchBtn = () => {
-    setIsSearchBtnClicked(true);
-  };
 
   useEffect(() => {
     if (isSearchBtnClicked) {
@@ -138,17 +112,10 @@ const Search: NextPageWithLayout<ISearch> = ({
 
   // Lida com o comportamento de fechamento do dropdown de endereço quando há um clique fora do elemento;
   useEffect(() => {
-    document.addEventListener('click', handleClick);
-    return () => document.removeEventListener('click', handleClick);
-    function handleClick(event: MouseEvent) {
-      if (ref && ref.current) {
-        const myRef = ref.current;
-        if (!myRef.contains(event.target as Node)) {
-          setOpen(false);
-        }
-      }
-    }
-  });
+    const clickHandler = handleClickOutside(ref, setOpen);
+    document.addEventListener('click', clickHandler);
+    return () => document.removeEventListener('click', clickHandler);
+  }, [ref, setOpen]);
 
   //// CARDS VISUALIZATION MODE ////
 
@@ -167,15 +134,15 @@ const Search: NextPageWithLayout<ISearch> = ({
       <Header />
       <div className="flex items-center justify-center mt-20">
         <div className="lg:flex justify-center max-w-[1232px]">
-          <div className="flex flex-col md:flex-row mt-[-16px]. md:mt-0">
-            <div className="mx-auto">
+          <div className="flex flex-col lg:flex-row mt-[-16px]. md:mt-0">
+            <div className="mx-auto md:w-full">
               <FilterList
                 locationProp={locations}
                 tagsProp={tagsData}
                 mobileFilterIsOpenProp={mobileFilterIsOpen}
                 isMobileProp={isMobile}
-                onMobileFilterIsOpenChange={handleMobileFilterClose}
-                onSearchBtnClick={handleFilterSearchBtn}
+                onMobileFilterIsOpenChange={(isOpen) => setMobileFilterIsOpen(isOpen)}
+                onSearchBtnClick={() => setIsSearchBtnClicked(true)}
                 locationChangeProp={(loc) => setLocation(loc)}
               />
             </div>
@@ -183,15 +150,17 @@ const Search: NextPageWithLayout<ISearch> = ({
             <div className="flex flex-col">
               <div
                 className={`${
-                  mobileFilterIsOpen ? 'hidden' : ''
-                } md:hidden lg:visible xl:visible`}
+                  mobileFilterIsOpen 
+                  ? 'hidden' 
+                  : ''
+                } flex w-full`}
               >
                 <SearchShortcut
-                  onMobileFilterIsOpenChange={handleMobileFilterIsOpen}
+                  onMobileFilterIsOpenChange={(isOpen) => setMobileFilterIsOpen(isOpen)}
                 />
               </div>
 
-              <div className="flex flex-row items-center justify-evenly px-26 mt-2 md:mt-0 mr-0">
+              <div className="flex flex-row items-center justify-evenly px-26 mt-2 md:mt-5 md:mb-5 mr-0">
                 <h3 className="text-quaternary text-sm md:text-base leading-5 font-extrabold text-justify -ml-2">
                   {propertyInfo.totalCount} Imóveis encontrados com base na
                   pesquisa
@@ -221,7 +190,7 @@ const Search: NextPageWithLayout<ISearch> = ({
                 {/* SearchView - end*/}
                 {!isMobile && (
                   <div ref={ref} onClick={() => setOpen(!open)}>
-                    <div className="flex flex-row items-center justify-around cursor-pointer mb-6 bg-tertiary sm:max-w-[188px] md:w-[188px] h-[44px] font-bold text-sm md:text-lg text-quaternary leading-5 shadow-lg p-[10px] border border-quaternary rounded-[30px] mt-7 md:mr-4 ml-2">
+                    <div className="flex flex-row items-center justify-around cursor-pointer md:my-auto bg-tertiary sm:max-w-[188px] md:w-[188px] h-[44px] font-bold text-sm md:text-lg text-quaternary leading-5 shadow-lg p-[10px] border border-quaternary rounded-[30px] mt-7 md:mr-4 ml-2">
                       <span>Ordenar Por</span>
                       <span><ArrowDropdownIcon open={false} /></span>
                     </div>
@@ -327,8 +296,8 @@ const Search: NextPageWithLayout<ISearch> = ({
                       address,
                       images,
                       metadata,
-                      highlighted,
-                    }: IData) => (
+                      highlighted
+                    }: IData, index) => (
                       <PropertyInfoCard
                         _id={_id}
                         key={_id}
@@ -341,6 +310,7 @@ const Search: NextPageWithLayout<ISearch> = ({
                         bathrooms={metadata[1].amount}
                         parking_spaces={metadata[2].amount}
                         highlighted={highlighted}
+                        propertyInfo={propertyInfo?.docs[index]}
                       />
                     )
                   )}
@@ -371,10 +341,7 @@ export async function getServerSideProps(context: NextPageContext) {
   const filter = [];
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
 
-  if (query.adType) {
-    filter.push({ adType: query.adType });
-  }
-
+  if (query.adType) filter.push({ adType: query.adType });
   if (query.propertyType) {
     const propertyType = query.propertyType.toString();
     const parsedPropertyType = JSON.parse(propertyType);
@@ -382,7 +349,6 @@ export async function getServerSideProps(context: NextPageContext) {
       filter.push({ propertyType: parsedPropertyType });
     }
   }
-
   if (query.propertySubtype) {
     const propertySubtype = query.propertySubtype.toString();
     const parsedPropertySubtype = JSON.parse(propertySubtype);
@@ -390,39 +356,15 @@ export async function getServerSideProps(context: NextPageContext) {
       filter.push({ propertySubtype: parsedPropertySubtype });
     }
   }
-
-  if (query.tags) {
-    filter.push({ tags: query.tags });
-  }
-
-  if (query.minSize) {
-    filter.push({ minSize: query.minSize });
-  }
-
-  if (query.minPrice) {
-    filter.push({ minPrice: query.minPrice });
-  }
-
-  if (query.maxPrice) {
-    filter.push({ maxPrice: query.maxPrice });
-  }
-
-  if (query.minCondominium) {
-    filter.push({ minCondominium: query.minCondominium });
-  }
-
-  if (query.maxCondominium) {
-    filter.push({ maxCondominium: query.maxCondominium });
-  }
-  if (query.bedroom) {
-    filter.push({ bedroom: query.bedroom });
-  }
-  if (query.bathroom) {
-    filter.push({ bathroom: query.bathroom });
-  }
-  if (query.parkingSpaces) {
-    filter.push({ parkingSpaces: query.parkingSpaces });
-  }
+  if (query.tags) filter.push({ tags: query.tags });
+  if (query.minSize) filter.push({ minSize: query.minSize });
+  if (query.minPrice) filter.push({ minPrice: query.minPrice });
+  if (query.maxPrice) filter.push({ maxPrice: query.maxPrice });
+  if (query.minCondominium) filter.push({ minCondominium: query.minCondominium });
+  if (query.maxCondominium) filter.push({ maxCondominium: query.maxCondominium });
+  if (query.bedroom) filter.push({ bedroom: query.bedroom });
+  if (query.bathroom) filter.push({ bathroom: query.bathroom });
+  if (query.parkingSpaces) filter.push({ parkingSpaces: query.parkingSpaces });
   if (query.location) {
     const location = query.location.toString();
     if (location !== 'todos' && query.location !== 'todos') {
@@ -436,19 +378,9 @@ export async function getServerSideProps(context: NextPageContext) {
   //// SORT ////
   let encodedSort;
   if (query.sort !== '') {
-    if (query.sort === 'mostRecent') {
-      encodedSort = encodeURIComponent(JSON.stringify([{ createdAt: -1 }]));
-    }
-    if (query.sort === 'lowestPrice') {
-      encodedSort = encodeURIComponent(
-        JSON.stringify([{ 'prices.0.value': 1 }])
-      );
-    }
-    if (query.sort === 'biggestPrice') {
-      encodedSort = encodeURIComponent(
-        JSON.stringify([{ 'prices.0.value': -1 }])
-      );
-    }
+    if (query.sort === 'mostRecent') encodedSort = encodeURIComponent(JSON.stringify([{ createdAt: -1 }]));
+    if (query.sort === 'lowestPrice') encodedSort = encodeURIComponent(JSON.stringify([{ 'prices.0.value': 1 }]));
+    if (query.sort === 'biggestPrice') encodedSort = encodeURIComponent(JSON.stringify([{ 'prices.0.value': -1 }]));
   }
 
   //// OTHER FETCHES ////
@@ -495,7 +427,3 @@ export async function getServerSideProps(context: NextPageContext) {
     },
   };
 }
-function removeQueryParam(arg0: string) {
-  throw new Error('Function not implemented.');
-}
-
