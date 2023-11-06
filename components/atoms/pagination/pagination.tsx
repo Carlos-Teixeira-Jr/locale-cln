@@ -8,14 +8,14 @@ import TwoArrowRightIcon from '../icons/twoArrowRightIcon';
 
 export interface IPagination {
   totalPages: number;
-  setCurrentPage: any;
-  currentPage: number;
+  setCurrentPage?: any;
+  currentPage?: number;
 }
 
 const Pagination: React.FC<IPagination> = ({
   totalPages,
-  currentPage,
-  setCurrentPage,
+  currentPage = 0,
+  setCurrentPage = () => {},
 }) => {
   const router = useRouter();
   const query = router.query;
