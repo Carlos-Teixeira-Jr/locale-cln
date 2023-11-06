@@ -187,7 +187,6 @@ const CreditCard = ({
           cpf: formattedCpf,
           email: userInfo?.email,
           phone: userInfo?.cellPhone,
-          customer: customerId,
           plan: selectedPlan,
           address: userAddress,
           owner: ownerData?.owner
