@@ -10,25 +10,25 @@ import MyAnnouncesIcon from '../../atoms/icons/myAnnouncesIcon';
 import UserIcon from '../../atoms/icons/userIcon';
 
 type Options = {
-  key: string, 
-  id: string, 
-  icon: ReactNode, 
-  title: string, 
-  link: string
-}
+  key: string;
+  id: string;
+  icon: ReactNode;
+  title: string;
+  link: string;
+};
 
 type SideMenuProps = {
   isOwnerProp: boolean;
   notifications?: [];
+  isMobileProp?: boolean;
 };
 
 const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications }) => {
-  
   const router = useRouter();
   const [activeButton, setActiveButton] = useState('');
   const isMobile = useIsMobile();
   const isOwner = isOwnerProp;
-  
+
   useEffect(() => {
     const path = router.pathname;
 
