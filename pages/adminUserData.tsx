@@ -43,6 +43,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   properties,
   ownerData,
 }) => {
+  console.log("🚀 ~ file: adminUserData.tsx:46 ~ ownerData:", ownerData)
 
   const router = useRouter();
   const isOwner = properties?.docs?.length > 0 ? true : false;
@@ -384,6 +385,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const userId = session?.user.data._id;
   let token = session?.user?.data?.access_token!!;
   let refreshToken = session?.user?.data.refresh_token;
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+  let ownerId;
 
   if (!session) {
     return {
@@ -446,7 +449,22 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       }
     }
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+    try {
+      const ownerIdResponse = await fetch(`${baseUrl}/user/find-owner-by-user`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({_id: userId}),
+      })
+
+      if (ownerIdResponse.ok) {
+        const ownerData = await ownerIdResponse.json();
+        ownerId = ownerData?.owner?._id
+      }
+    } catch (error) {
+      console.error(error)
+    }
 
     const [userData, ownerData, plans, properties] = await Promise.all([
       fetch(`${baseUrl}/user/${userId}`)
@@ -458,7 +476,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          id: userId,
+          _id: userId,
         }),
       })
         .then((res) => res.json())
@@ -472,7 +490,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          ownerId: userId,
+          ownerId,
           page: 1,
         }),
       })
