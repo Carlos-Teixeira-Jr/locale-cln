@@ -435,10 +435,9 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
             </div>
 
             <ChangeAddressCheckbox
-              onAddressCheckboxChange={(value: boolean) =>
-                setIsSameAddress(value)
-              }
-              address={addressData}
+              onAddressCheckboxChange={(value: boolean) => setIsSameAddress(value)}
+              userAddress={addressData}
+              propertyAddress={storedData}
             />
 
             {!isSameAddress && (
