@@ -31,6 +31,7 @@ const PaymentBoard_Step3_5 = ({
 }: IPaymentBoard_Step3_5) => {
 
   const [cardFlag, setardFlag] = useState<string>(storedData ? storedData.paymentData.cardBrand : '');
+  console.log("🚀 ~ file: paymentBoardStep3_5.tsx:34 ~ cardFlag:", cardFlag)
   const [plan, setPlan] = useState<IPlan | undefined>(plans && storedData ? plans.find((plan) => plan._id === storedData.propertyDataStep3.plan) : undefined);
 
   return (
@@ -40,7 +41,7 @@ const PaymentBoard_Step3_5 = ({
           Informações do pagamento
         </h2>
         <div className="flex flex-row justify-between items-center ">
-          <div className="flex flex-col mb-2 lg:mr-96">
+          <div className="flex flex-col">
             
             <h2 className="text-quaternary text-xl md:text-2xl font-medium mb-4">
               PAGAMENTO
@@ -55,13 +56,13 @@ const PaymentBoard_Step3_5 = ({
               PARCELAS
             </h2>
           </div>
-          <div className="flex flex-col items-center">
+          <div className="flex flex-col items-end">
             {cardFlag === '' ? (
               <h2 className="text-quaternary text-lg md:text-2xl font-medium mb-4">
                 Cartão de crédito
               </h2>
             ) : (
-              <div className="flex flex-row items-center justify-between mt-20">
+              <div className="flex flex-row items-center justify-between">
                 <h2 className="text-quaternary text-lg mr-2 md:text-2xl font-medium mb-4">
                   {cardFlag === 'Free' ? '---' : 'Cartão de crédito'}
                 </h2>

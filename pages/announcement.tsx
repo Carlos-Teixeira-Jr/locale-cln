@@ -1,3 +1,4 @@
+import { fetchJson } from '../common/utils/fetchJson';
 import AdvantagesArea from '../components/molecules/advantagesArea/advantagesArea';
 import PlansCards from '../components/molecules/cards/plansCards/plansCards';
 import RegisterCard from '../components/molecules/cards/registrationCard.tsx/registerCard';
@@ -61,10 +62,16 @@ const AnnouncementPage: NextPageWithLayout = ({ plans }: any) => {
 export default AnnouncementPage;
 
 export async function getStaticProps() {
-  const plans = await fetch(`http://localhost:3001/plan`)
-    .then((res) => res.json())
-    .catch(() => ({}));
-  console.log(plans);
+
+  const baseUrl = process.env.BASE_API_URL;
+
+  const [plans] = await Promise.all([
+    fetch(`${baseUrl}/plan`)
+      .then((res) => res.json())
+      .catch(() => []),
+    fetchJson(`${baseUrl}/plan`)
+  ]);
+
   return {
     props: {
       plans,
