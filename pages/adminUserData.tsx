@@ -35,9 +35,11 @@ interface IAdminUserDataPageProps {
   userData: any;
   properties: IPropertyInfo;
   ownerData: IOwnerData;
+  notifications: [];
 }
 
 const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
+  notifications,
   plans,
   userData,
   properties,
@@ -262,7 +264,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       <div className="flex flex-row items-center max-w-[1232px] justify-center">
         {!isMobile && (
           <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:flex">
-            <SideMenu isOwnerProp={isOwner} notifications={[]} />
+            <SideMenu isOwnerProp={isOwner} notifications={notifications} />
           </div>
         )}
 
@@ -438,44 +440,55 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
     const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
 
-    const [userData, ownerData, plans, properties] = await Promise.all([
-      fetch(`${baseUrl}/user/${userId}`)
-        .then((res) => res.json())
-        .catch(() => []),
-      fetch(`${baseUrl}/user/find-owner-by-user`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id: userId,
-        }),
-      })
-        .then((res) => res.json())
-        .catch(() => []),
-      fetch(`${baseUrl}/plan`)
-        .then((res) => res.json())
-        .catch(() => []),
-      fetch(`${baseUrl}/property/owner-properties`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ownerId: userId,
-          page: 1,
-        }),
-      })
-        .then((res) => res.json())
-        .catch(() => []),
-      fetchJson(`${baseUrl}/user/${userId}`),
-      fetchJson(`${baseUrl}/user/find-owner-by-user`),
-      fetchJson(`${baseUrl}/plan`),
-      fetchJson(`${baseUrl}/property/owner-properties`),
-    ]);
+    const [notifications, userData, ownerData, plans, properties] =
+      await Promise.all([
+        fetch(`${baseUrl}/notification/${userId}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+          .then((res) => res.json())
+          .catch(() => []),
+        fetch(`${baseUrl}/user/${userId}`)
+          .then((res) => res.json())
+          .catch(() => []),
+        fetch(`${baseUrl}/user/find-owner-by-user`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: userId,
+          }),
+        })
+          .then((res) => res.json())
+          .catch(() => []),
+        fetch(`${baseUrl}/plan`)
+          .then((res) => res.json())
+          .catch(() => []),
+        fetch(`${baseUrl}/property/owner-properties`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ownerId: userId,
+            page: 1,
+          }),
+        })
+          .then((res) => res.json())
+          .catch(() => []),
+        fetchJson(`${baseUrl}/notification/${userId}`),
+        fetchJson(`${baseUrl}/user/${userId}`),
+        fetchJson(`${baseUrl}/user/find-owner-by-user`),
+        fetchJson(`${baseUrl}/plan`),
+        fetchJson(`${baseUrl}/property/owner-properties`),
+      ]);
 
     return {
       props: {
+        notifications,
         userData,
         plans,
         properties,

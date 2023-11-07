@@ -1,69 +1,69 @@
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import { GetServerSidePropsContext } from 'next';
+import { getSession } from 'next-auth/react';
+import { destroyCookie } from 'nookies';
+import { IFavProperties } from '../common/interfaces/properties/favouriteProperties';
+import {
+  IData,
+  IPropertyInfo,
+} from '../common/interfaces/property/propertyData';
+import { fetchJson } from '../common/utils/fetchJson';
+import Pagination from '../components/atoms/pagination/pagination';
 import PropertyCard from '../components/molecules/cards/propertyCard/PropertyCard';
 import AdminHeader from '../components/organisms/adminHeader/adminHeader';
 import SideMenu from '../components/organisms/sideMenu/sideMenu';
 import { NextPageWithLayout } from './page';
-import { getSession } from 'next-auth/react';
-import { destroyCookie } from 'nookies';
-import jwt, { JwtPayload } from 'jsonwebtoken';
-import { fetchJson } from '../common/utils/fetchJson';
-import { IData, IPropertyInfo } from '../common/interfaces/property/propertyData';
-import { IFavProperties } from '../common/interfaces/properties/favouriteProperties';
-import Pagination from '../components/atoms/pagination/pagination';
 
 interface IAdminFavProperties {
-  favouriteProperties: IFavProperties
-  properties: IPropertyInfo
+  favouriteProperties: IFavProperties;
+  properties: IPropertyInfo;
+  notifications: [];
 }
 
 const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
   favouriteProperties,
-  properties
+  properties,
+  notifications,
 }) => {
-
   const isOwner = properties?.docs?.length > 0 ? true : false;
-  
+
   return (
     <>
-      <AdminHeader isOwnerProp={isOwner}/>
+      <AdminHeader isOwnerProp={isOwner} />
       <div className="flex flex-row items-center justify-evenly">
         <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:flex">
-          <SideMenu 
-            isOwnerProp={isOwner}
-            notifications={[]}          
-          />
+          <SideMenu isOwnerProp={isOwner} notifications={notifications} />
         </div>
         <div className="flex flex-col items-center mt-24 w-full lg:pl-72">
           <div className="flex flex-col items-center mb-5 max-w-[1215px]">
             <h1 className="font-extrabold text-2xl md:text-4xl text-quaternary md:mb-5 text-center">
               Imóveis Favoritos
             </h1>
-            <Pagination 
-              totalPages={favouriteProperties?.totalPages} 
-            />  
+            <Pagination totalPages={favouriteProperties?.totalPages} />
             <div className="flex flex-col md:flex-row flex-wrap md:gap-10 lg:gap-20 my-5 justify-center">
-              {favouriteProperties?.docs.length > 0 && favouriteProperties.docs.map(
-                ({
-                  _id,
-                  prices,
-                  address,
-                  images,
-                  highlighted,
-                  description
-                }: IData) => (
-                <PropertyCard
-                  key={_id}
-                  description={description}
-                  images={images}
-                  location={`${address.city}, ${address.uf} - ${address.streetName}`}
-                  favorited={highlighted} 
-                  id={_id} 
-                  prices={prices} 
-                  highlighted={highlighted} 
-                />
-              ))}
-              
-            </div> 
+              {favouriteProperties?.docs.length > 0 &&
+                favouriteProperties.docs.map(
+                  ({
+                    _id,
+                    prices,
+                    address,
+                    images,
+                    highlighted,
+                    description,
+                  }: IData) => (
+                    <PropertyCard
+                      key={_id}
+                      description={description}
+                      images={images}
+                      location={`${address.city}, ${address.uf} - ${address.streetName}`}
+                      favorited={highlighted}
+                      id={_id}
+                      prices={prices}
+                      highlighted={highlighted}
+                    />
+                  )
+                )}
+            </div>
             {/* <Pagination 
               totalPages={0} 
             /> */}
@@ -76,9 +76,8 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
 
 export default AdminFavProperties;
 
-export async function getServerSideProps(context:GetServerSidePropsContext) {
-
-  const session = await getSession(context) as any;
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const session = (await getSession(context)) as any;
   const userId = session?.user.data._id;
   let token;
   let refreshToken;
@@ -87,8 +86,8 @@ export async function getServerSideProps(context:GetServerSidePropsContext) {
     return {
       redirect: {
         destination: '/login',
-        permanent: false
-      }
+        permanent: false,
+      },
     };
   } else {
     token = session?.user.data.access_token!!;
@@ -97,7 +96,7 @@ export async function getServerSideProps(context:GetServerSidePropsContext) {
     const isTokenExpired = decodedToken.exp
       ? decodedToken.exp <= Math.floor(Date.now() / 1000)
       : false;
-    
+
     if (isTokenExpired) {
       const decodedRefreshToken = jwt.decode(refreshToken) as JwtPayload;
       const isRefreshTokenExpired = decodedRefreshToken.exp
@@ -111,19 +110,19 @@ export async function getServerSideProps(context:GetServerSidePropsContext) {
         return {
           redirect: {
             destination: '/login',
-            permanent: false
-          }
-        }
+            permanent: false,
+          },
+        };
       } else {
         try {
           const response = await fetch('http://localhost:3001/auth/refresh', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              refresh_token: refreshToken
-            })
+              refresh_token: refreshToken,
+            }),
           });
 
           if (response.ok) {
@@ -136,7 +135,7 @@ export async function getServerSideProps(context:GetServerSidePropsContext) {
             token = newToken;
             session.user.data.access_token = newToken;
           } else {
-            console.log("Não foi possível atualizar o token.");
+            console.log('Não foi possível atualizar o token.');
           }
         } catch (error) {
           console.log(error);
@@ -146,40 +145,50 @@ export async function getServerSideProps(context:GetServerSidePropsContext) {
 
     const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
 
-    const [favouriteProperties, properties] = await Promise.all([
+    const [notifications, favouriteProperties, properties] = await Promise.all([
+      fetch(`${baseUrl}/notification/${userId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then((res) => res.json())
+        .catch(() => []),
       fetch(`${baseUrl}/user/favourite`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           id: userId,
-          page: 1
-        })
+          page: 1,
+        }),
       })
-      .then((res) => res.json())
-      .catch(() => []),
+        .then((res) => res.json())
+        .catch(() => []),
       fetch(`${baseUrl}/property/owner-properties`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           ownerId: userId,
-          page: 1
-        })
+          page: 1,
+        }),
       })
-      .then((res) => res.json())
-      .catch(() => []),
+        .then((res) => res.json())
+        .catch(() => []),
+      fetchJson(`${baseUrl}/notification/${userId}`),
       fetchJson(`${baseUrl}/user/favourite`),
-      fetchJson(`${baseUrl}/property/owner-properties`)
+      fetchJson(`${baseUrl}/property/owner-properties`),
     ]);
 
     return {
       props: {
         favouriteProperties,
-        properties
-      }
-    }
+        properties,
+        notifications,
+      },
+    };
   }
 }

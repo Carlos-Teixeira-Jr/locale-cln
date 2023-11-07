@@ -1,13 +1,12 @@
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
+import LoginCard from '../components/molecules/cards/loginCard/loginCard';
 import Footer from '../components/organisms/footer/footer';
 import Header from '../components/organisms/header/header';
 import { NextPageWithLayout } from './page';
-import LoginCard from '../components/molecules/cards/loginCard/loginCard';
-import jwt, { JwtPayload } from 'jsonwebtoken';
 
 const LoginPage: NextPageWithLayout = () => {
-
   return (
     <>
       <Header />
@@ -22,7 +21,7 @@ const LoginPage: NextPageWithLayout = () => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session = await getSession(context) as any;
+  const session = (await getSession(context)) as any;
 
   let token;
   let refreshToken;
@@ -35,30 +34,30 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     token = session.user?.data.access_token!!;
     refreshToken = session.user?.data.refresh_token;
     const decodedToken = jwt.decode(token) as JwtPayload;
-    const isTokenExpired = decodedToken.exp
-      ? decodedToken.exp <= Math.floor(Date.now() / 1000)
+    const isTokenExpired = decodedToken?.exp
+      ? decodedToken?.exp <= Math.floor(Date.now() / 1000)
       : false;
-    
+
     if (isTokenExpired) {
       const decodedRefreshToken = jwt.decode(refreshToken) as JwtPayload;
-      const isRefreshTokenExpired = decodedRefreshToken.exp
-        ? decodedRefreshToken.exp <= Math.floor(Date.now() / 1000)
+      const isRefreshTokenExpired = decodedRefreshToken?.exp
+        ? decodedRefreshToken?.exp <= Math.floor(Date.now() / 1000)
         : false;
 
       if (isRefreshTokenExpired) {
         return {
-          props: {}
-        }
+          props: {},
+        };
       } else {
         try {
           const response = await fetch('http://localhost:3001/auth/refresh', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              refresh_token: refreshToken
-            })
+              refresh_token: refreshToken,
+            }),
           });
 
           if (response.ok) {
@@ -77,7 +76,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
               },
             };
           } else {
-            console.log("erro na chamada");
+            console.log('erro na chamada');
           }
         } catch (error) {
           console.log(error);

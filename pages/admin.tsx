@@ -16,12 +16,12 @@ import { NextPageWithLayout } from './page';
 
 interface AdminPageProps {
   ownerProperties: IOwnerProperties;
-  dataNot: [];
+  notifications: [];
 }
 
 const AdminPage: NextPageWithLayout<AdminPageProps> = ({
   ownerProperties,
-  dataNot,
+  notifications,
 }) => {
   const { data: session } = useSession() as any;
   const [isOwner, setIsOwner] = useState<boolean>(false);
@@ -39,7 +39,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
           <SideMenu
             isOwnerProp={isOwner}
             isMobileProp={false}
-            notifications={dataNot}
+            notifications={notifications}
           />
         </div>
         <div className="flex flex-col items-center mt-24 lg:ml-[305px]">
@@ -104,17 +104,17 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       },
     };
   } else {
-    token = session?.user.data.access_token!!;
-    refreshToken = session.user?.data.refresh_token;
+    token = session?.user?.data.access_token!!;
+    refreshToken = session?.user?.data.refresh_token;
     const decodedToken = jwt.decode(token) as JwtPayload;
-    const isTokenExpired = decodedToken.exp
-      ? decodedToken.exp <= Math.floor(Date.now() / 1000)
+    const isTokenExpired = decodedToken?.exp
+      ? decodedToken?.exp <= Math.floor(Date.now() / 1000)
       : false;
 
     if (isTokenExpired) {
       const decodedRefreshToken = jwt.decode(refreshToken) as JwtPayload;
-      const isRefreshTokenExpired = decodedRefreshToken.exp
-        ? decodedRefreshToken.exp <= Math.floor(Date.now() / 1000)
+      const isRefreshTokenExpired = decodedRefreshToken?.exp
+        ? decodedRefreshToken?.exp <= Math.floor(Date.now() / 1000)
         : false;
 
       if (isRefreshTokenExpired) {
@@ -158,8 +158,15 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     }
 
     const baseUrl = process.env.BASE_API_URL;
-
-    const [ownerProperties] = await Promise.all([
+    const [notifications, ownerProperties] = await Promise.all([
+      fetch(`${baseUrl}/notification/${userId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then((res) => res.json())
+        .catch(() => []),
       fetch(`${baseUrl}/property/owner-properties`, {
         method: 'POST',
         headers: {
@@ -172,25 +179,15 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       })
         .then((res) => res.json())
         .catch(() => []),
+      fetchJson(`${baseUrl}/notification/${userId}`),
+
       fetchJson(`${baseUrl}/property/owner-properties`),
     ]);
-
-    const notifications = await fetch(
-      `http://localhost:3001/notification/64da04b6052b4d12939684b0`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    );
-
-    const dataNot = await notifications.json();
 
     return {
       props: {
         ownerProperties,
-        dataNot,
+        notifications,
       },
     };
   }
