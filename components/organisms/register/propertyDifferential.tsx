@@ -280,13 +280,13 @@ const PropertyDifferentials = ({
               </button>
             </div>
           </div>
-          <div className="flex">
+          <div className="flex flex-wrap my-5 gap-2">
             {updatedCondominiumTags.map((tag) => (
               <span
                 className="bg-tertiary text-quaternary text-base font-semibold rounded-full drop-shadow-lg grid grid-flow-col border border-quaternary ml-2"
                 key={tag}
               >
-                <p className="m-1">{tag}</p>
+                <p className="m-1 whitespace-nowrap">{tag}</p>
                 <div
                   className="w-5 h-5 flex items-center justify-center my-auto mr-2 bg-quaternary rounded-full cursor-pointer"
                   onClick={() => {

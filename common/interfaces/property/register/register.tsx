@@ -1,4 +1,4 @@
-import { announcementType, announcementSubtype, propType, propSubtype, IAddress, IMetadata, ISize, IPrices, IGeolocation } from "../propertyData";
+import { announcementType, announcementSubtype, propType, propSubtype, IAddress, IMetadata, ISize, IPrices } from "../propertyData";
 
 export interface IRegisterMainFeatures {
   adType: announcementType,

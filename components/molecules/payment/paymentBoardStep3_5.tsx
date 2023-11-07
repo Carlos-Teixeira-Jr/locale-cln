@@ -31,7 +31,6 @@ const PaymentBoard_Step3_5 = ({
 }: IPaymentBoard_Step3_5) => {
 
   const [cardFlag, setardFlag] = useState<string>(storedData ? storedData.paymentData.cardBrand : '');
-  console.log("🚀 ~ file: paymentBoardStep3_5.tsx:34 ~ cardFlag:", cardFlag)
   const [plan, setPlan] = useState<IPlan | undefined>(plans && storedData ? plans.find((plan) => plan._id === storedData.propertyDataStep3.plan) : undefined);
 
   return (

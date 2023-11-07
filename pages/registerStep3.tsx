@@ -86,6 +86,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     lat: number;
     lng: number;
   } | null>(null);
+
   const [selectedPlan, setSelectedPlan] = useState(choosedPlan);
   const freePlan = '645a46d4388b9fbde84b6e8a';
   const reversedCards = [...plans].reverse();
@@ -286,7 +287,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         _id: userId ? userId : '',
         username: userDataForm.username,
         email: userDataForm.email,
-        address: !isSameAddress && storedData.address ? storedData.address : addressData,
+        address: isSameAddress ? storedData.address : addressData,
         cpf: userDataForm.cpf.replace(/\D/g, ''),
       };
 
