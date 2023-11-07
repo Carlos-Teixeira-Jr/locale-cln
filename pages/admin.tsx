@@ -34,7 +34,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
 
   return (
     <div>
-      <AdminHeader />
+      <AdminHeader isOwnerProp={isOwner} />
       <div className="flex flex-row items-center justify-evenly">
         <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:flex">
           <SideMenu
@@ -52,8 +52,6 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
 
             <Pagination totalPages={ownerProperties.totalPages} />
           </div>
-
-          <h1>{session?.email}</h1>
 
           <div className="mb-10">
             {isOwner &&
