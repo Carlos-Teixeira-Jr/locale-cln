@@ -23,7 +23,6 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
   ownerProperties,
   dataNot,
 }) => {
-  console.log("🚀 ~ file: admin.tsx:26 ~ ownerProperties:", ownerProperties)
 
   const { data: session } = useSession() as any;
   const [isOwner, setIsOwner] = useState<boolean>(false);

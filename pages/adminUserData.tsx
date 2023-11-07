@@ -43,7 +43,6 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   properties,
   ownerData,
 }) => {
-  console.log("🚀 ~ file: adminUserData.tsx:46 ~ ownerData:", ownerData)
 
   const router = useRouter();
   const isOwner = properties?.docs?.length > 0 ? true : false;
@@ -55,7 +54,9 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const isEdit = true;
   const isMobile = useIsMobile();
   const reversedCards = [...plans].reverse();
-  const creditCardInfo = ownerData?.owner?.isNewCreditCard ? ownerData?.owner?.newCreditCardData.creditCard.number : ownerData?.owner?.creditCardInfo;
+  const creditCardInfo = ownerData?.owner?.isNewCreditCard 
+    ? ownerData?.owner?.newCreditCardData.creditCard.number 
+    : ownerData?.owner?.creditCardInfo;
 
   const planObj = plans.find((plan) => plan._id === selectedPlan);
 
