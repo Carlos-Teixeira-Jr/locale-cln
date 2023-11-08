@@ -16,7 +16,7 @@ import Image from "next/image";
 import MessageInfoCard from "../../components/molecules/cards/messageInfoCard/messageInfoCard";
 
 interface IMessagePage {
-  messages: any,
+  messages: any[],
   property: IData
 }
 
@@ -53,8 +53,8 @@ const MessagePage = ({
           />
         </div>
 
-        <div className="flex flex-col items-center mt-24">
-          <div className="flex flex-col items-center">
+        <div className="flex flex-col mt-24 lg:ml-[330px] w-full mr-10">
+          <div className="flex flex-col">
 
             <h1 className="font-extrabold text-2xl md:text-4xl text-quaternary md:mb-10">
               Mensagens
@@ -80,11 +80,22 @@ const MessagePage = ({
 
             <Pagination totalPages={0} />
 
-            {message?.messages.map((message: any) => {
+            {message?.messages.map(
+              ({
+                name,
+                email,
+                phone,
+                message,
+                _id
+              }: IMessage) => (
               <MessageInfoCard
-                name={message?.name}
+                key={_id}
+                name={name}
+                email={email}
+                message={message}
+                phone={phone}
               />
-            })}
+            ))}
             
           </div>
         </div>

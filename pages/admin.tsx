@@ -200,9 +200,12 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           'Content-Type': 'application/json',
         },
       }
-    );
+    )
+      .then((res) => res.json())
+      .catch(() => [])
 
-    const dataNot = await notifications.json();
+
+    const dataNot = notifications;
 
     return {
       props: {

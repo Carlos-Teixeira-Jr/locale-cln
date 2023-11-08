@@ -22,11 +22,13 @@ interface IMessages {
 interface IAdminMessagesPage {
   ownerProperties: IOwnerProperties
   messages: IMessages
+  dataNot: []
 }
 
 const AdminMessages = ({
   ownerProperties,
-  messages
+  messages,
+  dataNot
 }: IAdminMessagesPage) => {
   console.log("🚀 ~ file: adminMessages.tsx:22 ~ messages:", messages)
 
@@ -46,20 +48,21 @@ const AdminMessages = ({
         <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:flex">
           <SideMenu
             isOwnerProp={isOwner}
+            notifications={dataNot}
           />
         </div>
 
-        <div className="flex flex-col items-center mt-24 lg:ml-[305px]">
+        <div className="flex flex-col items-center mt-24 w-full lg:ml-[305px]">
           <div className="flex flex-col items-center">
 
-            <h1 className="font-extrabold text-2xl md:text-4xl text-quaternary md:mb-10 md:mr-20 text-center">
+            <h1 className="font-extrabold text-2xl md:text-4xl text-quaternary md:mb-5 text-center">
               Mensagens
             </h1>
 
             <Pagination totalPages={messages?.totalPages} />
           </div>
 
-          <div className="mb-10">
+          <div className="mb-10 flex gap-10">
             {messages?.docs.length > 0 && messages?.properties?.map(
               ({
                 _id,
@@ -207,9 +210,11 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           'Content-Type': 'application/json',
         },
       }
-    );
+    )
+      .then((res) => res.json())
+      .catch(() => [])
 
-    const dataNot = await notifications.json();
+    const dataNot = notifications;
 
     return {
       props: {

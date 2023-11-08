@@ -23,36 +23,39 @@ const MessagesCard = ({
   const router = useRouter();
 
   return (
-    <div className="lg:flex justify-center mx-auto">
-      <div className="rounded-[30px] bg-tertiary w-fit my-10 drop-shadow-lg">
+    <div 
+      className="lg:flex justify-center mx-auto cursor-pointer"
+      onClick={() =>{
+        router.push(`/message/${propertyId}`)
+      }}
+    >
+      <div className="rounded-[30px] bg-tertiary w-fit my-10 drop-shadow-lg flex flex-col justify-between">
         <div className="md:w-64 h-fit">
-          <Image
-            src={image}
-            alt={''}
-            width="280"
-            height="135"
-            className="max-h-[135px]"
-          />
+          <div className="rounded-t-[30px] w-full">
+            <Image
+              src={image}
+              alt={'Property image'}
+              width={150}
+              height={150}
+              className="rounded-t-[30px] w-full"
+            />
+          </div>
+          
         </div>
         <div className="bg-tertiary rounded-b-[30px] mx-5">
-          <h2 className="text-xl my-3 font-bold leading-6">
+          <h2 className="text-lg my-3 font-bold leading-6">
             {`${address.streetName}, ${address.streetNumber}`}
           </h2>
           <p className="text-xs text-quaternary">{address.neighborhood}</p>
           <p className="text-xs text-quaternary">{`${address.city} - ${address.uf}`}</p>
           <div 
             className="pb-2 mt-2 flex" 
-            onClick={() =>{
-              router.push({
-                pathname: router.pathname,
-                query: propertyId
-              })
-            }}
+
           >
             <div className="mr-1">
-              <MessageBalloonIcon fill="#6B7280" viewBox="0 96 1200 1200" />
+              <MessageBalloonIcon fill="#6B7280" viewBox="0 96 1200 1200" width='34'/>
             </div>
-            <p className="text-xl font-bold text-quaternary">{`${messages.length}`} {messages.length > 1 || messages.length === 0 ? 'Mensagens' : 'Mensagem'}</p>
+            <p className="text-lg font-bold text-quaternary">{`${messages.length}`} {messages.length > 1 || messages.length === 0 ? 'Mensagens' : 'Mensagem'}</p>
           </div>
         </div>
       </div>

@@ -152,7 +152,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications }) => {
                 <Link href={link} key={key}>
                   <div key={key}>
                     <button
-                      className="flex mx-5 py-4"
+                      className="flex mx-5 py-2"
                       onClick={() => setActiveButton(id)}
                     >
                       {icon}
