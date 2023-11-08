@@ -337,6 +337,7 @@ const Search: NextPageWithLayout<ISearch> = ({
 export default Search;
 
 export async function getServerSideProps(context: NextPageContext) {
+  
   const { query } = context;
   const filter = [];
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;

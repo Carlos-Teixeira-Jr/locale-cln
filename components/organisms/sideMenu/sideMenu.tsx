@@ -8,6 +8,7 @@ import HeartIcon from '../../atoms/icons/heartIcon';
 import MailIcon from '../../atoms/icons/mailIcon';
 import MyAnnouncesIcon from '../../atoms/icons/myAnnouncesIcon';
 import UserIcon from '../../atoms/icons/userIcon';
+import { useSession } from 'next-auth/react';
 
 type Options = {
   key: string;
@@ -24,6 +25,7 @@ type SideMenuProps = {
 };
 
 const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications }) => {
+
   const router = useRouter();
   const [activeButton, setActiveButton] = useState('');
   const isMobile = useIsMobile();
