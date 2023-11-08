@@ -48,8 +48,9 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
               Bem vindo{' '}
               {session?.username !== undefined ? session?.username : ''}!
             </h1>
-
-            <Pagination totalPages={ownerProperties.totalPages} />
+            {isOwner && ownerProperties?.docs && (
+              <Pagination totalPages={ownerProperties.totalPages} />
+            )}
           </div>
 
           <h1>{session?.email}</h1>
