@@ -35,7 +35,7 @@ const MessagePage = ({
   const router = useRouter();
   const query = router.query as any;
   const propertyId = query.id;
-  const propertyData = message?.property
+  const propertyData = message?.property;
 
   // Determina se o usuário já possui anúncios ou não;
   useEffect(() => {
