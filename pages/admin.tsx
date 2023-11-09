@@ -39,7 +39,6 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
         <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:flex">
           <SideMenu
             isOwnerProp={isOwner}
-            isMobileProp={false}
             notifications={dataNot}
           />
         </div>
@@ -203,7 +202,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     )
       .then((res) => res.json())
       .catch(() => [])
-
 
     const dataNot = notifications;
 

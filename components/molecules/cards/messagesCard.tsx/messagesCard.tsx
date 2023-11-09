@@ -26,10 +26,13 @@ const MessagesCard = ({
     <div 
       className="lg:flex justify-center mx-auto cursor-pointer"
       onClick={() =>{
-        router.push(`/message/${propertyId}`)
+        router.push({
+          pathname: `/message/${propertyId}`,
+          query: { page: 1 }
+        })
       }}
     >
-      <div className="rounded-[30px] bg-tertiary w-fit my-10 drop-shadow-lg flex flex-col justify-between">
+      <div className="rounded-[30px] bg-tertiary w-fit m-2 lg:my-10 drop-shadow-lg flex flex-col justify-between">
         <div className="md:w-64 h-fit">
           <div className="rounded-t-[30px] w-full">
             <Image

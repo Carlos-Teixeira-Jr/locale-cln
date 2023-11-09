@@ -8,7 +8,6 @@ import HeartIcon from '../../atoms/icons/heartIcon';
 import MailIcon from '../../atoms/icons/mailIcon';
 import MyAnnouncesIcon from '../../atoms/icons/myAnnouncesIcon';
 import UserIcon from '../../atoms/icons/userIcon';
-import { useSession } from 'next-auth/react';
 
 type Options = {
   key: string;
@@ -33,6 +32,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications }) => {
 
   useEffect(() => {
     const path = router.pathname;
+    const messageIdPath = 'message'
 
     if (path === '/admin') {
       setActiveButton(isOwner ? 'my-announces-button' : 'favourites-button');
@@ -40,9 +40,9 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications }) => {
       setActiveButton('my-data-button');
     } else if (path === '/adminFavProperties') {
       setActiveButton('favourites-button');
-    } else if (path === '/admin-messages') {
+    } else if (path === '/adminMessages' || path.includes(messageIdPath)) {
       setActiveButton('messages-button');
-    } else if (path === '/admin-notification') {
+    } else if (path === '/adminNotifications') {
       setActiveButton('notifications-button');
     }
   }, [router.pathname, isOwner]);
@@ -149,25 +149,33 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications }) => {
               id === 'my-data-button'
             ) {
               return (
-                <Link href={link} key={key}>
-                  <div key={key}>
-                    <button
-                      className="flex mx-5 py-2"
-                      onClick={() => setActiveButton(id)}
+                <div 
+                  key={key}
+                  onClick={() => {
+                    router.push({
+                      pathname: link,
+                      query: {
+                        page: 1
+                      }
+                    })
+                  }}
+                >
+                  <button
+                    className="flex mx-5 py-1.5"
+                    onClick={() => setActiveButton(id)}
+                  >
+                    {icon}
+                    <h2
+                      className={`text-xl font-bold leading-7 my-auto transition-colors duration-300 ${
+                        activeButton === id
+                          ? 'text-secondary hover:text-yellow'
+                          : 'text-quaternary hover:text-gray-700'
+                      }`}
                     >
-                      {icon}
-                      <h2
-                        className={`text-xl font-bold leading-7 my-auto transition-colors duration-300 ${
-                          activeButton === id
-                            ? 'text-secondary hover:text-yellow'
-                            : 'text-quaternary hover:text-gray-700'
-                        }`}
-                      >
-                        {title}
-                      </h2>
-                    </button>
-                  </div>
-                </Link>
+                      {title}
+                    </h2>
+                  </button>
+                </div>
               );
             }
             return null;

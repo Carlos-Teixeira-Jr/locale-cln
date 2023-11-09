@@ -34,7 +34,7 @@ const MessageInfoCard = ({
   }, [message]);
 
   return (
-    <div className="w-full h-fit border border-quaternary text-quaternary flex flex-col p-2 my-5">
+    <div className="w-full h-fit border border-quaternary text-quaternary flex flex-col p-2 my-5 max-w-[1232px]">
       <div className="flex gap-2">
         <UserIcon
           fill="#6B7280"

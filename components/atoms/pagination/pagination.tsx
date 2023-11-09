@@ -27,7 +27,7 @@ const Pagination: React.FC<IPagination> = ({
   }, [totalPages]);
 
   return (
-    <div className="flex flex-row items-center gap-2 mt-2 h-10">
+    <div className="flex flex-row items-center gap-2 my-2 h-10">
       {!isMobile ? (
         <>
           <div

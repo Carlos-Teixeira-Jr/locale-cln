@@ -11,6 +11,7 @@ import { IOwnerProperties } from '../common/interfaces/properties/propertiesList
 import AdminHeader from '../components/organisms/adminHeader/adminHeader';
 import { IData } from '../common/interfaces/property/propertyData';
 import { IMessage } from '../common/interfaces/message/messages';
+import { useRouter } from 'next/router';
 
 interface IMessages {
   docs: IMessage[]
@@ -30,9 +31,37 @@ const AdminMessages = ({
   messages,
   dataNot
 }: IAdminMessagesPage) => {
-  console.log("🚀 ~ file: adminMessages.tsx:22 ~ messages:", messages)
 
+  const router = useRouter();
+  const query = router.query as any;
   const [isOwner, setIsOwner] = useState<boolean>(false);
+  const properties = messages?.properties;
+  const messagesCount = messages?.docs?.length;
+  const totalPages = messages?.totalPages;
+  const [currentPage, setCurrentPage] = useState(1);
+
+  //// PAGE ////
+
+  useEffect(() => {
+    if (router.query.page !== undefined && typeof query.page === 'string') {
+      const parsedPage = parseInt(query.page)
+      setCurrentPage(parsedPage)
+    }
+  })
+
+  useEffect(() => {
+    // Check if the page parameter in the URL matches the current page
+    const pageQueryParam = router.query.page !== undefined && typeof query.page === 'string' ? parseInt(query.page) : 1;
+
+    // Only update the URL if the page parameter is different from the current page
+    if (pageQueryParam !== currentPage) {
+      const queryParams = {
+        ...query,
+        page: currentPage
+      };
+      router.push({ query: queryParams }, undefined, { scroll: false });
+    }
+  }, [currentPage]);
 
   // Determina se o usuário já possui anúncios ou não;
   useEffect(() => {
@@ -59,11 +88,15 @@ const AdminMessages = ({
               Mensagens
             </h1>
 
-            <Pagination totalPages={messages?.totalPages} />
+            <Pagination 
+              totalPages={totalPages} 
+              setCurrentPage={setCurrentPage} 
+              currentPage={currentPage}
+            />
           </div>
 
-          <div className="mb-10 flex gap-10">
-            {messages?.docs.length > 0 && messages?.properties?.map(
+          <div className="lg:mb-10 flex flex-col md:flex-row lg:gap-10">
+            {messagesCount > 0 && properties.map(
               ({
                 _id,
                 images,
@@ -91,6 +124,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const userId = session?.user.data._id;
   let token;
   let refreshToken;
+  const page = Number(context.query.page);
 
   if (!session) {
     return {
@@ -193,7 +227,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         },
         body: JSON.stringify({
           ownerId,
-          page: 1,
+          page,
         }),
       })
         .then((res) => res.json())

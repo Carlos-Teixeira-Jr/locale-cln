@@ -8,34 +8,63 @@ import { useEffect, useState } from "react";
 import SideMenu from "../../components/organisms/sideMenu/sideMenu";
 import Pagination from "../../components/atoms/pagination/pagination";
 import { IOwnerProperties } from "../../common/interfaces/properties/propertiesList";
-import MessagesCard from "../../components/molecules/cards/messagesCard.tsx/messagesCard";
 import { IMessage } from "../../common/interfaces/message/messages";
-import { useRouter } from "next/router";
 import { IData } from "../../common/interfaces/property/propertyData";
 import Image from "next/image";
 import MessageInfoCard from "../../components/molecules/cards/messageInfoCard/messageInfoCard";
+import { useRouter } from "next/router";
 
 interface IMessagePage {
-  messages: any[],
+  messages: {
+    messagesDocs: any[],
+    count: number,
+    totalPages: number
+  },
   property: IData
 }
 
 interface IMessagePage {
   ownerProperties: IOwnerProperties
   message: IMessagePage
+  dataNot: []
 }
 
 const MessagePage = ({
   ownerProperties,
-  message
+  message,
+  dataNot
 }: IMessagePage) => {
-  console.log("🚀 ~ file: [id].tsx:32 ~ message:", message)
 
-  const [isOwner, setIsOwner] = useState<boolean>(false);
   const router = useRouter();
   const query = router.query as any;
-  const propertyId = query.id;
+  const [isOwner, setIsOwner] = useState<boolean>(false);
   const propertyData = message?.property;
+  const messagesDocs = message?.messages.messagesDocs;
+  const totalPages = message?.messages.totalPages;
+  const [currentPage, setCurrentPage] = useState(1);
+
+  //// PAGE ////
+
+  useEffect(() => {
+    if (router.query.page !== undefined && typeof query.page === 'string') {
+      const parsedPage = parseInt(query.page)
+      setCurrentPage(parsedPage)
+    }
+  })
+
+  useEffect(() => {
+    // Check if the page parameter in the URL matches the current page
+    const pageQueryParam = router.query.page !== undefined && typeof query.page === 'string' ? parseInt(query.page) : 1;
+
+    // Only update the URL if the page parameter is different from the current page
+    if (pageQueryParam !== currentPage) {
+      const queryParams = {
+        ...query,
+        page: currentPage
+      };
+      router.push({ query: queryParams }, undefined, { scroll: false });
+    }
+  }, [currentPage]);
 
   // Determina se o usuário já possui anúncios ou não;
   useEffect(() => {
@@ -46,41 +75,48 @@ const MessagePage = ({
     <main>
       <AdminHeader isOwnerProp={isOwner} />
 
-      <div className="flex flex-row items-center justify-evenly">
+      <div className="flex flex-row items-center justify-evenly mx-2 lg:mx-0">
         <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:flex">
           <SideMenu
             isOwnerProp={isOwner}
+            notifications={dataNot}
           />
         </div>
 
-        <div className="flex flex-col mt-24 lg:ml-[330px] w-full mr-10">
-          <div className="flex flex-col">
+        <div className="flex flex-col mt-24 lg:ml-[330px] w-full lg:mr-10">
+          <div className="flex flex-col items-start xl:items-center">
 
-            <h1 className="font-extrabold text-2xl md:text-4xl text-quaternary md:mb-10">
+            <h1 className="font-extrabold text-2xl md:text-4xl text-quaternary mb-2 md:mb-10 text-center md:text-start">
               Mensagens
             </h1>
 
-            <div className="flex gap-2">
+            <div className="flex gap-2 mb-3">
               <div>
                 <Image 
-                  src={propertyData.images[0]} 
+                  src={propertyData?.images[0]} 
                   alt={"property image"}
                   width={200}
                   height={200}
                 />
               </div>
-              <div>
-                <h2 className="text-quaternary font-bold text-2xl">{propertyData.address.streetName}, {propertyData.address.streetNumber}</h2>
-                <div className="text-quaternary font-medium text-xl">
-                  <p>{propertyData.address.neighborhood}</p>
-                  <p>{propertyData.address.city} - {propertyData.address.uf}</p>
+              <div className="my-auto">
+                <h2 className="text-quaternary font-bold text-lg md:text-2xl mb-5">{propertyData?.address.streetName}, {propertyData?.address.streetNumber}</h2>
+                <div className="text-quaternary font-medium text-md md:text-xl">
+                  <p>{propertyData?.address.neighborhood}</p>
+                  <p>{propertyData?.address.city} - {propertyData?.address.uf}</p>
                 </div>
               </div>
             </div>
 
-            <Pagination totalPages={0} />
+            <div className="flex justify-center md:block">
+              <Pagination 
+                totalPages={totalPages} 
+                setCurrentPage={setCurrentPage} 
+                currentPage={currentPage}
+              />
+            </div>
 
-            {message?.messages.map(
+            {messagesDocs.map(
               ({
                 name,
                 email,
@@ -113,6 +149,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const userId = session?.user.data._id;
   let token;
   let refreshToken;
+  const page = Number(context.query.page);
 
   if (!session) {
     return {
@@ -215,6 +252,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         },
         body: JSON.stringify({
           propertyId,
+          page,
         }),
       })
         .then((res) => res.json())
@@ -231,7 +269,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           'Content-Type': 'application/json',
         },
       }
-    );
+    )
+      .then((res) => res.json())
+      .catch(() => [])
 
     const dataNot = await notifications.json();
 
