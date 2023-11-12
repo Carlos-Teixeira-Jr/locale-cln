@@ -37,6 +37,7 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
             <h1 className="font-extrabold text-2xl md:text-4xl text-quaternary md:mb-5 text-center">
               Imóveis Favoritos
             </h1>
+
             {favouriteProperties?.docs.length > 0 && (
               <Pagination totalPages={favouriteProperties?.totalPages} />
             )}
@@ -82,6 +83,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const userId = session?.user.data._id;
   let token;
   let refreshToken;
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+  let ownerId;
 
   if (!session) {
     return {
@@ -144,7 +147,25 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       }
     }
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+    try {
+      const ownerIdResponse = await fetch(
+        `${baseUrl}/user/find-owner-by-user`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ _id: userId }),
+        }
+      );
+
+      if (ownerIdResponse.ok) {
+        const ownerData = await ownerIdResponse.json();
+        ownerId = ownerData?.owner?._id;
+      }
+    } catch (error) {
+      console.error(error);
+    }
 
     const [favouriteProperties, properties] = await Promise.all([
       fetch(`${baseUrl}/user/favourite`, {

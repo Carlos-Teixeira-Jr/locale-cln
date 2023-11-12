@@ -51,7 +51,6 @@ const Search: NextPageWithLayout<ISearch> = ({
   const [open, setOpen] = useState(false);
   const isMobile = useIsMobile();
   const [mobileFilterIsOpen, setMobileFilterIsOpen] = useState<boolean>(false);
-  console.log("🚀 ~ file: search.tsx:54 ~ mobileFilterIsOpen:", mobileFilterIsOpen)
   const [isSearchBtnClicked, setIsSearchBtnClicked] = useState(false);
   
   // grid or list
@@ -203,7 +202,11 @@ const Search: NextPageWithLayout<ISearch> = ({
                 propertyInfo.docs &&
                 propertyInfo.docs.length > 0 && (
                   <div className="mx-auto mb-5">
-                    <Pagination totalPages={propertyInfo.totalPages} setCurrentPage={setCurrentPage} currentPage={currentPage}/>
+                    <Pagination 
+                      totalPages={propertyInfo.totalPages} 
+                      setCurrentPage={setCurrentPage} 
+                      currentPage={currentPage}
+                    />
                   </div>
                 )
               }
@@ -337,6 +340,7 @@ const Search: NextPageWithLayout<ISearch> = ({
 export default Search;
 
 export async function getServerSideProps(context: NextPageContext) {
+  
   const { query } = context;
   const filter = [];
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
