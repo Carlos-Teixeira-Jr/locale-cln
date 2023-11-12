@@ -23,6 +23,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
   ownerProperties,
   dataNot,
 }) => {
+
   const { data: session } = useSession() as any;
   const [isOwner, setIsOwner] = useState<boolean>(false);
 
@@ -157,7 +158,25 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       }
     }
 
-    const baseUrl = process.env.BASE_API_URL;
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;    
+    let ownerId;
+
+    try {
+      const ownerIdResponse = await fetch(`${baseUrl}/user/find-owner-by-user`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({_id: userId}),
+      })
+
+      if (ownerIdResponse.ok) {
+        const ownerData = await ownerIdResponse.json();
+        ownerId = ownerData?.owner?._id
+      }
+    } catch (error) {
+      console.error(error)
+    }
 
     const [ownerProperties] = await Promise.all([
       fetch(`${baseUrl}/property/owner-properties`, {
@@ -166,7 +185,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          ownerId: userId,
+          ownerId,
           page: 1,
         }),
       })

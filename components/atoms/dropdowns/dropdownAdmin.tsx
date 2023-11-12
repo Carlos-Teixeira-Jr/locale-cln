@@ -60,37 +60,14 @@ export default function DropdownAdmin({
       title: 'Sair',
       ref: '/index',
       className: 'translate-x-[1px] w-[150px] h-[50px] text-primary hover:bg-quaternary hover:text-tertiary py-3',
-      ownerOption: false
     },
   ]
 
   return (
     <div className="flex absolute z-50 top-[82px] right-1 max-w-[150px] max-w h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md">
       <div className="flex flex-col text-center font-medium text-base text-quaternary leading-5">
-        {/* {option.map((option, idx) => {
-          if (
-            isOwner ||
-            option.key === 'favourites-button' ||
-            option.key === 'notifications-button' ||
-            option.key === 'my-data-button'
-          ) {
-            return (
-              option.key !== 'logOut' ? (
-                <Link
-                  key={option.key}
-                  href={option.ref}
-                  className={idx === 0 ? option.className + 'rounded-t-xl' : option.className}
-                >
-                  {option.title}
-                </Link>
-              ) : (
-                <button key={option.key} className={option.className} onClick={() => signOut()}>Sair</button>
-              )
-            )
-          }
-        })} */}
 
-        {isOwner ? (
+        {!isOwner ? (
           option.map((option, index) => {
             if (option.ownerOption) {
               return (

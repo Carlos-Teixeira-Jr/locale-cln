@@ -2,8 +2,12 @@ import { ChangeEvent, useEffect, useState } from "react";
 import Cards, { Focused } from 'react-credit-cards';
 import { applyNumericMask } from "../../../common/utils/masks/numericMask";
 import { toast } from "react-toastify";
-import { OnErrorInfo } from "../uploadImages/uploadImages";
-import { resetObjectToEmptyStrings } from "../../../common/utils/resetObjects";
+import 'react-credit-cards/es/styles-compiled.css';
+import { ICreditCardInfo, IOwnerData } from "../../../common/interfaces/owner/owner";
+import { IUserDataComponent } from "../../../common/interfaces/user/user";
+import { IPlan } from "../../../common/interfaces/plans/plans";
+import { IAddress } from "../../../common/interfaces/property/propertyData";
+import { useRouter } from "next/router";
 
 export type CreditCardForm = {
   cardName: string;
@@ -18,23 +22,38 @@ interface ICreditCard {
   onCreditCardUpdate?: (creditCard: CreditCardForm) => void
   error: any
   creditCardInputRefs?: any
+  creditCardInfo?: ICreditCardInfo
+  userInfo?: IUserDataComponent
+  customerId?: any
+  selectedPlan?: IPlan
+  userAddress?: IAddress 
+  ownerData?: IOwnerData
 }
 
 const CreditCard = ({
   isEdit,
   onCreditCardUpdate,
   error,
-  creditCardInputRefs
+  creditCardInputRefs,
+  creditCardInfo,
+  userInfo,
+  customerId,
+  selectedPlan,
+  userAddress,
+  ownerData
 }: ICreditCard) => {
 
   const creditCardErrorScroll = {
     ...creditCardInputRefs
   }
 
+  const router = useRouter();
+
   const [focus, setFocus] = useState<Focused | undefined>();
+  const actualCreditCardNumber = creditCardInfo ? `---- ---- ---- ${creditCardInfo?.creditCardNumber}` : '';
   const [creditCardFormData, setCreditCardFormData] = useState<CreditCardForm>({
     cardName: '',
-    cardNumber: '',
+    cardNumber: creditCardInfo ? actualCreditCardNumber : '',
     cvc: '',
     expiry: '',
   });
@@ -96,7 +115,7 @@ const CreditCard = ({
       key: 'cardNumber',
       ref: creditCardErrorScroll.cardNumber,
       name: 'cardNumber',
-      type: 'number',
+      type: 'string',
       label: 'Número do Cartão',
       value: creditCardFormData.cardNumber,
     },
@@ -127,43 +146,71 @@ const CreditCard = ({
   ];
 
   const handleSubmit = async () => {
+
     setErrors({
       cardNumber: '',
       cardName: '',
       expiry: '',
       cvc: ''
     });
-    
-    const errorsMessage = 'Este campo é obrigatório';
 
-    if (!creditCardFormData.cardName) {
-      setErrors((prevErrors) => ({...prevErrors, cardName: errorsMessage}));
+    const newErrors = {
+      cardNumber: '',
+      cardName: '',
+      expiry: '',
+      cvc: ''
     }
-    if (!creditCardFormData.cardNumber || creditCardFormData.cardNumber.length < 16) {
-      setErrors((prevErrors) => ({...prevErrors, cardNumber: errorsMessage}));
-    }
-    if (!creditCardFormData.expiry) {
-      setErrors((prevErrors) => ({...prevErrors, expiry: errorsMessage}));
-    }
-    if (!creditCardFormData.cvc || creditCardFormData.cardNumber.length < 3) {
-      setErrors((prevErrors) => ({...prevErrors, cvc: errorsMessage}));
-    }
+    
+    const emptyFieldError = 'Este campo é obrigatório';
+    const invalidCardNumberError = 'Insira o número completo do cartão';
+    const regex = /^----/;
+
+    if (!creditCardFormData.cardName) newErrors.cardName = emptyFieldError;
+    if (regex.test(creditCardFormData.cardNumber)) newErrors.cardNumber = invalidCardNumberError;
+    if (!creditCardFormData.expiry) newErrors.expiry = emptyFieldError;
+    if (!creditCardFormData.cvc) newErrors.cvc = emptyFieldError;
+
+
+    setErrors(newErrors);
 
     if(Object.values(errors).every((error) => error === '')) {
       try {
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+        const formattedCardNumber = creditCardFormData.cardNumber.replace(/\D/g, '');
+        setCreditCardFormData({...creditCardFormData, cardNumber: formattedCardNumber});
         toast.loading('Enviando...');
-        const response = await fetch('http://localhost:3001/api-de-pagamento', {
+
+        const formattedCpf = userInfo?.cpf.replace(/[.-]/g, '');
+
+        const body = {
+          ...creditCardFormData,
+          cpf: formattedCpf,
+          email: userInfo?.email,
+          phone: userInfo?.cellPhone,
+          plan: selectedPlan,
+          address: userAddress,
+          owner: ownerData?.owner,
+          customerId
+        }
+
+        const response = await fetch(`${baseUrl}/user/edit-credit-card`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify(creditCardFormData)
+          body: JSON.stringify(body)
         });
+
         if(response.ok) {
           toast.dismiss();
           toast.success('Dados do cartão atualizados com sucesso.');
+          router.push('/admin')
+        } else {
+          toast.dismiss();
+          toast.error('Não foi possível atualizar os dados de cartão de crédito. Por favor, tente mais tarde.');
         }
       } catch (error) {
+        toast.dismiss();
         toast.error('Não foi posssível se conectar ao servidorno momento. Pro favor, tente mais tarde.')
       }
     }
@@ -195,7 +242,11 @@ const CreditCard = ({
                 placeholder={input.label}
                 onChange={(e) => handleInputChange(e, input.name)}
                 onFocus={(e) => setFocus(e.target.name as Focused)}
-                value={creditCardFormData[input.name]}
+                value={
+                  input.key !== 'cardNumber' 
+                    ? creditCardFormData[input.name] 
+                    : creditCardFormData[input.name].replace(/[^\d- ]/g, '')
+                }
                 className={`border border-quaternary rounded-[10px] h-12 text-quaternary lg:text-[26px] text-xl font-bold px-5 drop-shadow-lg bg-tertiary mt-5 lg:ml-5 w-full mr-1`}
                 style={errors[input.key] !== '' ? { border: '1px solid red' } : {}}
                 required
@@ -207,9 +258,10 @@ const CreditCard = ({
           ))}
         </form>
       </div>
+      
       {isEdit && (
         <div className="flex my-10 justify-center">
-          <button className="bg-primary w-fit h-16 item text-quinary rounded-[10px] py-5 px-20 gap-3 text-2xl font-extrabold" onClick={handleSubmit}>
+          <button className="bg-primary w-fit h-16 item text-quinary rounded-[10px] py-5 px-20 lg:ml-8 gap-3 text-2xl font-extrabold transition-colors duration-300 hover:bg-red-600 hover:text-white" onClick={handleSubmit}>
             Atualizar
           </button>
         </div>
