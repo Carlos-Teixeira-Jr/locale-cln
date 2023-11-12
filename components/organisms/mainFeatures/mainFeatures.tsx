@@ -362,7 +362,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
           }`}
         >
           {propertyTypesData.map((prop, index) => (
-            <div className='w-96 rounded-t-8 text-quaternary bg-tertiary'>
+            <div className='w-96 rounded-t-8 text-quaternary bg-tertiary' key={prop.key}>
               <p 
                 className='text-center p-1 hover:bg-quaternary hover:text-tertiary font-normal text-lg'
                 onClick={() => handlePropertyTypeSelection("todos", "todos")}
@@ -376,6 +376,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                 <div 
                   className='text-center p-1 hover:bg-quaternary hover:text-tertiary font-normal text-lg'
                   onClick={() => handlePropertyTypeSelection(prop.type, type)}
+                  key={type}
                 >
                   {type}
                 </div>

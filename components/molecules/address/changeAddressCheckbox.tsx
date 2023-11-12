@@ -3,24 +3,26 @@ import { IAddress } from "../../../common/interfaces/property/propertyData";
 
 interface IChangeAddressCheckbox {
   onAddressCheckboxChange: (value: boolean) => void;
-  address: IAddress
+  propertyAddress: any
+  userAddress: IAddress
 }
 
 const ChangeAddressCheckbox: React.FC<IChangeAddressCheckbox> = ({
   onAddressCheckboxChange,
-  address
+  propertyAddress,
+  userAddress
 }) => {
 
   const [isSameAddress, setIsSameAddress] = useState(true);
 
-  const propertyAddress = {
-    zipCode: address ? address.zipCode : '',
-    city: address ? address.city : '',
-    streetName: address ? address.streetName : '',
-    streetNumber: address ? address.streetNumber : '',
-    complement: address ? address.complement : '',
-    neighborhood: address ? address.neighborhood : '',
-    uf: address ? address.uf : '',
+  const propertyAddressData = {
+    zipCode: isSameAddress ? propertyAddress?.address.zipCode : userAddress.zipCode,
+    city: isSameAddress ? propertyAddress?.address.city : userAddress.city,
+    streetName: isSameAddress ? propertyAddress?.address.streetName : userAddress.streetName,
+    streetNumber: isSameAddress ? propertyAddress?.address.streetNumber : userAddress.streetNumber,
+    complement: isSameAddress ? propertyAddress?.address.complement : userAddress.complement,
+    neighborhood: isSameAddress ? propertyAddress?.address.neighborhood : userAddress.neighborhood,
+    uf: isSameAddress ? propertyAddress?.address.uf : userAddress.uf,
   };
 
   useEffect(() => {
@@ -73,16 +75,16 @@ const ChangeAddressCheckbox: React.FC<IChangeAddressCheckbox> = ({
         <div className="my-5 lg:w-1/2">
           <div className="border border-quaternary bg-tertiary p-5">
             <p className="text-xl font-normal text-quaternary leading-7">
-              {`${propertyAddress?.streetName}, ${propertyAddress?.streetNumber}`}
+              {`${propertyAddressData?.streetName}, ${propertyAddressData?.streetNumber}`}
             </p>
             <p className="text-xl font-normal text-quaternary leading-7">
-              {propertyAddress?.neighborhood}
+              {propertyAddressData?.neighborhood}
             </p>
             <p className="text-xl font-normal text-quaternary leading-7">
-              {`${propertyAddress?.city} - ${propertyAddress?.uf}`}
+              {`${propertyAddressData?.city} - ${propertyAddressData?.uf}`}
             </p>
             <p className="text-xl font-normal text-quaternary leading-7">
-              {`CEP - ${propertyAddress?.zipCode}`}
+              {`CEP - ${propertyAddressData?.zipCode}`}
             </p>
           </div>
         </div>

@@ -7,7 +7,9 @@ import Header from '../components/organisms/header/header';
 import { NextPageWithLayout } from './page';
 
 const AnnouncementPage: NextPageWithLayout = ({ plans }: any) => {
+
   const reversedCards = [...plans].reverse();
+  
   return (
     <>
       <div className="fixed z-10 top-0 md:w-full">
@@ -63,7 +65,7 @@ export default AnnouncementPage;
 
 export async function getStaticProps() {
 
-  const baseUrl = process.env.BASE_API_URL;
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
 
   const [plans] = await Promise.all([
     fetch(`${baseUrl}/plan`)
