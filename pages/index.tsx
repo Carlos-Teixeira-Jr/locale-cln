@@ -92,6 +92,7 @@ const Home: NextPageWithLayout<IHome> = ({
             width={1440}
             height={920}
             className="w-full"
+            priority
           />
         </div>
 

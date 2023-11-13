@@ -88,13 +88,7 @@ const Register = () => {
     city: '',
     streetName: '',
   });
-
-  useEffect(() => {
-    console.log("🚀 ~ file: register.tsx:99 ~ Register ~ registration.propertyValue:", registration.propertyValue)
-
-  }, [registration.propertyValue])
   
-
   // modal functions
   const [open, setOpen] = useState(false);
   const handleClose = () => setOpen(false);
