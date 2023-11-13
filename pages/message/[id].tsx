@@ -1,65 +1,66 @@
+import { GetServerSidePropsContext } from "next";
+import { getSession } from "next-auth/react";
+import { destroyCookie } from "nookies";
+import { fetchJson } from "../../common/utils/fetchJson";
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import { GetServerSidePropsContext } from 'next';
-import { getSession } from 'next-auth/react';
-import { useRouter } from 'next/router';
-import { destroyCookie } from 'nookies';
-import { useEffect, useState } from 'react';
-import { IMessage } from '../common/interfaces/message/messages';
-import { IOwnerProperties } from '../common/interfaces/properties/propertiesList';
-import { IData } from '../common/interfaces/property/propertyData';
-import { fetchJson } from '../common/utils/fetchJson';
-import Pagination from '../components/atoms/pagination/pagination';
-import MessagesCard from '../components/molecules/cards/messagesCard.tsx/messagesCard';
-import AdminHeader from '../components/organisms/adminHeader/adminHeader';
-import SideMenu from '../components/organisms/sideMenu/sideMenu';
+import AdminHeader from "../../components/organisms/adminHeader/adminHeader";
+import { useEffect, useState } from "react";
+import SideMenu from "../../components/organisms/sideMenu/sideMenu";
+import Pagination from "../../components/atoms/pagination/pagination";
+import { IOwnerProperties } from "../../common/interfaces/properties/propertiesList";
+import { IMessage } from "../../common/interfaces/message/messages";
+import { IData } from "../../common/interfaces/property/propertyData";
+import Image from "next/image";
+import MessageInfoCard from "../../components/molecules/cards/messageInfoCard/messageInfoCard";
+import { useRouter } from "next/router";
 
-interface IMessages {
-  docs: IMessage[];
-  properties: IData[];
-  totalPages: number;
-  page: number;
+interface IMessagePage {
+  messages: {
+    messagesDocs: any[],
+    count: number,
+    totalPages: number
+  },
+  property: IData
 }
 
-interface IAdminMessagesPage {
-  ownerProperties: IOwnerProperties;
-  messages: IMessages;
-  dataNot: [];
+interface IMessagePage {
+  ownerProperties: IOwnerProperties
+  message: IMessagePage
+  dataNot: []
 }
 
-const AdminMessages = ({
+const MessagePage = ({
   ownerProperties,
-  messages,
-  dataNot,
-}: IAdminMessagesPage) => {
+  message,
+  dataNot
+}: IMessagePage) => {
+
   const router = useRouter();
   const query = router.query as any;
   const [isOwner, setIsOwner] = useState<boolean>(false);
-  const properties = messages?.properties;
-  const messagesCount = messages?.docs?.length;
-  const totalPages = messages?.totalPages;
+  const propertyData = message?.property;
+  const messagesDocs = message?.messages.messagesDocs;
+  const totalPages = message?.messages.totalPages;
   const [currentPage, setCurrentPage] = useState(1);
 
   //// PAGE ////
 
   useEffect(() => {
     if (router.query.page !== undefined && typeof query.page === 'string') {
-      const parsedPage = parseInt(query.page);
-      setCurrentPage(parsedPage);
+      const parsedPage = parseInt(query.page)
+      setCurrentPage(parsedPage)
     }
-  });
+  })
 
   useEffect(() => {
     // Check if the page parameter in the URL matches the current page
-    const pageQueryParam =
-      router.query.page !== undefined && typeof query.page === 'string'
-        ? parseInt(query.page)
-        : 1;
+    const pageQueryParam = router.query.page !== undefined && typeof query.page === 'string' ? parseInt(query.page) : 1;
 
     // Only update the URL if the page parameter is different from the current page
     if (pageQueryParam !== currentPage) {
       const queryParams = {
         ...query,
-        page: currentPage,
+        page: currentPage
       };
       router.push({ query: queryParams }, undefined, { scroll: false });
     }
@@ -74,46 +75,76 @@ const AdminMessages = ({
     <main>
       <AdminHeader isOwnerProp={isOwner} />
 
-      <div className="flex flex-row items-center justify-evenly">
+      <div className="flex flex-row items-center justify-evenly mx-2 lg:mx-0">
         <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:flex">
-          <SideMenu isOwnerProp={isOwner} notifications={dataNot} />
+          <SideMenu
+            isOwnerProp={isOwner}
+            notifications={dataNot}
+          />
         </div>
 
-        <div className="flex flex-col items-center mt-24 w-full lg:ml-[305px]">
-          <div className="flex flex-col items-center">
-            <h1 className="font-extrabold text-2xl md:text-4xl text-quaternary md:mb-5 text-center">
+        <div className="flex flex-col mt-24 lg:ml-[330px] w-full lg:mr-10">
+          <div className="flex flex-col items-start xl:items-center">
+
+            <h1 className="font-extrabold text-2xl md:text-4xl text-quaternary mb-2 md:mb-10 text-center md:text-start">
               Mensagens
             </h1>
 
-            <Pagination
-              totalPages={totalPages}
-              setCurrentPage={setCurrentPage}
-              currentPage={currentPage}
-            />
-          </div>
-
-          <div className="lg:mb-10 flex flex-col md:flex-row lg:gap-10">
-            {messagesCount > 0 &&
-              properties.map(({ _id, images, address }: IData) => (
-                <MessagesCard
-                  image={images[0]}
-                  address={address}
-                  messages={messages?.docs.filter(
-                    (message) => message.propertyId === _id
-                  )}
-                  propertyId={_id}
+            <div className="flex gap-2 mb-3">
+              <div>
+                <Image 
+                  src={propertyData?.images[0]} 
+                  alt={"property image"}
+                  width={200}
+                  height={200}
                 />
-              ))}
+              </div>
+              <div className="my-auto">
+                <h2 className="text-quaternary font-bold text-lg md:text-2xl mb-5">{propertyData?.address.streetName}, {propertyData?.address.streetNumber}</h2>
+                <div className="text-quaternary font-medium text-md md:text-xl">
+                  <p>{propertyData?.address.neighborhood}</p>
+                  <p>{propertyData?.address.city} - {propertyData?.address.uf}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-center md:block">
+              <Pagination 
+                totalPages={totalPages} 
+                setCurrentPage={setCurrentPage} 
+                currentPage={currentPage}
+              />
+            </div>
+
+            {messagesDocs.map(
+              ({
+                name,
+                email,
+                phone,
+                message,
+                _id
+              }: IMessage) => (
+              <MessageInfoCard
+                key={_id}
+                name={name}
+                email={email}
+                message={message}
+                phone={phone}
+              />
+            ))}
+            
           </div>
         </div>
       </div>
     </main>
-  );
-};
+  )
+}
 
-export default AdminMessages;
+export default MessagePage
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
+
+  const propertyId = context.query.id;
   const session = (await getSession(context)) as any;
   const userId = session?.user.data._id;
   let token;
@@ -181,30 +212,27 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       }
     }
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;    
     let ownerId;
 
     try {
-      const ownerIdResponse = await fetch(
-        `${baseUrl}/user/find-owner-by-user`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ _id: userId }),
-        }
-      );
+      const ownerIdResponse = await fetch(`${baseUrl}/user/find-owner-by-user`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({_id: userId}),
+      })
 
       if (ownerIdResponse.ok) {
         const ownerData = await ownerIdResponse.json();
-        ownerId = ownerData?.owner?._id;
+        ownerId = ownerData?.owner?._id
       }
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
 
-    const [ownerProperties, messages] = await Promise.all([
+    const [ownerProperties, message] = await Promise.all([
       fetch(`${baseUrl}/property/owner-properties`, {
         method: 'POST',
         headers: {
@@ -217,20 +245,20 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       })
         .then((res) => res.json())
         .catch(() => []),
-      fetch(`${baseUrl}/message/find-all-by-ownerId`, {
+      fetch(`${baseUrl}/message/find-by-propertyId` ,{
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          ownerId,
+          propertyId,
           page,
         }),
       })
         .then((res) => res.json())
         .catch(() => []),
       fetchJson(`${baseUrl}/property/owner-properties`),
-      fetchJson(`${baseUrl}/message/find-all-by-ownerId`),
+      fetchJson(`${baseUrl}/message/find-by-propertyId`),
     ]);
 
     const notifications = await fetch(
@@ -243,14 +271,14 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       }
     )
       .then((res) => res.json())
-      .catch(() => []);
+      .catch(() => [])
 
-    const dataNot = notifications;
+    const dataNot = await notifications.json();
 
     return {
       props: {
         ownerProperties,
-        messages,
+        message,
         dataNot,
       },
     };

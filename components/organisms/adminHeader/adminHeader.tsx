@@ -12,12 +12,13 @@ interface IAdminHeader {
   isOwnerProp?: boolean;
 }
 
-const AdminHeader: React.FC<IAdminHeader> = ({ isOwnerProp = false }) => {
+const AdminHeader: React.FC<IAdminHeader> = ({ isOwnerProp }) => {
+
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const { data: session } = useSession() as any;
   const isMobile = useIsMobile();
-  const isOwner = isOwnerProp;
+  const isOwner = isOwnerProp ? isOwnerProp : false;
 
   return (
     <div className="flex flex-row fixed top-0 w-full z-50 justify-between bg-tertiary h-20 drop-shadow-md">

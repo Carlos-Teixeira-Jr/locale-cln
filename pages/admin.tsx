@@ -23,6 +23,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
   ownerProperties,
   dataNot,
 }) => {
+
   const { data: session } = useSession() as any;
   const [isOwner, setIsOwner] = useState<boolean>(false);
 
@@ -33,12 +34,11 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
 
   return (
     <div>
-      <AdminHeader />
+      <AdminHeader isOwnerProp={isOwner} />
       <div className="flex flex-row items-center justify-evenly">
         <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:flex">
           <SideMenu
             isOwnerProp={isOwner}
-            isMobileProp={false}
             notifications={dataNot}
           />
         </div>
@@ -48,11 +48,10 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
               Bem vindo{' '}
               {session?.username !== undefined ? session?.username : ''}!
             </h1>
-
-            <Pagination totalPages={ownerProperties.totalPages} />
+            {isOwner && ownerProperties?.docs && (
+              <Pagination totalPages={ownerProperties.totalPages} />
+            )}
           </div>
-
-          <h1>{session?.email}</h1>
 
           <div className="mb-10">
             {isOwner &&
@@ -157,7 +156,25 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       }
     }
 
-    const baseUrl = process.env.BASE_API_URL;
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;    
+    let ownerId;
+
+    try {
+      const ownerIdResponse = await fetch(`${baseUrl}/user/find-owner-by-user`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({_id: userId}),
+      })
+
+      if (ownerIdResponse.ok) {
+        const ownerData = await ownerIdResponse.json();
+        ownerId = ownerData?.owner?._id
+      }
+    } catch (error) {
+      console.error(error)
+    }
 
     const [ownerProperties] = await Promise.all([
       fetch(`${baseUrl}/property/owner-properties`, {
@@ -166,7 +183,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          ownerId: userId,
+          ownerId,
           page: 1,
         }),
       })
@@ -183,9 +200,11 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           'Content-Type': 'application/json',
         },
       }
-    );
+    )
+      .then((res) => res.json())
+      .catch(() => [])
 
-    const dataNot = await notifications.json();
+    const dataNot = notifications;
 
     return {
       props: {

@@ -33,8 +33,6 @@ const LoginCard: React.FC = () => {
   const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false);
   const [isRegister, setIsRegister] = useState(false);
 
-  console.log("Google id", process.env.GOOGLE_CLIENT_ID)
-
   const [ emailVerificationData, setEmailVerificationData ] = useState({
     email: queryEmail ? queryEmail : email,
     isEmailVerified: false,

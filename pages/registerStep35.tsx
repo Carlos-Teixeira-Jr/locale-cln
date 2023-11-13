@@ -78,12 +78,13 @@ const RegisterStep35: NextPageWithLayout<IRegisterStep35> = ({
             />
 
             {/**Button */}
-          <div className="grid w-full px-5 md:mx-0">
+          <div className="grid w-full px-5 lg:px-0 md:mx-0">
             <div className="flex md:justify-end justify-center md:mb-32 mt-16">
               <button
                 className="bg-primary w-full md:w-96 h-16 rounded transition-colors duration-300 hover:bg-red-600 hover:text-white"
                 onClick={() => {
                   updateProgress(5);
+                  store.clearAll();
                   if (!urlEmail) {
                     router.push('/registerStep4');
                   } else {

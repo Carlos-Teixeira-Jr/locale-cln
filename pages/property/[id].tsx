@@ -54,7 +54,6 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
   isFavourite,
   relatedProperties
 }: IPropertyPage) => {
-  console.log("🚀 ~ file: [id].tsx:57 ~ isFavourite:", isFavourite)
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [backdropActive, setBackdropActive] = useState(true);

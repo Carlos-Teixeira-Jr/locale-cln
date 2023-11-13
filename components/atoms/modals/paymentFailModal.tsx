@@ -6,12 +6,19 @@ Modal.setAppElement('#__next');
 export interface IPaymentFailModal {
   isOpen: boolean;
   setModalIsOpen: (value: boolean) => void;
+  paymentError: string
 }
 
 const PaymentFailModal: React.FC<IPaymentFailModal> = ({
   isOpen,
   setModalIsOpen,
+  paymentError
 }) => {
+
+  const inputString = paymentError;
+  const indexOfLastDot = inputString.lastIndexOf(".");
+  const resultString = inputString.substring(indexOfLastDot + 1);
+
   const handleCloseModal = () => {
     setModalIsOpen(false);
   };
@@ -59,8 +66,7 @@ const PaymentFailModal: React.FC<IPaymentFailModal> = ({
             Falha no Pagamento
           </h1>
           <p className="font-bold text-xl leading-6 text-quaternary">
-            Não foi possível efetuar o pagamento. Ocorreu um erro ou a compra
-            não foi autorizada.
+            {paymentError ? resultString : 'Não foi possível efetuar o pagamento. Ocorreu um erro ou a compra não foi autorizada.'}
           </p>
 
           <p className="font-bold text-xl leading-6 text-quaternary my-5">

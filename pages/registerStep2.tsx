@@ -77,12 +77,16 @@ const RegisterStep2: NextPageWithLayout = () => {
       store.set('propertyData', existingData);
       toast.dismiss();
       updateProgress(3);
-      router.push({
-        pathname: '/registerStep3',
-        query: {
-          email: urlEmail,
-        },
-      });
+      if (urlEmail !== undefined) {
+        router.push({
+          pathname: '/registerStep3',
+          query: {
+            email: urlEmail
+          }
+        });
+      } else {
+        router.push('/registerStep3')
+      }
     } else {
       toast.error(
         `Algum campo obrigatório ${errorInfo.prop} não foi preenchido.`

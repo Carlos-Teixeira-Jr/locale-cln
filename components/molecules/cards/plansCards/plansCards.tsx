@@ -22,13 +22,14 @@ const PlansCards: React.FC<IPlansCard> = ({
   highlightAd,
   smartAd,
 }) => {
+
   const [getPlan, setGetPlan] = useState('645a46d4388b9fbde84b6e8a');
   const getUserPlan = (planId: string) => {
     setGetPlan(planId);
-    console.log(_id);
     console.log(getPlan);
     store.set('plans', planId);
   };
+  
   return (
     <div
       className="md:flex justify-center my-10"

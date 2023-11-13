@@ -44,10 +44,7 @@ const VerifyEmailModal: React.FC<IVerifyEmailModal> = ({
 
   const handleSubmit = async (e: any) => {
     try {
-      console.log("🚀 ~ file: verifyEmailModal.tsx:61 ~ handleSubmit ~ emailVerificationData.email:", emailVerificationData.email)
-
       toast.loading('Enviando');
-      console.log("emailVerificationData", emailVerificationData);
       const response = await fetch('http://localhost:3001/auth/verify-email', {
         method: 'POST',
         headers: {

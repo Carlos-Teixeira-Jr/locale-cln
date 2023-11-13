@@ -43,7 +43,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   properties,
   ownerData,
 }) => {
-  console.log('🚀 ~ file: adminUserData.tsx:41 ~ ownerData:', ownerData.user);
+
   const router = useRouter();
   const isOwner = properties?.docs?.length > 0 ? true : false;
   const [selectedPlan, setSelectedPlan] = useState(
@@ -54,6 +54,11 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const isEdit = true;
   const isMobile = useIsMobile();
   const reversedCards = [...plans].reverse();
+  const creditCardInfo = ownerData?.owner?.isNewCreditCard 
+    ? ownerData?.owner?.newCreditCardData.creditCard.number 
+    : ownerData?.owner?.creditCardInfo;
+
+  const planObj = plans.find((plan) => plan._id === selectedPlan);
 
   const [formData, setFormData] = useState<IUserDataComponent>({
     username: '',
@@ -243,10 +248,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
         }
       } catch (error) {
         toast.dismiss();
-        toast.error(
-          'Não foi possível se conectar ao servidor. Por favor, tente novamente mais tarde.'
-        );
-        console.error('Houve um erro na resposta da chamada', error);
+        toast.error('Não foi possível se conectar ao servidor. Por favor, tente novamente mais tarde.');
       }
     } else {
       toast.error('Algum campo obrigatório não foi preenchido.');
@@ -256,7 +258,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   return (
     <div className="max-w-[1232px] mx-auto justify-center items-center">
       <div className="fixed z-50 top-0 w-full inset-x-0">
-        <AdminHeader isOwnerProp={isOwner} />
+        <AdminHeader isOwnerProp={isOwner}/>
       </div>
 
       <div className="flex flex-row items-center max-w-[1232px] justify-center">
@@ -277,11 +279,11 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                 userDataInputRefs={userDataInputRefs}
               />
 
-              <h2 className="md:text-3xl text-2xl leading-10 text-quaternary font-bold mb-5 md:mb-10">
+              <h2 className="md:text-3xl text-2xl leading-10 text-quaternary font-bold mb-5 md:mb-10 lg:mx-5">
                 Dados de Cobrança
               </h2>
 
-              <div className="grid sm:grid-cols-1 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
+              <div className="grid sm:grid-cols-1 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 place-items-center">
                 {reversedCards.map(
                   ({
                     _id,
@@ -326,7 +328,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
               </div>
             </div>
 
-            <div className="lg:float-right flex md:justify-end justify-center md:w-[90%] mb-10 md:mr-16">
+            <div className="lg:float-right flex md:justify-end justify-center md:w-[90%] lg:w-full mb-10 md:mr-16 lg:mr-5">
               <button
                 className="bg-primary w-fit h-16 item text-quinary rounded-[10px] py-5 px-20 text-xl md:text-2xl font-extrabold transition-colors duration-300 hover:bg-red-600 hover:text-white"
                 onClick={handleUpdateBtn}
@@ -356,10 +358,17 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                     isEdit={true}
                     error={creditCardErrors}
                     creditCardInputRefs={creditCardInputRefs}
+                    creditCardInfo={creditCardInfo}
+                    userInfo={formData}
+                    customerId={ownerData?.owner?.customerId}
+                    selectedPlan={planObj}
+                    userAddress={address}
+                    ownerData={ownerData}
                   />
                 )}
               </div>
             </div>
+
           </div>
         </div>
       </div>
@@ -374,6 +383,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const userId = session?.user.data._id;
   let token = session?.user?.data?.access_token!!;
   let refreshToken = session?.user?.data.refresh_token;
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+  let ownerId;
 
   if (!session) {
     return {
@@ -436,7 +447,22 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       }
     }
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+    try {
+      const ownerIdResponse = await fetch(`${baseUrl}/user/find-owner-by-user`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({_id: userId}),
+      })
+
+      if (ownerIdResponse.ok) {
+        const ownerData = await ownerIdResponse.json();
+        ownerId = ownerData?.owner?._id
+      }
+    } catch (error) {
+      console.error(error)
+    }
 
     const [userData, ownerData, plans, properties] = await Promise.all([
       fetch(`${baseUrl}/user/${userId}`)
@@ -448,7 +474,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          id: userId,
+          _id: userId,
         }),
       })
         .then((res) => res.json())
@@ -462,7 +488,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          ownerId: userId,
+          ownerId,
           page: 1,
         }),
       })
