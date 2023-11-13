@@ -13,24 +13,33 @@ import PropertyCard from '../components/molecules/cards/propertyCard/PropertyCar
 import AdminHeader from '../components/organisms/adminHeader/adminHeader';
 import SideMenu from '../components/organisms/sideMenu/sideMenu';
 import { NextPageWithLayout } from './page';
+import { useEffect, useState } from 'react';
 
 interface IAdminFavProperties {
   favouriteProperties: IFavProperties;
   properties: IPropertyInfo;
+  dataNot: []
 }
 
 const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
   favouriteProperties,
   properties,
+  dataNot
 }) => {
-  const isOwner = properties?.docs?.length > 0 ? true : false;
+
+  const [isOwner, setIsOwner] = useState<boolean>(false);
+
+  // Determina se o usuário já possui anúncios ou não;
+  useEffect(() => {
+    setIsOwner(properties?.docs?.length > 0 ? true : false);
+  }, [properties]);
 
   return (
     <>
       <AdminHeader isOwnerProp={isOwner} />
       <div className="flex flex-row items-center justify-evenly">
         <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:flex">
-          <SideMenu isOwnerProp={isOwner} notifications={[]} />
+          <SideMenu isOwnerProp={isOwner} notifications={dataNot} />
         </div>
         <div className="flex flex-col items-center mt-24 w-full lg:pl-72">
           <div className="flex flex-col items-center mb-5 max-w-[1215px]">
@@ -189,7 +198,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          ownerId: userId,
+          ownerId,
           page: 1,
         }),
       })
@@ -199,10 +208,25 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       fetchJson(`${baseUrl}/property/owner-properties`),
     ]);
 
+    const notifications = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API_URL}/notification/64da04b6052b4d12939684b0`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+      .then((res) => res.json())
+      .catch(() => []);
+
+    const dataNot = notifications;
+
     return {
       props: {
         favouriteProperties,
         properties,
+        dataNot
       },
     };
   }

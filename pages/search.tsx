@@ -134,7 +134,7 @@ const Search: NextPageWithLayout<ISearch> = ({
       <div className="flex items-center justify-center mt-20">
         <div className="lg:flex justify-center max-w-[1232px]">
           <div className="flex flex-col lg:flex-row mt-[-16px]. md:mt-0">
-            <div className="mx-auto md:w-full">
+            <div className="mx-auto md:w-fit">
               <FilterList
                 locationProp={locations}
                 tagsProp={tagsData}
@@ -201,7 +201,7 @@ const Search: NextPageWithLayout<ISearch> = ({
               {!mobileFilterIsOpen &&
                 propertyInfo.docs &&
                 propertyInfo.docs.length > 0 && (
-                  <div className="mx-auto mb-5">
+                  <div className="mx-auto">
                     <Pagination 
                       totalPages={propertyInfo.totalPages} 
                       setCurrentPage={setCurrentPage} 
