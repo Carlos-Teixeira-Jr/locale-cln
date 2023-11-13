@@ -23,7 +23,6 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
   ownerProperties,
   dataNot,
 }) => {
-
   const { data: session } = useSession() as any;
   const [isOwner, setIsOwner] = useState<boolean>(false);
 
@@ -37,10 +36,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
       <AdminHeader isOwnerProp={isOwner} />
       <div className="flex flex-row items-center justify-evenly">
         <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:flex">
-          <SideMenu
-            isOwnerProp={isOwner}
-            notifications={dataNot}
-          />
+          <SideMenu isOwnerProp={isOwner} notifications={dataNot} />
         </div>
         <div className="flex flex-col items-center mt-24 lg:ml-[305px]">
           <div className="flex flex-col items-center">
@@ -128,15 +124,18 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         };
       } else {
         try {
-          const response = await fetch('http://localhost:3001/auth/refresh', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              refresh_token: refreshToken,
-            }),
-          });
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/refresh`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                refresh_token: refreshToken,
+              }),
+            }
+          );
 
           if (response.ok) {
             const data = await response.json();
@@ -156,24 +155,27 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       }
     }
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;    
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
     let ownerId;
 
     try {
-      const ownerIdResponse = await fetch(`${baseUrl}/user/find-owner-by-user`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({_id: userId}),
-      })
+      const ownerIdResponse = await fetch(
+        `${baseUrl}/user/find-owner-by-user`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ _id: userId }),
+        }
+      );
 
       if (ownerIdResponse.ok) {
         const ownerData = await ownerIdResponse.json();
-        ownerId = ownerData?.owner?._id
+        ownerId = ownerData?.owner?._id;
       }
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
 
     const [ownerProperties] = await Promise.all([
@@ -193,7 +195,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     ]);
 
     const notifications = await fetch(
-      `http://localhost:3001/notification/64da04b6052b4d12939684b0`,
+      `${process.env.NEXT_PUBLIC_BASE_API_URL}/notification/64da04b6052b4d12939684b0`,
       {
         method: 'GET',
         headers: {
@@ -202,7 +204,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       }
     )
       .then((res) => res.json())
-      .catch(() => [])
+      .catch(() => []);
 
     const dataNot = notifications;
 

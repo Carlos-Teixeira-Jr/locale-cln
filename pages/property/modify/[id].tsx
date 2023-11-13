@@ -1,4 +1,22 @@
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import { GetServerSidePropsContext } from 'next';
+import { getSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import { destroyCookie } from 'nookies';
 import React, { useEffect, useRef, useState } from 'react';
+import { toast } from 'react-toastify';
+import {
+  IEditPropertyData,
+  IEditPropertyMainFeatures,
+} from '../../../common/interfaces/property/editPropertyData';
+import {
+  IAddress,
+  IData,
+  IMetadata,
+  IPrices,
+  PricesType,
+} from '../../../common/interfaces/property/propertyData';
+import { fetchJson } from '../../../common/utils/fetchJson';
 import ArrowDownIconcon from '../../../components/atoms/icons/arrowDownIcon';
 import Address from '../../../components/molecules/address/address';
 import UploadImages from '../../../components/molecules/uploadImages/uploadImages';
@@ -7,22 +25,14 @@ import MainFeatures from '../../../components/organisms/mainFeatures/mainFeature
 import PropertyDifferentials from '../../../components/organisms/register/propertyDifferential';
 import SideMenu from '../../../components/organisms/sideMenu/sideMenu';
 import { NextPageWithLayout } from '../../page';
-import { GetServerSidePropsContext } from 'next';
-import { IAddress, IData, IMetadata, IPrices, PricesType } from '../../../common/interfaces/property/propertyData';
-import { getSession } from 'next-auth/react';
-import { IEditPropertyData, IEditPropertyMainFeatures } from '../../../common/interfaces/property/editPropertyData';
-import { useRouter } from 'next/router';
-import { toast } from 'react-toastify';
-import { fetchJson } from '../../../common/utils/fetchJson';
-import { destroyCookie } from 'nookies';
-import jwt, { JwtPayload } from 'jsonwebtoken';
 
 interface IEditAnnouncement {
   property: IData;
 }
 
-const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({ property }) => {
-
+const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
+  property,
+}) => {
   const [rotate1, setRotate1] = useState(false);
   const [rotate2, setRotate2] = useState(false);
   const [rotate3, setRotate3] = useState(false);
@@ -30,7 +40,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({ property }) =
 
   const router = useRouter();
   const isEdit = router.pathname == '/property/modify/[id]';
-  
+
   const [address, setAddress] = useState<IAddress>({
     zipCode: '',
     city: '',
@@ -38,7 +48,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({ property }) =
     streetNumber: '',
     complement: '',
     neighborhood: '',
-    uf: ''
+    uf: '',
   });
 
   const [addressErrors, setAddressErrors] = useState({
@@ -69,7 +79,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({ property }) =
       width: 0,
       height: 0,
       totalArea: 0,
-      useableArea: 0
+      useableArea: 0,
     },
     propertyValue: '',
     condominium: false,
@@ -93,12 +103,16 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({ property }) =
     totalArea: useRef<HTMLInputElement>(null),
     propertyValue: useRef<HTMLInputElement>(null),
     condominiumValue: useRef<HTMLInputElement>(null),
-    iptuValue: useRef<HTMLInputElement>(null)
+    iptuValue: useRef<HTMLInputElement>(null),
   };
 
   const [tags, setTags] = useState<string[]>(isEdit ? property.tags : []);
-  const [condominiumTags, setCondominiumTags] = useState<string[]>(isEdit ? property.condominiumTags : []);
-  const [videoLink, setVideoLink] = useState<string>(isEdit ? property.youtubeLink : '');
+  const [condominiumTags, setCondominiumTags] = useState<string[]>(
+    isEdit ? property.condominiumTags : []
+  );
+  const [videoLink, setVideoLink] = useState<string>(
+    isEdit ? property.youtubeLink : ''
+  );
   const [images, setImages] = useState<string[]>(isEdit ? property.images : []);
 
   const imagesInputRef = useRef<HTMLElement>(null);
@@ -106,11 +120,11 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({ property }) =
   // Envia as mensagens de erros para os componetes;
   const [errorInfo, setErrorInfo] = useState({
     error: '',
-    prop: ''
+    prop: '',
   });
 
   useEffect(() => {
-    setVideoLink(property.youtubeLink)
+    setVideoLink(property.youtubeLink);
   }, [property.youtubeLink]);
 
   const showHide = (element: string) => {
@@ -136,7 +150,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({ property }) =
   // Lida com a verificação de erros do handleSubmit (necessário para acessar o valor atualizado de erros ainda antes do final da execução do handleSubmit)
   const errorHandler = useRef<{ error: string; prop: string }>({
     error: '',
-    prop: ''
+    prop: '',
   });
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -145,12 +159,12 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({ property }) =
 
     setErrorInfo({
       prop: '',
-      error: ''
+      error: '',
     });
 
     errorHandler.current = {
       prop: '',
-      error: ''
+      error: '',
     };
 
     setMainFeaturesErrors({
@@ -166,7 +180,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({ property }) =
       city: '',
       streetName: '',
       streetNumber: '',
-      uf: ''
+      uf: '',
     });
 
     const newMainFeaturesErrors = {
@@ -175,21 +189,23 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({ property }) =
       propertyValue: '',
       condominiumValue: '',
       iptuValue: '',
-    }; 
+    };
 
     const newAddressErrors = {
       zipCode: '',
       city: '',
       streetName: '',
       streetNumber: '',
-      uf: ''
+      uf: '',
     };
 
     if (!mainFeatures.description) newMainFeaturesErrors.description = error;
     if (!mainFeatures.size.totalArea) newMainFeaturesErrors.totalArea = error;
-    if (!mainFeatures.propertyValue) newMainFeaturesErrors.propertyValue = error;
+    if (!mainFeatures.propertyValue)
+      newMainFeaturesErrors.propertyValue = error;
     if (mainFeatures.condominium) {
-      if (!mainFeatures.condominiumValue) newMainFeaturesErrors.condominiumValue = error;
+      if (!mainFeatures.condominiumValue)
+        newMainFeaturesErrors.condominiumValue = error;
     }
     if (mainFeatures.iptu) {
       if (!mainFeatures.iptuValue) newMainFeaturesErrors.iptuValue = error;
@@ -200,15 +216,15 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({ property }) =
     if (!address.city) newAddressErrors.city = error;
     if (!address.uf) newAddressErrors.uf = error;
     if (images.length < 3) {
-      const imagesError = 'Você precisa ter pelo menos três fotos.'
+      const imagesError = 'Você precisa ter pelo menos três fotos.';
       setErrorInfo({
         error: imagesError,
-        prop: 'images'
+        prop: 'images',
       });
       errorHandler.current = {
         error: error,
-        prop: 'images'
-      }
+        prop: 'images',
+      };
     }
 
     setMainFeaturesErrors(newMainFeaturesErrors);
@@ -220,10 +236,15 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({ property }) =
     };
 
     // Verifica se algum dos valores do objeto de erros combinados não é uma string vazia
-    const hasErrors = Object.values(combinedErrors).some((error) => error !== '');
+    const hasErrors = Object.values(combinedErrors).some(
+      (error) => error !== ''
+    );
 
-    if(errorHandler.current.prop === '' && errorHandler.current.error === '' && !hasErrors) {
-
+    if (
+      errorHandler.current.prop === '' &&
+      errorHandler.current.error === '' &&
+      !hasErrors
+    ) {
       const propertyData: IEditPropertyData = {
         id: property._id,
         adType: mainFeatures.adType,
@@ -238,62 +259,91 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({ property }) =
           width: mainFeatures.size.width,
           height: mainFeatures.size.height,
           totalArea: mainFeatures.size.totalArea,
-          useableArea: mainFeatures.size.useableArea 
-            ? mainFeatures.size.useableArea 
-            : 0
+          useableArea: mainFeatures.size.useableArea
+            ? mainFeatures.size.useableArea
+            : 0,
         },
         tags: tags,
         condominiumTags: condominiumTags,
         prices: [
           {
             type: PricesType.mensal,
-            value: parseInt(mainFeatures.propertyValue.replace(/\./g, '').replace(/,(.*)/, ''))
+            value: parseInt(
+              mainFeatures.propertyValue.replace(/\./g, '').replace(/,(.*)/, '')
+            ),
           },
           {
             type: PricesType.condominio,
-            value: mainFeatures.condominium 
-              ? parseInt(mainFeatures.condominiumValue.replace(/\./g, '').replace(/,(.*)/, '')) 
+            value: mainFeatures.condominium
+              ? parseInt(
+                  mainFeatures.condominiumValue
+                    .replace(/\./g, '')
+                    .replace(/,(.*)/, '')
+                )
               : 0,
-          }
+          },
         ],
         youtubeLink: videoLink,
-      }
+      };
 
       try {
-        toast.loading("Enviando...");
-        const response = await fetch('http://localhost:3001/property/edit-property', {
-          method: 'POST',
-          headers: {
-            'Content-type': 'application/json'
-          },
-          body: JSON.stringify(propertyData)
-        });
+        toast.loading('Enviando...');
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BASE_API_URL}/property/edit-property`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-type': 'application/json',
+            },
+            body: JSON.stringify(propertyData),
+          }
+        );
 
         if (response.ok) {
           toast.dismiss();
-          toast.success("Imóvel atualizado com sucesso.");
-          router.push("/admin");
+          toast.success('Imóvel atualizado com sucesso.');
+          router.push('/admin');
         } else {
           toast.dismiss();
-          toast.error("Houve um erro na atualização dos dados deste imóvel. Por favor tente novamente.")
+          toast.error(
+            'Houve um erro na atualização dos dados deste imóvel. Por favor tente novamente.'
+          );
         }
       } catch (error) {
         toast.dismiss();
-        toast.error("Não foi possível se conectar ao servidor. Por favor, tente novamente mais tarde.")
-        console.error("Houve um erro na resposta da chamada", error);
+        toast.error(
+          'Não foi possível se conectar ao servidor. Por favor, tente novamente mais tarde.'
+        );
+        console.error('Houve um erro na resposta da chamada', error);
       }
     } else {
-      toast.error("Algum campo obrigatório não foi preenchido.");
+      toast.error('Algum campo obrigatório não foi preenchido.');
 
-      const addressErrorSection = Object.values(newAddressErrors).some((error) => error !== '');
-      const mainFeaturesErrorSection = Object.values(newMainFeaturesErrors).some((error) => error !== '');
+      const addressErrorSection = Object.values(newAddressErrors).some(
+        (error) => error !== ''
+      );
+      const mainFeaturesErrorSection = Object.values(
+        newMainFeaturesErrors
+      ).some((error) => error !== '');
       const imagesErrorSection = errorInfo.error !== '';
-      
-      if (addressErrorSection && document.getElementById('accordion-1')?.classList?.contains('hidden')) showHide('accordion-1');
-      if (imagesErrorSection && document.getElementById('accordion-2')?.classList?.contains('hidden')) showHide('accordion-2');
-      if (mainFeaturesErrorSection && document.getElementById('accordion-3')?.classList?.contains('hidden')) showHide('accordion-3');
+
+      if (
+        addressErrorSection &&
+        document.getElementById('accordion-1')?.classList?.contains('hidden')
+      )
+        showHide('accordion-1');
+      if (
+        imagesErrorSection &&
+        document.getElementById('accordion-2')?.classList?.contains('hidden')
+      )
+        showHide('accordion-2');
+      if (
+        mainFeaturesErrorSection &&
+        document.getElementById('accordion-3')?.classList?.contains('hidden')
+      )
+        showHide('accordion-3');
     }
-  }
+  };
 
   return (
     <div>
@@ -301,8 +351,8 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({ property }) =
       <div className="flex flex-row justify-center lg:justify-end xl:justify-end 2xl:justify-center">
         <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:flex">
           <SideMenu
-            isOwnerProp={property !== undefined && true} 
-            notifications={[]} 
+            isOwnerProp={property !== undefined && true}
+            notifications={[]}
           />
         </div>
         <div className="flex flex-col items-center mt-16 max-w-[900px] px-2 md:px-10">
@@ -322,11 +372,12 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({ property }) =
                   className="flex flex-row items-center justify-between sm:min-w-[300px] md:min-w-[620px] lg:min-w-[600px] xl:min-w-[800px] 2xl:min-w-[1000px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 text-xl transition bg-opacity-90 hover:bg-gray-300"
                 >
                   Endereço
-                  <span className={`transition-transform transform ${rotate1 ? 'rotate-180' : ''}`}>
-                    <ArrowDownIconcon
-                      width='13'
-                      className='cursor-pointer'
-                    />
+                  <span
+                    className={`transition-transform transform ${
+                      rotate1 ? 'rotate-180' : ''
+                    }`}
+                  >
+                    <ArrowDownIconcon width="13" className="cursor-pointer" />
                   </span>
                 </label>
                 <div
@@ -337,7 +388,9 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({ property }) =
                     <Address
                       isEdit={isEdit}
                       address={property.address}
-                      onAddressUpdate={(updatedAddress: IAddress) => setAddress(updatedAddress)}
+                      onAddressUpdate={(updatedAddress: IAddress) =>
+                        setAddress(updatedAddress)
+                      }
                       addressInputRefs={addressInputRefs}
                       errors={addressErrors}
                     />
@@ -357,11 +410,12 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({ property }) =
                   className="flex flex-row items-center justify-between sm:min-w-[300px] md:min-w-[620px] lg:min-w-[600px] xl:min-w-[800px] 2xl:min-w-[1000px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 text-xl transition bg-opacity-90 hover:bg-gray-300"
                 >
                   Fotos
-                  <span className={`transition-transform transform ${rotate2 ? 'rotate-180' : ''}`}>
-                    <ArrowDownIconcon
-                      width='13'
-                      className='cursor-pointer'
-                    />
+                  <span
+                    className={`transition-transform transform ${
+                      rotate2 ? 'rotate-180' : ''
+                    }`}
+                  >
+                    <ArrowDownIconcon width="13" className="cursor-pointer" />
                   </span>
                 </label>
                 <div
@@ -369,9 +423,11 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({ property }) =
                   id="accordion-2"
                 >
                   <div className="accordion__body" id="painel2">
-                    <UploadImages 
-                      editarImages={property.images} 
-                      onImagesUpdate={(updatedImages: string[]) => setImages(updatedImages)}
+                    <UploadImages
+                      editarImages={property.images}
+                      onImagesUpdate={(updatedImages: string[]) =>
+                        setImages(updatedImages)
+                      }
                       onErrorsInfo={errorInfo}
                       imagesInputRef={imagesInputRef}
                     />
@@ -391,11 +447,12 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({ property }) =
                   className="flex flex-row items-center justify-between sm:min-w-[300px] md:min-w-[620px] lg:min-w-[600px] xl:min-w-[800px] 2xl:min-w-[1000px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 text-xl transition bg-opacity-90 hover:bg-gray-300"
                 >
                   Características
-                  <span className={`transition-transform transform ${rotate3 ? 'rotate-180' : ''}`}>
-                    <ArrowDownIconcon
-                      width='13'
-                      className='cursor-pointer'
-                    />
+                  <span
+                    className={`transition-transform transform ${
+                      rotate3 ? 'rotate-180' : ''
+                    }`}
+                  >
+                    <ArrowDownIconcon width="13" className="cursor-pointer" />
                   </span>
                 </label>
                 <div
@@ -409,21 +466,61 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({ property }) =
                       editarSubType={property.adSubtype}
                       editarPropertyType={property.propertyType}
                       editarPropertySubtype={property.propertySubtype}
-                      editarNumBedroom={property.metadata.find((obj) => obj.type === 'bedroom')?.amount || 0}
-                      editarNumBathroom={property.metadata.find((obj) => obj.type === 'bathroom')?.amount || 0}
-                      editarNumGarage={property.metadata.find((obj: IMetadata) => obj.type === "garage")?.amount || 0}
-                      editarNumDependencies={property.metadata.find((obj: IMetadata) => obj.type === 'dependencies')?.amount || 0}
-                      editarNumSuite={property.metadata.find((obj) => obj.type === 'suites')?.amount || 0}
+                      editarNumBedroom={
+                        property.metadata.find((obj) => obj.type === 'bedroom')
+                          ?.amount || 0
+                      }
+                      editarNumBathroom={
+                        property.metadata.find((obj) => obj.type === 'bathroom')
+                          ?.amount || 0
+                      }
+                      editarNumGarage={
+                        property.metadata.find(
+                          (obj: IMetadata) => obj.type === 'garage'
+                        )?.amount || 0
+                      }
+                      editarNumDependencies={
+                        property.metadata.find(
+                          (obj: IMetadata) => obj.type === 'dependencies'
+                        )?.amount || 0
+                      }
+                      editarNumSuite={
+                        property.metadata.find((obj) => obj.type === 'suites')
+                          ?.amount || 0
+                      }
                       editarDescription={property.description}
                       editarPropertyValue={property.prices[0].value.toString()}
-                      editarCondominium={property.prices.some((obj: IPrices) => obj.type === 'condominio' && obj.value !== null)}
-                      editarCondominiumValue={property.prices.find((obj: IPrices) => obj.type === 'condominio')?.value !== null
-                      ? property.prices.find((obj: IPrices) => obj.type === 'condominio')!.value.toString()
-                      : ''}
-                      editarIptuValue={property.prices.find((price) => price.type === 'IPTU') !== undefined ? property.prices.find((price) => price.type === 'IPTU')!.value.toString() : ''}
-                      editarIptu={property.prices.some((obj: IPrices) => obj.type === 'IPTU')}
+                      editarCondominium={property.prices.some(
+                        (obj: IPrices) =>
+                          obj.type === 'condominio' && obj.value !== null
+                      )}
+                      editarCondominiumValue={
+                        property.prices.find(
+                          (obj: IPrices) => obj.type === 'condominio'
+                        )?.value !== null
+                          ? property.prices
+                              .find(
+                                (obj: IPrices) => obj.type === 'condominio'
+                              )!
+                              .value.toString()
+                          : ''
+                      }
+                      editarIptuValue={
+                        property.prices.find(
+                          (price) => price.type === 'IPTU'
+                        ) !== undefined
+                          ? property.prices
+                              .find((price) => price.type === 'IPTU')!
+                              .value.toString()
+                          : ''
+                      }
+                      editarIptu={property.prices.some(
+                        (obj: IPrices) => obj.type === 'IPTU'
+                      )}
                       isEdit={isEdit}
-                      onMainFeaturesUpdate={(updatedFeatures: IEditPropertyMainFeatures) => setMainFeatures(updatedFeatures)} 
+                      onMainFeaturesUpdate={(
+                        updatedFeatures: IEditPropertyMainFeatures
+                      ) => setMainFeatures(updatedFeatures)}
                       editarSize={property.size}
                       errors={mainFeaturesErrors}
                       mainFeaturesInputRefs={mainFeaturesInputRefs}
@@ -444,11 +541,12 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({ property }) =
                   className="flex flex-row items-center justify-between sm:min-w-[300px] md:min-w-[620px] lg:min-w-[600px] xl:min-w-[800px] 2xl:min-w-[1000px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 text-xl transition bg-opacity-90 hover:bg-gray-300"
                 >
                   Outras Características
-                  <span className={`transition-transform transform ${rotate4 ? 'rotate-180' : ''}`}>
-                    <ArrowDownIconcon
-                      width='13'
-                      className='cursor-pointer'
-                    />
+                  <span
+                    className={`transition-transform transform ${
+                      rotate4 ? 'rotate-180' : ''
+                    }`}
+                  >
+                    <ArrowDownIconcon width="13" className="cursor-pointer" />
                   </span>
                 </label>
                 <div
@@ -458,22 +556,31 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({ property }) =
                   <div className="accordion__body" id="painel4">
                     <PropertyDifferentials
                       shouldRenderCondDiv={
-                        property.propertyType === 'apartamento' || 
+                        property.propertyType === 'apartamento' ||
                         property.propertySubtype === 'Casa de condomínio'
                       }
                       property={property}
                       isEdit={isEdit}
-                      onTagsUpdate={(updatedTags: string[]) => setTags(updatedTags)}
-                      onCondominiumTagsUpdate={(updatedCondTags: string[]) => setCondominiumTags(updatedCondTags)}
-                      onVideoLinkUpdate={(updatedVideo: string) => setVideoLink(updatedVideo)}
+                      onTagsUpdate={(updatedTags: string[]) =>
+                        setTags(updatedTags)
+                      }
+                      onCondominiumTagsUpdate={(updatedCondTags: string[]) =>
+                        setCondominiumTags(updatedCondTags)
+                      }
+                      onVideoLinkUpdate={(updatedVideo: string) =>
+                        setVideoLink(updatedVideo)
+                      }
                     />
                   </div>
                 </div>
               </div>
             </div>
             <div className="flex self-end md:justify-end justify-center mb-32 mt-16">
-              <button className="bg-primary w-80 h-16 text-tertiary rounded transition-colors duration-300 hover:bg-red-600 hover:text-white" onClick={handleSubmit}>
-                  Atualizar Dados
+              <button
+                className="bg-primary w-80 h-16 text-tertiary rounded transition-colors duration-300 hover:bg-red-600 hover:text-white"
+                onClick={handleSubmit}
+              >
+                Atualizar Dados
               </button>
             </div>
           </h1>
@@ -486,21 +593,20 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({ property }) =
 export default EditAnnouncement;
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-
-  const session = await getSession(context) as any;
+  const session = (await getSession(context)) as any;
   const query = context.query;
   const propertyId = query.id;
   let token = session?.user?.data?.access_token!!;
   let refreshToken = session?.user?.data.refresh_token;
-  const isEdit = await session ? true : false;
-  
+  const isEdit = (await session) ? true : false;
+
   if (!session) {
     return {
       redirect: {
         destination: '/login',
-        permanent: false
-      }
-    }
+        permanent: false,
+      },
+    };
   } else {
     token = session?.user.data.access_token!!;
     refreshToken = session.user?.data.refresh_token;
@@ -522,20 +628,23 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         return {
           redirect: {
             destination: '/login',
-            permanent: false
-          }
-        }
+            permanent: false,
+          },
+        };
       } else {
         try {
-          const response = await fetch('http://localhost:3001/auth/refresh', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              refresh_token: refreshToken
-            })
-          });
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/refresh`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                refresh_token: refreshToken,
+              }),
+            }
+          );
 
           if (response.ok) {
             const data = await response.json();
@@ -547,7 +656,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
             token = newToken;
             session.user.data.access_token = newToken;
           } else {
-            console.log("Não foi possível atualizar o token.");
+            console.log('Não foi possível atualizar o token.');
           }
         } catch (error) {
           console.log(error);
@@ -559,11 +668,11 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
     const [property] = await Promise.all([
       fetch(`${baseUrl}/property/${propertyId}?isEdit=${isEdit}`)
-      .then((res) => res.json())
-      .catch(() => {}),
-      fetchJson(`${baseUrl}/property/${propertyId}?isEdit=${isEdit}`)
-    ]) 
-    
+        .then((res) => res.json())
+        .catch(() => {}),
+      fetchJson(`${baseUrl}/property/${propertyId}?isEdit=${isEdit}`),
+    ]);
+
     return {
       props: {
         property,

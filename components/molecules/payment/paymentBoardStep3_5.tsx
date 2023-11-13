@@ -1,37 +1,42 @@
-import { useState } from "react"
-import MastercardIcon from "../../atoms/icons/mastercard";
-import VisaIcon from "../../atoms/icons/visaIcon";
-import { IPlan } from "../../../common/interfaces/plans/plans";
-import { IRegisterPropertyData_Step3 } from "../../../common/interfaces/property/register/register";
-import { IStoredData } from "../../../common/interfaces/property/register/store";
+import { useState } from 'react';
+import { IPlan } from '../../../common/interfaces/plans/plans';
+import { IRegisterPropertyData_Step3 } from '../../../common/interfaces/property/register/register';
+import { IStoredData } from '../../../common/interfaces/property/register/store';
+import MastercardIcon from '../../atoms/icons/mastercard';
+import VisaIcon from '../../atoms/icons/visaIcon';
 
 export type PaymentData = {
-  cardBrand: string
-  value: string
-}
+  cardBrand: string;
+  value: string;
+};
 
 type StoredData = {
-  paymentData: PaymentData
-  propertyDataStep3: IRegisterPropertyData_Step3
-  storedData: IStoredData
-}
+  paymentData: PaymentData;
+  propertyDataStep3: IRegisterPropertyData_Step3;
+  storedData: IStoredData;
+};
 
 export interface IPaymentBoard_Step3_5 {
-  selectedPlan?: IPlan
-  selectedCard?: string
-  storedData: StoredData
-  plans: IPlan[]
+  selectedPlan?: IPlan;
+  selectedCard?: string;
+  storedData: StoredData;
+  plans: IPlan[];
 }
 
 const PaymentBoard_Step3_5 = ({
   selectedPlan,
   selectedCard,
   storedData,
-  plans
+  plans,
 }: IPaymentBoard_Step3_5) => {
-
-  const [cardFlag, setardFlag] = useState<string>(storedData ? storedData.paymentData.cardBrand : '');
-  const [plan, setPlan] = useState<IPlan | undefined>(plans && storedData ? plans.find((plan) => plan._id === storedData.propertyDataStep3.plan) : undefined);
+  const [cardFlag, setardFlag] = useState<string>(
+    storedData ? storedData.paymentData.cardBrand : ''
+  );
+  const [plan, setPlan] = useState<IPlan | undefined>(
+    plans && storedData
+      ? plans.find((plan) => plan._id === storedData.propertyDataStep3.plan)
+      : undefined
+  );
 
   return (
     <>
@@ -41,7 +46,6 @@ const PaymentBoard_Step3_5 = ({
         </h2>
         <div className="flex flex-row justify-between items-center ">
           <div className="flex flex-col">
-            
             <h2 className="text-quaternary text-xl md:text-2xl font-medium mb-4">
               PAGAMENTO
             </h2>
@@ -94,13 +98,13 @@ const PaymentBoard_Step3_5 = ({
         </h2>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default PaymentBoard_Step3_5
+export default PaymentBoard_Step3_5;
 
 export async function getStaticProps() {
-  const plans = await fetch(`http://localhost:3001/plan`)
+  const plans = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/plan`)
     .then((res) => res.json())
     .catch(() => ({}));
 
