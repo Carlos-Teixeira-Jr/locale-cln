@@ -61,7 +61,7 @@ const Home: NextPageWithLayout<IHome> = ({
           );
 
           const response = await fetch(
-            `http://localhost:3001/property/filter/?page=1&limit=3&filter=${locationFilterParam}`
+            `${process.env.NEXT_PUBLIC_BASE_API_URL}/property/filter/?page=1&limit=3&filter=${locationFilterParam}`
           )
             .then((res) => res.json())
             .catch(() => ({}));

@@ -1,18 +1,14 @@
+import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import {
-  MouseEvent,
-  useEffect,
-  useState,
-} from 'react';
+import { MouseEvent, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { sendRequest } from '../../../../hooks/sendRequest';
+import { useIsMobile } from '../../../../hooks/useIsMobile';
 import EyeIcon from '../../../atoms/icons/eyeIcon';
 import TurnedOffEyeIcon from '../../../atoms/icons/turnedOffEyeIcon';
 import ForgotPasswordModal from '../../../atoms/modals/forgotPasswordModal';
-import { useIsMobile } from '../../../../hooks/useIsMobile';
-import { signIn } from 'next-auth/react';
-import { toast } from 'react-toastify';
-import { sendRequest } from '../../../../hooks/sendRequest';
 import VerifyEmailModal from '../../../atoms/modals/verifyEmailModal';
 import { SocialAuthButton } from '../../buttons/socialAuthButtons';
 
@@ -25,25 +21,27 @@ const LoginCard: React.FC = () => {
   const [password, setPassword] = useState<string>('');
   const [passwordConfirmation, setPasswordConfirmation] = useState<string>('');
   const [passwordError, setPasswordError] = useState<string>('');
-  const [passwordConfirmationError, setPasswordConfirmationError] = useState<string>('');
-  const [forgotPasswordModalIsOpen, setForgotPasswordModalIsOpen] = useState(false);
+  const [passwordConfirmationError, setPasswordConfirmationError] =
+    useState<string>('');
+  const [forgotPasswordModalIsOpen, setForgotPasswordModalIsOpen] =
+    useState(false);
   const [verifyEmailModalIsOpen, setVerifyEmailModalIsOpen] = useState(false);
   const isMobile = useIsMobile();
   const [showPassword, setShowPassword] = useState(false);
-  const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false);
+  const [showPasswordConfirmation, setShowPasswordConfirmation] =
+    useState(false);
   const [isRegister, setIsRegister] = useState(false);
 
-  const [ emailVerificationData, setEmailVerificationData ] = useState({
+  const [emailVerificationData, setEmailVerificationData] = useState({
     email: queryEmail ? queryEmail : email,
     isEmailVerified: false,
     emailVerificationCode: '',
-    password: password
+    password: password,
   });
 
   useEffect(() => {
-    setEmailVerificationData({...emailVerificationData, email: email })
-  }, [email])
-  
+    setEmailVerificationData({ ...emailVerificationData, email: email });
+  }, [email]);
 
   // Apaga a mensagem de erro;
   useEffect(() => {
@@ -57,7 +55,7 @@ const LoginCard: React.FC = () => {
     if (queryEmail !== null) {
       setEmail(queryEmail.toString());
     }
-  })
+  });
 
   const handlePasswordVisibility = (id: string) => {
     if (id === 'password') {
@@ -78,13 +76,17 @@ const LoginCard: React.FC = () => {
     const isValidEmailFormat = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
     if (isRegister) {
-      if(!email) {
+      if (!email) {
         setEmailError('Por favor, insira seu email para cadastrar uma conta.');
       } else if (!isValidEmailFormat) {
-        setEmailError('O e-mail inserido não tem o formato de um e-mail válido.');
+        setEmailError(
+          'O e-mail inserido não tem o formato de um e-mail válido.'
+        );
       }
       if (!password) {
-        setPasswordError('Por favor, insira uma senha para cadastrar sua conta.');
+        setPasswordError(
+          'Por favor, insira uma senha para cadastrar sua conta.'
+        );
       } else if (password.length <= 5) {
         setPasswordError('A senha precisa ter pelo menos 6 caracteres.');
       }
@@ -94,18 +96,26 @@ const LoginCard: React.FC = () => {
         );
       }
       if (!passwordConfirmation) {
-        setPasswordConfirmationError('Por favor, insira a confirmação de senha.');
+        setPasswordConfirmationError(
+          'Por favor, insira a confirmação de senha.'
+        );
       } else if (password !== passwordConfirmation) {
-        setPasswordConfirmationError('A confirmação de senha precisa ser igual a senha.');
+        setPasswordConfirmationError(
+          'A confirmação de senha precisa ser igual a senha.'
+        );
       }
     } else {
       if (!email) {
         setEmailError('Por favor, insira seu email para cadastrar uma conta.');
       } else if (!isValidEmailFormat) {
-        setEmailError('O e-mail inserido não tem o formato de um e-mail válido.');
+        setEmailError(
+          'O e-mail inserido não tem o formato de um e-mail válido.'
+        );
       }
       if (!password) {
-        setPasswordError('Por favor, insira uma senha para cadastrar sua conta.');
+        setPasswordError(
+          'Por favor, insira uma senha para cadastrar sua conta.'
+        );
       }
     }
 
@@ -118,19 +128,23 @@ const LoginCard: React.FC = () => {
         passwordConfirmation === password
       ) {
         try {
-          const data = await sendRequest('http://localhost:3001/auth/register', 'POST', {
-            email,
-            password,
-            passwordConfirmation,
-          });
-  
-          if(data){
+          const data = await sendRequest(
+            `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/register`,
+            'POST',
+            {
+              email,
+              password,
+              passwordConfirmation,
+            }
+          );
+
+          if (data) {
             const { email, emailVerificationCode, isEmailVerified } = data;
             setEmailVerificationData({
               email,
               isEmailVerified,
               emailVerificationCode,
-              password
+              password,
             });
             setVerifyEmailModalIsOpen(true);
           }
@@ -141,31 +155,39 @@ const LoginCard: React.FC = () => {
         toast.error('Alguma informação está faltando.');
       }
     } else {
-      if (email && password ) {
+      if (email && password) {
         try {
-          const data = await sendRequest('http://localhost:3001/user/find-by-email', 'POST', {email});
+          const data = await sendRequest(
+            `${process.env.NEXT_PUBLIC_BASE_API_URL}/user/find-by-email`,
+            'POST',
+            { email }
+          );
 
-          if(data) {
+          if (data) {
             const isEmailVerified = data.isEmailVerified;
-            if(isEmailVerified) {
+            if (isEmailVerified) {
               try {
                 const signInResponse = await signIn('credentials', {
-                  email, 
+                  email,
                   password,
-                  redirect: false
+                  redirect: false,
                 }).then(({ ok, error }: any) => {
                   if (ok) {
                     toast.dismiss();
-                    router.push("/admin");
+                    router.push('/admin');
                   } else {
                     console.error(error);
                     toast.dismiss();
-                    toast.warning("Email ou senha inválidos.", { type: "error" });
+                    toast.warning('Email ou senha inválidos.', {
+                      type: 'error',
+                    });
                   }
                 });
-    
+
                 if (signInResponse === null) {
-                  toast.warn('Dados de login inválidos ou usuário não encontrado');
+                  toast.warn(
+                    'Dados de login inválidos ou usuário não encontrado'
+                  );
                 }
               } catch (error) {
                 toast.dismiss();
@@ -173,17 +195,23 @@ const LoginCard: React.FC = () => {
                 toast.warn('Erro ao fazer login');
               }
             } else {
-              toast.warn('Por favor, verifique a autenticidade de sua conta informando o código de verificação enviado para o seu e-mail.');
+              toast.warn(
+                'Por favor, verifique a autenticidade de sua conta informando o código de verificação enviado para o seu e-mail.'
+              );
               setVerifyEmailModalIsOpen(true);
             }
           } else {
             toast.dismiss();
-            toast.error('Não há nenhum usuário cadastrado com o e-mail informado.')
+            toast.error(
+              'Não há nenhum usuário cadastrado com o e-mail informado.'
+            );
           }
         } catch (error) {
           toast.dismiss();
-          toast.error("Ocorreu um erro ao tentar se conectar com o servidor, por favor tente novamente mais tarde.")
-          console.error(error)
+          toast.error(
+            'Ocorreu um erro ao tentar se conectar com o servidor, por favor tente novamente mais tarde.'
+          );
+          console.error(error);
         }
       } else {
         toast.warn('alguma informação está faltando');
@@ -233,7 +261,10 @@ const LoginCard: React.FC = () => {
               value={password}
               onChange={(e) => {
                 setPassword(e.target.value);
-                setEmailVerificationData({...emailVerificationData, password: e.target.value})
+                setEmailVerificationData({
+                  ...emailVerificationData,
+                  password: e.target.value,
+                });
               }}
             />
 
@@ -351,8 +382,8 @@ const LoginCard: React.FC = () => {
 
       <div className="flex gap-10">
         <div>
-          <SocialAuthButton 
-            provider={'google'} 
+          <SocialAuthButton
+            provider={'google'}
             onClick={() => signIn('google')}
           />
         </div>
@@ -383,13 +414,12 @@ const LoginCard: React.FC = () => {
       )}
 
       {verifyEmailModalIsOpen && (
-        <VerifyEmailModal 
+        <VerifyEmailModal
           isOpen={verifyEmailModalIsOpen}
           setModalIsOpen={setVerifyEmailModalIsOpen}
-          emailVerificationDataProp={emailVerificationData} 
+          emailVerificationDataProp={emailVerificationData}
         />
       )}
-
     </div>
   );
 };

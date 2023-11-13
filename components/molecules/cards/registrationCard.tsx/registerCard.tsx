@@ -7,16 +7,16 @@ import UnverifiedEmailModal from '../../../atoms/modals/unverifiedEmailModal';
 import { SocialAuthButton } from '../../buttons/socialAuthButtons';
 
 const RegisterCard: React.FC = () => {
-
   const router = useRouter();
   const [email, setEmail] = useState<string>('');
   const [emailError, setEmailError] = useState<string>('');
-  const [unverifiedEmailModal, setUnverifiedEmailModal] = useState<boolean>(false);
+  const [unverifiedEmailModal, setUnverifiedEmailModal] =
+    useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(false);
 
   useEffect(() => {
-    if(email !== ''){
-      setEmailError('')
+    if (email !== '') {
+      setEmailError('');
     }
   }, [email]);
 
@@ -34,31 +34,36 @@ const RegisterCard: React.FC = () => {
   function handleEmailValidation() {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const isValid = emailRegex.test(email);
-    
+
     if (!isValid && email !== '') {
       setEmailError('O e-mail inserido não tem o formato de um e-mail válido.');
     } else {
       setEmailError('');
     }
-  };
+  }
 
-  const handleContinueBtn = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const handleContinueBtn = async (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
     event.preventDefault();
 
-    if(!email){
+    if (!email) {
       setEmailError('Por favor, insira seu email para cadastrar um anúncio');
     } else {
       try {
         toast.loading('Enviando...');
-        const response = await fetch('http://localhost:3001/user/find-by-email', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            email
-          })
-        });
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BASE_API_URL}/user/find-by-email`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              email,
+            }),
+          }
+        );
 
         const data = await response.json();
 
@@ -66,12 +71,12 @@ const RegisterCard: React.FC = () => {
           const isEmailVerified = data.isEmailVerified;
           if (!isEmailVerified) {
             toast.dismiss();
-            setUnverifiedEmailModal(true)
+            setUnverifiedEmailModal(true);
           } else {
             toast.dismiss();
             router.push({
               pathname: '/register',
-              query: email
+              query: email,
             });
           }
         } else {
@@ -79,12 +84,12 @@ const RegisterCard: React.FC = () => {
           router.push({
             pathname: '/register',
             query: {
-              email
-            }
+              email,
+            },
           });
         }
       } catch (error) {
-        console.log('Nenhum usuário cadastrado com o e-mail informado.')
+        console.log('Nenhum usuário cadastrado com o e-mail informado.');
       }
     }
   };
@@ -105,9 +110,7 @@ const RegisterCard: React.FC = () => {
         </label>
         <input
           className={`lg:w-[360px] md:w-full w-[291px] h-fit md:h-12 rounded-[10px] border-[1px] border-quaternary drop-shadow-xl bg-tertiary text-quaternary md:p-2 text-xl font-semibold ${
-            emailError === '' ?
-            '' :
-            'border-[2px] border-red-500'
+            emailError === '' ? '' : 'border-[2px] border-red-500'
           }`}
           type="email"
           value={email}
@@ -116,9 +119,8 @@ const RegisterCard: React.FC = () => {
         />
 
         {emailError !== '' && (
-          <span className='text-sm text-red-500'>{emailError}</span>
+          <span className="text-sm text-red-500">{emailError}</span>
         )}
-        
       </div>
       <div>
         <button
@@ -131,10 +133,10 @@ const RegisterCard: React.FC = () => {
       <div className="flex">
         <div>
           <SocialAuthButton
-            provider='google'
+            provider="google"
             onClick={() => {
               toast.loading('Enviando...');
-              signIn('google', {callbackUrl: '/register'});
+              signIn('google', { callbackUrl: '/register' });
             }}
           />
         </div>
@@ -159,9 +161,9 @@ const RegisterCard: React.FC = () => {
         <span className="absolute left-0 bottom-0 w-full h-0.5 bg-secondary transition-transform transform scale-x-0 group-hover:scale-x-100"></span>
       </a>
       {unverifiedEmailModal && (
-        <UnverifiedEmailModal 
-          isOpen={unverifiedEmailModal} 
-          setModalIsOpen={setUnverifiedEmailModal} 
+        <UnverifiedEmailModal
+          isOpen={unverifiedEmailModal}
+          setModalIsOpen={setUnverifiedEmailModal}
           isMobile={isMobile}
           email={email}
         />

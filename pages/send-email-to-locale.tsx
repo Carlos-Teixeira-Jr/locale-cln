@@ -84,7 +84,7 @@ const LocaleContact: NextPageWithLayout = () => {
 
     try {
       const response = await fetch(
-        'http://localhost:3001/send-email-to-locale',
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/send-email-to-locale`,
         {
           method: 'POST',
           headers: {

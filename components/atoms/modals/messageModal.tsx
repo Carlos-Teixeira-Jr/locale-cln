@@ -1,9 +1,9 @@
 import Link from 'next/link';
 import React, { useState } from 'react';
 import Modal from 'react-modal';
+import { toast } from 'react-toastify';
 import { v4 as uuidv4 } from 'uuid';
 import validator from 'validator';
-import { toast } from 'react-toastify';
 import { IData } from '../../../common/interfaces/property/propertyData';
 import { capitalizeFirstLetter } from '../../../common/utils/strings/capitalizeFirstLetter';
 import { useIsMobile } from '../../../hooks/useIsMobile';
@@ -12,7 +12,7 @@ Modal.setAppElement('#__next');
 export interface IMessageModal {
   isOpen: boolean;
   setModalIsOpen: (isopen: boolean) => void;
-  propertyInfo: IData
+  propertyInfo: IData;
 }
 
 export interface IFormData {
@@ -22,12 +22,15 @@ export interface IFormData {
   message: string;
 }
 
-const MessageModal: React.FC<IMessageModal> = ({ isOpen, setModalIsOpen, propertyInfo }) => {
-
-  const ownerName = capitalizeFirstLetter(propertyInfo?.ownerInfo.name) ;
+const MessageModal: React.FC<IMessageModal> = ({
+  isOpen,
+  setModalIsOpen,
+  propertyInfo,
+}) => {
+  const ownerName = capitalizeFirstLetter(propertyInfo?.ownerInfo.name);
   const portalClassName = `modal-${uuidv4()}`;
   const isMobile = useIsMobile();
-  
+
   const [formData, setFormData] = useState<IFormData>({
     name: '',
     phone: '',
@@ -45,36 +48,36 @@ const MessageModal: React.FC<IMessageModal> = ({ isOpen, setModalIsOpen, propert
   const inputs = [
     {
       key: 'name',
-      label: "Nome",
+      label: 'Nome',
       value: formData.name,
       error: errors.name,
       onChange: (event: any) => {
         const name = event.target.value;
         setFormData({ ...formData, name: name });
-      }
+      },
     },
     {
       key: 'phone',
-      label: "Telefone",
+      label: 'Telefone',
       value: formData.phone,
       error: errors.phone,
       onChange: (event: any) => {
-        setFormData({ ...formData, phone: event.target.value })
-      }
+        setFormData({ ...formData, phone: event.target.value });
+      },
     },
     {
       key: 'email',
-      label: "E-mail",
+      label: 'E-mail',
       value: formData.email,
       error: errors.email,
       onChange: (event: any) => {
         const email = event.target.value;
         setFormData({ ...formData, email: email });
-      }
+      },
     },
     {
       key: 'message',
-      label: "Mensagem",
+      label: 'Mensagem',
       value: formData.message,
       error: errors.message,
       onChange: (event: any) => {
@@ -82,25 +85,29 @@ const MessageModal: React.FC<IMessageModal> = ({ isOpen, setModalIsOpen, propert
         if (onlyLetters.test(event.target.value)) {
           setFormData({ ...formData, message: event.target.value });
         }
-      }
+      },
     },
   ];
 
   const handleModalField = async (event: any) => {
     event.preventDefault();
-  
+
     const errorMessage = 'Este campo é obrigatório.';
     const newErrors = {
       name: !formData.name ? errorMessage : '',
-      email: !formData.email ? errorMessage : !validator.isEmail(formData.email) ? errorMessage : '',
+      email: !formData.email
+        ? errorMessage
+        : !validator.isEmail(formData.email)
+        ? errorMessage
+        : '',
       phone: !formData.phone.length ? errorMessage : '',
       message: !formData.message ? errorMessage : '',
     };
-  
+
     setErrors(newErrors);
-  
+
     const hasErrors = Object.values(newErrors).some((item) => item !== '');
-  
+
     if (hasErrors) {
       toast.error('Você esqueceu de preencher algum campo obrigatório!');
     } else {
@@ -113,28 +120,38 @@ const MessageModal: React.FC<IMessageModal> = ({ isOpen, setModalIsOpen, propert
           email: formData.email,
           message: formData.message,
         };
-  
-        const response = await fetch(`http://localhost:3001/message`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(body),
-        });
-  
+
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BASE_API_URL}/message`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(body),
+          }
+        );
+
         if (response.ok) {
-          toast.success('Sua mensagem foi enviada ao proprietário do imóvel com sucesso!');
+          toast.success(
+            'Sua mensagem foi enviada ao proprietário do imóvel com sucesso!'
+          );
           setModalIsOpen(false);
         } else {
-          toast.error("Houve um problema ao tentar enviar a mensagem. Tente novamente mais tarde.", { className: 'z-[60]' });
+          toast.error(
+            'Houve um problema ao tentar enviar a mensagem. Tente novamente mais tarde.',
+            { className: 'z-[60]' }
+          );
         }
       } catch (error) {
         console.log(error);
-        toast.error('Não foi possível se conectar ao servidor. Por favor, tente novamente mais tarde.', { className: 'z-[60]' });
+        toast.error(
+          'Não foi possível se conectar ao servidor. Por favor, tente novamente mais tarde.',
+          { className: 'z-[60]' }
+        );
       }
     }
   };
-  
 
   return (
     <Modal
@@ -150,7 +167,7 @@ const MessageModal: React.FC<IMessageModal> = ({ isOpen, setModalIsOpen, propert
           right: 0,
           bottom: 0,
           backgroundColor: 'rgba(255, 255, 255, 0.75)',
-          zIndex: 50
+          zIndex: 50,
         },
         content: {
           zIndex: 40,
@@ -176,28 +193,33 @@ const MessageModal: React.FC<IMessageModal> = ({ isOpen, setModalIsOpen, propert
     >
       <div className="bg-quinary">
         <h1 className="lg:w-fit lg:h-fit m-1 mt-0 font-bold md:text-xl text-quaternary">
-          Mande uma mensagem para {ownerName ? ownerName : 'o responsável pelo imóvel.'}
+          Mande uma mensagem para{' '}
+          {ownerName ? ownerName : 'o responsável pelo imóvel.'}
         </h1>
 
         {inputs.map((input) => (
-          <div key={input.key} className='py-2 md:p-2'>
-            <h2 className="font-bold lg:text-lg text-quaternary h-fit mx-2">{input.label}</h2>
+          <div key={input.key} className="py-2 md:p-2">
+            <h2 className="font-bold lg:text-lg text-quaternary h-fit mx-2">
+              {input.label}
+            </h2>
             {input.key === 'message' ? (
               <textarea
                 value={input.value}
-                className='w-full h-fit md:m-2 mb-0 rounded-[10px] border border-quaternary bg-tertiary p-1 required:border-red-500 mr-0 md:mx-auto text-md text-quaternary font-semibold'
+                className="w-full h-fit md:m-2 mb-0 rounded-[10px] border border-quaternary bg-tertiary p-1 required:border-red-500 mr-0 md:mx-auto text-md text-quaternary font-semibold"
                 onChange={input.onChange}
               />
             ) : (
               <input
-                type='text'
+                type="text"
                 value={input.value}
-                className='w-full h-fit md:m-2 mb-0 rounded-[10px] border border-quaternary bg-tertiary p-1 required:border-red-500 mr-0 md:mx-auto md:text-xl text-quaternary font-semibold'
+                className="w-full h-fit md:m-2 mb-0 rounded-[10px] border border-quaternary bg-tertiary p-1 required:border-red-500 mr-0 md:mx-auto md:text-xl text-quaternary font-semibold"
                 onChange={input.onChange}
               />
             )}
             {input.error && (
-              <label className="mx-[10px] text-red-500 mt-5">{input.error}</label>
+              <label className="mx-[10px] text-red-500 mt-5">
+                {input.error}
+              </label>
             )}
           </div>
         ))}
@@ -209,7 +231,9 @@ const MessageModal: React.FC<IMessageModal> = ({ isOpen, setModalIsOpen, propert
               target="_blank"
               className="font-normal lg:text-sm text-sm leading-6 text-blue-600"
             >
-              <p className='font-normal lg:text-sm text-sm leading-6 text-blue-600'>Termos de uso & política de privacidade</p>
+              <p className="font-normal lg:text-sm text-sm leading-6 text-blue-600">
+                Termos de uso & política de privacidade
+              </p>
               {/* Termos de uso &{'  '}
             </Link>
             <Link

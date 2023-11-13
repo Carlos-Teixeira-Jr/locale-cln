@@ -43,7 +43,6 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   properties,
   ownerData,
 }) => {
-
   const router = useRouter();
   const isOwner = properties?.docs?.length > 0 ? true : false;
   const [selectedPlan, setSelectedPlan] = useState(
@@ -54,8 +53,8 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const isEdit = true;
   const isMobile = useIsMobile();
   const reversedCards = [...plans].reverse();
-  const creditCardInfo = ownerData?.owner?.isNewCreditCard 
-    ? ownerData?.owner?.newCreditCardData.creditCard.number 
+  const creditCardInfo = ownerData?.owner?.isNewCreditCard
+    ? ownerData?.owner?.newCreditCardData.creditCard.number
     : ownerData?.owner?.creditCardInfo;
 
   const planObj = plans.find((plan) => plan._id === selectedPlan);
@@ -225,16 +224,19 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
 
       try {
         toast.loading('Enviando...');
-        const response = await fetch('http://localhost:3001/user/edit-user', {
-          method: 'POST',
-          headers: {
-            'Content-type': 'application/json',
-          },
-          body: JSON.stringify({
-            user: userFormData,
-            owner: ownerFormData,
-          }),
-        });
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BASE_API_URL}/user/edit-user`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-type': 'application/json',
+            },
+            body: JSON.stringify({
+              user: userFormData,
+              owner: ownerFormData,
+            }),
+          }
+        );
 
         if (response.ok) {
           toast.dismiss();
@@ -248,7 +250,9 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
         }
       } catch (error) {
         toast.dismiss();
-        toast.error('Não foi possível se conectar ao servidor. Por favor, tente novamente mais tarde.');
+        toast.error(
+          'Não foi possível se conectar ao servidor. Por favor, tente novamente mais tarde.'
+        );
       }
     } else {
       toast.error('Algum campo obrigatório não foi preenchido.');
@@ -258,7 +262,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   return (
     <div className="max-w-[1232px] mx-auto justify-center items-center">
       <div className="fixed z-50 top-0 w-full inset-x-0">
-        <AdminHeader isOwnerProp={isOwner}/>
+        <AdminHeader isOwnerProp={isOwner} />
       </div>
 
       <div className="flex flex-row items-center max-w-[1232px] justify-center">
@@ -368,7 +372,6 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                 )}
               </div>
             </div>
-
           </div>
         </div>
       </div>
@@ -419,15 +422,18 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         };
       } else {
         try {
-          const response = await fetch('http://localhost:3001/auth/refresh', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              refresh_token: refreshToken,
-            }),
-          });
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/refresh`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                refresh_token: refreshToken,
+              }),
+            }
+          );
 
           if (response.ok) {
             const data = await response.json();
@@ -448,20 +454,23 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     }
 
     try {
-      const ownerIdResponse = await fetch(`${baseUrl}/user/find-owner-by-user`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({_id: userId}),
-      })
+      const ownerIdResponse = await fetch(
+        `${baseUrl}/user/find-owner-by-user`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ _id: userId }),
+        }
+      );
 
       if (ownerIdResponse.ok) {
         const ownerData = await ownerIdResponse.json();
-        ownerId = ownerData?.owner?._id
+        ownerId = ownerData?.owner?._id;
       }
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
 
     const [userData, ownerData, plans, properties] = await Promise.all([
