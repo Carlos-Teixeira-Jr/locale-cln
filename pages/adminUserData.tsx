@@ -26,6 +26,7 @@ import AdminHeader from '../components/organisms/adminHeader/adminHeader';
 import SideMenu from '../components/organisms/sideMenu/sideMenu';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { NextPageWithLayout } from './page';
+import EditPassword from '../components/molecules/userData/editPassword';
 Modal.setAppElement('#__next');
 
 interface IAdminUserDataPageProps {
@@ -74,12 +75,27 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     cellPhone: '',
   });
 
+  const [passwordFormData, setPasswordFormData] = useState({
+    password: '',
+    passwordConfirmattion: ''
+  });
+
+  const [passwordError, setPasswordError] = useState({
+    passwordError: '',
+    passwordConfirmattionError: ''
+  })
+
   // Lida com o autoscroll das validações de erro dos inputs;
   const userDataInputRefs = {
     username: useRef<HTMLElement>(null),
     email: useRef<HTMLElement>(null),
     cpf: useRef<HTMLElement>(null),
     cellPhone: useRef<HTMLElement>(null),
+  };
+
+  const passwordInputRefs = {
+    password: useRef<HTMLElement>(null),
+    passwordConfimattion: useRef<HTMLElement>(null),
   };
 
   const [address, setAddress] = useState<IAddress>({
@@ -282,6 +298,14 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                 error={formDataErrors}
                 userDataInputRefs={userDataInputRefs}
               />
+
+              <div className='mx-5 my-10'>
+                <EditPassword 
+                  onPasswordUpdate={(password: string) => setPasswordFormData({ ...passwordFormData, password })} 
+                  error={passwordError}
+                  passwordInputRefs={passwordInputRefs}
+                />
+              </div>
 
               <h2 className="md:text-3xl text-2xl leading-10 text-quaternary font-bold mb-5 md:mb-10 lg:mx-5">
                 Dados de Cobrança
