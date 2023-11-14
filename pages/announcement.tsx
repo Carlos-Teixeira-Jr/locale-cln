@@ -1,3 +1,4 @@
+import { fetchJson } from '../common/utils/fetchJson';
 import AdvantagesArea from '../components/molecules/advantagesArea/advantagesArea';
 import PlansCards from '../components/molecules/cards/plansCards/plansCards';
 import RegisterCard from '../components/molecules/cards/registrationCard.tsx/registerCard';
@@ -6,7 +7,9 @@ import Header from '../components/organisms/header/header';
 import { NextPageWithLayout } from './page';
 
 const AnnouncementPage: NextPageWithLayout = ({ plans }: any) => {
+
   const reversedCards = [...plans].reverse();
+  
   return (
     <>
       <div className="fixed z-10 top-0 md:w-full">
@@ -61,10 +64,16 @@ const AnnouncementPage: NextPageWithLayout = ({ plans }: any) => {
 export default AnnouncementPage;
 
 export async function getStaticProps() {
-  const plans = await fetch(`http://localhost:3001/plan`)
-    .then((res) => res.json())
-    .catch(() => ({}));
-  console.log(plans);
+
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+
+  const [plans] = await Promise.all([
+    fetch(`${baseUrl}/plan`)
+      .then((res) => res.json())
+      .catch(() => []),
+    fetchJson(`${baseUrl}/plan`)
+  ]);
+
   return {
     props: {
       plans,

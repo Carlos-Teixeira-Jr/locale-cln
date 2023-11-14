@@ -37,12 +37,12 @@ const MessageNotifications = ({
               Notificações
             </h1>
             <div className="flex justify-center">
-              <Pagination totalPages={0} />
+              {notifications && <Pagination totalPages={0} />}
             </div>
 
             {
               <div className="mx-10">
-                {notifications ? (
+                {notifications &&
                   notifications?.map(
                     ({ description, _id, title }: INotification) => (
                       <NotificationCard
@@ -52,17 +52,12 @@ const MessageNotifications = ({
                         _id={_id}
                       />
                     )
-                  )
-                ) : (
-                  <p className="text-center justify-center flex items-center">
-                    Não há nenhuma notificação.
-                  </p>
-                )}
+                  )}
               </div>
             }
 
             <div className="flex justify-center mb-10">
-              <Pagination totalPages={0} />
+              {notifications && <Pagination totalPages={0} />}
             </div>
           </div>
         </div>

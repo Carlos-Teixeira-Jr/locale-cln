@@ -45,7 +45,6 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   properties,
   ownerData,
 }) => {
-  console.log('🚀 ~ file: adminUserData.tsx:41 ~ ownerData:', ownerData.user);
   const router = useRouter();
   const isOwner = properties?.docs?.length > 0 ? true : false;
   const [selectedPlan, setSelectedPlan] = useState(
@@ -56,6 +55,11 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const isEdit = true;
   const isMobile = useIsMobile();
   const reversedCards = [...plans].reverse();
+  const creditCardInfo = ownerData?.owner?.isNewCreditCard
+    ? ownerData?.owner?.newCreditCardData.creditCard.number
+    : ownerData?.owner?.creditCardInfo;
+
+  const planObj = plans.find((plan) => plan._id === selectedPlan);
 
   const [formData, setFormData] = useState<IUserDataComponent>({
     username: '',
@@ -222,16 +226,19 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
 
       try {
         toast.loading('Enviando...');
-        const response = await fetch('http://localhost:3001/user/edit-user', {
-          method: 'POST',
-          headers: {
-            'Content-type': 'application/json',
-          },
-          body: JSON.stringify({
-            user: userFormData,
-            owner: ownerFormData,
-          }),
-        });
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BASE_API_URL}/user/edit-user`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-type': 'application/json',
+            },
+            body: JSON.stringify({
+              user: userFormData,
+              owner: ownerFormData,
+            }),
+          }
+        );
 
         if (response.ok) {
           toast.dismiss();
@@ -248,7 +255,6 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
         toast.error(
           'Não foi possível se conectar ao servidor. Por favor, tente novamente mais tarde.'
         );
-        console.error('Houve um erro na resposta da chamada', error);
       }
     } else {
       toast.error('Algum campo obrigatório não foi preenchido.');
@@ -279,11 +285,11 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                 userDataInputRefs={userDataInputRefs}
               />
 
-              <h2 className="md:text-3xl text-2xl leading-10 text-quaternary font-bold mb-5 md:mb-10">
+              <h2 className="md:text-3xl text-2xl leading-10 text-quaternary font-bold mb-5 md:mb-10 lg:mx-5">
                 Dados de Cobrança
               </h2>
 
-              <div className="grid sm:grid-cols-1 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
+              <div className="grid sm:grid-cols-1 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 place-items-center">
                 {reversedCards.map(
                   ({
                     _id,
@@ -328,7 +334,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
               </div>
             </div>
 
-            <div className="lg:float-right flex md:justify-end justify-center md:w-[90%] mb-10 md:mr-16">
+            <div className="lg:float-right flex md:justify-end justify-center md:w-[90%] lg:w-full mb-10 md:mr-16 lg:mr-5">
               <button
                 className="bg-primary w-fit h-16 item text-quinary rounded-[10px] py-5 px-20 text-xl md:text-2xl font-extrabold transition-colors duration-300 hover:bg-red-600 hover:text-white"
                 onClick={handleUpdateBtn}
@@ -358,6 +364,12 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                     isEdit={true}
                     error={creditCardErrors}
                     creditCardInputRefs={creditCardInputRefs}
+                    creditCardInfo={creditCardInfo}
+                    userInfo={formData}
+                    customerId={ownerData?.owner?.customerId}
+                    selectedPlan={planObj}
+                    userAddress={address}
+                    ownerData={ownerData}
                   />
                 )}
               </div>
@@ -376,7 +388,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const userId = session?.user.data._id;
   let token = session?.user?.data?.access_token!!;
   let refreshToken = session?.user?.data.refresh_token;
-
   if (!session) {
     return {
       redirect: {
@@ -388,14 +399,14 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     token = session?.user.data.access_token!!;
     refreshToken = session.user?.data.refresh_token;
     const decodedToken = jwt.decode(token) as JwtPayload;
-    const isTokenExpired = decodedToken.exp
-      ? decodedToken.exp <= Math.floor(Date.now() / 1000)
+    const isTokenExpired = decodedToken?.exp
+      ? decodedToken?.exp <= Math.floor(Date.now() / 1000)
       : false;
 
     if (isTokenExpired) {
       const decodedRefreshToken = jwt.decode(refreshToken) as JwtPayload;
-      const isRefreshTokenExpired = decodedRefreshToken.exp
-        ? decodedRefreshToken.exp <= Math.floor(Date.now() / 1000)
+      const isRefreshTokenExpired = decodedRefreshToken?.exp
+        ? decodedRefreshToken?.exp <= Math.floor(Date.now() / 1000)
         : false;
 
       if (isRefreshTokenExpired) {
@@ -410,15 +421,18 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         };
       } else {
         try {
-          const response = await fetch('http://localhost:3001/auth/refresh', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              refresh_token: refreshToken,
-            }),
-          });
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/refresh`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                refresh_token: refreshToken,
+              }),
+            }
+          );
 
           if (response.ok) {
             const data = await response.json();

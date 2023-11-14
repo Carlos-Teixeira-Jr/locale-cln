@@ -189,13 +189,16 @@ const Register = () => {
       store.set('propertyData', propertyDataStep1);
       toast.dismiss();
       updateProgress(2)
-      router.push({
-        pathname: '/registerStep2',
-        query: {
-          email: urlEmail
-        }
-      });
-
+      if (urlEmail !== undefined) {
+        router.push({
+          pathname: '/registerStep2',
+          query: {
+            email: urlEmail
+          }
+        });
+      } else {
+        router.push('/registerStep2')
+      }
     } else {
       toast.error(`Algum campo obrigatório não foi preenchido.`);
     }

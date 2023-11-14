@@ -52,6 +52,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
   const storedPlan = store.get('plans');
   const choosedPlan = storedPlan ? storedPlan : '';
   const propertyAddress = storedData?.address ? storedData.address : {};
+  const [paymentError, setPaymentError] = useState('');
 
   // Lida com o autoscroll das validações de erro dos inputs;
   const userDataInputRefs = {
@@ -85,6 +86,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     lat: number;
     lng: number;
   } | null>(null);
+
   const [selectedPlan, setSelectedPlan] = useState(choosedPlan);
   const freePlan = '645a46d4388b9fbde84b6e8a';
   const reversedCards = [...plans].reverse();
@@ -150,10 +152,10 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     }
   });
 
-  // Busca o endereço do imóvel armazenado no local storage e atualiza o valor de addressData sempre que há o componente de endereço é aberto ou fechado - isso é necessário para que o componente ChangeAddressCheckbox recupere o endereço do localStorage quando a opção é alterada;
+  // // Busca o endereço do imóvel armazenado no local storage e atualiza o valor de addressData sempre que há o componente de endereço é aberto ou fechado - isso é necessário para que o componente ChangeAddressCheckbox recupere o endereço do localStorage quando a opção é alterada;
   useEffect(() => {
     setAddressData(property ? property.address : '');
-  }, [isSameAddress, property]);
+  }, []);
 
   useEffect(() => {
     const url = router.pathname;
@@ -285,11 +287,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         _id: userId ? userId : '',
         username: userDataForm.username,
         email: userDataForm.email,
-        address:
-          !isSameAddress && storedData.address
-            ? storedData.address
-            : addressData,
-        cpf: userDataForm.cpf,
+        address: isSameAddress ? storedData.address : addressData,
+        cpf: userDataForm.cpf.replace(/\D/g, ''),
       };
 
       const propertyData: ICreateProperty_propertyData = {
@@ -323,20 +322,23 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
           userData,
           plan: propertyDataStep3.plan,
           isPlanFree,
-          phone: userDataForm.phone,
-          cellPhone: userDataForm.cellPhone,
+          phone: userDataForm.cellPhone,
+          cellPhone: userDataForm.phone,
         };
 
         if (!isPlanFree) {
           body.creditCardData = creditCard;
         }
-        const response = await fetch(`http://localhost:3001/property`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(body),
-        });
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BASE_API_URL}/property`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(body),
+          }
+        );
 
         if (response.ok) {
           const data = await response.json();
@@ -364,7 +366,9 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
           }
         } else {
           toast.dismiss();
+          const error = await response.json();
           console.error(response);
+          setPaymentError(error.message);
           setFailPaymentModalIsOpen(true);
         }
       } catch (error) {
@@ -388,10 +392,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
             <LinearStepper isSubmited={false} sharedActiveStep={2} />
           </div>
 
-          <div
-            // className="flex justify-center flex-col md:flex-row md:ml-14 ml-6 md:top-52"
-            className="md:flex"
-          >
+          <div className="md:flex">
             {reversedCards.map(
               ({ _id, name, price, highlightAd, commonAd, smartAd }: IPlan) => (
                 <PlansCardsHidden
@@ -438,7 +439,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
               onAddressCheckboxChange={(value: boolean) =>
                 setIsSameAddress(value)
               }
-              address={addressData}
+              userAddress={addressData}
+              propertyAddress={storedData}
             />
 
             {!isSameAddress && (
@@ -491,6 +493,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         <PaymentFailModal
           isOpen={failPaymentModalIsOpen}
           setModalIsOpen={setFailPaymentModalIsOpen}
+          paymentError={paymentError}
         />
       </div>
 
@@ -502,7 +505,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
 export default RegisterStep3;
 
 export async function getStaticProps() {
-  const plans = await fetch(`http://localhost:3001/plan`)
+  const plans = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/plan`)
     .then((res) => res.json())
     .catch(() => ({}));
 

@@ -1,10 +1,10 @@
 import Image from 'next/image';
-import React, { MouseEvent, useEffect, useState } from 'react';
+import React, { MouseEvent, useState } from 'react';
 import Modal from 'react-modal';
-import CloseIcon from '../icons/closeIcon';
 import { toast } from 'react-toastify';
 import { sendRequest } from '../../../hooks/sendRequest';
 import { useIsMobile } from '../../../hooks/useIsMobile';
+import CloseIcon from '../icons/closeIcon';
 Modal.setAppElement('#__next');
 
 export interface IForgotPasswordModal {
@@ -12,32 +12,41 @@ export interface IForgotPasswordModal {
   setModalIsOpen: any;
 }
 
-const ForgotPasswordModal: React.FC<IForgotPasswordModal> = ({ isOpen, setModalIsOpen }) => {
-
-  const [ emailForChangePassword, setEmailForChangePassword ] = useState<string>("");
+const ForgotPasswordModal: React.FC<IForgotPasswordModal> = ({
+  isOpen,
+  setModalIsOpen,
+}) => {
+  const [emailForChangePassword, setEmailForChangePassword] =
+    useState<string>('');
   const isMobile = useIsMobile();
 
   const handleOnChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
     const emailForChangePassword = event.target.value;
     setEmailForChangePassword(emailForChangePassword);
-  }
+  };
 
   const handleCloseModal = (event: React.MouseEvent<SVGSVGElement>) => {
     event.preventDefault();
     setModalIsOpen(false);
-  }
+  };
 
   const handleOnSubmit = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     try {
-      const data = await sendRequest('http://localhost:3001/auth/request-password', 'POST', { email: emailForChangePassword});
-      
+      const data = await sendRequest(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/request-password`,
+        'POST',
+        { email: emailForChangePassword }
+      );
+
       if (data) {
         setEmailForChangePassword('');
         setTimeout(() => setModalIsOpen(false), 3000);
         toast.dismiss();
-        toast.success('Recuperação de senha enviada para o e-mail com sucesso.');
+        toast.success(
+          'Recuperação de senha enviada para o e-mail com sucesso.'
+        );
       } else if (data.status === 404) {
         const errorData = await data.json();
         const errorMessage = errorData.message;
@@ -47,7 +56,7 @@ const ForgotPasswordModal: React.FC<IForgotPasswordModal> = ({ isOpen, setModalI
       toast.error(`Ocorreu um erro ao se conectar com o servidor`);
       console.error(error);
     }
-  }
+  };
 
   return (
     <Modal
@@ -62,7 +71,7 @@ const ForgotPasswordModal: React.FC<IForgotPasswordModal> = ({ isOpen, setModalI
           right: 0,
           bottom: 0,
           backgroundColor: 'rgba(255, 255, 255, 0.75)',
-          zIndex: 99
+          zIndex: 99,
         },
         content: {
           top: '50%',
@@ -85,45 +94,48 @@ const ForgotPasswordModal: React.FC<IForgotPasswordModal> = ({ isOpen, setModalI
         },
       }}
     >
-      
-      <div className='bg-tertiary rounded-[30px] flex flex-col justify-center m-2 gap-2'>
+      <div className="bg-tertiary rounded-[30px] flex flex-col justify-center m-2 gap-2">
         <div>
-          <div className='w-fit float-right'>
+          <div className="w-fit float-right">
             <CloseIcon
               onClick={handleCloseModal}
-              fill='#6B7280'
-              className='float-right cursor-pointer'
+              fill="#6B7280"
+              className="float-right cursor-pointer"
             />
           </div>
         </div>
-          
-        <Image 
-          src={"/images/logo-marker.png"} 
-          alt={"Locale imóveis logomarca"} 
+
+        <Image
+          src={'/images/logo-marker.png'}
+          alt={'Locale imóveis logomarca'}
           width={300}
           height={150}
-          className='mx-auto'
+          className="mx-auto"
         />
 
-        <p className="font-bold text-xs text-quaternary">Informe o e-mail para enviarmos um link de redefinição de senha.</p>
+        <p className="font-bold text-xs text-quaternary">
+          Informe o e-mail para enviarmos um link de redefinição de senha.
+        </p>
 
-        <label 
-          className="md:text-xl text-lg font-bold text-quaternary drop-shadow-md md:w-full mt-auto mb-1"
-        >
+        <label className="md:text-xl text-lg font-bold text-quaternary drop-shadow-md md:w-full mt-auto mb-1">
           E-mail
         </label>
-        <input 
-          className='w-full h-fit md:h-12 rounded-[10px] border-[1px] border-quaternary drop-shadow-xl bg-tertiary text-quaternary md:p-2 text-xl font-semibold'
+        <input
+          className="w-full h-fit md:h-12 rounded-[10px] border-[1px] border-quaternary drop-shadow-xl bg-tertiary text-quaternary md:p-2 text-xl font-semibold"
           type="text"
           value={emailForChangePassword}
           onChange={handleOnChangeEmail}
         />
 
-        <button className="md:w-fit h-[50px] bg-primary p-2.5 rounded-[50px] font-normal text-xl text-tertiary leading-6 mx-auto mt-5 transition-colors duration-300 hover:bg-red-600 hover:text-white" onClick={handleOnSubmit}>Redefinir senha</button>
-
+        <button
+          className="md:w-fit h-[50px] bg-primary p-2.5 rounded-[50px] font-normal text-xl text-tertiary leading-6 mx-auto mt-5 transition-colors duration-300 hover:bg-red-600 hover:text-white"
+          onClick={handleOnSubmit}
+        >
+          Redefinir senha
+        </button>
       </div>
     </Modal>
-  )
-}
+  );
+};
 
 export default ForgotPasswordModal;

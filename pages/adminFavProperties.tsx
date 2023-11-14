@@ -39,10 +39,13 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
             <h1 className="font-extrabold text-2xl md:text-4xl text-quaternary md:mb-5 text-center">
               Imóveis Favoritos
             </h1>
-            <Pagination totalPages={favouriteProperties?.totalPages} />
+            {favouriteProperties?.docs?.length > 0 && (
+              <Pagination totalPages={favouriteProperties?.totalPages} />
+            )}
+
             <div className="flex flex-col md:flex-row flex-wrap md:gap-10 lg:gap-20 my-5 justify-center">
-              {favouriteProperties?.docs.length > 0 &&
-                favouriteProperties.docs.map(
+              {favouriteProperties?.docs?.length > 0 &&
+                favouriteProperties?.docs.map(
                   ({
                     _id,
                     prices,
@@ -81,6 +84,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const userId = session?.user.data._id;
   let token;
   let refreshToken;
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+  let ownerId;
 
   if (!session) {
     return {
@@ -93,14 +98,14 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     token = session?.user.data.access_token!!;
     refreshToken = session.user?.data.refresh_token;
     const decodedToken = jwt.decode(token) as JwtPayload;
-    const isTokenExpired = decodedToken.exp
-      ? decodedToken.exp <= Math.floor(Date.now() / 1000)
+    const isTokenExpired = decodedToken?.exp
+      ? decodedToken?.exp <= Math.floor(Date.now() / 1000)
       : false;
 
     if (isTokenExpired) {
       const decodedRefreshToken = jwt.decode(refreshToken) as JwtPayload;
-      const isRefreshTokenExpired = decodedRefreshToken.exp
-        ? decodedRefreshToken.exp <= Math.floor(Date.now() / 1000)
+      const isRefreshTokenExpired = decodedRefreshToken?.exp
+        ? decodedRefreshToken?.exp <= Math.floor(Date.now() / 1000)
         : false;
 
       if (isRefreshTokenExpired) {
@@ -115,15 +120,18 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         };
       } else {
         try {
-          const response = await fetch('http://localhost:3001/auth/refresh', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              refresh_token: refreshToken,
-            }),
-          });
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/refresh`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                refresh_token: refreshToken,
+              }),
+            }
+          );
 
           if (response.ok) {
             const data = await response.json();
@@ -143,10 +151,29 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       }
     }
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+    try {
+      const ownerIdResponse = await fetch(
+        `${baseUrl}/user/find-owner-by-user`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ _id: userId }),
+        }
+      );
+
+      if (ownerIdResponse.ok) {
+        const ownerData = await ownerIdResponse.json();
+        ownerId = ownerData?.owner?._id;
+        console.log(ownerId);
+      }
+    } catch (error) {
+      console.error(error);
+    }
 
     const [notifications, favouriteProperties, properties] = await Promise.all([
-      fetch(`${baseUrl}/notification/${userId}`, {
+      fetch(`${baseUrl}/notification/64da04b6052b4d12939684b0`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

@@ -1,22 +1,19 @@
 import clipboardy from 'clipboardy';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import React, { MouseEvent, useEffect, useState } from 'react';
+import React, { MouseEvent, useState } from 'react';
+import { toast } from 'react-toastify';
 import 'react-tooltip/dist/react-tooltip.css';
 import {
   IData,
   IMetadata,
-  IPrices,
 } from '../../../common/interfaces/property/propertyData';
+import { capitalizeFirstLetter } from '../../../common/utils/strings/capitalizeFirstLetter';
 import FavouritedIcon from '../../atoms/icons/favouritedIcon';
 import UnfavouritedIcon from '../../atoms/icons/unfavouritedIcon';
 import CalculatorModal from '../../atoms/modals/calculatorModal';
 import LinkCopiedTooltip from '../../atoms/tooltip/Tooltip';
-import { useSession } from 'next-auth/react';
-import { toast } from 'react-toastify';
-import { capitalizeFirstLetter } from '../../../common/utils/strings/capitalizeFirstLetter';
 import FavouritePropertyTooltip from '../../atoms/tooltip/favouritePropertyTooltip';
-import HeartIcon from '../../atoms/icons/heartIcon';
-import { useIsMobile } from '../../../hooks/useIsMobile';
 
 export interface ITooltip {
   globalEventOff: string;
@@ -24,14 +21,10 @@ export interface ITooltip {
 
 export interface IPropertyInfo {
   property: IData;
-  isFavourite: boolean
+  isFavourite: boolean;
 }
 
-const PropertyInfo: React.FC<IPropertyInfo> = ({
-  property,
-  isFavourite
-}) => {
-
+const PropertyInfo: React.FC<IPropertyInfo> = ({ property, isFavourite }) => {
   const session = useSession() as any;
   const status = session.status;
   const userIsLogged = status === 'authenticated' ? true : false;
@@ -41,7 +34,7 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [favourited, setFavourited] = useState(isFavourite);
   const router = useRouter();
-  
+
   const handleCopy = async () => {
     setTooltipIsVisible(true);
 
@@ -64,57 +57,64 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
   };
 
   const hideFavTooltip = () => {
-    setFavPropTooltipIsVisible(false)
-  }
+    setFavPropTooltipIsVisible(false);
+  };
 
   const handleCalculatorBtnClick = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     setModalIsOpen(true);
   };
 
-  const handleFavouriteBtnClick = async (event: MouseEvent<HTMLButtonElement>) => {
+  const handleFavouriteBtnClick = async (
+    event: MouseEvent<HTMLButtonElement>
+  ) => {
     event.preventDefault();
     if (!userIsLogged) {
       setFavPropTooltipIsVisible(true);
     } else {
       const { _id: propertyId } = property;
       try {
-        const response = await fetch(`http://localhost:3001/user/edit-favourite`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            userId,
-            propertyId
-          })
-        });
-    
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BASE_API_URL}/user/edit-favourite`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              userId,
+              propertyId,
+            }),
+          }
+        );
+
         if (response.ok) {
           const newFavoutedList: string[] = await response.json();
           const isFavourited = newFavoutedList.includes(propertyId);
-    
+
           if (isFavourited) {
             setFavourited(true);
-            toast.success('Imóvel favoritado com sucesso.')
+            toast.success('Imóvel favoritado com sucesso.');
           } else {
             setFavourited(false);
-            toast.success('Imóvel removido dos favoritos.')
+            toast.success('Imóvel removido dos favoritos.');
           }
         } else {
-          toast.error('Houve um erro ao favoritar o imóvel.')
+          toast.error('Houve um erro ao favoritar o imóvel.');
         }
       } catch (error) {
-        toast.error('Não foi possível se conectar ao servidor. Tente novamente mais tarde.')
+        toast.error(
+          'Não foi possível se conectar ao servidor. Tente novamente mais tarde.'
+        );
       }
     }
   };
 
   const getMetadataValue = (type: string) => {
-    const value = property.metadata?.find((metadata: IMetadata) => metadata.type === type)?.amount;
-    return (
-      value
-    );
+    const value = property.metadata?.find(
+      (metadata: IMetadata) => metadata.type === type
+    )?.amount;
+    return value;
   };
 
   return (
@@ -176,21 +176,19 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
           )}
 
           {!userIsLogged && (
-            <FavouritePropertyTooltip 
-              open={favPropTooltipIsVisible} 
-              onRequestClose={hideFavTooltip} 
-              anchorId={'fav-property-tooltip'} 
+            <FavouritePropertyTooltip
+              open={favPropTooltipIsVisible}
+              onRequestClose={hideFavTooltip}
+              anchorId={'fav-property-tooltip'}
             />
           )}
 
           <button
-            id='fav-property-tooltip'
+            id="fav-property-tooltip"
             className={`lg:w-80 w-40 h-12 md:h-16 bg-primary p-2.5 rounded-[10px] text-tertiary text-xl font-extrabold flex justify-center mb-5 ${
-              userIsLogged ?
-              'opacity opacity-100 cursor-pointer' :
-              'opacity-50'
+              userIsLogged ? 'opacity opacity-100 cursor-pointer' : 'opacity-50'
             }`}
-            onClick={handleFavouriteBtnClick} 
+            onClick={handleFavouriteBtnClick}
           >
             <p className="my-auto pr-4">Favoritar</p>
             {favourited ? <FavouritedIcon /> : <UnfavouritedIcon />}
