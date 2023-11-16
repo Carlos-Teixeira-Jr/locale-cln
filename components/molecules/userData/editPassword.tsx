@@ -105,7 +105,7 @@ const EditPassword= ({
       <div className="flex">
         <h1 className='md:text-3xl text-2xl leading-10 text-quaternary font-bold md:mb-10'>Alterar Senha</h1>
         <div
-          className={`lg:mx-5 w-12 h-12 border bg-tertiary rounded-[10px] drop-shadow-lg cursor-pointer shrink-0 ${
+          className={`mx-5 w-12 h-12 border bg-tertiary rounded-[10px] drop-shadow-lg cursor-pointer shrink-0 ${
             editPasswordIsOn ? 'border-secondary' : 'border-quaternary'
           }`}
           onClick={() => {
@@ -127,7 +127,7 @@ const EditPassword= ({
       </div>
 
       {editPasswordIsOn && (
-        <div className="flex gap-10">
+        <div className="flex flex-col md:flex-row gap-10">
           {inputs.map((input) => (
             <div key={input.key} className="w-full">
               <label className="text-xl font-normal text-quaternary">{input.label}</label>
@@ -149,7 +149,7 @@ const EditPassword= ({
                 />
                 <button
                   key={input.key}
-                  className="w-fit md:p-2 md:mt-0 md:flex pb-2 md:pt-1"
+                  className="w-fit mx-2 md:mx-0 md:p-2 md:mt-0 md:flex md:pb-2 md:pt-1"
                   onClick={() => {
                     handlePasswordVisibility(input.key)
                   }}
