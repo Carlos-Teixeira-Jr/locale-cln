@@ -26,7 +26,7 @@ import AdminHeader from '../components/organisms/adminHeader/adminHeader';
 import SideMenu from '../components/organisms/sideMenu/sideMenu';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { NextPageWithLayout } from './page';
-import EditPassword from '../components/molecules/userData/editPassword';
+import EditPassword, { IPasswordData } from '../components/molecules/userData/editPassword';
 Modal.setAppElement('#__next');
 
 interface IAdminUserDataPageProps {
@@ -36,6 +36,7 @@ interface IAdminUserDataPageProps {
   userData: any;
   properties: IPropertyInfo;
   ownerData: IOwnerData;
+  dataNot: []
 }
 
 const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
@@ -43,13 +44,16 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   userData,
   properties,
   ownerData,
+  dataNot
 }) => {
+
   const router = useRouter();
   const isOwner = properties?.docs?.length > 0 ? true : false;
   const [selectedPlan, setSelectedPlan] = useState(
     ownerData?.owner ? ownerData?.owner?.plan : ''
   );
   const [creditCardIsOpen, setCreditCardIsOpen] = useState(false);
+  const [isEditPassword, setIsEditPassword] = useState(false);
   const [isAdminPage, setIsAdminPage] = useState(false);
   const isEdit = true;
   const isMobile = useIsMobile();
@@ -80,9 +84,9 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     passwordConfirmattion: ''
   });
 
-  const [passwordError, setPasswordError] = useState({
-    passwordError: '',
-    passwordConfirmattionError: ''
+  const [passwordError, setPasswordErrors] = useState({
+    password: '',
+    passwordConfirmattion: ''
   })
 
   // Lida com o autoscroll das validações de erro dos inputs;
@@ -140,11 +144,6 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     cvc: useRef<HTMLInputElement>(null),
   };
 
-  // Recebe alterações do componente address;
-  const handleAddressUpdate = (updatedAddress: IAddress) => {
-    setAddress(updatedAddress);
-  };
-
   // Recebe o valor do componente dos inputs de user data;
   const handleUserDataUpdate = (updatedUserData: IUserDataComponent) => {
     setFormData(updatedUserData);
@@ -165,6 +164,9 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const handleUpdateBtn = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const error = 'Este campo é obrigatório';
+    const emptyPasswordError = 'Este campo é orbigatório caso deseje alterar a senha';
+    const invalidPasswordConfimattion = 'A senha e a confirmação de senha precisam ser iguais';
+    const invalidPasswordLenght = 'A senha precisa ter pelo meno 6 caracteres';
 
     setFormDataErrors({
       username: '',
@@ -180,6 +182,11 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       streetNumber: '',
       uf: '',
     });
+    
+    setPasswordErrors({
+      password: '',
+      passwordConfirmattion: ''
+    })
 
     const newFormDataErrors = {
       username: '',
@@ -196,6 +203,11 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       uf: '',
     };
 
+    const newPasswordErrors = {
+      password: '',
+      passwordConfirmattion: ''
+    }
+
     if (!formData.username) newFormDataErrors.username = error;
     if (!formData.email) newFormDataErrors.email = error;
     if (!formData.cpf) newFormDataErrors.cpf = error;
@@ -207,14 +219,36 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     if (!address.streetName) newAddressErrors.streetName = error;
     if (!address.streetNumber) newAddressErrors.streetNumber = error;
 
+    if (isEditPassword) {
+      if (!passwordFormData.password) newPasswordErrors.password = emptyPasswordError;
+      if (!passwordFormData.passwordConfirmattion) newPasswordErrors.passwordConfirmattion = emptyPasswordError;
+      if (passwordFormData.password !== passwordFormData.passwordConfirmattion) newPasswordErrors.password = invalidPasswordConfimattion;
+      if (passwordFormData.password !== passwordFormData.passwordConfirmattion) newPasswordErrors.passwordConfirmattion = invalidPasswordConfimattion;
+      if (passwordFormData.password.length < 6) newPasswordErrors.password = invalidPasswordLenght;
+      if (passwordFormData.passwordConfirmattion.length < 6) newPasswordErrors.passwordConfirmattion = invalidPasswordLenght;
+    }
+
     setFormDataErrors(newFormDataErrors);
     setAddressErrors(newAddressErrors);
+    setPasswordErrors(newPasswordErrors);
 
+    let combinedErrors;
     // Combina os erros de registro e endereço em um único objeto de erros
-    const combinedErrors = {
-      ...newAddressErrors,
-      ...newFormDataErrors,
-    };
+    if (isEditPassword) {
+      combinedErrors = {
+        ...newAddressErrors,
+        ...newFormDataErrors,
+        ...newPasswordErrors
+      };
+    } else {
+      combinedErrors = {
+        ...newAddressErrors,
+        ...newFormDataErrors,
+      };
+    }
+
+
+    if (isEditPassword) combinedErrors
 
     // Verifica se algum dos valores do objeto de erros combinados não é uma string vazia
     const hasErrors = Object.values(combinedErrors).some(
@@ -238,6 +272,25 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
         adCredits: ownerData.owner?.adCredits ? ownerData.owner?.adCredits : 0,
       };
 
+      const editPasswordFormData = {
+        password: passwordFormData.password,
+        passwordConfirmattion: passwordFormData.passwordConfirmattion
+      }
+
+      let body;
+      if (isEditPassword) {
+        body = {
+          user: userFormData,
+          owner: ownerFormData,
+          password: editPasswordFormData
+        }
+      } else {
+        body = {
+          user: userFormData,
+          owner: ownerFormData,
+        }
+      }
+
       try {
         toast.loading('Enviando...');
         const response = await fetch(
@@ -247,10 +300,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
             headers: {
               'Content-type': 'application/json',
             },
-            body: JSON.stringify({
-              user: userFormData,
-              owner: ownerFormData,
-            }),
+            body: JSON.stringify(body),
           }
         );
 
@@ -284,7 +334,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       <div className="flex flex-row items-center max-w-[1232px] justify-center">
         {!isMobile && (
           <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:flex">
-            <SideMenu isOwnerProp={isOwner} notifications={[]} />
+            <SideMenu isOwnerProp={isOwner} notifications={dataNot} />
           </div>
         )}
 
@@ -301,9 +351,10 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
 
               <div className='mx-5 my-10'>
                 <EditPassword 
-                  onPasswordUpdate={(password: string) => setPasswordFormData({ ...passwordFormData, password })} 
+                  onPasswordUpdate={(passwordData: IPasswordData) => setPasswordFormData(passwordData)} 
                   error={passwordError}
                   passwordInputRefs={passwordInputRefs}
+                  onEditPasswordSwitchChange={(isEditPassword: boolean) => setIsEditPassword(isEditPassword)}
                 />
               </div>
 
@@ -349,7 +400,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                 <Address
                   isEdit={isEdit}
                   address={ownerData?.user?.address}
-                  onAddressUpdate={handleAddressUpdate}
+                  onAddressUpdate={(updateAddres: IAddress) => setAddress(updateAddres)}
                   errors={addressErrors}
                   addressInputRefs={addressInputRefs}
                 />
@@ -533,12 +584,27 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       fetchJson(`${baseUrl}/property/owner-properties`),
     ]);
 
+    const notifications = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_API_URL}/notification/64da04b6052b4d12939684b0`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+      .then((res) => res.json())
+      .catch(() => []);
+
+    const dataNot = notifications;
+
     return {
       props: {
         userData,
         plans,
         properties,
         ownerData,
+        dataNot
       },
     };
   }
