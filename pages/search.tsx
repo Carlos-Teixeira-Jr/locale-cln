@@ -61,6 +61,33 @@ const Search: NextPageWithLayout<ISearch> = ({
   const queryParsed = query.location ? JSON.parse(query.location) : [];
   const [location, setLocation] = useState<any>(queryParsed);
 
+
+  const arr = [1,2,1,2,1,2,1,1,1,2,2,2,1,2,1,2,2,1,1]
+
+  function reorderArray(arr: any[]) {
+    const result = [];
+
+    // Divida o array em grupos de 3
+    const chunks: any[] = [];
+    while (arr.length > 0) {
+      chunks.push(arr.splice(0, 3));
+    }
+
+    console.log("🚀 ~ file: search.tsx:72 ~ reorderArray ~ chunks:", chunks)
+
+
+    // Intercale os grupos no resultado
+    while (chunks.length > 0) {
+        result.push(...chunks.shift());
+        // result.push(...chunks.shift());
+    }
+
+    return result;
+  }
+  
+  const resultado = reorderArray(arr);
+  console.log(resultado);
+
   // Insere ou remove as location no url query params;
   useEffect(() => {
     if (location.length > 0) {
@@ -413,7 +440,7 @@ export async function getServerSideProps(context: NextPageContext) {
       );
     }
   } else {
-    const url = `${baseUrl}/property/filter/?page=${currentPage}&limit=5&filter=${encodedFilter}${
+    const url = `${baseUrl}/property/filter/?page=${currentPage}&limit=15&filter=${encodedFilter}${
       encodedSort ? `&sort=${encodedSort}` : ``
     }&need_count=true`;
 
