@@ -34,14 +34,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     token = session.user?.data.access_token!!;
     refreshToken = session.user?.data.refresh_token;
     const decodedToken = jwt.decode(token) as JwtPayload;
-    const isTokenExpired = decodedToken.exp
-      ? decodedToken.exp <= Math.floor(Date.now() / 1000)
+    const isTokenExpired = decodedToken?.exp
+      ? decodedToken?.exp <= Math.floor(Date.now() / 1000)
       : false;
 
     if (isTokenExpired) {
       const decodedRefreshToken = jwt.decode(refreshToken) as JwtPayload;
-      const isRefreshTokenExpired = decodedRefreshToken.exp
-        ? decodedRefreshToken.exp <= Math.floor(Date.now() / 1000)
+      const isRefreshTokenExpired = decodedRefreshToken?.exp
+        ? decodedRefreshToken?.exp <= Math.floor(Date.now() / 1000)
         : false;
 
       if (isRefreshTokenExpired) {

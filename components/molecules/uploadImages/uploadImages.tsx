@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable no-unused-vars */
 /* eslint-disable @next/next/no-img-element */
 import React, { useEffect, useRef, useState } from 'react';
@@ -10,8 +11,8 @@ import TrashIcon from '../../atoms/icons/trashIcon';
 interface IImages {
   editarImages?: string[];
   onImagesUpdate: (updatedImages: string[]) => void;
-  onErrorsInfo: OnErrorInfo
-  imagesInputRef: any
+  onErrorsInfo: OnErrorInfo;
+  imagesInputRef: any;
 }
 
 export type OnErrorInfo = {
@@ -23,9 +24,8 @@ const UploadImages = ({
   editarImages,
   onImagesUpdate,
   onErrorsInfo,
-  imagesInputRef
+  imagesInputRef,
 }: IImages) => {
-
   const imagesErrorScroll = useRef(imagesInputRef);
 
   const [images, setImages] = useState<any[]>(editarImages || []);
@@ -37,9 +37,12 @@ const UploadImages = ({
 
   useEffect(() => {
     if (error.error !== '') {
-      imagesErrorScroll.current.scrollIntoView({ behavior: 'auto', block: 'center' });
+      imagesErrorScroll.current.scrollIntoView({
+        behavior: 'auto',
+        block: 'center',
+      });
     }
-  }, [error])
+  }, [error]);
 
   useEffect(() => {
     if (onErrorsInfo.prop === 'images') {
@@ -89,7 +92,10 @@ const UploadImages = ({
   };
 
   return (
-    <div className="max-w-screen-md block mx-5 flex-column items-center justify-center lg:mx-auto" ref={imagesErrorScroll}>
+    <div
+      className="max-w-screen-md block mx-5 flex-column items-center justify-center lg:mx-auto"
+      ref={imagesErrorScroll}
+    >
       <label
         className="flex flex-row items-center px-6 w-64 h-12 border rounded-[50px] bg-secondary cursor-pointer mt-4 mx-auto"
         htmlFor="uploadImages"
