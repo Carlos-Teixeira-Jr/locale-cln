@@ -3,13 +3,16 @@ import { getSession } from 'next-auth/react';
 import { IPropertyInfo } from '../common/interfaces/property/propertyData';
 import { fetchJson } from '../common/utils/fetchJson';
 import Pagination from '../components/atoms/pagination/pagination';
+import NotificationCard, {
+  INotification,
+} from '../components/molecules/cards/notificationCard/notificationCard';
 import AdminHeader from '../components/organisms/adminHeader/adminHeader';
 import SideMenu from '../components/organisms/sideMenu/sideMenu';
 import { useIsMobile } from '../hooks/useIsMobile';
 
 interface IMessageNotifications {
   properties: IPropertyInfo;
-  notifications: any;
+  notifications: [];
 }
 
 const MessageNotifications = ({
@@ -37,16 +40,21 @@ const MessageNotifications = ({
               {notifications && <Pagination totalPages={0} />}
             </div>
 
-            {/* <div className="mx-10">
-              {notifications.map(({ description, _id, title }: INotification) => (
-                <NotificationCard
-                  key={_id}
-                  description={description}
-                  title={title}
-                  _id={_id}
-                />
-              ))}
-            </div> */}
+            {
+              <div className="mx-10">
+                {notifications &&
+                  notifications?.map(
+                    ({ description, _id, title }: INotification) => (
+                      <NotificationCard
+                        key={_id}
+                        description={description}
+                        title={title}
+                        _id={_id}
+                      />
+                    )
+                  )}
+              </div>
+            }
 
             <div className="flex justify-center mb-10">
               {notifications && <Pagination totalPages={0} />}

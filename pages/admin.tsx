@@ -16,12 +16,12 @@ import { NextPageWithLayout } from './page';
 
 interface AdminPageProps {
   ownerProperties: IOwnerProperties;
-  dataNot: [];
+  notifications: [];
 }
 
 const AdminPage: NextPageWithLayout<AdminPageProps> = ({
   ownerProperties,
-  dataNot,
+  notifications,
 }) => {
   const { data: session } = useSession() as any;
   const [isOwner, setIsOwner] = useState<boolean>(false);
@@ -36,7 +36,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
       <AdminHeader isOwnerProp={isOwner} />
       <div className="flex flex-row items-center justify-evenly">
         <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:flex">
-          <SideMenu isOwnerProp={isOwner} notifications={dataNot} />
+          <SideMenu isOwnerProp={isOwner} notifications={notifications} />
         </div>
         <div className="flex flex-col items-center mt-24 lg:ml-[305px]">
           <div className="flex flex-col items-center">
@@ -99,17 +99,17 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       },
     };
   } else {
-    token = session?.user.data.access_token!!;
-    refreshToken = session.user?.data.refresh_token;
+    token = session?.user?.data.access_token!!;
+    refreshToken = session?.user?.data.refresh_token;
     const decodedToken = jwt.decode(token) as JwtPayload;
-    const isTokenExpired = decodedToken.exp
-      ? decodedToken.exp <= Math.floor(Date.now() / 1000)
+    const isTokenExpired = decodedToken?.exp
+      ? decodedToken?.exp <= Math.floor(Date.now() / 1000)
       : false;
 
     if (isTokenExpired) {
       const decodedRefreshToken = jwt.decode(refreshToken) as JwtPayload;
-      const isRefreshTokenExpired = decodedRefreshToken.exp
-        ? decodedRefreshToken.exp <= Math.floor(Date.now() / 1000)
+      const isRefreshTokenExpired = decodedRefreshToken?.exp
+        ? decodedRefreshToken?.exp <= Math.floor(Date.now() / 1000)
         : false;
 
       if (isRefreshTokenExpired) {
@@ -191,6 +191,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       })
         .then((res) => res.json())
         .catch(() => []),
+      fetchJson(`${baseUrl}/notification/${userId}`),
+
       fetchJson(`${baseUrl}/property/owner-properties`),
     ]);
 
@@ -206,12 +208,10 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       .then((res) => res.json())
       .catch(() => []);
 
-    const dataNot = notifications;
-
     return {
       props: {
         ownerProperties,
-        dataNot,
+        notifications,
       },
     };
   }
