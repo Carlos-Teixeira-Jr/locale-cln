@@ -7,13 +7,13 @@ import TwoArrowLeftIcon from '../icons/twoArrowLeftIcon';
 import TwoArrowRightIcon from '../icons/twoArrowRightIcon';
 
 export interface IPagination {
-  totalPages: number;
+  totalPages?: number;
   setCurrentPage?: any;
   currentPage?: number;
 }
 
 const Pagination: React.FC<IPagination> = ({
-  totalPages,
+  totalPages = 0,
   currentPage = 0,
   setCurrentPage = () => {},
 }) => {

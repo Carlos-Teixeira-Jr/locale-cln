@@ -1,4 +1,4 @@
-import Pagination from '../pagination/paginationSearch';
+import Pagination from '../pagination/pagination';
 
 interface ITitle {
   adminName: string;
