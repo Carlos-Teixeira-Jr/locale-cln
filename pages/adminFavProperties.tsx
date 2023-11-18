@@ -17,11 +17,13 @@ import { NextPageWithLayout } from './page';
 interface IAdminFavProperties {
   favouriteProperties: IFavProperties;
   properties: IPropertyInfo;
+  notifications: [];
 }
 
 const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
   favouriteProperties,
   properties,
+  notifications,
 }) => {
   const isOwner = properties?.docs?.length > 0 ? true : false;
 
@@ -30,21 +32,20 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
       <AdminHeader isOwnerProp={isOwner} />
       <div className="flex flex-row items-center justify-evenly">
         <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:flex">
-          <SideMenu isOwnerProp={isOwner} notifications={[]} />
+          <SideMenu isOwnerProp={isOwner} notifications={notifications} />
         </div>
         <div className="flex flex-col items-center mt-24 w-full lg:pl-72">
           <div className="flex flex-col items-center mb-5 max-w-[1215px]">
             <h1 className="font-extrabold text-2xl md:text-4xl text-quaternary md:mb-5 text-center">
               Imóveis Favoritos
             </h1>
-
-            {favouriteProperties?.docs.length > 0 && (
+            {favouriteProperties?.docs?.length > 0 && (
               <Pagination totalPages={favouriteProperties?.totalPages} />
             )}
 
             <div className="flex flex-col md:flex-row flex-wrap md:gap-10 lg:gap-20 my-5 justify-center">
-              {favouriteProperties?.docs.length > 0 &&
-                favouriteProperties.docs.map(
+              {favouriteProperties?.docs?.length > 0 &&
+                favouriteProperties?.docs.map(
                   ({
                     _id,
                     prices,
@@ -97,14 +98,14 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     token = session?.user.data.access_token!!;
     refreshToken = session.user?.data.refresh_token;
     const decodedToken = jwt.decode(token) as JwtPayload;
-    const isTokenExpired = decodedToken.exp
-      ? decodedToken.exp <= Math.floor(Date.now() / 1000)
+    const isTokenExpired = decodedToken?.exp
+      ? decodedToken?.exp <= Math.floor(Date.now() / 1000)
       : false;
 
     if (isTokenExpired) {
       const decodedRefreshToken = jwt.decode(refreshToken) as JwtPayload;
-      const isRefreshTokenExpired = decodedRefreshToken.exp
-        ? decodedRefreshToken.exp <= Math.floor(Date.now() / 1000)
+      const isRefreshTokenExpired = decodedRefreshToken?.exp
+        ? decodedRefreshToken?.exp <= Math.floor(Date.now() / 1000)
         : false;
 
       if (isRefreshTokenExpired) {
@@ -165,12 +166,21 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       if (ownerIdResponse.ok) {
         const ownerData = await ownerIdResponse.json();
         ownerId = ownerData?.owner?._id;
+        console.log(ownerId);
       }
     } catch (error) {
       console.error(error);
     }
 
-    const [favouriteProperties, properties] = await Promise.all([
+    const [notifications, favouriteProperties, properties] = await Promise.all([
+      fetch(`${baseUrl}/notification/64da04b6052b4d12939684b0`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then((res) => res.json())
+        .catch(() => []),
       fetch(`${baseUrl}/user/favourite`, {
         method: 'POST',
         headers: {
@@ -195,6 +205,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       })
         .then((res) => res.json())
         .catch(() => []),
+      fetchJson(`${baseUrl}/notification/${userId}`),
       fetchJson(`${baseUrl}/user/favourite`),
       fetchJson(`${baseUrl}/property/owner-properties`),
     ]);
@@ -203,6 +214,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       props: {
         favouriteProperties,
         properties,
+        notifications,
       },
     };
   }
