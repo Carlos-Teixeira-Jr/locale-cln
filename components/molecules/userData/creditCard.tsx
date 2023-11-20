@@ -271,11 +271,6 @@ const CreditCard = ({
                 onChange={(e) => handleInputChange(e, input.name)}
                 onFocus={(e) => setFocus(e.target.name as Focused)}
                 maxLength={input.key === 'expiry' ? 5 : undefined}
-                // value={
-                //   input.key !== 'cardNumber'
-                //     ? creditCardFormData[input.name]
-                //     : creditCardFormData[input.name].replace(/[^\d- ]/g, '')
-                // }
                 value={
                   input.key === 'expiry'
                     ? creditCardFormData[input.name].replace(
