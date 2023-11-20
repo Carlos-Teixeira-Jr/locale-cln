@@ -45,8 +45,11 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   properties,
   ownerData,
 }) => {
+  console.log("🚀 ~ file: adminUserData.tsx:48 ~ properties:", properties)
+  
   const router = useRouter();
   const isOwner = properties?.docs?.length > 0 ? true : false;
+  console.log("🚀 ~ file: adminUserData.tsx:51 ~ isOwner:", isOwner)
   const [selectedPlan, setSelectedPlan] = useState(
     ownerData?.owner ? ownerData?.owner?.plan : ''
   );
@@ -453,6 +456,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     }
 
     const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+    console.log("🚀 ~ file: adminUserData.tsx:458 ~ getServerSideProps ~ process.env.NEXT_PUBLIC_BASE_API_URL:", process.env.NEXT_PUBLIC_BASE_API_URL)
 
     const [notifications, userData, ownerData, plans, properties] =
       await Promise.all([
@@ -473,7 +477,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            id: userId,
+            _id: userId,
           }),
         })
           .then((res) => res.json())
