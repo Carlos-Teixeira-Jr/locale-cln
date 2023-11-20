@@ -74,7 +74,7 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
   return (
     <>
       <Link href={href}>
-        <div className="md:w-full. md:h-[265px] bg-tertiary md:grid md:grid-cols-3 rounded-[30px] overflow-hidden drop-shadow-lg my-[29px] md:mx-[35px] mx-2 flex flex-col">
+        <div className="lg:h-[265px] bg-tertiary md:grid md:grid-cols-3 rounded-[30px] overflow-hidden drop-shadow-lg my-[29px] md:mx-[35px] mx-2 flex flex-col">
           <div className="group relative md:h-[200px]">
             {/* Images */}
             <div className="flex flex-row w-full overflow-hidden scroll-smooth rounded-tl-[30px] md:h-[265px] h-[250px]">
@@ -130,8 +130,7 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
           </div>
 
           <div
-            // className="md:grid md:grid-rows-4 md:gap-4 md:col-span-2 md:ml-11 my-[17px] mx-[17px] md:mx-[17px]"
-            className="md:flex md:flex-col md:gap-4 md:col-span-2 md:ml-11 my-auto mx-[17px] md:mx-[17px]"
+            className="md:flex justify-between md:flex-col md:gap-4 md:col-span-2 md:ml-11 my-auto mx-[17px] md:mx-4"
           >
             <div className="md:w-[218px] h-[44px] top-[17px] left-[336px] font-bold text-3xl text-[#000000] leading-10">
               R$ {prices},00
@@ -171,10 +170,10 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
               </div>
               <div>
                 <button
-                  className="bg-primary md:w-[200px] md:h-[50px] rounded-full "
+                  className="bg-primary md:w-[200px] md:h-12 rounded-full "
                   onClick={handleMessageBtnClick}
                 >
-                  <p className="md:w-[176px] md:h-[24px] font-normal text-sm px-2 md:text-lg lg:text-xl text-tertiary flex mx-auto my-1 align-middle justify-center py-0 sm:py-1 md:py-0 lg:py-0 xl:py-0 mb-1 md:mb-1 lg:mb-0">
+                  <p className="md:w-[176px] md:h-[24px] font-normal text-sm px-2 md:text-lg lg:text-xl text-tertiary flex mx-auto align-middle justify-center py-0 sm:py-1 md:py-0 lg:py-0 xl:py-0 mb-1 md:mb-1 lg:mb-0">
                     Enviar Mensagem
                   </p>
                 </button>

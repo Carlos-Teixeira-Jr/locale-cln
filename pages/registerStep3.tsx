@@ -134,14 +134,14 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
   const [creditCard, setCreditCard] = useState<CreditCardForm>({
     cardName: '',
     cardNumber: '',
-    cvc: '',
+    ccv: '',
     expiry: '',
   });
 
   const [creditCardErrors, setCreditCardErrors] = useState<CreditCardForm>({
     cardName: '',
     cardNumber: '',
-    cvc: '',
+    ccv: '',
     expiry: '',
   });
 
@@ -228,7 +228,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         if (!creditCard.cardName) newCreditCardErrors.cardName = error;
         if (!creditCard.cardNumber) newCreditCardErrors.cardNumber = error;
         if (!creditCard.expiry) newCreditCardErrors.expiry = error;
-        if (!creditCard.cvc) newCreditCardErrors.cvc = error;
+        if (!creditCard.ccv) newCreditCardErrors.cvc = error;
       }
     }
 
