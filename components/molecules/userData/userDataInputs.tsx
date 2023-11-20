@@ -246,7 +246,6 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
           </div>
         </div>
       </div>
-
       {errorModalIsOpen ? (
         <ErrorOnUpdateModal
           errorModalIsOpen={errorModalIsOpen}
@@ -258,7 +257,6 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
           setSuccessModalIsOpen={setSuccesModalIsOpen}
         />
       )}
-
     </div>
   )
 }

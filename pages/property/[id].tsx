@@ -67,9 +67,7 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
 
   return (
     <>
-      <div className={`fixed top-0 md:w-full ${isModalOpen ? 'z-40' : 'z-50'}`}>
-        <Header />
-      </div>
+      <Header />
       <div className="flex flex-col max-w-5xl items-center mx-auto lg:pt-10 pt-[90px]">
         <div
           className={`lg:mx-auto m-5 mb-36 md:mb-5 md:mt-0 lg:mt-5 ${
