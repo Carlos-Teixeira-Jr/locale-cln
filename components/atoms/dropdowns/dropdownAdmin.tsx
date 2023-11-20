@@ -69,23 +69,6 @@ export default function DropdownAdmin({
       <div className="flex flex-col text-center font-medium text-base text-quaternary leading-5">
 
         {!isOwner ? (
-          // option.map((option, index) => {
-          //   if (option.ownerOption) {
-          //     return (
-          //       option.key !== 'logOut' ? (
-          //         <Link
-          //           key={option.key}
-          //           href={option.ref}
-          //           className={index === 0 ? option.className + 'rounded-t-xl' : option.className}
-          //         >
-          //           {option.title}
-          //         </Link>
-          //       ) : (
-          //         <button key={option.key} className={option.className} onClick={() => signOut()}>Sair</button>
-          //       )
-          //     )
-          //   }
-          // })
           option.map((option, index) => {
             if (!option.ownerOption) {
               return (
