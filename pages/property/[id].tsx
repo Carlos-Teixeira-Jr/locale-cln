@@ -1,6 +1,6 @@
 import { NextPageContext } from 'next';
 import { getSession } from 'next-auth/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   IAddress,
   IData,
@@ -21,6 +21,7 @@ import Footer from '../../components/organisms/footer/footer';
 import Header from '../../components/organisms/header/header';
 import PropertyInfo from '../../components/organisms/propertyInfo/PropertyInfo';
 import { NextPageWithLayout } from '../page';
+import { useRouter } from 'next/router';
 
 export interface IIDPage {
   location: IGeolocation;
@@ -54,17 +55,15 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
   isFavourite,
   relatedProperties,
 }: IPropertyPage) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [backdropActive, setBackdropActive] = useState(true);
 
-  const handleMapButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    const divToRemove = document.getElementById('backdrop');
-    const mapToRemove = document.getElementById('static-map');
-    divToRemove?.remove();
-    mapToRemove?.remove();
-    setBackdropActive(false);
-  };
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [mapIsActive, setMapIsActive] = useState(false);
+  const dynamicRoute = useRouter().asPath;
+
+  // Atualiza o valor de mapIsActive quando o usuário clica em um novo card apresentado nesta página;
+  useEffect(() => {
+    setMapIsActive(false)
+  }, [dynamicRoute])
 
   return (
     <>
@@ -115,24 +114,25 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
             ))}
         </div>
         <div className="w-full md:h-fit mx-auto mb-20 drop-shadow-xl">
-          <div id="static-map">
-            <StaticMap
-              width={1312}
-              height={223}
-              onClick={handleMapButtonClick}
-              geolocation={property.geolocation}
-            />
-          </div>
-          <div
-            id="dynamic-map"
-            className={
-              backdropActive
-                ? 'hidden'
-                : 'lg:w-full h-fit my-10 mx-auto drop-shadow-xl'
-            }
-          >
+          {!mapIsActive && (
+            <div
+              id="dynamic-map"
+              className={'lg:w-full h-fit my-10 mx-auto drop-shadow-xl'}
+            >
+              <StaticMap
+                width={1312}
+                height={223}
+                geolocation={property.geolocation}
+                mapIsActive={mapIsActive}
+                onMapChange={(isActive) => setMapIsActive(isActive)}
+              />
+            </div>
+          )}
+
+          <div id="static-map" className={`${mapIsActive ? '' : 'hidden'}`}>
             <DynamicMap geolocation={property.geolocation} />
           </div>
+
         </div>
       </div>
 
