@@ -80,44 +80,6 @@ const MessageNotifications = ({
 
 export default MessageNotifications;
 
-// export async function getServerSideProps(context: GetServerSidePropsContext) {
-//   const session = (await getSession(context)) as any;
-//   const userId = session?.user.data._id;
-//   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
-
-//   const [notifications, properties] = await Promise.all([
-//     fetch(`${baseUrl}/notification/${userId}`, {
-//       method: 'GET',
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//     })
-//       .then((res) => res.json())
-//       .catch(() => []),
-//     fetch(`${baseUrl}/property/owner-properties`, {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//       body: JSON.stringify({
-//         ownerId: userId,
-//         page: 1,
-//       }),
-//     })
-//       .then((res) => res.json())
-//       .catch(() => []),
-//     fetchJson(`${baseUrl}/notification/${userId}`),
-//     fetchJson(`${baseUrl}/property/owner-properties`),
-//   ]);
-
-//   return {
-//     props: {
-//       notifications,
-//       properties,
-//     },
-//   };
-// }
-
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = (await getSession(context)) as any;
   const userId = session?.user.data._id;
