@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import Modal from 'react-modal';
 import { toast } from 'react-toastify';
 import { v4 as uuidv4 } from 'uuid';
@@ -7,6 +7,9 @@ import validator from 'validator';
 import { IData } from '../../../common/interfaces/property/propertyData';
 import { capitalizeFirstLetter } from '../../../common/utils/strings/capitalizeFirstLetter';
 import { useIsMobile } from '../../../hooks/useIsMobile';
+import { showErrorToast, showSuccessToast } from '../../../common/utils/toasts';
+import { applyNumericMask } from '../../../common/utils/masks/numericMask';
+import { SuccessToastNames, ErrorToastNames } from '../../../common/utils/toasts';
 Modal.setAppElement('#__next');
 
 export interface IMessageModal {
@@ -51,9 +54,10 @@ const MessageModal: React.FC<IMessageModal> = ({
       label: 'Nome',
       value: formData.name,
       error: errors.name,
-      onChange: (event: any) => {
-        const name = event.target.value;
-        setFormData({ ...formData, name: name });
+      onChange: (event: ChangeEvent<any>) => {
+        const value = event.target.value;
+        const maskedValue = value.replace(/[^A-Za-z\sÀ-ú]/g, '');
+        setFormData({ ...formData, name: maskedValue });
       },
     },
     {
@@ -61,8 +65,22 @@ const MessageModal: React.FC<IMessageModal> = ({
       label: 'Telefone',
       value: formData.phone,
       error: errors.phone,
-      onChange: (event: any) => {
-        setFormData({ ...formData, phone: event.target.value });
+      onChange: (event: ChangeEvent<any>) => {
+        const input = event.target;
+        const value = input.value;
+        const maskedValue = applyNumericMask(value, '(99) 9999-9999');
+        const selectionStart = input.selectionStart || 0;
+        const selectionEnd = input.selectionEnd || 0;
+        const previousValue = input.value;
+        // Verifica se o cursor está no final da string ou se um caractere foi removido
+        if (selectionStart === previousValue.length || previousValue.length > maskedValue.length) {
+          input.value = maskedValue;
+        } else {
+          // Caso contrário, restaura o valor anterior e move o cursor para a posição correta
+          input.value = previousValue;
+          input.setSelectionRange(selectionStart, selectionEnd);
+        }
+        setFormData({ ...formData, phone: maskedValue });
       },
     },
     {
@@ -109,7 +127,7 @@ const MessageModal: React.FC<IMessageModal> = ({
     const hasErrors = Object.values(newErrors).some((item) => item !== '');
 
     if (hasErrors) {
-      toast.error('Você esqueceu de preencher algum campo obrigatório!');
+      showErrorToast(ErrorToastNames.EmptyFields);
     } else {
       try {
         const body = {
@@ -133,22 +151,14 @@ const MessageModal: React.FC<IMessageModal> = ({
         );
 
         if (response.ok) {
-          toast.success(
-            'Sua mensagem foi enviada ao proprietário do imóvel com sucesso!'
-          );
+          showSuccessToast(SuccessToastNames.SendMessage);
           setModalIsOpen(false);
         } else {
-          toast.error(
-            'Houve um problema ao tentar enviar a mensagem. Tente novamente mais tarde.',
-            { className: 'z-[60]' }
-          );
+          showErrorToast(ErrorToastNames.SendMessage, { className: 'z-[60]' });
         }
       } catch (error) {
         console.log(error);
-        toast.error(
-          'Não foi possível se conectar ao servidor. Por favor, tente novamente mais tarde.',
-          { className: 'z-[60]' }
-        );
+        showErrorToast(ErrorToastNames.ServerConnection, { className: 'z-[60]' });
       }
     }
   };
@@ -247,7 +257,7 @@ const MessageModal: React.FC<IMessageModal> = ({
           <div className="justify-center md:mb-2 lg:mb-auto">
             <button
               onClick={handleModalField}
-              className="w-60 bg-primary rounded-[50px] p-2 gap-2.5 lg:float-right"
+              className="w-60 bg-primary rounded-[50px] p-2 gap-2.5 lg:float-right hover:bg-red-600 hover:text-tertiary hover:shadow-lg transition-all duration-200 active:bg-primary-dark active:text-tertiary active:shadow-none focus:outline-none"
             >
               <p className="font-normal text-lg text-tertiary align-middle">
                 Enviar
