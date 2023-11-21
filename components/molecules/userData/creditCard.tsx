@@ -155,7 +155,7 @@ const CreditCard = ({
       ref: creditCardErrorScroll.ccv,
       name: 'ccv',
       type: 'text',
-      label: 'CVC',
+      label: 'CCV',
       value: creditCardFormData.ccv,
     },
   ];
