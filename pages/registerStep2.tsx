@@ -15,6 +15,7 @@ const RegisterStep2: NextPageWithLayout = () => {
   const imagesInputRef = useRef<HTMLElement>(null);
 
   const [loading, setLoading] = useState(false);
+  const [disabledContinue, setDisabledContinue] = useState(false);
 
   const router = useRouter();
   const query = router.query;
@@ -49,6 +50,7 @@ const RegisterStep2: NextPageWithLayout = () => {
   const handleSubmit = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     setLoading(true);
+    setDisabledContinue(!disabledContinue);
 
     const imagesError = `Você precisa adicionar pelo menos mais ${
       3 - images.length
@@ -135,9 +137,9 @@ const RegisterStep2: NextPageWithLayout = () => {
 
         <div className="flex self-end mr-0 md:mr-20 lg:mr-20 xl:mr-20 md:justify-end justify-center px-5 mb-32 mt-16 max-w-[1215px] mx-auto">
           <button
-            className="active:bg-gray-500 flex items-center flex-row justify-around bg-primary w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold text-2xl lg:text-3xl hover:bg-red-600 hover:text-white"
+            className="active:bg-gray-500 cursor-pointer flex items-center flex-row justify-around bg-primary w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold text-2xl lg:text-3xl hover:bg-red-600 hover:text-white"
             onClick={handleSubmit}
-            disabled={loading ? true : false}
+            disabled={loading}
           >
             <span className={`${loading ? 'ml-16' : ''}`}>Continuar</span>
             {loading && <Loading />}
