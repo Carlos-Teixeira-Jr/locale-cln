@@ -15,7 +15,6 @@ const RegisterStep2: NextPageWithLayout = () => {
   const imagesInputRef = useRef<HTMLElement>(null);
 
   const [loading, setLoading] = useState(false);
-  const [disabledContinue, setDisabledContinue] = useState(false);
 
   const router = useRouter();
   const query = router.query;
@@ -50,7 +49,6 @@ const RegisterStep2: NextPageWithLayout = () => {
   const handleSubmit = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     setLoading(true);
-    setDisabledContinue(!disabledContinue);
 
     const imagesError = `Você precisa adicionar pelo menos mais ${
       3 - images.length
