@@ -133,8 +133,8 @@ const Search: NextPageWithLayout<ISearch> = ({
       <Header />
       <div className="flex items-center justify-center mt-20">
         <div className="lg:flex justify-center max-w-[1232px]">
-          <div className="flex flex-col lg:flex-row mt-[-16px]. md:mt-0">
-            <div className="mx-auto md:w-full">
+          <div className="flex flex-col lg:flex-row md:mt-0">
+            <div className="mx-auto md:w-fit lg:w-[25%]">
               <FilterList
                 locationProp={locations}
                 tagsProp={tagsData}
@@ -146,9 +146,9 @@ const Search: NextPageWithLayout<ISearch> = ({
               />
             </div>
 
-            <div className="flex flex-col">
+            <div className="flex flex-col lg:w-[75%] lg:ml-5">
               <div
-                className={`${
+                className={`justify-center ${
                   mobileFilterIsOpen 
                   ? 'hidden' 
                   : ''
@@ -166,7 +166,7 @@ const Search: NextPageWithLayout<ISearch> = ({
                 </h3>
                 {/* SearchView - start*/}
                 {!isMobile && (
-                  <div className="flex flex-row items-center gap-1 mr-[-30px]">
+                  <div className="flex flex-row items-center gap-1 mr-[-30px] w-fit">
                     <button
                       onClick={handleList}
                       className={`w-[47px] h-[44px] border border-[#6B7280] rounded-[10px] ${
@@ -201,7 +201,7 @@ const Search: NextPageWithLayout<ISearch> = ({
               {!mobileFilterIsOpen &&
                 propertyInfo.docs &&
                 propertyInfo.docs.length > 0 && (
-                  <div className="mx-auto mb-5">
+                  <div className="mx-auto mb-0">
                     <Pagination 
                       totalPages={propertyInfo.totalPages} 
                       setCurrentPage={setCurrentPage} 
@@ -323,7 +323,7 @@ const Search: NextPageWithLayout<ISearch> = ({
               {!mobileFilterIsOpen &&
                 propertyInfo?.docs &&
                 propertyInfo?.docs.length > 0 && (
-                  <div className="mx-auto mt-5">
+                  <div className="mx-auto">
                     <Pagination totalPages={propertyInfo?.totalPages} setCurrentPage={setCurrentPage} currentPage={currentPage} />
                   </div>
                 )
