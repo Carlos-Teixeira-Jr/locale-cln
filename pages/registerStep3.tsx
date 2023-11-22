@@ -164,6 +164,11 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     }
   }, [router.pathname]);
 
+  const handlePreviousStep = () => {
+    updateProgress(2);
+    router.back();
+  };
+
   const handleSubmit = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
@@ -479,9 +484,17 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
               termsError={termsError}
             />
 
-            <div className="flex self-end md:justify-end justify-center mt-14 mx-5 mb-32">
+            <div className="flex justify-between my-10 md:mb-32 md:mt-20 mx-auto sm:mx-5 w-full max-w-[1232px] px-5 lg:pr-10 text-xl md:text-2xl">
+
               <button
-                className="bg-primary w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold text-2xl lg:text-3xl hover:bg-red-600 hover:text-white"
+                className="bg-primary w-28 md:w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold hover:bg-red-600 hover:text-white"
+                onClick={handlePreviousStep}
+              >
+                Voltar
+              </button>
+
+              <button
+                className="bg-primary w-28 md:w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold hover:bg-red-600 hover:text-white"
                 onClick={handleSubmit}
               >
                 Continuar

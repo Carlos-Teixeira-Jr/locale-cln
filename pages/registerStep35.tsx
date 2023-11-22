@@ -39,6 +39,21 @@ const RegisterStep35: NextPageWithLayout<IRegisterStep35> = ({ plans }) => {
     }
   });
 
+  const handleSubmit = () => {
+    updateProgress(5);
+    store.clearAll();
+    if (!urlEmail) {
+      router.push('/registerStep4');
+    } else {
+      router.push({
+        pathname: '/registerStep4',
+        query: {
+          email: urlEmail,
+        },
+      });
+    }
+  };
+
   return (
     <>
       <Header />
@@ -74,20 +89,7 @@ const RegisterStep35: NextPageWithLayout<IRegisterStep35> = ({ plans }) => {
             <div className="flex md:justify-end justify-center md:mb-32 mt-16">
               <button
                 className="bg-primary w-full md:w-96 h-16 rounded transition-colors duration-300 hover:bg-red-600 hover:text-white"
-                onClick={() => {
-                  updateProgress(5);
-                  store.clearAll();
-                  if (!urlEmail) {
-                    router.push('/registerStep4');
-                  } else {
-                    router.push({
-                      pathname: '/registerStep4',
-                      query: {
-                        email: urlEmail,
-                      },
-                    });
-                  }
-                }}
+                onClick={handleSubmit}
               >
                 <span className="text-quinary font-bold text-3xl p-2">
                   Continuar
