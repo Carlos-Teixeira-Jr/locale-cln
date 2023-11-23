@@ -271,7 +271,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       .then((res) => res.json())
       .catch(() => []);
 
-    const dataNot = await notifications.json();
+    const dataNot = notifications;
 
     return {
       props: {
