@@ -9,6 +9,7 @@ import StarIcon from '../../../atoms/icons/starIcon';
 import ViewIcon from '../../../atoms/icons/viewIcon';
 import formatCurrency from '../../../atoms/masks/currencyFormat';
 import ConfirmActivationModal from '../../../atoms/modals/confirmActivationModal';
+import { Router, useRouter } from 'next/router';
 
 interface IAdminPropertyCard {
   _id: string;
@@ -39,6 +40,8 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
   isActiveProp,
   highlighted,
 }: IAdminPropertyCard) => {
+
+  const router = useRouter();
   const priceToInt = price;
   const formattedPrice = formatCurrency(priceToInt);
   const [isActive, setIsActive] = useState<boolean>(isActiveProp);
@@ -57,8 +60,8 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            id: _id,
-            owner: user,
+            propertyId: _id,
+            userId: user,
           }),
         }
       );
@@ -68,9 +71,11 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
         toast.success('Anúncio destacado com sucesso.');
         window.location.reload();
       } else {
-        toast.warning('Houve um erro ao desativar o anuncio.');
+        toast.dismiss();
+        toast.warning('Houve um erro ao destacar o anuncio.');
       }
     } catch (error) {
+      toast.dismiss();
       toast.error(
         'Não foi possível estabelecer comunicação com o servidor no momento. Por favor, tente novamente mais tarde.'
       );
