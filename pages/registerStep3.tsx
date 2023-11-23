@@ -12,6 +12,7 @@ import {
 } from '../common/interfaces/property/register/register';
 import { IUserDataComponent } from '../common/interfaces/user/user';
 import { geocodeAddress } from '../common/utils/geocodeAddress';
+import Loading from '../components/atoms/loading';
 import PaymentFailModal from '../components/atoms/modals/paymentFailModal';
 import LinearStepper from '../components/atoms/stepper/stepper';
 import Address from '../components/molecules/address/address';
@@ -53,6 +54,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
   const choosedPlan = storedPlan ? storedPlan : '';
   const propertyAddress = storedData?.address ? storedData.address : {};
   const [paymentError, setPaymentError] = useState('');
+
+  const [loading, setLoading] = useState(false);
 
   // Lida com o autoscroll das validações de erro dos inputs;
   const userDataInputRefs = {
@@ -317,6 +320,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
 
       try {
         toast.loading('Enviando...');
+        setLoading(true);
         const body: BodyReq = {
           propertyData,
           userData,
@@ -479,12 +483,14 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
               termsError={termsError}
             />
 
-            <div className="flex self-end md:justify-end justify-center mt-14 mx-5 mb-32">
+            <div className="flex self-end mr-0 md:mr-20 lg:mr-20 xl:mr-20 md:justify-end justify-center px-5 mb-32 mt-16 max-w-[1215px] mx-auto">
               <button
-                className="bg-primary w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold text-2xl lg:text-3xl hover:bg-red-600 hover:text-white"
+                className="active:bg-gray-500 cursor-pointer flex items-center flex-row justify-around bg-primary w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold text-2xl lg:text-3xl hover:bg-red-600 hover:text-white"
                 onClick={handleSubmit}
+                disabled={loading}
               >
-                Continuar
+                <span className={`${loading ? 'ml-16' : ''}`}>Continuar</span>
+                {loading && <Loading />}
               </button>
             </div>
           </div>

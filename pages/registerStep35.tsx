@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import store from 'store';
 import { IPlan } from '../common/interfaces/plans/plans';
 import CheckIcon from '../components/atoms/icons/checkIcon';
+import Loading from '../components/atoms/loading';
 import LinearStepper from '../components/atoms/stepper/stepper';
 import PaymentBoard_Step3_5 from '../components/molecules/payment/paymentBoardStep3_5';
 import Footer from '../components/organisms/footer/footer';
@@ -21,6 +22,7 @@ const RegisterStep35: NextPageWithLayout<IRegisterStep35> = ({ plans }) => {
   const { progress, updateProgress } = useProgress();
   const storedData = store.get('propertyData');
   const [cardBrand, setCardBrand] = useState('');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -73,13 +75,16 @@ const RegisterStep35: NextPageWithLayout<IRegisterStep35> = ({ plans }) => {
           <div className="grid w-full px-5 lg:px-0 md:mx-0">
             <div className="flex md:justify-end justify-center md:mb-32 mt-16">
               <button
-                className="bg-primary w-full md:w-96 h-16 rounded transition-colors duration-300 hover:bg-red-600 hover:text-white"
+                className="active:bg-gray-500 cursor-pointer bg-primary w-full md:w-96 h-16 rounded transition-colors duration-300 hover:bg-red-600 hover:text-white"
+                disabled={loading}
                 onClick={() => {
                   updateProgress(5);
                   store.clearAll();
                   if (!urlEmail) {
                     router.push('/registerStep4');
+                    setLoading(true);
                   } else {
+                    setLoading(true);
                     router.push({
                       pathname: '/registerStep4',
                       query: {
@@ -89,8 +94,13 @@ const RegisterStep35: NextPageWithLayout<IRegisterStep35> = ({ plans }) => {
                   }
                 }}
               >
-                <span className="text-quinary font-bold text-3xl p-2">
+                <span
+                  className={`${
+                    loading ? 'ml-16' : ''
+                  }text-quinary font-bold text-3xl p-2`}
+                >
                   Continuar
+                  {loading && <Loading />}
                 </span>
               </button>
             </div>

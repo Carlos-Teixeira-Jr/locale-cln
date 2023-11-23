@@ -10,6 +10,7 @@ import {
   IRegisterMainFeatures,
   IRegisterPropertyData_Step1,
 } from '../common/interfaces/property/register/register';
+import Loading from '../components/atoms/loading';
 import LinearStepper from '../components/atoms/stepper/stepper';
 import Address from '../components/molecules/address/address';
 import AreaCalculatorModal from '../components/molecules/areaModal/areaModal';
@@ -273,13 +274,14 @@ const Register = () => {
           addressInputRefs={addressInputRefs}
         />
 
-        <div className="flex self-end md:justify-end justify-center px-5 mb-32 mt-16 max-w-[1215px] mx-auto">
+        <div className="flex self-end mr-0 md:mr-20 lg:mr-20 xl:mr-20 md:justify-end justify-center px-5 mb-32 mt-16 max-w-[1215px] mx-auto">
           <button
-            className="
-           bg-primary w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold text-2xl lg:text-3xl hover:bg-red-600 hover:text-white"
+            className="active:bg-gray-500 cursor-pointer flex items-center flex-row justify-around bg-primary w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold text-2xl lg:text-3xl hover:bg-red-600 hover:text-white"
             onClick={handleSubmit}
+            disabled={loading}
           >
-            <span>Continuar</span>
+            <span className={`${loading ? 'ml-16' : ''}`}>Continuar</span>
+            {loading && <Loading />}
           </button>
         </div>
       </div>
