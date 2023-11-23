@@ -9,7 +9,6 @@ import StarIcon from '../../../atoms/icons/starIcon';
 import ViewIcon from '../../../atoms/icons/viewIcon';
 import formatCurrency from '../../../atoms/masks/currencyFormat';
 import ConfirmActivationModal from '../../../atoms/modals/confirmActivationModal';
-import { Router, useRouter } from 'next/router';
 
 interface IAdminPropertyCard {
   _id: string;
@@ -41,7 +40,6 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
   highlighted,
 }: IAdminPropertyCard) => {
 
-  const router = useRouter();
   const priceToInt = price;
   const formattedPrice = formatCurrency(priceToInt);
   const [isActive, setIsActive] = useState<boolean>(isActiveProp);
