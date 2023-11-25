@@ -18,13 +18,12 @@ type Options = {
 };
 
 type SideMenuProps = {
-  isOwnerProp: boolean;
+  isOwnerProp?: boolean;
   notifications?: [];
   isMobileProp?: boolean;
 };
 
 const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications }) => {
-
   const router = useRouter();
   const [activeButton, setActiveButton] = useState('');
   const isMobile = useIsMobile();
@@ -32,7 +31,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications }) => {
 
   useEffect(() => {
     const path = router.pathname;
-    const messageIdPath = 'message'
+    const messageIdPath = 'message';
 
     if (path === '/admin') {
       setActiveButton(isOwner ? 'my-announces-button' : 'favourites-button');
@@ -149,15 +148,15 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications }) => {
               id === 'my-data-button'
             ) {
               return (
-                <div 
+                <div
                   key={key}
                   onClick={() => {
                     router.push({
                       pathname: link,
                       query: {
-                        page: 1
-                      }
-                    })
+                        page: 1,
+                      },
+                    });
                   }}
                 >
                   <button

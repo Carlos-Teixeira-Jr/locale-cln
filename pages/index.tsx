@@ -76,7 +76,7 @@ const Home: NextPageWithLayout<IHome> = ({
       }
     }
     fetchPropertiesByLocation();
-  }, [latitude, longitude, location]);
+  }, [latitude, longitude, location, propertiesByLocationError]);
 
   return (
     <>

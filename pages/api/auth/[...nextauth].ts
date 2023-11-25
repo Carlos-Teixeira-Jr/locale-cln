@@ -19,7 +19,7 @@ export interface IUser {
   provider: string;
 }
 
-export default NextAuth({
+export const authOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
@@ -32,6 +32,7 @@ export default NextAuth({
     CredentialsProvider({
       name: 'login',
       credentials: {},
+      // @ts-ignore
       async authorize(credentials: MyCredentials) {
         const { email, password } = credentials;
 
@@ -114,4 +115,7 @@ export default NextAuth({
     },
   },
   secret: process.env.SECRET,
-});
+};
+
+// @ts-ignore
+export default NextAuth(authOptions);

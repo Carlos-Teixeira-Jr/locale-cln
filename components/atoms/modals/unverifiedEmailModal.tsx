@@ -1,18 +1,22 @@
-import Modal from 'react-modal';
-import CloseIcon from '../icons/closeIcon';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
+import Modal from 'react-modal';
+import CloseIcon from '../icons/closeIcon';
 Modal.setAppElement('#__next');
 
 export interface IUnverifiedEmailModal {
-  isOpen: boolean
+  isOpen: boolean;
   setModalIsOpen: (value: boolean) => void;
-  isMobile: boolean
-  email: string
+  isMobile: boolean;
+  email: string;
 }
 
-export default function unverifiedEmailModal({isOpen, setModalIsOpen, isMobile, email}: IUnverifiedEmailModal) {
-
+export default function unverifiedEmailModal({
+  isOpen,
+  setModalIsOpen,
+  isMobile,
+  email,
+}: IUnverifiedEmailModal) {
   const router = useRouter();
 
   return (
@@ -28,7 +32,7 @@ export default function unverifiedEmailModal({isOpen, setModalIsOpen, isMobile, 
           right: 0,
           bottom: 0,
           backgroundColor: 'rgba(255, 255, 255, 0.75)',
-          zIndex: 99
+          zIndex: 99,
         },
         content: {
           top: '50%',
@@ -51,50 +55,50 @@ export default function unverifiedEmailModal({isOpen, setModalIsOpen, isMobile, 
         },
       }}
     >
-
       <div className="text-center">
-        <div className='flex flex-col'>
+        <div className="flex flex-col">
           <div>
-            <div className='w-fit float-right'>
+            <div className="w-fit float-right">
               <CloseIcon
                 onClick={() => setModalIsOpen(false)}
-                fill='#6B7280'
-                className='float-right cursor-pointer'
+                fill="#6B7280"
+                className="float-right cursor-pointer"
               />
             </div>
           </div>
-            
-          <Image 
-            src={"/images/logo-marker.png"} 
-            alt={"Locale imóveis logomarca"} 
+
+          <Image
+            src={'/images/logo-marker.png'}
+            alt={'Locale imóveis logomarca'}
             width={300}
             height={150}
-            className='mx-auto'
+            className="mx-auto"
           />
         </div>
-        
-        <h1 className="text-xl font-bold mb-4 text-primary">Email não verificado</h1>
+
+        <h1 className="text-xl font-bold mb-4 text-primary">
+          Email não verificado
+        </h1>
         <p className="font-bold text-xs text-quaternary mb-4">
-          O email que você tentou usar já está vinculado a uma conta,
-          mas ainda não foi verificado.
+          O email que você tentou usar já está vinculado a uma conta, mas ainda
+          não foi verificado.
         </p>
         <p className="font-bold text-xs text-quaternary">
-          Você será redirecionado para a tela de login para completar o
-          processo de verificação de email.
+          Você será redirecionado para a tela de login para completar o processo
+          de verificação de email.
         </p>
         <button
           className="md:w-fit h-[50px] bg-primary p-2.5 rounded-[50px] font-normal text-xl text-tertiary leading-6 mx-auto mt-5 transition-colors duration-300 hover:bg-red-600 hover:text-white"
           onClick={() => {
-              router.push({
+            router.push({
               pathname: '/login',
-              query: { email: email }
-            })
+              query: { email: email },
+            });
           }}
         >
           Verificar e-mail
         </button>
       </div>
-
     </Modal>
-  )
+  );
 }

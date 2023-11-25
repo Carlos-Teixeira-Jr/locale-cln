@@ -19,14 +19,11 @@ interface ViaCepData {
 
 interface IProps {
   selectedPlanCard: string;
-  setSelectedPlanCard: (selectedPlanCard: string) => void;
+  setSelectedPlanCard?: (selectedPlanCard: string) => void;
 }
 
-const RegisterFormStep3: React.FC<IProps> = ({
-  selectedPlanCard,
-  setSelectedPlanCard,
-}) => {
-  const [successOnPayment, setSuccessOnPayment] = useState(true);
+const RegisterFormStep3: React.FC<IProps> = ({ selectedPlanCard }) => {
+  const [_successOnPayment, _setSuccessOnPayment] = useState(true);
   const router = useRouter();
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -112,7 +109,7 @@ const RegisterFormStep3: React.FC<IProps> = ({
   }, [cardFlag, cardNumber]);
 
   useEffect(() => {
-    if (selectedPlanCard === "Free") {
+    if (selectedPlanCard === 'Free') {
       setFormData({ ...formData, plan: 'free' });
     } else if (selectedPlanCard === 'Básico') {
       setFormData({ ...formData, plan: 'basico' });
@@ -872,6 +869,7 @@ const RegisterFormStep3: React.FC<IProps> = ({
                       <PaymentFailModal
                         isOpen={modalIsOpen}
                         setModalIsOpen={setModalIsOpen}
+                        paymentError="Ocorreu um erro ao efetuar o pagamento."
                       />
                     )}
                   </div>
