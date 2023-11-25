@@ -13,6 +13,7 @@ import PropertyCard from '../components/molecules/cards/propertyCard/PropertyCar
 import AdminHeader from '../components/organisms/adminHeader/adminHeader';
 import SideMenu from '../components/organisms/sideMenu/sideMenu';
 import { NextPageWithLayout } from './page';
+import { useEffect, useState } from 'react';
 
 interface IAdminFavProperties {
   favouriteProperties: IFavProperties;
@@ -25,7 +26,13 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
   properties,
   notifications,
 }) => {
-  const isOwner = properties?.docs?.length > 0 ? true : false;
+
+  const [isOwner, setIsOwner] = useState<boolean>(false);
+
+  // Determina se o usuário já possui anúncios ou não;
+  useEffect(() => {
+    setIsOwner(properties?.docs?.length > 0 ? true : false);
+  }, [properties]);
 
   return (
     <>
@@ -199,7 +206,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          ownerId: userId,
+          ownerId,
           page: 1,
         }),
       })

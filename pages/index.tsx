@@ -92,6 +92,7 @@ const Home: NextPageWithLayout<IHome> = ({
             width={1440}
             height={920}
             className="w-full"
+            priority
           />
         </div>
 
@@ -193,6 +194,7 @@ export default Home;
 
 export async function getStaticProps() {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+  console.log("🚀 ~ file: index.tsx:197 ~ getStaticProps ~ baseUrl:", baseUrl)
 
   const [propertyInfo, propertyTypes, locations] = await Promise.all([
     fetch(`${baseUrl}/property/filter/?page=1&limit=3`)
