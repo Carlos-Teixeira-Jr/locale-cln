@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { AiOutlineClose } from 'react-icons/ai';
 import { BsChevronCompactLeft, BsChevronCompactRight } from 'react-icons/bs';
 import { IData } from '../../../common/interfaces/property/propertyData';
-
 export interface IGalleryModal {
   setModalIsOpen: (isOpen: boolean) => void;
   property: IData;
@@ -73,5 +72,4 @@ const GalleryModal: React.FC<IGalleryModal> = ({
     </div>
   );
 };
-
 export default GalleryModal;
