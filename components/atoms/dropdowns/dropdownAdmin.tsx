@@ -10,7 +10,6 @@ export default function DropdownAdmin({
 }: IDropdownAdmin) {
 
   const isOwner = isOwnerProp;
-  console.log("🚀 ~ file: dropdownAdmin.tsx:13 ~ isOwner:", isOwner)
   const optionsClassname = 'translate-x-[1px] w-[150px] h-fit hover:bg-quaternary hover:text-tertiary py-3 '
 
   const option = [

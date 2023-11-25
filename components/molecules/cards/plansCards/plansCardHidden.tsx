@@ -30,7 +30,6 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
   id,
   userPlan
 }) => {
-  console.log("🚀 ~ file: plansCardHidden.tsx:33 ~ isAdminPage:", isAdminPage)
   
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
 

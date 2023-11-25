@@ -47,7 +47,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   properties,
   ownerData,
 }) => {
-
+  
   const router = useRouter();
   const isOwner = properties?.docs?.length > 0 ? true : false;
   const [selectedPlan, setSelectedPlan] = useState(
@@ -133,7 +133,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const creditCardErrors: CreditCardForm = {
     cardName: '',
     cardNumber: '',
-    cvc: '',
+    ccv: '',
     expiry: '',
   };
 
@@ -512,6 +512,27 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     }
 
     const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+    let ownerId;
+
+    try {
+      const ownerIdResponse = await fetch(
+        `${baseUrl}/user/find-owner-by-user`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ _id: userId }),
+        }
+      );
+
+      if (ownerIdResponse.ok) {
+        const ownerData = await ownerIdResponse.json();
+        ownerId = ownerData?.owner?._id;
+      }
+    } catch (error) {
+      console.error(error);
+    }
 
     const [notifications, userData, ownerData, plans, properties] =
       await Promise.all([
@@ -532,7 +553,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            id: userId,
+            _id: userId,
           }),
         })
           .then((res) => res.json())
@@ -546,7 +567,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            ownerId: userId,
+            ownerId,
             page: 1,
           }),
         })

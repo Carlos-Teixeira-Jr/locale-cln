@@ -8,7 +8,6 @@ import {
 import { IPlan } from '../../../common/interfaces/plans/plans';
 import { IAddress } from '../../../common/interfaces/property/propertyData';
 import { IUserDataComponent } from '../../../common/interfaces/user/user';
-import { applyNumericMask } from '../../../common/utils/masks/numericMask';
 import { ErrorToastNames, SuccessToastNames, showErrorToast, showSuccessToast } from '../../../common/utils/toasts';
 import { applyNumericMask } from "../../../common/utils/masks/numericMask";
 import { toast } from "react-toastify";
@@ -18,7 +17,7 @@ import 'react-credit-cards/es/styles-compiled.css';
 export type CreditCardForm = {
   cardName: string;
   cardNumber: string;
-  cvc: string;
+  ccv: string;
   expiry: string;
   [key: string]: string;
 };
@@ -61,14 +60,14 @@ const CreditCard = ({
   const [creditCardFormData, setCreditCardFormData] = useState<CreditCardForm>({
     cardName: '',
     cardNumber: creditCardInfo ? actualCreditCardNumber : '',
-    cvc: '',
+    ccv: '',
     expiry: '',
   });
 
   const [errors, setErrors] = useState<CreditCardForm>({
     cardName: '',
     cardNumber: '',
-    cvc: '',
+    ccv: '',
     expiry: '',
   });
 
@@ -97,7 +96,7 @@ const CreditCard = ({
     scrollToError('cardName');
     scrollToError('cardNumber');
     scrollToError('expiry');
-    scrollToError('cvc');
+    scrollToError('ccv');
   }, [errors]);
 
   const handleInputChange = (
@@ -117,7 +116,7 @@ const CreditCard = ({
         ...creditCardFormData,
         [fieldName]: maskedValue,
       });
-    } else if (fieldName === 'cvc') {
+    } else if (fieldName === 'ccv') {
       const maskedValue = value.replace(/\s/g, '').toUpperCase().slice(0, 4);
       setCreditCardFormData({
         ...creditCardFormData,
@@ -149,17 +148,17 @@ const CreditCard = ({
       key: 'expiry',
       ref: creditCardErrorScroll.expiry,
       name: 'expiry',
-      type: 'date',
+      type: 'text',
       label: 'Validade',
       value: creditCardFormData.expiry,
     },
     {
-      key: 'cvc',
-      ref: creditCardErrorScroll.cvc,
-      name: 'cvc',
+      key: 'ccv',
+      ref: creditCardErrorScroll.ccv,
+      name: 'ccv',
       type: 'text',
-      label: 'CVC',
-      value: creditCardFormData.cvc,
+      label: 'CCV',
+      value: creditCardFormData.ccv,
     },
   ];
 
@@ -168,14 +167,14 @@ const CreditCard = ({
       cardNumber: '',
       cardName: '',
       expiry: '',
-      cvc: '',
+      ccv: '',
     });
 
     const newErrors = {
       cardNumber: '',
       cardName: '',
       expiry: '',
-      cvc: '',
+      ccv: '',
     };
 
     const emptyFieldError = 'Este campo é obrigatório';
@@ -186,7 +185,7 @@ const CreditCard = ({
     if (regex.test(creditCardFormData.cardNumber))
       newErrors.cardNumber = invalidCardNumberError;
     if (!creditCardFormData.expiry) newErrors.expiry = emptyFieldError;
-    if (!creditCardFormData.cvc) newErrors.cvc = emptyFieldError;
+    if (!creditCardFormData.ccv) newErrors.ccv = emptyFieldError;
 
     setErrors(newErrors);
 
@@ -226,15 +225,19 @@ const CreditCard = ({
 
         if (response.ok) {
           toast.dismiss();
-          showSuccessToast(SuccessToastNames.CreditCardUpdate)
+          toast.success('Dados do cartão atualizados com sucesso.');
           router.push('/admin');
         } else {
           toast.dismiss();
-          showErrorToast(ErrorToastNames.CreditCardUpdate)
+          toast.error(
+            'Não foi possível atualizar os dados de cartão de crédito. Por favor, tente mais tarde.'
+          );
         }
       } catch (error) {
         toast.dismiss();
-        showErrorToast(ErrorToastNames.ServerConnection)
+        toast.error(
+          'Não foi posssível se conectar ao servidorno momento. Pro favor, tente mais tarde.'
+        );
       }
     }
   };
@@ -248,7 +251,7 @@ const CreditCard = ({
       <div className="lg:flex">
         <div className="my-auto">
           <Cards
-            cvc={creditCardFormData.cvc}
+            cvc={creditCardFormData.ccv}
             expiry={creditCardFormData.expiry}
             focused={focus}
             name={creditCardFormData.cardName}
@@ -269,8 +272,14 @@ const CreditCard = ({
                 placeholder={input.label}
                 onChange={(e) => handleInputChange(e, input.name)}
                 onFocus={(e) => setFocus(e.target.name as Focused)}
+                maxLength={input.key === 'expiry' ? 5 : undefined}
                 value={
-                  input.key !== 'cardNumber'
+                  input.key === 'expiry'
+                    ? creditCardFormData[input.name].replace(
+                        /^(\d{2})(\d{2})$/,
+                        '$1/$2'
+                      )
+                    : input.key !== 'cardNumber'
                     ? creditCardFormData[input.name]
                     : creditCardFormData[input.name].replace(/[^\d- ]/g, '')
                 }

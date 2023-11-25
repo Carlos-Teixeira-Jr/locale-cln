@@ -39,7 +39,7 @@ const GalleryModal: React.FC<IGalleryModal> = ({
           onClick={() => setModalIsOpen(false)}
         />
       </div>
-      <div className="flex justify-center mt-16 w-full">
+      <div className="flex justify-center w-full">
         <Image
           src={property.images[currentIndex]}
           alt={''}
