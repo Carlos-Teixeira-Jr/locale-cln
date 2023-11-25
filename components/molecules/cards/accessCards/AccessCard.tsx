@@ -51,9 +51,10 @@ const AccessCard = () => {
                   <Image
                     alt={alt}
                     src={src}
-                    width={159}
-                    height={216}
+                    width={160}
+                    height={160}
                     className="mx-auto lg:mx-0"
+                    priority
                   />
                   <div>
                     <h3 className="md:w-[162px] md:h-[27px] text-center font-bold text-quaternary">

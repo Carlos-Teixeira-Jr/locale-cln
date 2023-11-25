@@ -35,10 +35,10 @@ const Header: React.FC<IHeader> = () => {
   useEffect(() => {
     const urlType = router.query;
 
-    if (urlType.buyOrRent === 'aluguel') {
+    if (urlType.buyOrRent === 'alugar') {
       setIsRent(true);
       setIsBuy(false);
-    } else if (urlType.buyOrRent === 'venda') {
+    } else if (urlType.buyOrRent === 'comprar') {
       setIsBuy(true);
       setIsRent(false);
     }

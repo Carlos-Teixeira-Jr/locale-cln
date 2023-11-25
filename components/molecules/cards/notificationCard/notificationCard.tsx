@@ -48,8 +48,8 @@ const NotificationCard: React.FC<INotification> = ({ description, title }) => {
         <div
           className={`${
             !seen
-              ? 'border-4 border-secondary my-5 bg-tertiary p-5'
-              : 'border-4 border-tertiary my-5 bg-tertiary p-5'
+              ? 'border-4 border-secondary bg-tertiary p-5'
+              : 'border-4 border-tertiary bg-tertiary p-5'
           } `}
         >
           <div>

@@ -31,6 +31,13 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
 
   // Determina se o usuário já possui anúncios ou não;
   useEffect(() => {
+    setIsOwner(properties?.docs?.length > 0 ? true : false);
+  }, [properties]);
+
+  const [isOwner, setIsOwner] = useState<boolean>(false);
+
+  // Determina se o usuário já possui anúncios ou não;
+  useEffect(() => {
     setIsOwner(ownerProperties.docs?.length > 0 ? true : false);
   }, [ownerProperties]);
   

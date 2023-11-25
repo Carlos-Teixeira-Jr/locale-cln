@@ -40,12 +40,12 @@ const DropdownOrderBy: React.FC = () => {
   ];
 
   return (
-    <div className="hidden md:flex absolute z-50 max-w-[210px] h-[200px] rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md">
-      <div className="flex flex-col text-center font-normal text-base text-quaternary leading-5">
+    <div className="hidden md:flex absolute z-50 max-w-[210px] h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md pb-5">
+      <div className="flex flex-col text-center font-normal text-base text-quaternary">
         {dropdownOptions.map((option) => (
           <span
             key={option.key}
-            className={`translate-x-[1px] w-[201px] h-[50px] hover:bg-quaternary hover:text-tertiary py-3 ${
+            className={`translate-x-[1px] w-[201px] md:h-9 lg:h-11 hover:bg-quaternary hover:text-tertiary py-3 ${
               option.key === 'relevance'
                 ? 'rounded-t-xl'
                 : option.key === 'mostRecent'
