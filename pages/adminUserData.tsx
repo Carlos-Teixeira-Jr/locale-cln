@@ -26,6 +26,7 @@ import AdminHeader from '../components/organisms/adminHeader/adminHeader';
 import SideMenu from '../components/organisms/sideMenu/sideMenu';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { NextPageWithLayout } from './page';
+import { ErrorToastNames, SuccessToastNames, showErrorToast, showSuccessToast } from '../common/utils/toasts';
 import EditPassword, { IPasswordData } from '../components/molecules/userData/editPassword';
 Modal.setAppElement('#__next');
 
@@ -295,22 +296,18 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
 
         if (response.ok) {
           toast.dismiss();
-          toast.success('Dados de usuário atualizados com sucesso.');
+          showSuccessToast(SuccessToastNames.UserDataUpdate);
           router.push('/admin');
         } else {
           toast.dismiss();
-          toast.error(
-            'Houve um erro na atualização dos dados deste usuário. Por favor tente novamente.'
-          );
+          showErrorToast(ErrorToastNames.UserDataUpdate);
         }
       } catch (error) {
         toast.dismiss();
-        toast.error(
-          'Não foi possível se conectar ao servidor. Por favor, tente novamente mais tarde.'
-        );
+        showErrorToast(ErrorToastNames.ServerConnection);
       }
     } else {
-      toast.error('Algum campo obrigatório não foi preenchido.');
+      showErrorToast(ErrorToastNames.EmptyFields);
     }
   };
 

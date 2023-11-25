@@ -1,18 +1,27 @@
-import { MouseEvent, useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/router';
+import { MouseEvent, useRef, useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
+import store from 'store';
+import {
+  IAddress,
+  PricesType,
+} from '../common/interfaces/property/propertyData';
+import {
+  IRegisterMainFeatures,
+  IRegisterPropertyData_Step1,
+} from '../common/interfaces/property/register/register';
+import Loading from '../components/atoms/loading';
 import LinearStepper from '../components/atoms/stepper/stepper';
+import Address from '../components/molecules/address/address';
 import AreaCalculatorModal from '../components/molecules/areaModal/areaModal';
 import Footer from '../components/organisms/footer/footer';
 import Header from '../components/organisms/header/header';
 import MainFeatures from '../components/organisms/mainFeatures/mainFeatures';
-import { IRegisterMainFeatures, IRegisterPropertyData_Step1 } from '../common/interfaces/property/register/register';
-import store from 'store';
-import Address from '../components/molecules/address/address';
-import { IAddress, PricesType } from '../common/interfaces/property/propertyData';
-import { toast } from 'react-toastify';
-import { useRouter } from 'next/router';
 import { useProgress } from '../context/registerProgress';
 
 const Register = () => {
+  // loading
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
   const query = router.query;
@@ -25,8 +34,8 @@ const Register = () => {
     totalArea: useRef<HTMLInputElement>(null),
     propertyValue: useRef<HTMLInputElement>(null),
     condominiumValue: useRef<HTMLInputElement>(null),
-    iptuValue: useRef<HTMLInputElement>(null)
-  }
+    iptuValue: useRef<HTMLInputElement>(null),
+  };
 
   // Lida com o auto-scroll para os inputs de Address que mostrarem erro;
   const addressInputRefs = {
@@ -35,8 +44,8 @@ const Register = () => {
     streetName: useRef<HTMLInputElement>(null),
     streetNumber: useRef<HTMLInputElement>(null),
     uf: useRef<HTMLInputElement>(null),
-  }
-  
+  };
+
   const [registration, setRegistration] = useState<IRegisterMainFeatures>({
     adType: 'comprar',
     adSubtype: 'residencial',
@@ -54,7 +63,7 @@ const Register = () => {
       width: 0,
       height: 0,
       totalArea: 0,
-      useableArea: 0
+      useableArea: 0,
     },
     propertyValue: '',
     condominium: false,
@@ -78,7 +87,7 @@ const Register = () => {
     streetNumber: '',
     complement: '',
     neighborhood: '',
-    uf: ''
+    uf: '',
   });
 
   const [addressErrors, setAddressErrors] = useState({
@@ -112,7 +121,7 @@ const Register = () => {
       streetNumber: '',
       city: '',
       streetName: '',
-    })
+    });
 
     const newRegistrationErrors = {
       description: '',
@@ -136,10 +145,13 @@ const Register = () => {
     if (!address.streetNumber) newAddressErrors.streetNumber = error;
     if (!address.uf) newAddressErrors.uf = error;
     if (!registration.description) newRegistrationErrors.description = error;
-    if (registration.size.totalArea === 0) newRegistrationErrors.totalArea = error;
-    if (!registration.propertyValue) newRegistrationErrors.propertyValue = error;
+    if (registration.size.totalArea === 0)
+      newRegistrationErrors.totalArea = error;
+    if (!registration.propertyValue)
+      newRegistrationErrors.propertyValue = error;
     if (registration.condominium) {
-      if (!registration.condominiumValue) newRegistrationErrors.condominiumValue = error;
+      if (!registration.condominiumValue)
+        newRegistrationErrors.condominiumValue = error;
     }
     if (registration.iptu) {
       if (!registration.iptuValue) newRegistrationErrors.iptuValue = error;
@@ -155,9 +167,11 @@ const Register = () => {
     };
 
     // Verifica se algum dos valores do objeto de erros combinados não é uma string vazia
-    const hasErrors = Object.values(combinedErrors).some((error) => error !== '');
+    const hasErrors = Object.values(combinedErrors).some(
+      (error) => error !== ''
+    );
 
-    if(!hasErrors) {
+    if (!hasErrors) {
       const propertyDataStep1: IRegisterPropertyData_Step1 = {
         adType: registration.adType,
         adSubtype: registration.adSubtype,
@@ -170,7 +184,7 @@ const Register = () => {
           width: registration.size.width,
           height: registration.size.height,
           totalArea: registration.size.totalArea,
-          useableArea: registration.size.useableArea
+          useableArea: registration.size.useableArea,
         },
         prices: [
           {
@@ -182,22 +196,22 @@ const Register = () => {
             value: parseFloat(registration.condominiumValue.replace(',', '.'))
           }
         ],
-        condominium: registration.condominium
+        condominium: registration.condominium,
       };
 
       toast.loading('Enviando...');
       store.set('propertyData', propertyDataStep1);
       toast.dismiss();
-      updateProgress(2)
+      updateProgress(2);
       if (urlEmail !== undefined) {
         router.push({
           pathname: '/registerStep2',
           query: {
-            email: urlEmail
-          }
+            email: urlEmail,
+          },
         });
       } else {
-        router.push('/registerStep2')
+        router.push('/registerStep2');
       }
     } else {
       toast.error(`Algum campo obrigatório não foi preenchido.`);
@@ -224,45 +238,54 @@ const Register = () => {
           <LinearStepper isSubmited={false} sharedActiveStep={0} />
         </div>
 
-        <MainFeatures 
-          propertyId={''} 
-          editarAdType={'comprar'} 
-          editarSubType={'comercial'} 
-          editarPropertyType={'apartamento'} 
-          editarPropertySubtype={'cobertura'} 
-          editarSize={registration.size} 
-          editarNumBedroom={0} 
-          editarNumBathroom={0} 
-          editarNumGarage={0} 
-          editarNumDependencies={0} 
-          editarNumSuite={0} 
-          editarDescription={''} 
-          editarPropertyValue={''} 
-          editarCondominium={false} 
-          editarCondominiumValue={''} 
-          editarIptuValue={''} 
-          editarIptu={false} 
-          isEdit={false} 
-          onMainFeaturesUpdate={(updatedFeatures: any) => setRegistration(updatedFeatures)}      
-          errors={registrationErrors}  
+        <MainFeatures
+          propertyId={''}
+          editarAdType={'comprar'}
+          editarSubType={'comercial'}
+          editarPropertyType={'apartamento'}
+          editarPropertySubtype={'cobertura'}
+          editarSize={registration.size}
+          editarNumBedroom={0}
+          editarNumBathroom={0}
+          editarNumGarage={0}
+          editarNumDependencies={0}
+          editarNumSuite={0}
+          editarDescription={''}
+          editarPropertyValue={''}
+          editarCondominium={false}
+          editarCondominiumValue={''}
+          editarIptuValue={''}
+          editarIptu={false}
+          isEdit={false}
+          onMainFeaturesUpdate={(updatedFeatures: any) =>
+            setRegistration(updatedFeatures)
+          }
+          errors={registrationErrors}
           mainFeaturesInputRefs={mainFeaturesInputRefs}
         />
 
-        <Address 
-          isEdit={false} 
-          address={address} 
-          onAddressUpdate={(updatedAddress: IAddress) => setAddress(updatedAddress)} 
+        <Address
+          isEdit={false}
+          address={address}
+          onAddressUpdate={(updatedAddress: IAddress) =>
+            setAddress(updatedAddress)
+          }
           errors={addressErrors}
           addressInputRefs={addressInputRefs}
         />
 
-        <div className="flex self-end md:justify-end justify-center px-5 mb-32 mt-16 max-w-[1215px] mx-auto">
-          <button className="bg-primary w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold text-2xl lg:text-3xl hover:bg-red-600 hover:text-white" onClick={handleSubmit}>
-              Continuar
+        <div className="flex self-end mr-0 md:mr-20 lg:mr-20 xl:mr-20 md:justify-end justify-center px-5 mb-32 mt-16 max-w-[1215px] mx-auto">
+          <button
+            className="active:bg-gray-500 cursor-pointer flex items-center flex-row justify-around bg-primary w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold text-2xl lg:text-3xl hover:bg-red-600 hover:text-white"
+            onClick={handleSubmit}
+            disabled={loading}
+          >
+            <span className={`${loading ? 'ml-16' : ''}`}>Continuar</span>
+            {loading && <Loading />}
           </button>
         </div>
       </div>
-      
+
       <div className="flex flex-col mt-10">
         <Footer smallPage={false} />
       </div>

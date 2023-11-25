@@ -14,6 +14,7 @@ import {
 import propertyTypesData from '../../../data/propertyTypesData.json';
 import ArrowDownIcon from '../icons/arrowDownIcon';
 import CheckIcon from '../icons/checkIcon';
+import { showSuccessToast } from '../../../common/utils/toasts';
 
 export interface IHomeFilter extends React.ComponentPropsWithoutRef<'div'> {
   isBuyProp: boolean;

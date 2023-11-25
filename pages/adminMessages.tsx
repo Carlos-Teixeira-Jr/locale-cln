@@ -79,7 +79,7 @@ const AdminMessages = ({
           <SideMenu isOwnerProp={isOwner} notifications={dataNot} />
         </div>
 
-        <div className="flex flex-col items-center mt-24 w-full lg:ml-[305px]">
+        <div className="flex flex-col items-center mt-24 w-full lg:ml-[320px]">
           <div className="flex flex-col items-center">
             <h1 className="font-extrabold text-2xl md:text-4xl text-quaternary md:mb-5 text-center">
               Mensagens
@@ -92,7 +92,7 @@ const AdminMessages = ({
             />
           </div>
 
-          <div className="lg:mb-10 flex flex-col md:flex-row lg:gap-10">
+          <div className="lg:mb-10 flex flex-wrap flex-col md:flex-row lg:gap-10">
             {messagesCount > 0 &&
               properties.map(({ _id, images, address }: IData) => (
                 <MessagesCard

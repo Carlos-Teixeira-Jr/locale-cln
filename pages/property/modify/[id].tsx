@@ -25,6 +25,7 @@ import MainFeatures from '../../../components/organisms/mainFeatures/mainFeature
 import PropertyDifferentials from '../../../components/organisms/register/propertyDifferential';
 import SideMenu from '../../../components/organisms/sideMenu/sideMenu';
 import { NextPageWithLayout } from '../../page';
+import { ErrorToastNames, SuccessToastNames, showErrorToast, showSuccessToast } from '../../../common/utils/toasts';
 
 interface IEditAnnouncement {
   property: IData;
@@ -301,23 +302,18 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
 
         if (response.ok) {
           toast.dismiss();
-          toast.success('Imóvel atualizado com sucesso.');
+          showSuccessToast(SuccessToastNames.PropertyUpdate);
           router.push('/admin');
         } else {
           toast.dismiss();
-          toast.error(
-            'Houve um erro na atualização dos dados deste imóvel. Por favor tente novamente.'
-          );
+          showErrorToast(ErrorToastNames.PropertyUpdate);
         }
       } catch (error) {
         toast.dismiss();
-        toast.error(
-          'Não foi possível se conectar ao servidor. Por favor, tente novamente mais tarde.'
-        );
-        console.error('Houve um erro na resposta da chamada', error);
+        showErrorToast(ErrorToastNames.ServerConnection);
       }
     } else {
-      toast.error('Algum campo obrigatório não foi preenchido.');
+      showErrorToast(ErrorToastNames.EmptyFields);
 
       const addressErrorSection = Object.values(newAddressErrors).some(
         (error) => error !== ''

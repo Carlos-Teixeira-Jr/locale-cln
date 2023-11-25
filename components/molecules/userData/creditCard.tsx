@@ -1,8 +1,6 @@
 import { useRouter } from 'next/router';
 import { ChangeEvent, useEffect, useState } from 'react';
 import Cards, { Focused } from 'react-credit-cards';
-import 'react-credit-cards/es/styles-compiled.css';
-import { toast } from 'react-toastify';
 import {
   ICreditCardInfo,
   IOwnerData,
@@ -10,7 +8,11 @@ import {
 import { IPlan } from '../../../common/interfaces/plans/plans';
 import { IAddress } from '../../../common/interfaces/property/propertyData';
 import { IUserDataComponent } from '../../../common/interfaces/user/user';
-import { applyNumericMask } from '../../../common/utils/masks/numericMask';
+import { ErrorToastNames, SuccessToastNames, showErrorToast, showSuccessToast } from '../../../common/utils/toasts';
+import { applyNumericMask } from "../../../common/utils/masks/numericMask";
+import { toast } from "react-toastify";
+import 'react-credit-cards/es/styles-compiled.css';
+
 
 export type CreditCardForm = {
   cardName: string;
