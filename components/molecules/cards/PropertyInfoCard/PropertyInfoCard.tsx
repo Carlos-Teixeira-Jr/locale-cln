@@ -143,42 +143,39 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
                 {location}
               </p>
             </div>
-            <div className="grid grid-auto-cols grid-flow-col gap-3 pb-6 md:pb-0 lg:pb-0">
-              <div className="grid grid-auto-cols grid-flow-col gap-1 lg:gap-0">
-                <div className="md:w-[30px] h-[30px]">
+            <div className="grid grid-auto-cols grid-flow-col gap-3 pb-6 md:pb-0 lg:pb-0 items-center">
+              <div className="grid grid-auto-cols grid-flow-col gap-1">
+                <div className="md:w-fit h-fit">
                   <BedroomIcon fill="#6B7280" />
                 </div>
                 <div className="font-bold text-2xl md:ml-[0.2rem] text-quaternary flex items-center justify-center">
                   {bedrooms}
                 </div>
               </div>
-              <div className="grid grid-auto-cols grid-flow-col gap-1 lg:gap-0">
-                <div className="md:w-[30px] h-[30px]">
+              <div className="grid grid-auto-cols grid-flow-col gap-1">
+                <div className="md:w-fit h-fit">
                   <ParkingIcon fill="#6B7280" />
                 </div>
                 <div className="font-bold text-2xl md:ml-[0.2rem]  text-quaternary flex items-center justify-center">
                   {parking_spaces}
                 </div>
               </div>
-              <div className="grid grid-auto-cols grid-flow-col gap-1 lg:gap-0">
-                <div className="md:w-[30px] h-[30px]">
+              <div className="grid grid-auto-cols grid-flow-col gap-1">
+                <div className="md:w-fit h-fit">
                   <BathroomIcon fill="#6B7280" />
                 </div>
                 <div className="font-bold text-2xl md:ml-[0.2rem] text-quaternary flex items-center justify-center">
                   {bathrooms}
                 </div>
               </div>
-              <div>
-                <button
-                  className="bg-primary w-[170px] h-[50px] lg:w-[170px] xl:w-[200px] rounded-full items-center justify-center justify-items-center"
-                  onClick={handleMessageBtnClick}
-                >
-                  <p className="font-normal text-sm md:text-lg lg:text-lg xl:text-xl text-tertiary flex justify-center items-center ml-0 md:ml-2 lg:ml-2">
-
-                    Enviar Mensagem
-                  </p>
-                </button>
-              </div>
+              <button
+                className="bg-primary md:w-[200px] h-full md:h-[50px] rounded-full transition-colors duration-300 hover:bg-red-600 hover:text-white"
+                onClick={handleMessageBtnClick}
+              >
+                <p className="md:w-[176px] md:h-[24px] font-normal text-sm px-2 md:text-lg lg:text-xl text-tertiary flex mx-auto my-1 lg:my-0 align-middle justify-center py-0 sm:py-1 md:py-0 lg:py-0 xl:py-0 mb-1 md:mb-1 lg:mb-0">
+                  Enviar Mensagem
+                </p>
+              </button>
             </div>
           </div>
         </div>

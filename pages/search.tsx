@@ -134,8 +134,8 @@ const Search: NextPageWithLayout<ISearch> = ({
       <Header />
       <div className="flex items-center justify-center mt-20">
         <div className="lg:flex justify-center max-w-[1232px]">
-          <div className="flex flex-col lg:flex-row mt-[-16px]. md:mt-0 ">
-            <div className="mx-auto md:w-full">
+          <div className="flex flex-col lg:flex-row md:mt-0">
+            <div className="mx-auto md:w-fit lg:w-[25%]">
               <FilterList
                 locationProp={locations}
                 tagsProp={tagsData}
@@ -149,9 +149,13 @@ const Search: NextPageWithLayout<ISearch> = ({
               />
             </div>
 
-            <div className="flex flex-col ml-4">
+            <div className="flex flex-col lg:w-[75%] lg:ml-5">
               <div
-                className={`${mobileFilterIsOpen ? 'hidden' : ''} flex w-full`}
+                className={`justify-center ${
+                  mobileFilterIsOpen 
+                  ? 'hidden' 
+                  : ''
+                } flex w-full`}
               >
                 <SearchShortcut
                   onMobileFilterIsOpenChange={(isOpen) =>
@@ -165,28 +169,27 @@ const Search: NextPageWithLayout<ISearch> = ({
                   {propertyInfo.totalCount} imóveis encontrados com base na
                   pesquisa
                 </h3>
-                <div className="flex flex-row justify-evenly items-center ">
-                  {/* SearchView - start*/}
-                  {!isMobile && (
-                    <div className="flex flex-row items-center gap-1">
-                      <button
-                        onClick={handleList}
-                        className={`w-[47px] h-[44px] border border-[#6B7280] rounded-[10px] ${
-                          list && 'border-[#F5BF5D] shadow-inner'
-                        }`}
-                      >
-                        <ListIcon list={list} />
-                      </button>
-                      <button
-                        onClick={handleGrid}
-                        className={`w-[47px] h-[44px] border border-[#6B7280] rounded-[10px] ${
-                          grid && 'border-[#F5BF5D] shadow-inner'
-                        }`}
-                      >
-                        <GridIcon grid={grid} />
-                      </button>
-                    </div>
-                  )}
+                {/* SearchView - start*/}
+                {!isMobile && (
+                  <div className="flex flex-row items-center gap-1 mr-[-30px] w-fit">
+                    <button
+                      onClick={handleList}
+                      className={`w-[47px] h-[44px] border border-[#6B7280] rounded-[10px] ${
+                        list && 'border-[#F5BF5D] shadow-inner'
+                      }`}
+                    >
+                      <ListIcon list={list} />
+                    </button>
+                    <button
+                      onClick={handleGrid}
+                      className={`w-[47px] h-[44px] border border-[#6B7280] rounded-[10px] ${
+                        grid && 'border-[#F5BF5D] shadow-inner'
+                      }`}
+                    >
+                      <GridIcon grid={grid} />
+                    </button>
+                  </div>
+                )}
 
                   {/* SearchView - end*/}
                   {!isMobile && (
@@ -206,10 +209,10 @@ const Search: NextPageWithLayout<ISearch> = ({
               {!mobileFilterIsOpen &&
                 propertyInfo.docs &&
                 propertyInfo.docs.length > 0 && (
-                  <div className="mx-auto mb-5">
-                    <Pagination
-                      totalPages={propertyInfo.totalPages}
-                      setCurrentPage={setCurrentPage}
+                  <div className="mx-auto mb-0">
+                    <Pagination 
+                      totalPages={propertyInfo.totalPages} 
+                      setCurrentPage={setCurrentPage} 
                       currentPage={currentPage}
                     />
                   </div>
