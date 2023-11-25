@@ -1,47 +1,49 @@
-import React, { ChangeEvent, useEffect, useState } from 'react'
-import { IUserDataComponent, IUserDataComponentErrors } from '../../../common/interfaces/user/user';
+import React, { ChangeEvent, useEffect, useState } from 'react';
+import { IOwnerData } from '../../../common/interfaces/owner/owner';
+import {
+  IUserDataComponent,
+  IUserDataComponentErrors,
+} from '../../../common/interfaces/user/user';
+import { applyNumericMask } from '../../../common/utils/masks/numericMask';
 import ErrorOnUpdateModal from '../../atoms/modals/errorOnUpdateModal';
 import SuccessOnUpdateModal from '../../atoms/modals/successOnUpdateModal';
-import { IOwnerData } from '../../../common/interfaces/owner/owner';
-import { applyNumericMask } from '../../../common/utils/masks/numericMask';
 
 export type UserDataErrorsTypes = {
-  username: string,
-  email: string,
-  cpf: string,
-  cellPhone: string,
-}
+  username: string;
+  email: string;
+  cpf: string;
+  cellPhone: string;
+};
 
 type Input = {
-  key: string,
-  label: string,
-  value: string,
-  ref?: any
-  onChange: (event: ChangeEvent<HTMLInputElement>) => void,
-}
+  key: string;
+  label: string;
+  value: string;
+  ref?: any;
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+};
 
 interface IUserDataInputs {
-  userData?: IOwnerData
-  isEdit: boolean
+  userData?: IOwnerData;
+  isEdit: boolean;
   onUserDataUpdate: (updatedUserData: IUserDataComponent) => void;
-  urlEmail?: string | undefined
-  error: UserDataErrorsTypes
-  userDataInputRefs?: any
+  urlEmail?: string | undefined;
+  error: UserDataErrorsTypes;
+  userDataInputRefs?: any;
 }
 
-const userDataInputs: React.FC<IUserDataInputs> = ({
-  userData, 
+const UserDataInputs: React.FC<IUserDataInputs> = ({
+  userData,
   isEdit,
   onUserDataUpdate,
   urlEmail,
   error,
-  userDataInputRefs
+  userDataInputRefs,
 }) => {
-
   const userDataErrorScroll = {
-    ...userDataInputRefs
+    ...userDataInputRefs,
   };
-  
+
   const [errorModalIsOpen, setErrorModalIsOpen] = useState(false);
   const [succesModalIsOpen, setSuccesModalIsOpen] = useState(false);
 
@@ -56,16 +58,17 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
   // Pega o email da url caso o usuário tenha passado o mesmo no início do cadastro na pagina announcement;
   useEffect(() => {
     if (urlEmail) {
-      setFormData({...formData, email: urlEmail})
+      setFormData({ ...formData, email: urlEmail });
     }
   }, [urlEmail]);
-  
-  const [userDataErrors, setUserDataErrors] = useState<IUserDataComponentErrors>({
-    username: '',
-    email: '',
-    cpf: '',
-    cellPhone: '',
-  });
+
+  const [userDataErrors, setUserDataErrors] =
+    useState<IUserDataComponentErrors>({
+      username: '',
+      email: '',
+      cpf: '',
+      cellPhone: '',
+    });
 
   useEffect(() => {
     setUserDataErrors(error);
@@ -74,17 +77,22 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
   // Realiza o auto-scroll para o input que apresenta erro;
   useEffect(() => {
     const scrollToError = (errorKey: keyof typeof userDataErrors) => {
-      if (userDataErrors[errorKey] !== '' && userDataInputRefs[errorKey]?.current) {
-        userDataErrorScroll[errorKey]?.current.scrollIntoView({ behavior: 'auto', block: 'center' });
+      if (
+        userDataErrors[errorKey] !== '' &&
+        userDataInputRefs[errorKey]?.current
+      ) {
+        userDataErrorScroll[errorKey]?.current.scrollIntoView({
+          behavior: 'auto',
+          block: 'center',
+        });
       }
     };
-  
+
     scrollToError('username');
     scrollToError('email');
     scrollToError('cpf');
     scrollToError('cellPhone');
   }, [userDataErrors]);
-  
 
   // Envia os dados do usuário para o componente pai;
   useEffect(() => {
@@ -126,7 +134,10 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
         const selectionEnd = input.selectionEnd || 0;
         const previousValue = input.value;
         // Verifica se o cursor está no final da string ou se um caractere foi removido
-        if (selectionStart === previousValue.length || previousValue.length > maskedValue.length) {
+        if (
+          selectionStart === previousValue.length ||
+          previousValue.length > maskedValue.length
+        ) {
           input.value = maskedValue;
         } else {
           // Caso contrário, restaura o valor anterior e move o cursor para a posição correta
@@ -136,28 +147,6 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
         setFormData({ ...formData, cpf: maskedValue });
       },
     },
-    {
-      key: 'phone',
-      label: 'Telefone',
-      value: formData.phone,
-      onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        const input = event.target;
-        const value = input.value;
-        const maskedValue = applyNumericMask(value, '(99) 9999-9999');
-        const selectionStart = input.selectionStart || 0;
-        const selectionEnd = input.selectionEnd || 0;
-        const previousValue = input.value;
-        // Verifica se o cursor está no final da string ou se um caractere foi removido
-        if (selectionStart === previousValue.length || previousValue.length > maskedValue.length) {
-          input.value = maskedValue;
-        } else {
-          // Caso contrário, restaura o valor anterior e move o cursor para a posição correta
-          input.value = previousValue;
-          input.setSelectionRange(selectionStart, selectionEnd);
-        }
-        setFormData({ ...formData, phone: maskedValue });
-      },
-    },   
     {
       key: 'cellPhone',
       label: 'Celular',
@@ -171,7 +160,10 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
         const selectionEnd = input.selectionEnd || 0;
         const previousValue = input.value;
         // Verifica se o cursor está no final da string ou se um caractere foi removido
-        if (selectionStart === previousValue.length || previousValue.length > maskedValue.length) {
+        if (
+          selectionStart === previousValue.length ||
+          previousValue.length > maskedValue.length
+        ) {
           input.value = maskedValue;
         } else {
           // Caso contrário, restaura o valor anterior e move o cursor para a posição correta
@@ -181,10 +173,35 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
         setFormData({ ...formData, cellPhone: maskedValue });
       },
     },
+    {
+      key: 'phone',
+      label: 'Telefone residencial',
+      value: formData.phone,
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        const input = event.target;
+        const value = input.value;
+        const maskedValue = applyNumericMask(value, '(99) 9999-9999');
+        const selectionStart = input.selectionStart || 0;
+        const selectionEnd = input.selectionEnd || 0;
+        const previousValue = input.value;
+        // Verifica se o cursor está no final da string ou se um caractere foi removido
+        if (
+          selectionStart === previousValue.length ||
+          previousValue.length > maskedValue.length
+        ) {
+          input.value = maskedValue;
+        } else {
+          // Caso contrário, restaura o valor anterior e move o cursor para a posição correta
+          input.value = previousValue;
+          input.setSelectionRange(selectionStart, selectionEnd);
+        }
+        setFormData({ ...formData, phone: maskedValue });
+      },
+    },
   ];
 
   return (
-    <div className='mx-5'>
+    <div className="mx-5">
       <h1 className="md:text-3xl text-2xl leading-10 text-quaternary font-bold md:mb-10">
         {isEdit ? 'Dados Pessoais' : 'Informações para contratação'}
       </h1>
@@ -202,7 +219,9 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
               style={userDataErrors.username ? { border: '1px solid red' } : {}}
             />
             {userDataErrors.username && (
-              <span className="text-red-500 text-xs">{userDataErrors.username}</span>
+              <span className="text-red-500 text-xs">
+                {userDataErrors.username}
+              </span>
             )}
           </div>
 
@@ -217,10 +236,16 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
                   onChange={input.onChange}
                   value={input.value}
                   required
-                  style={userDataErrors[input.key] !== '' ? { border: '1px solid red' } : {}}
+                  style={
+                    userDataErrors[input.key] !== ''
+                      ? { border: '1px solid red' }
+                      : {}
+                  }
                 />
                 {Object.keys(userDataErrors).includes(input.key) && (
-                  <span className="text-red-500 text-xs">{userDataErrors[input.key]}</span>
+                  <span className="text-red-500 text-xs">
+                    {userDataErrors[input.key]}
+                  </span>
                 )}
               </div>
             ))}
@@ -236,17 +261,24 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
                   className="border w-full p-5 h-12 border-quaternary rounded-[10px] bg-tertiary font-bold text-xl md:text-2xl text-quaternary leading-7 drop-shadow-xl"
                   onChange={input.onChange}
                   value={input.value}
-                  style={Object.keys(userDataErrors).includes(input.key) && userDataErrors[input.key] !== '' ? { border: '1px solid red' }: {}}
+                  style={
+                    Object.keys(userDataErrors).includes(input.key) &&
+                    userDataErrors[input.key] !== ''
+                      ? { border: '1px solid red' }
+                      : {}
+                  }
                 />
-                {Object.keys(userDataErrors).includes(input.key) && userDataErrors[input.key] !== '' && (
-                  <span className="text-red-500 text-xs">{userDataErrors[input.key]}</span>
-                )}
+                {Object.keys(userDataErrors).includes(input.key) &&
+                  userDataErrors[input.key] !== '' && (
+                    <span className="text-red-500 text-xs">
+                      {userDataErrors[input.key]}
+                    </span>
+                  )}
               </div>
             ))}
           </div>
         </div>
       </div>
-
       {errorModalIsOpen ? (
         <ErrorOnUpdateModal
           errorModalIsOpen={errorModalIsOpen}
@@ -258,9 +290,8 @@ const userDataInputs: React.FC<IUserDataInputs> = ({
           setSuccessModalIsOpen={setSuccesModalIsOpen}
         />
       )}
-
     </div>
-  )
-}
+  );
+};
 
-export default userDataInputs
+export default UserDataInputs;

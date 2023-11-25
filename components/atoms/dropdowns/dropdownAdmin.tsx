@@ -10,7 +10,8 @@ export default function DropdownAdmin({
 }: IDropdownAdmin) {
 
   const isOwner = isOwnerProp;
-  const optionsClassname = 'translate-x-[1px]  w-[150px] h-fit  hover:bg-quaternary hover:text-tertiary py-3'
+  console.log("🚀 ~ file: dropdownAdmin.tsx:13 ~ isOwner:", isOwner)
+  const optionsClassname = 'translate-x-[1px] w-[150px] h-fit hover:bg-quaternary hover:text-tertiary py-3 '
 
   const option = [
     {
@@ -69,13 +70,13 @@ export default function DropdownAdmin({
 
         {!isOwner ? (
           option.map((option, index) => {
-            if (option.ownerOption) {
+            if (!option.ownerOption) {
               return (
                 option.key !== 'logOut' ? (
                   <Link
                     key={option.key}
                     href={option.ref}
-                    className={index === 0 ? option.className + 'rounded-t-xl' : option.className}
+                    className={index === 0 ? option.className + ' rounded-t-xl' : option.className}
                   >
                     {option.title}
                   </Link>
@@ -87,21 +88,19 @@ export default function DropdownAdmin({
           })
         ) : (
           option.map((option, index) => {
-            if (!option.ownerOption) {
-              return (
-                option.key !== 'logOut' ? (
-                  <Link
-                    key={option.key}
-                    href={option.ref}
-                    className={index === 0 ? option.className + 'rounded-t-xl' : option.className}
-                  >
-                    {option.title}
-                  </Link>
-                ) : (
-                  <button key={option.key} className={option.className} onClick={() => signOut()}>Sair</button>
-                )
+            return (
+              option.key !== 'logOut' ? (
+                <Link
+                  key={option.key}
+                  href={option.ref}
+                  className={index === 0 ? option.className + 'rounded-t-xl' : option.className}
+                >
+                  {option.title}
+                </Link>
+              ) : (
+                <button key={option.key} className={option.className} onClick={() => signOut()}>Sair</button>
               )
-            }
+            )
           })
         )}
 

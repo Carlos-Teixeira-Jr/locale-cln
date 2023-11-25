@@ -16,7 +16,7 @@ const ChangeAddressCheckbox: React.FC<IChangeAddressCheckbox> = ({
   const [isSameAddress, setIsSameAddress] = useState(true);
 
   const propertyAddressData = {
-    zipCode: isSameAddress ? propertyAddress?.address?.zipCode : userAddress.zipCode,
+    zipCode: isSameAddress ? propertyAddress?.address?.zipCode : userAddress?.zipCode,
     city: isSameAddress ? propertyAddress?.address?.city : userAddress.city,
     streetName: isSameAddress ? propertyAddress?.address?.streetName : userAddress.streetName,
     streetNumber: isSameAddress ? propertyAddress?.address?.streetNumber : userAddress.streetNumber,

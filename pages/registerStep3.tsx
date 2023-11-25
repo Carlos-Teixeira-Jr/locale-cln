@@ -154,8 +154,13 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
 
   // // Busca o endereço do imóvel armazenado no local storage e atualiza o valor de addressData sempre que há o componente de endereço é aberto ou fechado - isso é necessário para que o componente ChangeAddressCheckbox recupere o endereço do localStorage quando a opção é alterada;
   useEffect(() => {
+<<<<<<< Updated upstream
     setAddressData(property ? property.address : '');
   }, []);
+=======
+    setAddressData(property ? property.address : '')
+  },[]);
+>>>>>>> Stashed changes
 
   useEffect(() => {
     const url = router.pathname;
@@ -397,7 +402,11 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
             <LinearStepper isSubmited={false} sharedActiveStep={2} />
           </div>
 
+<<<<<<< Updated upstream
           <div className="md:flex">
+=======
+          <div className='md:flex'>
+>>>>>>> Stashed changes
             {reversedCards.map(
               ({ _id, name, price, highlightAd, commonAd, smartAd }: IPlan) => (
                 <PlansCardsHidden

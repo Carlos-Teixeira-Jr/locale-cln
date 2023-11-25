@@ -26,7 +26,6 @@ const PlansCards: React.FC<IPlansCard> = ({
   const [getPlan, setGetPlan] = useState('645a46d4388b9fbde84b6e8a');
   const getUserPlan = (planId: string) => {
     setGetPlan(planId);
-    console.log(getPlan);
     store.set('plans', planId);
   };
   

@@ -65,7 +65,11 @@ export default AnnouncementPage;
 
 export async function getStaticProps() {
 
+<<<<<<< Updated upstream
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+=======
+  const baseUrl = process.env.BASE_API_URL;
+>>>>>>> Stashed changes
 
   const [plans] = await Promise.all([
     fetch(`${baseUrl}/plan`)
