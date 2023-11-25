@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import { MouseEvent, useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import store from 'store';
+import Loading from '../components/atoms/loading';
 import LinearStepper from '../components/atoms/stepper/stepper';
 import UploadImages from '../components/molecules/uploadImages/uploadImages';
 import Footer from '../components/organisms/footer/footer';
@@ -12,6 +13,8 @@ import { NextPageWithLayout } from './page';
 
 const RegisterStep2: NextPageWithLayout = () => {
   const imagesInputRef = useRef<HTMLElement>(null);
+
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
   const query = router.query;
@@ -45,6 +48,8 @@ const RegisterStep2: NextPageWithLayout = () => {
 
   const handleSubmit = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
+    setLoading(true);
+
     const imagesError = `Você precisa adicionar pelo menos mais ${
       3 - images.length
     } ${3 - images.length === 1 ? 'foto' : 'fotos'}.`;
@@ -62,6 +67,7 @@ const RegisterStep2: NextPageWithLayout = () => {
     if (images.length < 3) {
       setErrorInfo({ error: imagesError, prop: 'images' });
       errorHandler.current = { error: imagesError, prop: 'images' };
+      setLoading(false);
     }
 
     if (errorHandler.current.prop === '' && errorHandler.current.error === '') {
@@ -74,6 +80,7 @@ const RegisterStep2: NextPageWithLayout = () => {
       }
 
       toast.loading('Enviando...');
+      setLoading(true);
       store.set('propertyData', existingData);
       toast.dismiss();
       updateProgress(3);
@@ -81,16 +88,17 @@ const RegisterStep2: NextPageWithLayout = () => {
         router.push({
           pathname: '/registerStep3',
           query: {
-            email: urlEmail
-          }
+            email: urlEmail,
+          },
         });
       } else {
-        router.push('/registerStep3')
+        router.push('/registerStep3');
       }
     } else {
       toast.error(
         `Algum campo obrigatório ${errorInfo.prop} não foi preenchido.`
       );
+      setLoading(false);
     }
   };
 
@@ -130,7 +138,7 @@ const RegisterStep2: NextPageWithLayout = () => {
           />
         </div>
 
-        <div className="flex justify-between md:mb-32 md:mt-10 mx-auto sm:mx-5 w-full max-w-[1232px] px-5 lg:pr-10 text-xl md:text-2xl">
+        <div className="flex self-end mr-0 md:mr-20 lg:mr-20 xl:mr-20 md:justify-end justify-center px-5 mb-32 mt-16 max-w-[1215px] mx-auto"">
           <button
             className="bg-primary w-28 md:w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold lg:text-3xl hover:bg-red-600 hover:text-white"
             onClick={handlePreviousStep}
@@ -140,8 +148,10 @@ const RegisterStep2: NextPageWithLayout = () => {
           <button
             className="bg-primary w-28 md:w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold lg:text-3xl hover:bg-red-600 hover:text-white"
             onClick={handleSubmit}
+            disabled={loading}
           >
-            Continuar
+            <span className={`${loading ? 'ml-16' : ''}`}>Continuar</span>
+            {loading && <Loading />}
           </button>
         </div>
       </div>

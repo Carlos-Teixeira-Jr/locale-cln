@@ -12,6 +12,7 @@ import {
 } from '../common/interfaces/property/register/register';
 import { IUserDataComponent } from '../common/interfaces/user/user';
 import { geocodeAddress } from '../common/utils/geocodeAddress';
+import Loading from '../components/atoms/loading';
 import PaymentFailModal from '../components/atoms/modals/paymentFailModal';
 import LinearStepper from '../components/atoms/stepper/stepper';
 import Address from '../components/molecules/address/address';
@@ -53,6 +54,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
   const choosedPlan = storedPlan ? storedPlan : '';
   const propertyAddress = storedData?.address ? storedData.address : {};
   const [paymentError, setPaymentError] = useState('');
+
+  const [loading, setLoading] = useState(false);
 
   // Lida com o autoscroll das validações de erro dos inputs;
   const userDataInputRefs = {
@@ -154,13 +157,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
 
   // // Busca o endereço do imóvel armazenado no local storage e atualiza o valor de addressData sempre que há o componente de endereço é aberto ou fechado - isso é necessário para que o componente ChangeAddressCheckbox recupere o endereço do localStorage quando a opção é alterada;
   useEffect(() => {
-<<<<<<< Updated upstream
     setAddressData(property ? property.address : '');
   }, []);
-=======
-    setAddressData(property ? property.address : '')
-  },[]);
->>>>>>> Stashed changes
 
   useEffect(() => {
     const url = router.pathname;
@@ -327,6 +325,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
 
       try {
         toast.loading('Enviando...');
+        setLoading(true);
         const body: BodyReq = {
           propertyData,
           userData,
@@ -402,11 +401,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
             <LinearStepper isSubmited={false} sharedActiveStep={2} />
           </div>
 
-<<<<<<< Updated upstream
           <div className="md:flex">
-=======
-          <div className='md:flex'>
->>>>>>> Stashed changes
             {reversedCards.map(
               ({ _id, name, price, highlightAd, commonAd, smartAd }: IPlan) => (
                 <PlansCardsHidden
@@ -493,7 +488,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
               termsError={termsError}
             />
 
-            <div className="flex justify-between my-10 md:mb-32 md:mt-20 mx-auto sm:mx-5 w-full max-w-[1232px] px-5 lg:pr-10 text-xl md:text-2xl">
+            <div className="flex self-end mr-0 md:mr-20 lg:mr-20 xl:mr-20 md:justify-end justify-center px-5 mb-32 mt-16 max-w-[1215px] mx-auto">
 
               <button
                 className="bg-primary w-28 md:w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold hover:bg-red-600 hover:text-white"
@@ -505,8 +500,10 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
               <button
                 className="bg-primary w-28 md:w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold hover:bg-red-600 hover:text-white"
                 onClick={handleSubmit}
+                disabled={loading}
               >
-                Continuar
+                <span className={`${loading ? 'ml-16' : ''}`}>Continuar</span>
+                {loading && <Loading />}
               </button>
             </div>
           </div>
