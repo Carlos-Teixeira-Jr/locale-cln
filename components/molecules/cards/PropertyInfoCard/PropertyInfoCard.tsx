@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { MouseEvent, useState } from 'react';
 import Modal from 'react-modal';
+import { IData } from '../../../../common/interfaces/property/propertyData';
 import BathroomIcon from '../../../atoms/icons/bathroomIcon';
 import BedroomIcon from '../../../atoms/icons/bedroomIcon';
 import DotIcon from '../../../atoms/icons/dotIcon';
@@ -9,7 +10,6 @@ import NextCardIcon from '../../../atoms/icons/nextCardIcon';
 import ParkingIcon from '../../../atoms/icons/parkingIcon';
 import PreviousCardIcon from '../../../atoms/icons/previousCardIcon';
 import MessageModal from '../../../atoms/modals/messageModal';
-import { IData } from '../../../../common/interfaces/property/propertyData';
 Modal.setAppElement('#__next');
 
 export interface IPropertyInfoCard {
@@ -23,7 +23,7 @@ export interface IPropertyInfoCard {
   location: string;
   href: string;
   highlighted: boolean;
-  propertyInfo: IData
+  propertyInfo: IData;
 }
 
 export interface IFormData {
@@ -43,7 +43,7 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
   location,
   href,
   highlighted,
-  propertyInfo
+  propertyInfo,
 }) => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -74,7 +74,7 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
   return (
     <>
       <Link href={href}>
-        <div className="md:w-full. md:h-[265px] bg-tertiary md:grid md:grid-cols-3 rounded-[30px] overflow-hidden drop-shadow-lg my-[29px] md:mx-[35px] mx-2 flex flex-col">
+        <div className="lg:h-[265px] bg-tertiary md:grid md:grid-cols-3 rounded-[30px] overflow-hidden drop-shadow-lg my-[29px] md:mx-[35px] mx-2 flex flex-col">
           <div className="group relative md:h-[200px]">
             {/* Images */}
             <div className="flex flex-row w-full overflow-hidden scroll-smooth rounded-tl-[30px] md:h-[265px] h-[250px]">
@@ -130,8 +130,7 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
           </div>
 
           <div
-            // className="md:grid md:grid-rows-4 md:gap-4 md:col-span-2 md:ml-11 my-[17px] mx-[17px] md:mx-[17px]"
-            className="md:flex md:flex-col md:gap-4 md:col-span-2 md:ml-11 my-auto mx-[17px] md:mx-[17px]"
+            className="md:flex justify-between md:flex-col md:gap-4 md:col-span-2 md:ml-11 my-auto mx-[17px] md:mx-4"
           >
             <div className="md:w-[218px] h-[44px] top-[17px] left-[336px] font-bold text-3xl text-[#000000] leading-10">
               R$ {prices},00
@@ -149,7 +148,7 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
                 <div className="md:w-fit h-fit">
                   <BedroomIcon fill="#6B7280" />
                 </div>
-                <div className="font-bold text-2xl leading-7 text-quaternary flex items-center justify-center">
+                <div className="font-bold text-2xl md:ml-[0.2rem] text-quaternary flex items-center justify-center">
                   {bedrooms}
                 </div>
               </div>
@@ -157,7 +156,7 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
                 <div className="md:w-fit h-fit">
                   <ParkingIcon fill="#6B7280" />
                 </div>
-                <div className="font-bold text-2xl leading-7 text-quaternary flex items-center justify-center">
+                <div className="font-bold text-2xl md:ml-[0.2rem]  text-quaternary flex items-center justify-center">
                   {parking_spaces}
                 </div>
               </div>
@@ -165,7 +164,7 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
                 <div className="md:w-fit h-fit">
                   <BathroomIcon fill="#6B7280" />
                 </div>
-                <div className="font-bold text-2xl leading-7 text-quaternary flex items-center justify-center">
+                <div className="font-bold text-2xl md:ml-[0.2rem] text-quaternary flex items-center justify-center">
                   {bathrooms}
                 </div>
               </div>
@@ -183,11 +182,11 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
       </Link>
 
       {modalIsOpen && (
-        <MessageModal 
-          isOpen={modalIsOpen} 
-          setModalIsOpen={setModalIsOpen} 
+        <MessageModal
+          isOpen={modalIsOpen}
+          setModalIsOpen={setModalIsOpen}
           propertyInfo={propertyInfo}
-         />
+        />
       )}
     </>
   );

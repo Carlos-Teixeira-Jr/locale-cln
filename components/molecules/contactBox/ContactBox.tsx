@@ -51,8 +51,8 @@ const ContactBox: React.FC<IContactBox> = (
 
   return (
     <>
-      <div className="lg:w-fit md:h-fit md:pt-0 flex flex-col md:flex-row md:grid items-center justify-items-center align-middle justify lg:ml-2 m-5 lg:m-0">
-        <div className="flex flex-col md:flex-row w-72 justify-between items-center">
+      <div className="lg:w-fit md:h-10 md:pt-0 flex flex-col md:flex-row md:grid items-center justify-items-center align-middle justify lg:ml-2 m-5 lg:m-0">
+        <div className="flex flex-col md:flex-row md:w-full lg:w-72 justify-between items-center">
           {profilePicture ? (
             <Image
               src={profilePicture}
@@ -68,24 +68,23 @@ const ContactBox: React.FC<IContactBox> = (
             />
           )}
           
-          <p className="w-48 h-fit text-quaternary font-extrabold text-2xl md:text-4xl text-center pt-3 md:pt-0 drop-shadow-lg">
+          <p className="w-48 md:w-full h-fit text-quaternary font-extrabold text-2xl md:text-3xl text-center pt-3 md:pt-0 drop-shadow-lg">
             {owner}
           </p>
         </div>
-        <div className='flex md:flex-col gap-4 mt-5'>
+        <div className='flex md:flex-col gap-4 mt-5 w-full justify-between'>
 
           {buttons.map((btn) => (
             <div 
-              className={`md:w-72 w-36 h-12 md:h-14 text-tertiary font-extrabold text-xl rounded-[10px] p-2.5 top-[861px] left-[999px] gap-y-2.5 md:grid flex drop-shadow-lg md:m-2 align-middle my-auto justify-center mr-2 ${
+              onClick={() => btn.onClick()}
+              className={`md:w-full w-36 h-12 md:h-14 text-tertiary font-extrabold text-xl rounded-[10px] p-2.5 top-[861px] left-[999px] gap-y-2.5 md:grid flex drop-shadow-lg md:m-2 align-middle my-auto justify-center mr-2 cursor-pointer ${
                 btn.key === 'contact' ?
                 'bg-secondary' :
                 'bg-[#25D366]'
               }`}
               key={btn.key}
             >
-              <button onClick={() => btn.onClick()}>
-                {btn.label}
-              </button>
+              {btn.label}
             </div>
           ))}
         </div>

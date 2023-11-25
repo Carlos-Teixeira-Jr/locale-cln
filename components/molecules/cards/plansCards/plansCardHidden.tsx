@@ -30,6 +30,7 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
   id,
   userPlan
 }) => {
+  console.log("🚀 ~ file: plansCardHidden.tsx:33 ~ isAdminPage:", isAdminPage)
   
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
 
@@ -50,7 +51,7 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
     <div
       className={`${
         isAdminPage
-          ? 'md:flex lg:flex-row justify-center mb-10 mx-10 md:mx-auto'
+          ? 'md:flex lg:flex-row justify-center lg:mb-10 mx-10 md:mx-auto'
           : 'md:flex md:flex-row justify-center md:mb-5 px-5 md:px-0 md:mx-auto'
       }`}
     >
@@ -62,7 +63,7 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
         <div
           className={`flex bg-primary rounded-t-[30px] ${
             isAdminPage
-              ? 'md:w-[250px] md:h-[66px]'
+              ? 'md:w-[230px] md:h-[66px]'
               : 'md:w-60 md:h-fit py-2'
           }`}
         >
@@ -107,7 +108,7 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
         <div
           className={`bg-tertiary rounded-b-[30px] drop-shadow-lg ${
             isAdminPage
-              ? `md:w-[250px] ${
+              ? `md:w-[230px] ${
                   selectedCards.includes(id) ? 'h-fit' : 'h-fit'
                 }`
               : `md:w-60 ${
@@ -120,7 +121,7 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
               isAdminPage
                 ? `${
                     selectedCards.includes(id)
-                      ? 'h-[332px]'
+                      ? 'h-fit'
                       : 'h-fit flex flex-col justify-center'
                   }`
                 : `${selectedCards.includes(id) ? 'h-fit pb-5' : 'h-fit pb-5'}`
@@ -247,13 +248,13 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
             }`}
           >
             <button
-              className={`rounded-[10px] text-tertiary mx-auto mb-5 font-semibold ${
+              className={`rounded-[10px] text-tertiary mx-auto my-5 font-semibold ${
                 isAdminPage
                   ? `${
                       selectedPlanCard === id
                         ? `bg-secondary w-[180px] h-[44px] text-base ${
                           selectedCards.includes(id) ?
-                          'mt-24' :
+                          'mt-5' :
                           ''
                         }`
                         : 'bg-primary w-[180px] h-[44px] text-base'
