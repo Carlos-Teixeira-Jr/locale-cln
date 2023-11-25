@@ -1,9 +1,6 @@
 import { useRouter } from 'next/router';
 import { ChangeEvent, useEffect, useState } from 'react';
 import Cards, { Focused } from 'react-credit-cards';
-<<<<<<< Updated upstream
-import 'react-credit-cards/es/styles-compiled.css';
-import { toast } from 'react-toastify';
 import {
   ICreditCardInfo,
   IOwnerData,
@@ -12,11 +9,11 @@ import { IPlan } from '../../../common/interfaces/plans/plans';
 import { IAddress } from '../../../common/interfaces/property/propertyData';
 import { IUserDataComponent } from '../../../common/interfaces/user/user';
 import { applyNumericMask } from '../../../common/utils/masks/numericMask';
-=======
+import { ErrorToastNames, SuccessToastNames, showErrorToast, showSuccessToast } from '../../../common/utils/toasts';
 import { applyNumericMask } from "../../../common/utils/masks/numericMask";
 import { toast } from "react-toastify";
 import 'react-credit-cards/es/styles-compiled.css';
->>>>>>> Stashed changes
+
 
 export type CreditCardForm = {
   cardName: string;
@@ -229,19 +226,15 @@ const CreditCard = ({
 
         if (response.ok) {
           toast.dismiss();
-          toast.success('Dados do cartão atualizados com sucesso.');
+          showSuccessToast(SuccessToastNames.CreditCardUpdate)
           router.push('/admin');
         } else {
           toast.dismiss();
-          toast.error(
-            'Não foi possível atualizar os dados de cartão de crédito. Por favor, tente mais tarde.'
-          );
+          showErrorToast(ErrorToastNames.CreditCardUpdate)
         }
       } catch (error) {
         toast.dismiss();
-        toast.error(
-          'Não foi posssível se conectar ao servidorno momento. Pro favor, tente mais tarde.'
-        );
+        showErrorToast(ErrorToastNames.ServerConnection)
       }
     }
   };

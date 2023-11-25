@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import { toast } from 'react-toastify';
 import CloseIcon from '../icons/closeIcon';
+import { ErrorToastNames, SuccessToastNames, showErrorToast, showSuccessToast } from '../../../common/utils/toasts';
 
 export interface IVerifyEmailModal {
   isOpen: boolean;
@@ -72,13 +73,11 @@ const VerifyEmailModal: React.FC<IVerifyEmailModal> = ({
           'Insira corretamente o código de validação enviado para o e-mail de cadastro.'
         );
         toast.dismiss();
-        toast.error(
-          'O código de verificação informado não corresponde ao código enviado para o e-mail de cadastro.'
-        );
+        showErrorToast(ErrorToastNames.VerificationCode)
       }
     } catch (error) {
       toast.dismiss();
-      toast.error('Erro ao validar o código de verificação de e-mail');
+      showErrorToast(ErrorToastNames.ServerConnection);
       console.log(
         `Erro ao validar o código de verificação de e-mail: ${error}`
       );
@@ -108,7 +107,7 @@ const VerifyEmailModal: React.FC<IVerifyEmailModal> = ({
           setShowResendMessage(true); // Show the message after 60 seconds
         }, 60000); // 60 seconds in milliseconds
         toast.dismiss();
-        toast.success('Novo código de verificação enviado.');
+        showSuccessToast(SuccessToastNames.VerificationCode);
         const data = await response.json();
 
         const newEmailVerificationCode = data.emailVerificationCode;
@@ -120,9 +119,7 @@ const VerifyEmailModal: React.FC<IVerifyEmailModal> = ({
         });
       }
     } catch (error) {
-      toast.warn(
-        'Não foi possível estabelecer uma conexão com o servidor. Por favor, tente novamente mais tarde.'
-      );
+      showErrorToast(ErrorToastNames.ServerConnection);
       console.error(error);
     }
   };

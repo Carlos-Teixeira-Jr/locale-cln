@@ -14,6 +14,7 @@ import UnfavouritedIcon from '../../atoms/icons/unfavouritedIcon';
 import CalculatorModal from '../../atoms/modals/calculatorModal';
 import LinkCopiedTooltip from '../../atoms/tooltip/Tooltip';
 import FavouritePropertyTooltip from '../../atoms/tooltip/favouritePropertyTooltip';
+import { ErrorToastNames, showErrorToast, showSuccessToast, SuccessToastNames } from '../../../common/utils/toasts';
 
 export interface ITooltip {
   globalEventOff: string;
@@ -94,18 +95,16 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({ property, isFavourite }) => {
 
           if (isFavourited) {
             setFavourited(true);
-            toast.success('Imóvel favoritado com sucesso.');
+            showSuccessToast(SuccessToastNames.FavouriteProperty);
           } else {
             setFavourited(false);
-            toast.success('Imóvel removido dos favoritos.');
+            showErrorToast(ErrorToastNames.FavouriteProperty);
           }
         } else {
-          toast.error('Houve um erro ao favoritar o imóvel.');
+          showErrorToast(ErrorToastNames.FavouriteProperty)
         }
       } catch (error) {
-        toast.error(
-          'Não foi possível se conectar ao servidor. Tente novamente mais tarde.'
-        );
+        showErrorToast(ErrorToastNames.ServerConnection)
       }
     }
   };

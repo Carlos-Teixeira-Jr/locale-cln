@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import { sendRequest } from '../../../hooks/sendRequest';
 import { useIsMobile } from '../../../hooks/useIsMobile';
 import CloseIcon from '../icons/closeIcon';
+import { ErrorToastNames, SuccessToastNames, showErrorToast, showSuccessToast } from '../../../common/utils/toasts';
 Modal.setAppElement('#__next');
 
 export interface IForgotPasswordModal {
@@ -44,16 +45,14 @@ const ForgotPasswordModal: React.FC<IForgotPasswordModal> = ({
         setEmailForChangePassword('');
         setTimeout(() => setModalIsOpen(false), 3000);
         toast.dismiss();
-        toast.success(
-          'Recuperação de senha enviada para o e-mail com sucesso.'
-        );
+        showSuccessToast(SuccessToastNames.PasswordRecovery);
       } else if (data.status === 404) {
         const errorData = await data.json();
         const errorMessage = errorData.message;
         toast.error(errorMessage);
       }
     } catch (error) {
-      toast.error(`Ocorreu um erro ao se conectar com o servidor`);
+      showErrorToast(ErrorToastNames.ServerConnection);
       console.error(error);
     }
   };
