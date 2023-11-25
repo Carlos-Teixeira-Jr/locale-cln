@@ -10,6 +10,7 @@ import { useIsMobile } from '../../../hooks/useIsMobile';
 import { showErrorToast, showSuccessToast } from '../../../common/utils/toasts';
 import { applyNumericMask } from '../../../common/utils/masks/numericMask';
 import { SuccessToastNames, ErrorToastNames } from '../../../common/utils/toasts';
+
 Modal.setAppElement('#__next');
 
 export interface IMessageModal {
@@ -88,6 +89,7 @@ const MessageModal: React.FC<IMessageModal> = ({
       label: 'E-mail',
       value: formData.email,
       error: errors.email,
+      type: 'email',
       onChange: (event: any) => {
         const email = event.target.value;
         setFormData({ ...formData, email: email });
@@ -98,6 +100,7 @@ const MessageModal: React.FC<IMessageModal> = ({
       label: 'Mensagem',
       value: formData.message,
       error: errors.message,
+      type: 'text',
       onChange: (event: any) => {
         const onlyLetters = /^[a-zA-Z\s]+$/;
         if (onlyLetters.test(event.target.value)) {
@@ -111,12 +114,14 @@ const MessageModal: React.FC<IMessageModal> = ({
     event.preventDefault();
 
     const errorMessage = 'Este campo é obrigatório.';
+    const invalidEmailError = 'O formato do e-mail informado não é válido.'
+
     const newErrors = {
       name: !formData.name ? errorMessage : '',
       email: !formData.email
         ? errorMessage
         : !validator.isEmail(formData.email)
-        ? errorMessage
+        ? invalidEmailError
         : '',
       phone: !formData.phone.length ? errorMessage : '',
       message: !formData.message ? errorMessage : '',
@@ -201,14 +206,14 @@ const MessageModal: React.FC<IMessageModal> = ({
         },
       }}
     >
-      <div className="bg-quinary">
+      <div className="bg-quinary p-2">
         <h1 className="lg:w-fit lg:h-fit m-1 mt-0 font-bold md:text-xl text-quaternary">
           Mande uma mensagem para{' '}
           {ownerName ? ownerName : 'o responsável pelo imóvel.'}
         </h1>
 
         {inputs.map((input) => (
-          <div key={input.key} className="py-2 md:p-2">
+          <div key={input.key} className="py-2">
             <h2 className="font-bold lg:text-lg text-quaternary h-fit mx-2">
               {input.label}
             </h2>
@@ -220,14 +225,14 @@ const MessageModal: React.FC<IMessageModal> = ({
               />
             ) : (
               <input
-                type="text"
+                type={input.type}
                 value={input.value}
-                className="w-full h-fit md:m-2 mb-0 rounded-[10px] border border-quaternary bg-tertiary p-1 required:border-red-500 mr-0 md:mx-auto md:text-xl text-quaternary font-semibold"
+                className="w-full h-fit md:m-2 lg:m-0 rounded-[10px] border border-quaternary bg-tertiary p-1 required:border-red-500 mr-0 md:mx-auto md:text-xl text-quaternary font-semibold"
                 onChange={input.onChange}
               />
             )}
             {input.error && (
-              <label className="mx-[10px] text-red-500 mt-5">
+              <label className="text-sm text-red-500 mt-5">
                 {input.error}
               </label>
             )}
@@ -244,14 +249,6 @@ const MessageModal: React.FC<IMessageModal> = ({
               <p className="font-normal lg:text-sm text-sm leading-6 text-blue-600">
                 Termos de uso & política de privacidade
               </p>
-              {/* Termos de uso &{'  '}
-            </Link>
-            <Link
-              href="/privacyPolicies"
-              target="_blank"
-              className="font-normal lg:text-sm text-sm leading-6 text-blue-600 ml-2"
-            >
-              politica de privacidade */}
             </Link>
           </div>
           <div className="justify-center md:mb-2 lg:mb-auto">

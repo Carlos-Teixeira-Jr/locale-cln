@@ -1,31 +1,41 @@
 import Image from 'next/image';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { IGeolocation } from '../../../common/interfaces/property/propertyData';
 
 interface StaticMapProps {
   width: number;
   height: number;
-  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
   geolocation: IGeolocation
+  mapIsActive: boolean
+  onMapChange: (isActive: boolean) => void
 }
 
 const StaticMap: FC<StaticMapProps> = ({ 
   width, 
   height, 
-  onClick,
-  geolocation
+  geolocation,
+  mapIsActive,
+  onMapChange
 }) => {
 
-  const backdropActive = true;
   const mapFallbackUrl = "/images/static-fallback-map.png";
   const [error, setError] = useState(false);
+  const [isActive, setIsActive] = useState(mapIsActive);
   const long = geolocation.coordinates[0];
   const lat = geolocation.coordinates[1];
-  const googleStaticMapUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${lat},${long}&zoom=15&size=${width}x${height}&markers=${lat},${long}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`
+  const googleStaticMapUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${lat},${long}&zoom=15&size=${width}x${height}&markers=${lat},${long}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`;
 
+  useEffect(() => {
+    onMapChange(isActive)
+  }, [isActive])
+  
   return (
     <div className='relative'>
-      <div id='backdrop' className={`bg-black absolute w-full h-full lg:w-full opacity-50 lg:h-[${height}]`}></div>
+      
+      {!isActive && (
+        <div id='backdrop' className={`bg-black absolute w-full h-full lg:w-full opacity-50 lg:h-[${height}]`}></div>
+      )}
+      
       <Image 
         src={!error ? googleStaticMapUrl : mapFallbackUrl} 
         alt={''}
@@ -35,7 +45,14 @@ const StaticMap: FC<StaticMapProps> = ({
         className='flex justify-center'
         onError={() => setError(true)}
       />
-      <button className={backdropActive ? 'bg-primary w-[100px] w- md:w-[384px] md:h-[87px] absolute top-1/2 left-1/2 rounded-[10px] text-tertiary md:text-2xl font-extrabold transform -translate-x-1/2 -translate-y-1/2' : 'hidden'} onClick={onClick}>Explorar no mapa</button>
+      {!isActive &&  (
+        <button 
+          className={!isActive ? 'bg-primary w-[100px] w- md:w-[384px] md:h-[87px] absolute top-1/2 left-1/2 rounded-[10px] text-tertiary md:text-2xl font-extrabold transform -translate-x-1/2 -translate-y-1/2' : 'hidden'} 
+          onClick={() => setIsActive(true)}
+        >
+          Explorar no mapa
+        </button>
+      )}
     </div>
   );
 };

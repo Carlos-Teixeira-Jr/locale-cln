@@ -40,6 +40,7 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
   isActiveProp,
   highlighted,
 }: IAdminPropertyCard) => {
+
   const priceToInt = price;
   const formattedPrice = formatCurrency(priceToInt);
   const [isActive, setIsActive] = useState<boolean>(isActiveProp);
@@ -58,13 +59,13 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            id: _id,
-            owner: user,
+            propertyId: _id,
+            userId: user,
           }),
         }
       );
 
-      if (response.ok) {
+     if (response.ok) {
         toast.dismiss();
         showSuccessToast(SuccessToastNames.HighlightProperty)
         window.location.reload();
