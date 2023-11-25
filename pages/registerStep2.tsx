@@ -94,6 +94,11 @@ const RegisterStep2: NextPageWithLayout = () => {
     }
   };
 
+  const handlePreviousStep = () => {
+    updateProgress(1);
+    router.back();
+  }
+
   return (
     <>
       <Header />
@@ -125,9 +130,15 @@ const RegisterStep2: NextPageWithLayout = () => {
           />
         </div>
 
-        <div className="flex self-end md:justify-end justify-center md:mb-32 mx-auto sm:mx-10 max-w-[1232px]">
+        <div className="flex justify-between md:mb-32 md:mt-10 mx-auto sm:mx-5 w-full max-w-[1232px] px-5 lg:pr-10 text-xl md:text-2xl">
           <button
-            className="bg-primary w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold text-2xl lg:text-3xl hover:bg-red-600 hover:text-white"
+            className="bg-primary w-28 md:w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold lg:text-3xl hover:bg-red-600 hover:text-white"
+            onClick={handlePreviousStep}
+          >
+            Voltar
+          </button>
+          <button
+            className="bg-primary w-28 md:w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold lg:text-3xl hover:bg-red-600 hover:text-white"
             onClick={handleSubmit}
           >
             Continuar
