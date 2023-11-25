@@ -431,7 +431,7 @@ export async function getServerSideProps(context: NextPageContext) {
       );
     }
   } else {
-    const url = `${baseUrl}/property/filter/?page=${currentPage}&limit=5&filter=${encodedFilter}${
+    const url = `${baseUrl}/property/filter/?page=${currentPage}&limit=15&filter=${encodedFilter}${
       encodedSort ? `&sort=${encodedSort}` : ``
     }&need_count=true`;
 

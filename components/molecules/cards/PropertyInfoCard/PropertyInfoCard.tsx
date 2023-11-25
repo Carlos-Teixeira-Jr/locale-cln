@@ -74,7 +74,7 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
   return (
     <>
       <Link href={href}>
-        <div className="md:w-full. md:h-[265px] bg-tertiary md:grid md:grid-cols-3 rounded-[30px] overflow-hidden drop-shadow-lg my-[29px] md:mx-[35px] mx-2 flex flex-col">
+        <div className="lg:h-[265px] bg-tertiary md:grid md:grid-cols-3 rounded-[30px] overflow-hidden drop-shadow-lg my-[29px] md:mx-[35px] mx-2 flex flex-col">
           <div className="group relative md:h-[200px]">
             {/* Images */}
             <div className="flex flex-row w-full overflow-hidden scroll-smooth rounded-tl-[30px] md:h-[265px] h-[250px]">
@@ -130,8 +130,7 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
           </div>
 
           <div
-            // className="md:grid md:grid-rows-4 md:gap-4 md:col-span-2 md:ml-11 my-[17px] mx-[17px] md:mx-[17px]"
-            className="md:flex md:flex-col md:gap-4 md:col-span-2 md:ml-11 my-auto mx-[17px] md:mx-[17px]"
+            className="md:flex justify-between md:flex-col md:gap-4 md:col-span-2 md:ml-11 my-auto mx-[17px] md:mx-4"
           >
             <div className="md:w-[218px] h-[44px] top-[17px] left-[336px] font-bold text-3xl text-[#000000] leading-10">
               R$ {prices},00
@@ -175,6 +174,7 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
                   onClick={handleMessageBtnClick}
                 >
                   <p className="font-normal text-sm md:text-lg lg:text-lg xl:text-xl text-tertiary flex justify-center items-center ml-0 md:ml-2 lg:ml-2">
+
                     Enviar Mensagem
                   </p>
                 </button>

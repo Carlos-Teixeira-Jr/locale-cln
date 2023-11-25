@@ -9,12 +9,6 @@ interface DynamicMapProps {
 const DynamicMap: FC<DynamicMapProps> = ({ 
   geolocation 
 }) => {
-  
-  const containerStyle = {
-    width: '100%',
-    height: '400px',
-    display: 'flex'
-  };
 
   const center = {
     lat: geolocation.coordinates[1],
