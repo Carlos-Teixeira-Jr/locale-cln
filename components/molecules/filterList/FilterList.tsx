@@ -706,7 +706,7 @@ const FilterList: React.FC<IFilterListProps> = ({
               }
               onChange={(e) => setMinPrice(maskedPrice(e.target.value))}
             />
-            <span className="px-3 md:px-6 mt-2 text-quaternary">a</span>
+            <span className="px-3 md:px-3 mt-2 text-quaternary">a</span>
             <input
               value={maskedPrice(maxPrice)}
               placeholder="Max."
@@ -729,7 +729,7 @@ const FilterList: React.FC<IFilterListProps> = ({
               }
               onChange={(e) => setMinCondominium(maskedPrice(e.target.value))}
             />
-            <span className="px-3 md:px-6 mt-2 text-quaternary">a</span>
+            <span className="px-3 md:px-3 mt-2 text-quaternary">a</span>
             <input
               value={maskedPrice(maxCondominium)}
               placeholder="Max."

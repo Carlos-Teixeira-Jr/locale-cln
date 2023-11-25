@@ -2,11 +2,11 @@ import { SessionProvider } from 'next-auth/react';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import '../styles/globals.css';
 import modifyString from '../hooks/modifyStrig';
 import { ProgressProvider } from '../context/registerProgress';
+import ToastWrapper from '../components/atoms/toast/toastWrapper';
 
 export default function App({
   Component,
@@ -23,9 +23,9 @@ export default function App({
           <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
         </Head>
         <ProgressProvider>
+          <ToastWrapper autoCloseTime={5000} />
           <Component {...pageProps} />
         </ProgressProvider>
-        <ToastContainer />
       </SessionProvider>
     </>
   );

@@ -9,6 +9,7 @@ import StarIcon from '../../../atoms/icons/starIcon';
 import ViewIcon from '../../../atoms/icons/viewIcon';
 import formatCurrency from '../../../atoms/masks/currencyFormat';
 import ConfirmActivationModal from '../../../atoms/modals/confirmActivationModal';
+import { ErrorToastNames, showErrorToast, showSuccessToast, SuccessToastNames } from '../../../../common/utils/toasts';
 
 interface IAdminPropertyCard {
   _id: string;
@@ -39,6 +40,7 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
   isActiveProp,
   highlighted,
 }: IAdminPropertyCard) => {
+
   const priceToInt = price;
   const formattedPrice = formatCurrency(priceToInt);
   const [isActive, setIsActive] = useState<boolean>(isActiveProp);
@@ -57,23 +59,21 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            id: _id,
-            owner: user,
+            propertyId: _id,
+            userId: user,
           }),
         }
       );
 
-      if (response.ok) {
+     if (response.ok) {
         toast.dismiss();
-        toast.success('Anúncio destacado com sucesso.');
+        showSuccessToast(SuccessToastNames.HighlightProperty)
         window.location.reload();
       } else {
-        toast.warning('Houve um erro ao desativar o anuncio.');
+        showErrorToast(ErrorToastNames.ActivateProperty)
       }
     } catch (error) {
-      toast.error(
-        'Não foi possível estabelecer comunicação com o servidor no momento. Por favor, tente novamente mais tarde.'
-      );
+      showErrorToast(ErrorToastNames.ServerConnection);
     }
   };
 

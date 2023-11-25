@@ -23,6 +23,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
   ownerProperties,
   notifications,
 }) => {
+  
   const { data: session } = useSession() as any;
   const [isOwner, setIsOwner] = useState<boolean>(false);
 

@@ -26,6 +26,8 @@ import AdminHeader from '../components/organisms/adminHeader/adminHeader';
 import SideMenu from '../components/organisms/sideMenu/sideMenu';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { NextPageWithLayout } from './page';
+import { ErrorToastNames, SuccessToastNames, showErrorToast, showSuccessToast } from '../common/utils/toasts';
+import EditPassword, { IPasswordData } from '../components/molecules/userData/editPassword';
 Modal.setAppElement('#__next');
 
 interface IAdminUserDataPageProps {
@@ -45,12 +47,14 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   properties,
   ownerData,
 }) => {
+  
   const router = useRouter();
   const isOwner = properties?.docs?.length > 0 ? true : false;
   const [selectedPlan, setSelectedPlan] = useState(
     ownerData?.owner ? ownerData?.owner?.plan : ''
   );
   const [creditCardIsOpen, setCreditCardIsOpen] = useState(false);
+  const [isEditPassword, setIsEditPassword] = useState(false);
   const [isAdminPage, setIsAdminPage] = useState(false);
   const isEdit = true;
   const isMobile = useIsMobile();
@@ -76,12 +80,27 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     cellPhone: '',
   });
 
+  const [passwordFormData, setPasswordFormData] = useState({
+    password: '',
+    passwordConfirmattion: ''
+  });
+
+  const [passwordError, setPasswordErrors] = useState({
+    password: '',
+    passwordConfirmattion: ''
+  })
+
   // Lida com o autoscroll das validações de erro dos inputs;
   const userDataInputRefs = {
     username: useRef<HTMLElement>(null),
     email: useRef<HTMLElement>(null),
     cpf: useRef<HTMLElement>(null),
     cellPhone: useRef<HTMLElement>(null),
+  };
+
+  const passwordInputRefs = {
+    password: useRef<HTMLElement>(null),
+    passwordConfimattion: useRef<HTMLElement>(null),
   };
 
   const [address, setAddress] = useState<IAddress>({
@@ -114,7 +133,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const creditCardErrors: CreditCardForm = {
     cardName: '',
     cardNumber: '',
-    cvc: '',
+    ccv: '',
     expiry: '',
   };
 
@@ -124,21 +143,6 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     cardNumber: useRef<HTMLInputElement>(null),
     expiry: useRef<HTMLInputElement>(null),
     cvc: useRef<HTMLInputElement>(null),
-  };
-
-  // Recebe alterações do componente address;
-  const handleAddressUpdate = (updatedAddress: IAddress) => {
-    setAddress(updatedAddress);
-  };
-
-  // Recebe o valor do componente dos inputs de user data;
-  const handleUserDataUpdate = (updatedUserData: IUserDataComponent) => {
-    setFormData(updatedUserData);
-  };
-
-  // Recebe a seleção do card de planos do compnente dos cards;
-  const setSelectedPlanCard = (selectedCard: string) => {
-    setSelectedPlan(selectedCard);
   };
 
   useEffect(() => {
@@ -151,6 +155,9 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const handleUpdateBtn = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const error = 'Este campo é obrigatório';
+    const emptyPasswordError = 'Este campo é orbigatório caso deseje alterar a senha';
+    const invalidPasswordConfimattion = 'A senha e a confirmação de senha precisam ser iguais';
+    const invalidPasswordLenght = 'A senha precisa ter pelo meno 6 caracteres';
 
     setFormDataErrors({
       username: '',
@@ -166,6 +173,11 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       streetNumber: '',
       uf: '',
     });
+    
+    setPasswordErrors({
+      password: '',
+      passwordConfirmattion: ''
+    })
 
     const newFormDataErrors = {
       username: '',
@@ -182,6 +194,11 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       uf: '',
     };
 
+    const newPasswordErrors = {
+      password: '',
+      passwordConfirmattion: ''
+    }
+
     if (!formData.username) newFormDataErrors.username = error;
     if (!formData.email) newFormDataErrors.email = error;
     if (!formData.cpf) newFormDataErrors.cpf = error;
@@ -193,14 +210,35 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     if (!address.streetName) newAddressErrors.streetName = error;
     if (!address.streetNumber) newAddressErrors.streetNumber = error;
 
+    if (isEditPassword) {
+      if (!passwordFormData.password) newPasswordErrors.password = emptyPasswordError;
+      if (!passwordFormData.passwordConfirmattion) newPasswordErrors.passwordConfirmattion = emptyPasswordError;
+      if (passwordFormData.password !== passwordFormData.passwordConfirmattion) newPasswordErrors.password = invalidPasswordConfimattion;
+      if (passwordFormData.password !== passwordFormData.passwordConfirmattion) newPasswordErrors.passwordConfirmattion = invalidPasswordConfimattion;
+      if (passwordFormData.password.length < 6) newPasswordErrors.password = invalidPasswordLenght;
+      if (passwordFormData.passwordConfirmattion.length < 6) newPasswordErrors.passwordConfirmattion = invalidPasswordLenght;
+    }
+
     setFormDataErrors(newFormDataErrors);
     setAddressErrors(newAddressErrors);
+    setPasswordErrors(newPasswordErrors);
 
+    let combinedErrors;
     // Combina os erros de registro e endereço em um único objeto de erros
-    const combinedErrors = {
-      ...newAddressErrors,
-      ...newFormDataErrors,
-    };
+    if (isEditPassword) {
+      combinedErrors = {
+        ...newAddressErrors,
+        ...newFormDataErrors,
+        ...newPasswordErrors
+      };
+    } else {
+      combinedErrors = {
+        ...newAddressErrors,
+        ...newFormDataErrors,
+      };
+    }
+
+    if (isEditPassword) combinedErrors
 
     // Verifica se algum dos valores do objeto de erros combinados não é uma string vazia
     const hasErrors = Object.values(combinedErrors).some(
@@ -224,6 +262,25 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
         adCredits: ownerData.owner?.adCredits ? ownerData.owner?.adCredits : 0,
       };
 
+      const editPasswordFormData = {
+        password: passwordFormData.password,
+        passwordConfirmattion: passwordFormData.passwordConfirmattion
+      }
+
+      let body;
+      if (isEditPassword) {
+        body = {
+          user: userFormData,
+          owner: ownerFormData,
+          password: editPasswordFormData
+        }
+      } else {
+        body = {
+          user: userFormData,
+          owner: ownerFormData,
+        }
+      }
+
       try {
         toast.loading('Enviando...');
         const response = await fetch(
@@ -233,31 +290,24 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
             headers: {
               'Content-type': 'application/json',
             },
-            body: JSON.stringify({
-              user: userFormData,
-              owner: ownerFormData,
-            }),
+            body: JSON.stringify(body),
           }
         );
 
         if (response.ok) {
           toast.dismiss();
-          toast.success('Dados de usuário atualizados com sucesso.');
+          showSuccessToast(SuccessToastNames.UserDataUpdate);
           router.push('/admin');
         } else {
           toast.dismiss();
-          toast.error(
-            'Houve um erro na atualização dos dados deste usuário. Por favor tente novamente.'
-          );
+          showErrorToast(ErrorToastNames.UserDataUpdate);
         }
       } catch (error) {
         toast.dismiss();
-        toast.error(
-          'Não foi possível se conectar ao servidor. Por favor, tente novamente mais tarde.'
-        );
+        showErrorToast(ErrorToastNames.ServerConnection);
       }
     } else {
-      toast.error('Algum campo obrigatório não foi preenchido.');
+      showErrorToast(ErrorToastNames.EmptyFields);
     }
   };
 
@@ -275,21 +325,31 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
         )}
 
         <div className="flex flex-col mt-16 lg:ml-80 max-w-[1232px] justify-center mx-5">
-          <div className="my-10 lg:mx-10 md:mx-2 max-w-[1232px]">
+          <div className="my-5 lg:mx-10 md:mx-2 max-w-[1232px]">
             <div className="my-5">
               <UserDataInputs
                 isEdit={isEdit}
                 userData={ownerData}
-                onUserDataUpdate={handleUserDataUpdate}
+                onUserDataUpdate={(updatedUserData: IUserDataComponent) => {
+                  setFormData(updatedUserData)}}
                 error={formDataErrors}
                 userDataInputRefs={userDataInputRefs}
               />
 
-              <h2 className="md:text-3xl text-2xl leading-10 text-quaternary font-bold mb-5 md:mb-10 lg:mx-5">
+              <div className='mx-5 my-10'>
+                <EditPassword 
+                  onPasswordUpdate={(passwordData: IPasswordData) => setPasswordFormData(passwordData)} 
+                  error={passwordError}
+                  passwordInputRefs={passwordInputRefs}
+                  onEditPasswordSwitchChange={(isEditPassword: boolean) => setIsEditPassword(isEditPassword)}
+                />
+              </div>
+
+              <h2 className="md:text-3xl text-2xl leading-10 text-quaternary font-bold mb-5 lg:mb-10 lg:mx-5">
                 Dados de Cobrança
               </h2>
 
-              <div className="grid sm:grid-cols-1 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 place-items-center">
+              <div className="grid sm:grid-cols-1 grid-cols-1 md:grid-cols-3 xl:grid-cols-3 gap-6">
                 {reversedCards.map(
                   ({
                     _id,
@@ -302,9 +362,8 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                     <>
                       <PlansCardsHidden
                         selectedPlanCard={selectedPlan}
-                        setSelectedPlanCard={(selectedCard: string) =>
-                          setSelectedPlanCard(selectedCard)
-                        }
+                        setSelectedPlanCard={(selectedCard: string) => {
+                          setSelectedPlan(selectedCard)}}
                         isAdminPage={isAdminPage}
                         key={_id}
                         name={name}
@@ -327,7 +386,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                 <Address
                   isEdit={isEdit}
                   address={ownerData?.user?.address}
-                  onAddressUpdate={handleAddressUpdate}
+                  onAddressUpdate={(updateAddres: IAddress) => setAddress(updateAddres)}
                   errors={addressErrors}
                   addressInputRefs={addressInputRefs}
                 />
@@ -343,7 +402,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
               </button>
             </div>
 
-            <div className="md:pt-20 pt-0.5 mb-20 mx-4">
+            <div className="lg:pt-20 pt-0.5 mb-20 mx-4">
               <label className="flex flex-row items-center justify-between max-w-[1232px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 md:text-3xl text-md text-quaternary rounded-xl font-bold transition bg-opacity-90 hover:bg-gray-300">
                 Dados do Cartão de Crédito
                 <span
@@ -453,6 +512,27 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     }
 
     const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+    let ownerId;
+
+    try {
+      const ownerIdResponse = await fetch(
+        `${baseUrl}/user/find-owner-by-user`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ _id: userId }),
+        }
+      );
+
+      if (ownerIdResponse.ok) {
+        const ownerData = await ownerIdResponse.json();
+        ownerId = ownerData?.owner?._id;
+      }
+    } catch (error) {
+      console.error(error);
+    }
 
     const [notifications, userData, ownerData, plans, properties] =
       await Promise.all([
@@ -473,7 +553,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            id: userId,
+            _id: userId,
           }),
         })
           .then((res) => res.json())
@@ -487,7 +567,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            ownerId: userId,
+            ownerId,
             page: 1,
           }),
         })
@@ -506,7 +586,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         userData,
         plans,
         properties,
-        ownerData,
+        ownerData
       },
     };
   }
