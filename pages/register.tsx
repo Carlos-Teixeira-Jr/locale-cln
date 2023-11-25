@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { MouseEvent, useRef, useState } from 'react';
+import { MouseEvent, useRef, useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import store from 'store';
 import {
@@ -97,7 +97,7 @@ const Register = () => {
     city: '',
     streetName: '',
   });
-
+  
   // modal functions
   const [open, setOpen] = useState(false);
   const handleClose = () => setOpen(false);
@@ -189,12 +189,12 @@ const Register = () => {
         prices: [
           {
             type: PricesType.mensal,
-            value: parseInt(registration.propertyValue),
+            value: parseFloat(registration.propertyValue.replace(',', '.'))
           },
           {
             type: PricesType.condominio,
-            value: parseInt(registration.condominiumValue),
-          },
+            value: parseFloat(registration.condominiumValue.replace(',', '.'))
+          }
         ],
         condominium: registration.condominium,
       };

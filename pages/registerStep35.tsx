@@ -41,6 +41,21 @@ const RegisterStep35: NextPageWithLayout<IRegisterStep35> = ({ plans }) => {
     }
   });
 
+  const handleSubmit = () => {
+    updateProgress(5);
+    store.clearAll();
+    if (!urlEmail) {
+      router.push('/registerStep4');
+    } else {
+      router.push({
+        pathname: '/registerStep4',
+        query: {
+          email: urlEmail,
+        },
+      });
+    }
+  };
+
   return (
     <>
       <Header />
