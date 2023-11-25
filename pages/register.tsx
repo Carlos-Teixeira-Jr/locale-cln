@@ -1,4 +1,4 @@
-import { MouseEvent, useRef, useState } from 'react';
+import { MouseEvent, useEffect, useRef, useState } from 'react';
 import LinearStepper from '../components/atoms/stepper/stepper';
 import AreaCalculatorModal from '../components/molecules/areaModal/areaModal';
 import Footer from '../components/organisms/footer/footer';
@@ -88,7 +88,7 @@ const Register = () => {
     city: '',
     streetName: '',
   });
-
+  
   // modal functions
   const [open, setOpen] = useState(false);
   const handleClose = () => setOpen(false);
@@ -175,11 +175,11 @@ const Register = () => {
         prices: [
           {
             type: PricesType.mensal,
-            value: parseInt(registration.propertyValue)
+            value: parseFloat(registration.propertyValue.replace(',', '.'))
           },
           {
             type: PricesType.condominio,
-            value: parseInt(registration.condominiumValue),
+            value: parseFloat(registration.condominiumValue.replace(',', '.'))
           }
         ],
         condominium: registration.condominium

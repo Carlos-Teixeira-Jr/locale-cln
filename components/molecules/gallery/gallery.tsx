@@ -1,10 +1,10 @@
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
+import { IData } from '../../../common/interfaces/property/propertyData';
+import { useIsMobile } from '../../../hooks/useIsMobile';
 import NextGalleryIcon from '../../atoms/icons/nextGalleryIcon';
 import PreviousGalleryIcon from '../../atoms/icons/previousGalleryIcon';
 import GalleryModal from '../../atoms/modals/galleryModal';
-import { IData } from '../../../common/interfaces/property/propertyData';
-import { useIsMobile } from '../../../hooks/useIsMobile';
 
 export interface IGallery {
   propertyID: IData;
@@ -12,7 +12,11 @@ export interface IGallery {
   onGalleryModalOpen: (isOpen: boolean) => void;
 }
 
-const Gallery: React.FC<IGallery> = ({ propertyID, isModalOpen, onGalleryModalOpen }: IGallery) => {
+const Gallery: React.FC<IGallery> = ({
+  propertyID,
+  isModalOpen,
+  onGalleryModalOpen,
+}: IGallery) => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const isMobile = useIsMobile();
   const ref = useRef();
@@ -22,7 +26,6 @@ const Gallery: React.FC<IGallery> = ({ propertyID, isModalOpen, onGalleryModalOp
   useEffect(() => {
     onGalleryModalOpen(modalIsOpen);
   }, [modalIsOpen]);
-  
 
   useEffect(() => {
     document.addEventListener('click', handleClick);
@@ -68,7 +71,7 @@ const Gallery: React.FC<IGallery> = ({ propertyID, isModalOpen, onGalleryModalOp
                 height={620}
                 onClick={() => {
                   setModalIsOpen(true);
-                  setSelectedImage(0)
+                  setSelectedImage(0);
                 }}
                 className="cursor-pointer rounded-l-3xl md:rounded-l-3xl w-[653px] h-[300px] md:h-[520px] hover:opacity-25 group"
               />
@@ -94,7 +97,7 @@ const Gallery: React.FC<IGallery> = ({ propertyID, isModalOpen, onGalleryModalOp
                   className="cursor-pointer w-[328px] h-[260px] hover:opacity-25 group"
                   onClick={() => {
                     setModalIsOpen(true);
-                    setSelectedImage(1)
+                    setSelectedImage(1);
                   }}
                 />
                 <span className="hidden group-hover:relative group-hover:z-50 cursor-pointer relative top-[-150px] left-[80px] font-normal text-3xl text-tertiary">
@@ -114,7 +117,7 @@ const Gallery: React.FC<IGallery> = ({ propertyID, isModalOpen, onGalleryModalOp
                   className="group cursor-pointer rounded-tr-3xl w-[328px] h-[260px] hover:opacity-25 group"
                   onClick={() => {
                     setModalIsOpen(true);
-                    setSelectedImage(2)
+                    setSelectedImage(2);
                   }}
                 />
                 <span className="hidden group-hover:relative group-hover:z-50 cursor-pointer relative top-[-150px] left-[80px] font-normal text-3xl text-tertiary">
@@ -135,9 +138,9 @@ const Gallery: React.FC<IGallery> = ({ propertyID, isModalOpen, onGalleryModalOp
                     height={260}
                     className="cursor-pointer w-[328px] h-[260px] hover:opacity-25 group"
                     onClick={() => {
-                    setModalIsOpen(true);
-                    setSelectedImage(0)
-                  }}
+                      setModalIsOpen(true);
+                      setSelectedImage(0);
+                    }}
                   />
                 ) : (
                   <Image
@@ -147,9 +150,9 @@ const Gallery: React.FC<IGallery> = ({ propertyID, isModalOpen, onGalleryModalOp
                     height={260}
                     className="cursor-pointer w-[328px] h-[260px] hover:opacity-25 group"
                     onClick={() => {
-                    setModalIsOpen(true);
-                    setSelectedImage(3)
-                  }}
+                      setModalIsOpen(true);
+                      setSelectedImage(3);
+                    }}
                   />
                 )}
                 <span className="hidden group-hover:relative group-hover:z-50 cursor-pointer relative top-[-150px] left-[80px] font-normal text-3xl text-tertiary">
@@ -171,7 +174,7 @@ const Gallery: React.FC<IGallery> = ({ propertyID, isModalOpen, onGalleryModalOp
                     className="cursor-pointer w-[328px] h-[260px] hover:opacity-25 group"
                     onClick={() => {
                       setModalIsOpen(true);
-                      setSelectedImage(0)
+                      setSelectedImage(0);
                     }}
                   />
                 ) : (
@@ -183,7 +186,7 @@ const Gallery: React.FC<IGallery> = ({ propertyID, isModalOpen, onGalleryModalOp
                     className="cursor-pointer w-[328px] h-[260px] hover:opacity-25 group"
                     onClick={() => {
                       setModalIsOpen(true);
-                      setSelectedImage(4)
+                      setSelectedImage(4);
                     }}
                   />
                 )}
@@ -194,9 +197,9 @@ const Gallery: React.FC<IGallery> = ({ propertyID, isModalOpen, onGalleryModalOp
             </div>
           </div>
           {modalIsOpen && (
-            <GalleryModal 
-              setModalIsOpen={setModalIsOpen} 
-              property={propertyID} 
+            <GalleryModal
+              setModalIsOpen={setModalIsOpen}
+              property={propertyID}
               selectedImage={selectedImage}
             />
           )}
