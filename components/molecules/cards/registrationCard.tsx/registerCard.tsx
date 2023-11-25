@@ -89,11 +89,7 @@ const RegisterCard: React.FC = () => {
           });
         }
       } catch (error) {
-<<<<<<< Updated upstream
         console.log('Nenhum usuário cadastrado com o e-mail informado.');
-=======
-        console.log('Nenhum usuário cadastrado com o e-mail informado.')
->>>>>>> Stashed changes
       }
     }
   };
