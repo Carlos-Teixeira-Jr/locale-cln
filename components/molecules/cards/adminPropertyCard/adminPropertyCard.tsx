@@ -4,12 +4,17 @@ import Link from 'next/link';
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import { IMessage } from '../../../../common/interfaces/message/messages';
+import {
+  ErrorToastNames,
+  showErrorToast,
+  showSuccessToast,
+  SuccessToastNames,
+} from '../../../../common/utils/toasts';
 import MessageIcon from '../../../atoms/icons/messageIcon';
 import StarIcon from '../../../atoms/icons/starIcon';
 import ViewIcon from '../../../atoms/icons/viewIcon';
 import formatCurrency from '../../../atoms/masks/currencyFormat';
 import ConfirmActivationModal from '../../../atoms/modals/confirmActivationModal';
-import { ErrorToastNames, showErrorToast, showSuccessToast, SuccessToastNames } from '../../../../common/utils/toasts';
 
 interface IAdminPropertyCard {
   _id: string;
@@ -40,7 +45,6 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
   isActiveProp,
   highlighted,
 }: IAdminPropertyCard) => {
-
   const priceToInt = price;
   const formattedPrice = formatCurrency(priceToInt);
   const [isActive, setIsActive] = useState<boolean>(isActiveProp);
@@ -65,12 +69,12 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
         }
       );
 
-     if (response.ok) {
+      if (response.ok) {
         toast.dismiss();
-        showSuccessToast(SuccessToastNames.HighlightProperty)
+        showSuccessToast(SuccessToastNames.HighlightProperty);
         window.location.reload();
       } else {
-        showErrorToast(ErrorToastNames.ActivateProperty)
+        showErrorToast(ErrorToastNames.ActivateProperty);
       }
     } catch (error) {
       showErrorToast(ErrorToastNames.ServerConnection);
@@ -167,6 +171,7 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
             {buttons.map((btn: btnTypes) =>
               btn.key !== 'highlight' ? (
                 <Link
+                  key={btn.key}
                   href={btn.key !== 'deactivate' ? btn.link + `${_id}` : '#'}
                 >
                   <button
@@ -184,7 +189,7 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
                   </button>
                 </Link>
               ) : (
-                <Link href={btn.link}>
+                <Link key={btn.key} href={btn.link}>
                   <button
                     key={btn.key}
                     className={!highlighted ? btn.className : 'hidden'}

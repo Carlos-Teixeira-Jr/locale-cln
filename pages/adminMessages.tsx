@@ -46,7 +46,7 @@ const AdminMessages = ({
       const parsedPage = parseInt(query.page);
       setCurrentPage(parsedPage);
     }
-  });
+  }, [router.query.page, query.pag]);
 
   useEffect(() => {
     // Check if the page parameter in the URL matches the current page
@@ -96,6 +96,7 @@ const AdminMessages = ({
             {messagesCount > 0 &&
               properties.map(({ _id, images, address }: IData) => (
                 <MessagesCard
+                  key={_id}
                   image={images[0]}
                   address={address}
                   messages={messages?.docs.filter(

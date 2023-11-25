@@ -1,18 +1,22 @@
-import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import { IData } from '../../../common/interfaces/property/propertyData';
+import {
+  accessibilityTags,
+  condominiumTagsDefault,
+  propertyTags,
+  securityTags,
+} from '../../../data/tags';
 import CheckIcon from '../../atoms/icons/checkIcon';
 import CloseIcon from '../../atoms/icons/closeIcon';
 import YoutubeAddIcon from '../../atoms/icons/youtubeAddIcon';
-import { accessibilityTags, condominiumTagsDefault, propertyTags, securityTags } from '../../../data/tags';
-import { IData } from '../../../common/interfaces/property/propertyData';
 
 type Props = {
-  shouldRenderCondDiv: boolean
-  property?: IData
-  isEdit: boolean
-  onTagsUpdate: (updatedTags: string[]) => void
-  onCondominiumTagsUpdate: (updatedCondTags: string[]) => void
-  onVideoLinkUpdate: (updatedVideo: string) => void
+  shouldRenderCondDiv?: boolean;
+  property?: IData;
+  isEdit?: boolean;
+  onTagsUpdate?: (updatedTags: string[]) => void;
+  onCondominiumTagsUpdate?: (updatedCondTags: string[]) => void;
+  onVideoLinkUpdate?: (updatedVideo: string) => void;
 };
 
 const PropertyDifferentials = ({
@@ -21,31 +25,34 @@ const PropertyDifferentials = ({
   isEdit,
   onTagsUpdate,
   onCondominiumTagsUpdate,
-  onVideoLinkUpdate
+  onVideoLinkUpdate,
 }: Props) => {
-
   const [firstInputValue, setFirstInputValue] = useState('');
   const [secondInputValue, setSecondInputValue] = useState('');
-  const [updatedTags, setUpdatedTags] = useState<string[]>(property ? property.tags : []);
-  const [updatedCondominiumTags, setUpdatedCondominiumTags] = useState<string[]>(property ? property.condominiumTags: []);
+  const [updatedTags, setUpdatedTags] = useState<string[]>(
+    property ? property.tags : []
+  );
+  const [updatedCondominiumTags, setUpdatedCondominiumTags] = useState<
+    string[]
+  >(property ? property.condominiumTags : []);
   const [updatedYouTubeLink, setUpdatedYouTubeLink] = useState<string>('');
 
   useEffect(() => {
     if (property) {
-      setUpdatedYouTubeLink(property.youtubeLink)
+      setUpdatedYouTubeLink(property.youtubeLink);
     }
   });
 
   useEffect(() => {
-    onTagsUpdate(updatedTags)
+    onTagsUpdate!(updatedTags);
   }, [updatedTags]);
 
   useEffect(() => {
-    onCondominiumTagsUpdate(updatedCondominiumTags)
+    onCondominiumTagsUpdate!(updatedCondominiumTags);
   }, [updatedCondominiumTags]);
 
   useEffect(() => {
-    onVideoLinkUpdate(updatedYouTubeLink)
+    onVideoLinkUpdate!(updatedYouTubeLink);
   }, [updatedYouTubeLink]);
 
   return (
@@ -61,7 +68,9 @@ const PropertyDifferentials = ({
               className="flex bg-tertiary border rounded-[10px] border-quaternary w-[30px] h-[30px] drop-shadow-xl cursor-pointer shrink-0 my-auto"
               onClick={() => {
                 if (updatedTags.includes(tag)) {
-                  const newTagsArray = updatedTags.filter(existingTag => existingTag !== tag);
+                  const newTagsArray = updatedTags.filter(
+                    (existingTag) => existingTag !== tag
+                  );
                   setUpdatedTags(newTagsArray);
                 } else {
                   const newTagsArray = [...updatedTags, tag];
@@ -69,13 +78,13 @@ const PropertyDifferentials = ({
                 }
               }}
             >
-              {updatedTags.some(item => item === tag) && (
+              {updatedTags.some((item) => item === tag) && (
                 <CheckIcon
                   fill="#F5BF5D"
                   className="pb-3 drop-shadow-md"
-                  width='40'
-                  height='40'
-                  viewBox='0 96 960 960'
+                  width="40"
+                  height="40"
+                  viewBox="0 96 960 960"
                 />
               )}
             </div>
@@ -105,7 +114,7 @@ const PropertyDifferentials = ({
             const newTag = firstInputValue;
             if (firstInputValue !== '') {
               const newTagsArray = [...updatedTags, newTag];
-            setUpdatedTags(newTagsArray);
+              setUpdatedTags(newTagsArray);
             }
           }}
         >
@@ -122,7 +131,7 @@ const PropertyDifferentials = ({
             <div
               className="w-5 h-5 flex items-center justify-center my-auto mr-2 bg-quaternary rounded-full cursor-pointer"
               onClick={() => {
-                const newTags = updatedTags.filter(str => str !== tag);
+                const newTags = updatedTags.filter((str) => str !== tag);
                 setUpdatedTags(newTags);
               }}
             >
@@ -149,7 +158,9 @@ const PropertyDifferentials = ({
                   className="flex bg-tertiary border rounded-[10px] border-quaternary w-[30px] h-[30px] drop-shadow-xl cursor-pointer shrink-0 my-auto"
                   onClick={() => {
                     if (updatedCondominiumTags.includes(tag)) {
-                      const newTagsArray = updatedCondominiumTags.filter(existingTag => existingTag !== tag);
+                      const newTagsArray = updatedCondominiumTags.filter(
+                        (existingTag) => existingTag !== tag
+                      );
                       setUpdatedCondominiumTags(newTagsArray);
                     } else {
                       const newTagsArray = [...updatedCondominiumTags, tag];
@@ -157,13 +168,13 @@ const PropertyDifferentials = ({
                     }
                   }}
                 >
-                  {updatedCondominiumTags.some(item => item === tag) && (
+                  {updatedCondominiumTags.some((item) => item === tag) && (
                     <CheckIcon
                       fill="#F5BF5D"
                       className="pb-3 drop-shadow-md"
-                      width='40'
-                      height='40'
-                      viewBox='0 96 960 960'
+                      width="40"
+                      height="40"
+                      viewBox="0 96 960 960"
                     />
                   )}
                 </div>
@@ -188,7 +199,9 @@ const PropertyDifferentials = ({
                   className="flex bg-tertiary border rounded-[10px] border-quaternary w-[30px] h-[30px] drop-shadow-xl cursor-pointer shrink-0 my-auto"
                   onClick={() => {
                     if (updatedCondominiumTags.includes(tag)) {
-                      const newTagsArray = updatedCondominiumTags.filter(existingTag => existingTag !== tag);
+                      const newTagsArray = updatedCondominiumTags.filter(
+                        (existingTag) => existingTag !== tag
+                      );
                       setUpdatedCondominiumTags(newTagsArray);
                     } else {
                       const newTagsArray = [...updatedCondominiumTags, tag];
@@ -196,13 +209,13 @@ const PropertyDifferentials = ({
                     }
                   }}
                 >
-                  {updatedCondominiumTags.some(item => item === tag) && (
+                  {updatedCondominiumTags.some((item) => item === tag) && (
                     <CheckIcon
                       fill="#F5BF5D"
                       className="pb-3 drop-shadow-md"
-                      width='40'
-                      height='40'
-                      viewBox='0 96 960 960'
+                      width="40"
+                      height="40"
+                      viewBox="0 96 960 960"
                     />
                   )}
                 </div>
@@ -227,7 +240,9 @@ const PropertyDifferentials = ({
                   className="flex bg-tertiary border rounded-[10px] border-quaternary w-[30px] h-[30px] drop-shadow-xl cursor-pointer shrink-0 my-auto"
                   onClick={() => {
                     if (updatedCondominiumTags.includes(tag)) {
-                      const newTagsArray = updatedCondominiumTags.filter(existingTag => existingTag !== tag);
+                      const newTagsArray = updatedCondominiumTags.filter(
+                        (existingTag) => existingTag !== tag
+                      );
                       setUpdatedCondominiumTags(newTagsArray);
                     } else {
                       const newTagsArray = [...updatedCondominiumTags, tag];
@@ -235,13 +250,13 @@ const PropertyDifferentials = ({
                     }
                   }}
                 >
-                  {updatedCondominiumTags.some(item => item === tag) && (
+                  {updatedCondominiumTags.some((item) => item === tag) && (
                     <CheckIcon
                       fill="#F5BF5D"
                       className="pb-3 drop-shadow-md"
-                      width='40'
-                      height='40'
-                      viewBox='0 96 960 960'
+                      width="40"
+                      height="40"
+                      viewBox="0 96 960 960"
                     />
                   )}
                 </div>
@@ -272,7 +287,7 @@ const PropertyDifferentials = ({
                   const newTag = secondInputValue;
                   if (secondInputValue !== '') {
                     const newTagsArray = [...updatedCondominiumTags, newTag];
-                  setUpdatedCondominiumTags(newTagsArray);
+                    setUpdatedCondominiumTags(newTagsArray);
                   }
                 }}
               >
@@ -290,7 +305,9 @@ const PropertyDifferentials = ({
                 <div
                   className="w-5 h-5 flex items-center justify-center my-auto mr-2 bg-quaternary rounded-full cursor-pointer"
                   onClick={() => {
-                    const newTags = updatedCondominiumTags.filter(str => str !== tag);
+                    const newTags = updatedCondominiumTags.filter(
+                      (str) => str !== tag
+                    );
                     setUpdatedCondominiumTags(newTags);
                   }}
                 >
@@ -301,8 +318,8 @@ const PropertyDifferentials = ({
           </div>
         </div>
       )}
-      
-      <div className='mx-3'>
+
+      <div className="mx-3">
         <div className="flex mt-10 sm:mt-5">
           <h3 className="md:text-2xl text-xl text-quaternary font-bold leading-7 mt-1 md:mb-0 mb-3.5">
             Adicione o Link de um Vídeo
@@ -311,7 +328,10 @@ const PropertyDifferentials = ({
             <YoutubeAddIcon fill="#6B7280" />
           </div>
         </div>
-        <input className="h-12 md:w-[500px] w-full border border-quaternary drop-shadow-xl rounded-[10px] px-5 text-xl font-bold text-quaternary" onChange={(e) => setUpdatedYouTubeLink(e.target.value)}/>
+        <input
+          className="h-12 md:w-[500px] w-full border border-quaternary drop-shadow-xl rounded-[10px] px-5 text-xl font-bold text-quaternary"
+          onChange={(e) => setUpdatedYouTubeLink(e.target.value)}
+        />
       </div>
     </div>
   );

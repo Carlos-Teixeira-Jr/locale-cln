@@ -20,8 +20,8 @@ export default function confirmActivationModal({
   propertyIdProp,
 }: IConfirmActivationModal) {
   const [isMobile, setIsMobile] = useState(false);
-  const [isActive, setIsActive] = useState<boolean>(isActiveProp);
-  const [propertyId, setPropertyId] = useState<string>(propertyIdProp);
+  const [isActive, _setIsActive] = useState<boolean>(isActiveProp);
+  const [propertyId, _setPropertyId] = useState<string>(propertyIdProp);
   const { data: session } = useSession() as any;
   const userId = session?.user?.data._id;
 

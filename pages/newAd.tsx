@@ -35,14 +35,10 @@ const NewAd: NextPageWithLayout = () => {
 
   return (
     <div>
-      <AdminHeader
-        image={
-          'https://www.correio24horas.com.br/fileadmin/_processed_/e/9/csm_galo_gigante_com_crianca_5ec1c27968.jpg'
-        }
-      />
+      <AdminHeader />
       <div className="flex flex-row justify-center lg:justify-end xl:justify-end 2xl:justify-center">
         <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:flex">
-          <SideMenu isMobile={false} />
+          <SideMenu />
         </div>
         <div className="flex flex-col items-center mt-16 max-w-[900px] text-xl lg:text-4xl px-2 md:px-10">
           <h1 className="font-bold text-2xl lg:text-4xl text-quaternary mb-10 mt-20">
@@ -71,16 +67,7 @@ const NewAd: NextPageWithLayout = () => {
                   id="accordion-1"
                 >
                   <p className="accordion__body p-4" id="painel1">
-                    <Address
-                      editar={false}
-                      editarCep={''}
-                      editarCity={''}
-                      editarUf={''}
-                      editarStreet={''}
-                      editarNumber={''}
-                      editarDistrict={''}
-                      editarComplement={''}
-                    />
+                    <Address />
                   </p>
                 </div>
               </div>
@@ -107,7 +94,7 @@ const NewAd: NextPageWithLayout = () => {
                   id="accordion-2"
                 >
                   <p className="accordion__body p-4" id="painel2">
-                    <UploadImages editarImages={[]} />
+                    <UploadImages />
                   </p>
                 </div>
               </div>
@@ -134,23 +121,7 @@ const NewAd: NextPageWithLayout = () => {
                   id="accordion-3"
                 >
                   <p className="accordion__body p-4" id="painel3">
-                    <MainFeatures
-                      editarPropertyType={''}
-                      editarPropertyStyle={''}
-                      editarUseableArea={''}
-                      editarTotalArea={''}
-                      editarNumBedroom={0}
-                      editarNumBathroom={0}
-                      editarNumParkingSpaces={0}
-                      editarNumFloors={0}
-                      editarNumSuite={0}
-                      editarDescription={''}
-                      editarPropertyValue={''}
-                      editarCondominium={false}
-                      editarCondominiumValue={''}
-                      editarIptuValue={''}
-                      editarIptu={false}
-                    />
+                    <MainFeatures />
                   </p>
                 </div>
               </div>
@@ -177,12 +148,7 @@ const NewAd: NextPageWithLayout = () => {
                   id="accordion-4"
                 >
                   <p className="accordion__body p-4" id="painel4">
-                    <PropertyDifferentials
-                      shouldRenderCondDiv={true}
-                      sharedImagesArray={undefined}
-                      setMinimunImagesUpload={undefined}
-                      id={''}
-                    />
+                    <PropertyDifferentials shouldRenderCondDiv={true} />
                   </p>
                 </div>
               </div>

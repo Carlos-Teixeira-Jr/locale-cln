@@ -105,7 +105,7 @@ const RegisterStep2: NextPageWithLayout = () => {
   const handlePreviousStep = () => {
     updateProgress(1);
     router.back();
-  }
+  };
 
   return (
     <>
@@ -138,7 +138,7 @@ const RegisterStep2: NextPageWithLayout = () => {
           />
         </div>
 
-        <div className="flex self-end mr-0 md:mr-20 lg:mr-20 xl:mr-20 md:justify-end justify-center px-5 mb-32 mt-16 max-w-[1215px] mx-auto"">
+        <div className="flex self-end mr-0 md:mr-20 lg:mr-20 xl:mr-20 md:justify-end justify-center px-5 mb-32 mt-16 max-w-[1215px] mx-auto">
           <button
             className="bg-primary w-28 md:w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold lg:text-3xl hover:bg-red-600 hover:text-white"
             onClick={handlePreviousStep}

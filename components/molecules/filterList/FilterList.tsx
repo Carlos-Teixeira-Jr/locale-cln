@@ -6,11 +6,11 @@ import {
   ILocationProp,
 } from '../../../common/interfaces/locationDropdown';
 import { ITagsData } from '../../../common/interfaces/tagsData';
+import propertyTypesData from '../../../data/propertyTypesData.json';
+import ArrowDownIcon from '../../atoms/icons/arrowDownIcon';
 import CheckIcon from '../../atoms/icons/checkIcon';
 import SearchIcon from '../../atoms/icons/searchIcon';
 import XIcon from '../../atoms/icons/xIcon';
-import ArrowDownIcon from '../../atoms/icons/arrowDownIcon';
-import propertyTypesData from '../../../data/propertyTypesData.json';
 
 interface IFilterListProps {
   locationProp: ILocationProp[];
@@ -29,9 +29,8 @@ const FilterList: React.FC<IFilterListProps> = ({
   isMobileProp,
   onMobileFilterIsOpenChange,
   onSearchBtnClick,
-  locationChangeProp
+  locationChangeProp,
 }) => {
-
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const query = router.query as any;
@@ -43,10 +42,13 @@ const FilterList: React.FC<IFilterListProps> = ({
   // propertyType
   const [propertyType, setPropertyType] = useState({
     propertyType: query.propertyType,
-    propertySubtype: typeof query.propertySubtype === 'string' ? query.propertySubtype.replace(/"/g,"") : query.propertySubtype
+    propertySubtype:
+      typeof query.propertySubtype === 'string'
+        ? query.propertySubtype.replace(/"/g, '')
+        : query.propertySubtype,
   });
   const [propTypeDropdownIsOpen, setPropTypeDropdownIsOpen] = useState(false);
-  
+
   // Location
   // Lida apenas com o valor que aparecerá no input de localização;
   const [locationInput, setLocationInput] = useState('');
@@ -55,7 +57,7 @@ const FilterList: React.FC<IFilterListProps> = ({
   const queryParsed = query.location ? JSON.parse(query.location) : [];
   const [location, setLocation] = useState<ILocation[]>(queryParsed);
   const [allLocations, setAllLocations] = useState(false);
-  
+
   // prices
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
@@ -122,7 +124,7 @@ const FilterList: React.FC<IFilterListProps> = ({
     setPropertyType({
       ...propertyType,
       propertyType: type,
-      propertySubtype: subType
+      propertySubtype: subType,
     });
 
     const propertyTypeQueryParams = {
@@ -133,8 +135,10 @@ const FilterList: React.FC<IFilterListProps> = ({
     };
 
     setPropTypeDropdownIsOpen(false);
-    router.push({ query: propertyTypeQueryParams }, undefined, { scroll: false });
-  }
+    router.push({ query: propertyTypeQueryParams }, undefined, {
+      scroll: false,
+    });
+  };
 
   // ADDRESS
 
@@ -180,48 +184,56 @@ const FilterList: React.FC<IFilterListProps> = ({
   // Insere e remove os objetos de location ao clicar nas opções do dropdown;
   const toggleLocation = (name: string, category: string) => {
     // Procura no array location um objeto que tenha a categoria igual a selecionada;
-    const existingCategory = location.find((item) => item.category === categoryMappings[category]);
+    const existingCategory = location.find(
+      (item) => item.category === categoryMappings[category]
+    );
 
     if (existingCategory) {
       // Verifica se já existe um objeto com a categoria selecionada, então apenas atualizamos o array name dentro do objeto dessa categoria;
-      const updatedLocation = location.map((item) => {
+      const updatedLocation = location
+        .map((item) => {
           if (item.category === categoryMappings[category]) {
             // Verifica se o name selecionado já está presente no array name do objeto com a categoria selecionada;
-          if (item.name.includes(name)) {
-            // Se já existir esse name, ele é removido do array;
-            const updatedName = item.name.filter((itemName: string) => itemName !== name);
-            // Se o name removido for o ultimo do array, retornamos um valor null para posteriormente remover todo o objeto da categoria correspondente;
-            if (updatedName.length === 0) {
-              return null; // Retorna null para filtrar o objeto do array
+            if (item.name.includes(name)) {
+              // Se já existir esse name, ele é removido do array;
+              const updatedName = item.name.filter(
+                (itemName: string) => itemName !== name
+              );
+              // Se o name removido for o ultimo do array, retornamos um valor null para posteriormente remover todo o objeto da categoria correspondente;
+              if (updatedName.length === 0) {
+                return null; // Retorna null para filtrar o objeto do array
+              } else {
+                // Se não for o ultimo, então retornamos um novo array name com o novo name selecionado;
+                return {
+                  ...item,
+                  name: updatedName,
+                };
+              }
             } else {
-              // Se não for o ultimo, então retornamos um novo array name com o novo name selecionado;
+              // Se não houver o name no array retornamos um novo array name com o novo name selecionado;
               return {
                 ...item,
-                name: updatedName,
+                name: [...item.name, name],
               };
             }
-          } else {
-            // Se não houver o name no array retornamos um novo array name com o novo name selecionado;
-            return {
-              ...item,
-              name: [...item.name, name],
-            };
           }
-        }
-        return item;
-        // O filter remove os objetos que tenham retoornado null no map acima para removê-los de updatedLocation;
-      })
-      .filter(Boolean) as ILocation[];
+          return item;
+          // O filter remove os objetos que tenham retoornado null no map acima para removê-los de updatedLocation;
+        })
+        .filter(Boolean) as ILocation[];
       setLocation(updatedLocation);
       // Caso a opção selecionada pertença a uma categoria ainda não inserida em location, apenas é inserido um objeto com o name e category selecionados;
     } else {
-      setLocation([...location, { name: [name], category: categoryMappings[category] }]);
+      setLocation([
+        ...location,
+        { name: [name], category: categoryMappings[category] },
+      ]);
     }
   };
 
   // Envia os valores de location para a Search sempre que houver uma alteração no
   useEffect(() => {
-    locationChangeProp(location)
+    locationChangeProp(location);
   }, [location]);
 
   //// METADATA ////
@@ -495,19 +507,19 @@ const FilterList: React.FC<IFilterListProps> = ({
         </div>
       )}
 
-      <div className='flex flex-col md:flex-row lg:flex-col justify-between'>
+      <div className="flex flex-col md:flex-row lg:flex-col justify-between">
         {/* Basic info */}
         <div>
           <h3 className="font-normal text-base text-quaternary leading-[19px] mb-2 ">
             O que procura?
           </h3>
           <div className="flex flex-row rounded-full border border-quaternary lg:h-9 w-full mx-auto md:mt-3 lg:mt-2 justify-center mb-5">
-            <div className='w-full'>
+            <div className="w-full">
               <button className={buyBtnClassName} onClick={handleBuy}>
                 Comprar
               </button>
             </div>
-            <div className='w-full'>
+            <div className="w-full">
               <button className={rentBtnClassName} onClick={handleRent}>
                 Alugar
               </button>
@@ -519,39 +531,48 @@ const FilterList: React.FC<IFilterListProps> = ({
               Qual o tipo?
             </h3>
 
-            <div 
+            <div
               className="drop-shadow-lg h-12 w-full lg:text-lg rounded-xl p-2 mb-1 border border-quaternary flex justify-between"
               onClick={() => setPropTypeDropdownIsOpen(!propTypeDropdownIsOpen)}
             >
-              <p className='text-quaternary text'>{propertyType.propertyType !== 'todos' ? propertyType.propertySubtype : `todos`}</p>
+              <p className="text-quaternary text">
+                {propertyType.propertyType !== 'todos'
+                  ? propertyType.propertySubtype
+                  : `todos`}
+              </p>
               <ArrowDownIcon
                 className={`my-auto cursor-pointer ${
                   propTypeDropdownIsOpen
-                  ? 'transform rotate-360 transition-transform duration-300 ease-in-out'
-                  : 'transform rotate-180 transition-transform duration-300 ease-in-out'
+                    ? 'transform rotate-360 transition-transform duration-300 ease-in-out'
+                    : 'transform rotate-180 transition-transform duration-300 ease-in-out'
                 }`}
               />
             </div>
-            <div 
+            <div
               className={`z-50 w-full h-fit rounded-xl bg-tertiary overflow-hidden text-quaternary cursor-pointer shadow-md ${
-                !propTypeDropdownIsOpen
-                ? 'hidden '
-                : 'absolute'
+                !propTypeDropdownIsOpen ? 'hidden ' : 'absolute'
               }`}
             >
               {propertyTypesData.map((prop, index) => (
-                <div className='w-full rounded-t-8 bg-tertiary'>
-                  <p 
-                    className='text-center p-1 hover:bg-quaternary hover:text-tertiary font-normal text-lg'
-                    onClick={() => handlePropertyTypeSelection("todos", "todos")}
+                <div key={index} className="w-full rounded-t-8 bg-tertiary">
+                  <p
+                    className="text-center p-1 hover:bg-quaternary hover:text-tertiary font-normal text-lg"
+                    onClick={() =>
+                      handlePropertyTypeSelection('todos', 'todos')
+                    }
                   >
                     Todos
                   </p>
-                  <p className='text-quaternary lg:text-2xl p-1 text-center font-bold '>{prop.type}</p>
-                  {propertyTypesData[index].subTypes.map((type) =>  (
-                    <div 
-                      className='text-center p-1 hover:bg-quaternary hover:text-tertiary'
-                      onClick={() =>  handlePropertyTypeSelection(prop.type, type)}
+                  <p className="text-quaternary lg:text-2xl p-1 text-center font-bold ">
+                    {prop.type}
+                  </p>
+                  {propertyTypesData[index].subTypes.map((type) => (
+                    <div
+                      key={type}
+                      className="text-center p-1 hover:bg-quaternary hover:text-tertiary"
+                      onClick={() =>
+                        handlePropertyTypeSelection(prop.type, type)
+                      }
                     >
                       {type}
                     </div>
@@ -559,7 +580,6 @@ const FilterList: React.FC<IFilterListProps> = ({
                 </div>
               ))}
             </div>
-            
           </div>
 
           <div className="flex flex-col my-5">
@@ -616,7 +636,9 @@ const FilterList: React.FC<IFilterListProps> = ({
                 {Object.entries(categorizedLocations).map(
                   ([category, locations]) => (
                     <div key={category} className="w-full py-2 h-fit">
-                      <h3 className="font-bold text-xl ml-[20px]">{category}</h3>
+                      <h3 className="font-bold text-xl ml-[20px]">
+                        {category}
+                      </h3>
                       {locations.map(({ name }: ILocation) => (
                         <div
                           key={`${category}-${name}`}
@@ -693,7 +715,7 @@ const FilterList: React.FC<IFilterListProps> = ({
         </div>
 
         {/* Characteristics */}
-        <div className='md:mt-[87px] lg:mt-0'>
+        <div className="md:mt-[87px] lg:mt-0">
           <h3 className="font-normal text-base text-quaternary leading-[19px] mb-2 lg:my-2">
             Preço
           </h3>
@@ -742,12 +764,12 @@ const FilterList: React.FC<IFilterListProps> = ({
         </div>
       </div>
 
-      <div className='md:flex lg:flex-col gap-2 justify-between md:mt-5'>
+      <div className="md:flex lg:flex-col gap-2 justify-between md:mt-5">
         <div>
           <h3 className="font-normal text-base text-quaternary leading-[19px] mb-2">
             Quartos
           </h3>
-          <div className='flex justify-between gap-5'>
+          <div className="flex justify-between gap-5">
             <button
               className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-5 md:mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
               onClick={() => setBedrooms(bedrooms != 1 ? 1 : 0)}
@@ -819,7 +841,7 @@ const FilterList: React.FC<IFilterListProps> = ({
           <h3 className="font-normal text-base text-quaternary leading-[19px] mb-2">
             Banheiros
           </h3>
-          <div className='flex justify-between gap-5'>
+          <div className="flex justify-between gap-5">
             <button
               className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-5 md:mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
               onClick={() => setBathrooms(bathrooms != 1 ? 1 : 0)}
@@ -889,7 +911,7 @@ const FilterList: React.FC<IFilterListProps> = ({
           <h3 className="font-normal text-base text-quaternary leading-[19px] mb-2">
             Vagas de garagem
           </h3>
-          <div className='flex justify-between gap-5'>
+          <div className="flex justify-between gap-5">
             <button
               className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-5 md:mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
               onClick={() => setParkingSpaces(parkingSpaces != 1 ? 1 : 0)}
@@ -954,7 +976,7 @@ const FilterList: React.FC<IFilterListProps> = ({
         </div>
       </div>
 
-        <div className="border border-b-quaternary mb-9" />
+      <div className="border border-b-quaternary mb-9" />
 
       <div>
         {/* Other filters */}
@@ -1001,7 +1023,7 @@ const FilterList: React.FC<IFilterListProps> = ({
         </div>
 
         {/* Search by code */}
-        <div className='md:w-1/2 lg:w-full'>
+        <div className="md:w-1/2 lg:w-full">
           <h3 className="font-normal text-base text-quaternary leading-[19px] mb-3">
             Buscar imóvel por código
           </h3>

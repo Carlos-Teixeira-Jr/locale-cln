@@ -1,7 +1,8 @@
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { GetServerSidePropsContext } from 'next';
-import { getSession, useSession } from 'next-auth/react';
+import { getSession } from 'next-auth/react';
 import { destroyCookie } from 'nookies';
+import { useEffect, useState } from 'react';
 import { IFavProperties } from '../common/interfaces/properties/favouriteProperties';
 import {
   IData,
@@ -13,7 +14,6 @@ import PropertyCard from '../components/molecules/cards/propertyCard/PropertyCar
 import AdminHeader from '../components/organisms/adminHeader/adminHeader';
 import SideMenu from '../components/organisms/sideMenu/sideMenu';
 import { NextPageWithLayout } from './page';
-import { useState, useEffect } from 'react';
 
 interface IAdminFavProperties {
   favouriteProperties: IFavProperties;
@@ -26,21 +26,19 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
   ownerProperties,
   notifications,
 }) => {
-
   const [isOwner, setIsOwner] = useState<boolean>(false);
+  const [properties, _setProperties] = useState<IPropertyInfo>(ownerProperties);
 
   // Determina se o usuário já possui anúncios ou não;
   useEffect(() => {
     setIsOwner(properties?.docs?.length > 0 ? true : false);
   }, [properties]);
 
-  const [isOwner, setIsOwner] = useState<boolean>(false);
-
   // Determina se o usuário já possui anúncios ou não;
   useEffect(() => {
     setIsOwner(ownerProperties.docs?.length > 0 ? true : false);
   }, [ownerProperties]);
-  
+
   return (
     <>
       <AdminHeader isOwnerProp={isOwner} />
@@ -186,43 +184,44 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       console.error(error);
     }
 
-    const [notifications, favouriteProperties, ownerProperties] = await Promise.all([
-      fetch(`${baseUrl}/notification/64da04b6052b4d12939684b0`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-        .then((res) => res.json())
-        .catch(() => []),
-      fetch(`${baseUrl}/user/favourite`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id: userId,
-          page: 1,
-        }),
-      })
-        .then((res) => res.json())
-        .catch(() => []),
-      fetch(`${baseUrl}/property/owner-properties`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ownerId,
-          page: 1,
-        }),
-      })
-        .then((res) => res.json())
-        .catch(() => []),
-      fetchJson(`${baseUrl}/notification/${userId}`),
-      fetchJson(`${baseUrl}/user/favourite`),
-      fetchJson(`${baseUrl}/property/owner-properties`),
-    ]);
+    const [notifications, favouriteProperties, ownerProperties] =
+      await Promise.all([
+        fetch(`${baseUrl}/notification/64da04b6052b4d12939684b0`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+          .then((res) => res.json())
+          .catch(() => []),
+        fetch(`${baseUrl}/user/favourite`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: userId,
+            page: 1,
+          }),
+        })
+          .then((res) => res.json())
+          .catch(() => []),
+        fetch(`${baseUrl}/property/owner-properties`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ownerId,
+            page: 1,
+          }),
+        })
+          .then((res) => res.json())
+          .catch(() => []),
+        fetchJson(`${baseUrl}/notification/${userId}`),
+        fetchJson(`${baseUrl}/user/favourite`),
+        fetchJson(`${baseUrl}/property/owner-properties`),
+      ]);
 
     return {
       props: {

@@ -48,7 +48,7 @@ export interface IAddress {
   streetNumber: string;
   complement: string;
   neighborhood: string;
-  uf: string
+  uf: string;
 }
 export interface IMetadata {
   type: metadataType;
@@ -70,7 +70,7 @@ export interface ISize {
   width: number;
   height: number;
   totalArea: number;
-  useableArea: number
+  useableArea: number;
 }
 export interface IPrices {
   type: PricesType;
@@ -102,7 +102,7 @@ export interface IData {
   plan: planType;
   highlighted: boolean;
   acceptFunding: boolean;
-  views: number
+  views: number;
 }
 
 export type Data = {

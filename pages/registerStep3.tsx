@@ -216,7 +216,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     const newCreditCardErrors = {
       cardName: '',
       cardNumber: '',
-      cvc: '',
+      ccv: '',
       expiry: '',
     };
 
@@ -236,7 +236,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         if (!creditCard.cardName) newCreditCardErrors.cardName = error;
         if (!creditCard.cardNumber) newCreditCardErrors.cardNumber = error;
         if (!creditCard.expiry) newCreditCardErrors.expiry = error;
-        if (!creditCard.ccv) newCreditCardErrors.cvc = error;
+        if (!creditCard.ccv) newCreditCardErrors.ccv = error;
       }
     }
 
@@ -489,7 +489,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
             />
 
             <div className="flex self-end mr-0 md:mr-20 lg:mr-20 xl:mr-20 md:justify-end justify-center px-5 mb-32 mt-16 max-w-[1215px] mx-auto">
-
               <button
                 className="bg-primary w-28 md:w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold hover:bg-red-600 hover:text-white"
                 onClick={handlePreviousStep}

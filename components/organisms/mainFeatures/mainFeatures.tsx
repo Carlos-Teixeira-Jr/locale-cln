@@ -1,43 +1,49 @@
 /* eslint-disable no-unused-vars */
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import CheckIcon from '../../atoms/icons/checkIcon';
-import propertyTypesData from '../../../data/propertyTypesData.json';
-import { ISize, announcementSubtype, announcementType, propSubtype, propType } from '../../../common/interfaces/property/propertyData';
 import { IEditPropertyMainFeatures } from '../../../common/interfaces/property/editPropertyData';
-import AreaCalculatorModal from '../../molecules/areaModal/areaModal';
-import ArrowDownIcon from '../../atoms/icons/arrowDownIcon';
+import {
+  ISize,
+  announcementSubtype,
+  announcementType,
+  propSubtype,
+  propType,
+} from '../../../common/interfaces/property/propertyData';
 import { capitalizeFirstLetter } from '../../../common/utils/strings/capitalizeFirstLetter';
+import propertyTypesData from '../../../data/propertyTypesData.json';
+import ArrowDownIcon from '../../atoms/icons/arrowDownIcon';
+import CheckIcon from '../../atoms/icons/checkIcon';
+import AreaCalculatorModal from '../../molecules/areaModal/areaModal';
 
 export type MainFeaturesErrors = {
-  description: string,
-  totalArea: string,
-  propertyValue: string,
-  condominiumValue: string,
-  iptuValue: string,
-}
+  description: string;
+  totalArea: string;
+  propertyValue: string;
+  condominiumValue: string;
+  iptuValue: string;
+};
 
 interface IMainFeatures {
-  propertyId: string
-  editarAdType: announcementType
-  editarSubType: announcementSubtype
-  editarPropertyType: propType; //Apt, house..
-  editarPropertySubtype: propSubtype; //Flat, kitnet...
-  editarSize: ISize
-  editarNumBedroom: number;
-  editarNumBathroom: number;
-  editarNumGarage: number;
-  editarNumDependencies: number;
-  editarNumSuite: number;
-  editarDescription: string;
-  editarPropertyValue: string;
-  editarCondominium: boolean;
-  editarCondominiumValue: string;
-  editarIptuValue: string;
-  editarIptu: boolean;
-  isEdit: boolean
-  onMainFeaturesUpdate: (updatedFeatures: IEditPropertyMainFeatures) => void
-  errors: MainFeaturesErrors
-  mainFeaturesInputRefs?: any
+  propertyId?: string;
+  editarAdType?: announcementType;
+  editarSubType?: announcementSubtype;
+  editarPropertyType?: propType; //Apt, house..
+  editarPropertySubtype?: propSubtype; //Flat, kitnet...
+  editarSize?: ISize;
+  editarNumBedroom?: number;
+  editarNumBathroom?: number;
+  editarNumGarage?: number;
+  editarNumDependencies?: number;
+  editarNumSuite?: number;
+  editarDescription?: string;
+  editarPropertyValue?: string;
+  editarCondominium?: boolean;
+  editarCondominiumValue?: string;
+  editarIptuValue?: string;
+  editarIptu?: boolean;
+  isEdit?: boolean;
+  onMainFeaturesUpdate?: (updatedFeatures: IEditPropertyMainFeatures) => void;
+  errors?: MainFeaturesErrors;
+  mainFeaturesInputRefs?: any;
 }
 
 const MainFeatures: React.FC<IMainFeatures> = ({
@@ -61,69 +67,91 @@ const MainFeatures: React.FC<IMainFeatures> = ({
   isEdit,
   onMainFeaturesUpdate,
   errors,
-  mainFeaturesInputRefs
+  mainFeaturesInputRefs,
 }: IMainFeatures) => {
-
   const mainFeaturesErrorScroll = {
-    ...mainFeaturesInputRefs
+    ...mainFeaturesInputRefs,
   };
 
-  const [isBuy, setIsBuy] = useState(!isEdit ? true : (editarAdType === 'comprar' ? true : false));
-  const [isRent, setIsRent] = useState(!isEdit ? false : (editarAdType === 'alugar' ? true : false));
-  const [isCommercial, setIsCommercial] = useState(!isEdit ? true : (editarSubType === 'comercial' ? true : false));
-  const [isResidential, setIsResidential] = useState(!isEdit ? false : (editarSubType === 'residencial' ? true : false));
-  const [bathroomNumCount, setBathroomNumCount] = useState(isEdit ? editarNumBathroom : 0);
-  const [bedroomNumCount, setBedroomNumCount] = useState(isEdit ? editarNumBedroom: 0);
-  const [garageNumCount, setGarageNumCount] = useState(isEdit ? editarNumGarage : 0);
-  const [dependenciesNumCount, setDependenciesNumCount] = useState(isEdit ? editarNumDependencies : 0);
-  const [suitesNumCount, setSuitesNumCount] = useState(isEdit ? editarNumSuite : 0);
+  const [isBuy, setIsBuy] = useState(
+    !isEdit ? true : editarAdType === 'comprar' ? true : false
+  );
+  const [isRent, setIsRent] = useState(
+    !isEdit ? false : editarAdType === 'alugar' ? true : false
+  );
+  const [isCommercial, setIsCommercial] = useState(
+    !isEdit ? true : editarSubType === 'comercial' ? true : false
+  );
+  const [isResidential, setIsResidential] = useState(
+    !isEdit ? false : editarSubType === 'residencial' ? true : false
+  );
+  const [bathroomNumCount, setBathroomNumCount] = useState(
+    isEdit ? editarNumBathroom! : 0
+  );
+  const [bedroomNumCount, setBedroomNumCount] = useState(
+    isEdit ? editarNumBedroom! : 0
+  );
+  const [garageNumCount, setGarageNumCount] = useState(
+    isEdit ? editarNumGarage! : 0
+  );
+  const [dependenciesNumCount, setDependenciesNumCount] = useState(
+    isEdit ? editarNumDependencies! : 0
+  );
+  const [suitesNumCount, setSuitesNumCount] = useState(
+    isEdit ? editarNumSuite! : 0
+  );
   const [propTypeDropdownIsOpen, setPropTypeDropdownIsOpen] = useState(true);
 
-  const [propertyFeaturesData, setPropertyFeaturesData] = useState<IEditPropertyMainFeatures>({
-    _id: isEdit ? propertyId : '',
-    adType: isEdit ? editarAdType : (isBuy ? 'comprar' : 'alugar'),
-    adSubtype: isEdit ? editarSubType : (isCommercial ? 'comercial' : 'residencial'),
-    propertyType: isEdit ? editarPropertyType : 'casa',
-    propertySubtype: isEdit ? editarPropertySubtype : 'padrao',
-    description: isEdit ? editarDescription : '',
-    size: {
-      width: isEdit ? editarSize.width : 0,
-      height: isEdit ? editarSize.height : 0,
-      totalArea: isEdit ? editarSize.totalArea : 0,
-      useableArea: isEdit ? editarSize.useableArea : 0
-    },
-    propertyValue: isEdit ? `${editarPropertyValue},00` : '',
-    condominium: isEdit ? editarCondominium : false,
-    iptu: isEdit ? editarIptu : false,
-    condominiumValue: isEdit ? `${editarCondominiumValue},00` : '',
-    iptuValue: isEdit ? editarIptuValue : '',
-    metadata: [
-      {
-        type: 'bedroom',
-        amount: bedroomNumCount
+  const [propertyFeaturesData, setPropertyFeaturesData] =
+    useState<IEditPropertyMainFeatures>({
+      _id: isEdit ? propertyId! : '',
+      adType: isEdit ? editarAdType! : isBuy ? 'comprar' : 'alugar',
+      adSubtype: isEdit
+        ? editarSubType!
+        : isCommercial
+        ? 'comercial'
+        : 'residencial',
+      propertyType: isEdit ? editarPropertyType! : 'casa',
+      propertySubtype: isEdit ? editarPropertySubtype! : 'padrao',
+      description: isEdit ? editarDescription! : '',
+      size: {
+        width: isEdit ? editarSize!.width : 0,
+        height: isEdit ? editarSize!.height : 0,
+        totalArea: isEdit ? editarSize!.totalArea : 0,
+        useableArea: isEdit ? editarSize!.useableArea : 0,
       },
-      {
-        type: 'bathroom',
-        amount: bathroomNumCount
-      },
-      {
-        type: 'garage',
-        amount: garageNumCount
-      },
-      {
-        type: 'dependencies',
-        amount: dependenciesNumCount
-      },
-      {
-        type: 'suites',
-        amount: suitesNumCount
-      },
-    ],
-  });
+      propertyValue: isEdit ? `${editarPropertyValue},00` : '',
+      condominium: isEdit ? editarCondominium! : false,
+      iptu: isEdit ? editarIptu! : false,
+      condominiumValue: isEdit ? `${editarCondominiumValue},00` : '',
+      iptuValue: isEdit ? editarIptuValue! : '',
+      metadata: [
+        {
+          type: 'bedroom',
+          amount: bedroomNumCount!,
+        },
+        {
+          type: 'bathroom',
+          amount: bathroomNumCount!,
+        },
+        {
+          type: 'garage',
+          amount: garageNumCount!,
+        },
+        {
+          type: 'dependencies',
+          amount: dependenciesNumCount!,
+        },
+        {
+          type: 'suites',
+          amount: suitesNumCount!,
+        },
+      ],
+    });
 
   // Atualiza o objeto que é enviado ao componente pai;
   useEffect(() => {
-    onMainFeaturesUpdate(propertyFeaturesData)
+    onMainFeaturesUpdate!(propertyFeaturesData);
   }, [propertyFeaturesData]);
 
   const [propertyFeaturesErrors, setPropertyFeaturesErrors] = useState({
@@ -135,58 +163,63 @@ const MainFeatures: React.FC<IMainFeatures> = ({
   });
 
   useEffect(() => {
-    setPropertyFeaturesErrors(errors);
+    setPropertyFeaturesErrors(errors!);
   }, [errors]);
 
   // Faz a rolagem automática para o input que apresentar erro;
   useEffect(() => {
     const scrollToError = (errorKey: keyof typeof propertyFeaturesErrors) => {
-      if (propertyFeaturesErrors[errorKey] !== '' && mainFeaturesInputRefs[errorKey]?.current) {
-        mainFeaturesErrorScroll[errorKey]?.current.scrollIntoView({ behavior: 'auto', block: 'center' });
+      if (
+        propertyFeaturesErrors[errorKey] !== '' &&
+        mainFeaturesInputRefs[errorKey]?.current
+      ) {
+        mainFeaturesErrorScroll[errorKey]?.current.scrollIntoView({
+          behavior: 'auto',
+          block: 'center',
+        });
       }
     };
-  
+
     scrollToError('description');
     scrollToError('totalArea');
     scrollToError('propertyValue');
     scrollToError('condominiumValue');
     scrollToError('iptuValue');
-  }, [propertyFeaturesErrors]);  
-  
+  }, [propertyFeaturesErrors]);
 
   const handleBuy = () => {
     setIsBuy(true);
     setIsRent(false);
-    setPropertyFeaturesData(prevData => ({
+    setPropertyFeaturesData((prevData) => ({
       ...prevData,
-      adType: isBuy ? 'alugar' : 'comprar'
+      adType: isBuy ? 'alugar' : 'comprar',
     }));
   };
 
   const handleRent = () => {
     setIsBuy(false);
     setIsRent(true);
-    setPropertyFeaturesData(prevData => ({
+    setPropertyFeaturesData((prevData) => ({
       ...prevData,
-      adType: isBuy ? 'alugar' : 'comprar'
+      adType: isBuy ? 'alugar' : 'comprar',
     }));
   };
 
   const handleCommercial = () => {
     setIsCommercial(true);
     setIsResidential(false);
-    setPropertyFeaturesData(prevData => ({
+    setPropertyFeaturesData((prevData) => ({
       ...prevData,
-      adSubtype: isCommercial ? 'residencial' : 'comercial'
+      adSubtype: isCommercial ? 'residencial' : 'comercial',
     }));
   };
 
   const handleResidential = () => {
     setIsCommercial(false);
     setIsResidential(true);
-    setPropertyFeaturesData(prevData => ({
+    setPropertyFeaturesData((prevData) => ({
       ...prevData,
-      adSubtype: isResidential ? 'comercial' : 'residencial'
+      adSubtype: isResidential ? 'comercial' : 'residencial',
     }));
   };
 
@@ -210,35 +243,43 @@ const MainFeatures: React.FC<IMainFeatures> = ({
     setPropertyFeaturesData({
       ...propertyFeaturesData,
       propertyType: type,
-      propertySubtype: subType
+      propertySubtype: subType,
     });
     setPropTypeDropdownIsOpen(!propTypeDropdownIsOpen);
-  }
+  };
 
-  const handleAddClick = (key: string, counter: number, setCounter: Dispatch<SetStateAction<number>>) => {
+  const handleAddClick = (
+    key: string,
+    counter: number,
+    setCounter: Dispatch<SetStateAction<number>>
+  ) => {
     setCounter(counter + 1);
-    const updatedMetadata = propertyFeaturesData.metadata.map(item => {
+    const updatedMetadata = propertyFeaturesData.metadata.map((item) => {
       if (item.type === key) {
         return { ...item, amount: counter + 1 };
       }
       return item;
     });
-    setPropertyFeaturesData(prevState => ({
+    setPropertyFeaturesData((prevState) => ({
       ...prevState,
       metadata: updatedMetadata,
     }));
   };
-  
-  const handleMinusClick = (key: string, counter: number, setCounter: Dispatch<SetStateAction<number>>) => {
+
+  const handleMinusClick = (
+    key: string,
+    counter: number,
+    setCounter: Dispatch<SetStateAction<number>>
+  ) => {
     if (counter > 0) {
       setCounter(counter - 1);
-      const updatedMetadata = propertyFeaturesData.metadata.map(item => {
+      const updatedMetadata = propertyFeaturesData.metadata.map((item) => {
         if (item.type === key) {
           return { ...item, amount: counter - 1 };
         }
         return item;
       });
-      setPropertyFeaturesData(prevState => ({
+      setPropertyFeaturesData((prevState) => ({
         ...prevState,
         metadata: updatedMetadata,
       }));
@@ -249,37 +290,55 @@ const MainFeatures: React.FC<IMainFeatures> = ({
     {
       key: 'bedroom',
       label: 'Quartos',
-      clickAdd: () => handleAddClick('bedroom', bedroomNumCount, setBedroomNumCount),
-      clickMinus: () => handleMinusClick('bedroom', bedroomNumCount, setBedroomNumCount),
-      var: bedroomNumCount
+      clickAdd: () =>
+        handleAddClick('bedroom', bedroomNumCount!, setBedroomNumCount),
+      clickMinus: () =>
+        handleMinusClick('bedroom', bedroomNumCount!, setBedroomNumCount),
+      var: bedroomNumCount,
     },
     {
       key: 'bathroom',
       label: 'Banheiros',
-      clickAdd: () => handleAddClick('bathroom', bathroomNumCount, setBathroomNumCount),
-      clickMinus: () => handleMinusClick('bathroom', bathroomNumCount, setBathroomNumCount),
-      var: bathroomNumCount
+      clickAdd: () =>
+        handleAddClick('bathroom', bathroomNumCount, setBathroomNumCount),
+      clickMinus: () =>
+        handleMinusClick('bathroom', bathroomNumCount, setBathroomNumCount),
+      var: bathroomNumCount,
     },
     {
       key: 'garage',
       label: 'Vagas de Garagem',
-      clickAdd: () => handleAddClick('garage', garageNumCount, setGarageNumCount),
-      clickMinus: () => handleMinusClick('garage', garageNumCount, setGarageNumCount),
-      var: garageNumCount
+      clickAdd: () =>
+        handleAddClick('garage', garageNumCount, setGarageNumCount),
+      clickMinus: () =>
+        handleMinusClick('garage', garageNumCount, setGarageNumCount),
+      var: garageNumCount,
     },
     {
       key: 'dependencies',
       label: 'Andares',
-      clickAdd: () => handleAddClick('dependencies', dependenciesNumCount, setDependenciesNumCount),
-      clickMinus: () => handleMinusClick('dependencies', dependenciesNumCount, setDependenciesNumCount),
-      var: dependenciesNumCount
+      clickAdd: () =>
+        handleAddClick(
+          'dependencies',
+          dependenciesNumCount,
+          setDependenciesNumCount
+        ),
+      clickMinus: () =>
+        handleMinusClick(
+          'dependencies',
+          dependenciesNumCount,
+          setDependenciesNumCount
+        ),
+      var: dependenciesNumCount,
     },
     {
       key: 'suites',
       label: 'Suítes',
-      clickAdd: () => handleAddClick('suites', suitesNumCount, setSuitesNumCount),
-      clickMinus: () => handleMinusClick('suites', suitesNumCount, setSuitesNumCount),
-      var: suitesNumCount
+      clickAdd: () =>
+        handleAddClick('suites', suitesNumCount, setSuitesNumCount),
+      clickMinus: () =>
+        handleMinusClick('suites', suitesNumCount, setSuitesNumCount),
+      var: suitesNumCount,
     },
   ];
 
@@ -341,40 +400,45 @@ const MainFeatures: React.FC<IMainFeatures> = ({
           </div>
         </div>
 
-        <div 
+        <div
           className="drop-shadow-lg lg:h-12 md:w-96 lg:text-lg rounded-lg p-2 border border-quaternary flex justify-between mt-10"
           onClick={() => setPropTypeDropdownIsOpen(!propTypeDropdownIsOpen)}
         >
-          <p className='text-quaternary text'>{propertyFeaturesData.propertyType ? capitalizeFirstLetter(propertyFeaturesData.propertySubtype) : `Tipo de imóvel`}</p>
+          <p className="text-quaternary text">
+            {propertyFeaturesData.propertyType
+              ? capitalizeFirstLetter(propertyFeaturesData.propertySubtype)
+              : `Tipo de imóvel`}
+          </p>
           <ArrowDownIcon
             className={`my-auto cursor-pointer ${
               propTypeDropdownIsOpen
-              ? 'transform rotate-360 transition-transform duration-300 ease-in-out'
-              : 'transform rotate-180 transition-transform duration-300 ease-in-out'
+                ? 'transform rotate-360 transition-transform duration-300 ease-in-out'
+                : 'transform rotate-180 transition-transform duration-300 ease-in-out'
             }`}
           />
         </div>
-        <div 
+        <div
           className={` md:w-fit w-full h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md ${
-            propTypeDropdownIsOpen
-            ? 'hidden '
-            : ''
+            propTypeDropdownIsOpen ? 'hidden ' : ''
           }`}
         >
           {propertyTypesData.map((prop, index) => (
-            <div className='w-96 rounded-t-8 text-quaternary bg-tertiary' key={prop.key}>
-              <p 
-                className='text-center p-1 hover:bg-quaternary hover:text-tertiary font-normal text-lg'
-                onClick={() => handlePropertyTypeSelection("todos", "todos")}
+            <div
+              className="w-96 rounded-t-8 text-quaternary bg-tertiary"
+              key={prop.key}
+            >
+              <p
+                className="text-center p-1 hover:bg-quaternary hover:text-tertiary font-normal text-lg"
+                onClick={() => handlePropertyTypeSelection('todos', 'todos')}
               >
                 Todos
               </p>
-              <p className='text-quaternary lg:text-2xl p-1 text-center font-bold '>
+              <p className="text-quaternary lg:text-2xl p-1 text-center font-bold ">
                 {prop.type}
               </p>
-              {propertyTypesData[index].subTypes.map((type) =>  (
-                <div 
-                  className='text-center p-1 hover:bg-quaternary hover:text-tertiary font-normal text-lg'
+              {propertyTypesData[index].subTypes.map((type) => (
+                <div
+                  className="text-center p-1 hover:bg-quaternary hover:text-tertiary font-normal text-lg"
                   onClick={() => handlePropertyTypeSelection(prop.type, type)}
                   key={type}
                 >
@@ -390,30 +454,46 @@ const MainFeatures: React.FC<IMainFeatures> = ({
             Dados do Imóvel:
           </h3>
           <div className="md:flex gap-5">
-            <div className="flex flex-col md:w-full lg:mr-5 my-5 md:mt-0" ref={mainFeaturesErrorScroll.totalArea}>
+            <div
+              className="flex flex-col md:w-full lg:mr-5 my-5 md:mt-0"
+              ref={mainFeaturesErrorScroll.totalArea}
+            >
               <label className="text-2xl font-normal text-quaternary leading-7">
                 Área Total
               </label>
               <input
                 value={propertyFeaturesData.size.totalArea}
-                placeholder='m²'
-                className={'border border-quaternary rounded-[10px] h-12 w-full text-quaternary text-2xl font-bold p-2 md:font-bold drop-shadow-lg bg-tertiary mt-5'}
-                style={propertyFeaturesErrors.totalArea ? { border: '1px solid red' } : {}}
+                placeholder="m²"
+                className={
+                  'border border-quaternary rounded-[10px] h-12 w-full text-quaternary text-2xl font-bold p-2 md:font-bold drop-shadow-lg bg-tertiary mt-5'
+                }
+                style={
+                  propertyFeaturesErrors.totalArea
+                    ? { border: '1px solid red' }
+                    : {}
+                }
                 onChange={(e) => {
-                  const numericValue = parseFloat(e.target.value); 
-                  const totalArea = Number.isNaN(numericValue) ? 0 : numericValue;
+                  const numericValue = parseFloat(e.target.value);
+                  const totalArea = Number.isNaN(numericValue)
+                    ? 0
+                    : numericValue;
                   setPropertyFeaturesData({
                     ...propertyFeaturesData,
                     size: {
                       ...propertyFeaturesData.size,
-                      totalArea: totalArea
-                    }
+                      totalArea: totalArea,
+                    },
                   });
-                  setPropertyFeaturesErrors({...propertyFeaturesErrors, totalArea: ''})
+                  setPropertyFeaturesErrors({
+                    ...propertyFeaturesErrors,
+                    totalArea: '',
+                  });
                 }}
               />
               {propertyFeaturesErrors.totalArea && (
-                <span className="text-red-500 mt-2 text-xs">{propertyFeaturesErrors.totalArea}</span>
+                <span className="text-red-500 mt-2 text-xs">
+                  {propertyFeaturesErrors.totalArea}
+                </span>
               )}
               <span
                 onClick={handleOpen}
@@ -434,18 +514,22 @@ const MainFeatures: React.FC<IMainFeatures> = ({
               </label>
               <input
                 value={propertyFeaturesData.size.useableArea}
-                placeholder='m²'
-                className={'border border-quaternary rounded-[10px] h-12 w-full text-quaternary text-2xl font-bold p-2 md:font-bold drop-shadow-lg bg-tertiary mt-5'}
+                placeholder="m²"
+                className={
+                  'border border-quaternary rounded-[10px] h-12 w-full text-quaternary text-2xl font-bold p-2 md:font-bold drop-shadow-lg bg-tertiary mt-5'
+                }
                 onChange={(e) => {
-                  const numericValue = parseFloat(e.target.value); 
-                  const useableArea = Number.isNaN(numericValue) ? 0 : numericValue;
-              
+                  const numericValue = parseFloat(e.target.value);
+                  const useableArea = Number.isNaN(numericValue)
+                    ? 0
+                    : numericValue;
+
                   setPropertyFeaturesData({
                     ...propertyFeaturesData,
                     size: {
                       ...propertyFeaturesData.size,
-                      useableArea: useableArea
-                    }
+                      useableArea: useableArea,
+                    },
                   });
                 }}
               />
@@ -485,7 +569,10 @@ const MainFeatures: React.FC<IMainFeatures> = ({
         </div>
 
         <div className="my-5">
-          <div className="flex flex-col mx-5 lg:mx-0" ref={mainFeaturesErrorScroll.description}>
+          <div
+            className="flex flex-col mx-5 lg:mx-0"
+            ref={mainFeaturesErrorScroll.description}
+          >
             <label className="text-2xl font-normal text-quaternary leading-7 mb-5 drop-shadow-xl">
               Descrição do Imóvel:
             </label>
@@ -493,47 +580,78 @@ const MainFeatures: React.FC<IMainFeatures> = ({
               className="bg-tertiary border border-quaternary rounded-[10px] h-40 drop-shadow-xl text-lg p-2 font-semibold text-quaternary"
               value={propertyFeaturesData.description}
               onChange={(e) => {
-                setPropertyFeaturesData({...propertyFeaturesData, description: e.target.value});
-                setPropertyFeaturesErrors({...propertyFeaturesErrors, description: ''})
+                setPropertyFeaturesData({
+                  ...propertyFeaturesData,
+                  description: e.target.value,
+                });
+                setPropertyFeaturesErrors({
+                  ...propertyFeaturesErrors,
+                  description: '',
+                });
               }}
-              style={propertyFeaturesErrors.description ? { border: '1px solid red' } : {}}
+              style={
+                propertyFeaturesErrors.description
+                  ? { border: '1px solid red' }
+                  : {}
+              }
               required
             />
             {propertyFeaturesErrors.description && (
-              <span className="text-red-500 mt-2 text-xs">{propertyFeaturesErrors.description}</span>
+              <span className="text-red-500 mt-2 text-xs">
+                {propertyFeaturesErrors.description}
+              </span>
             )}
           </div>
         </div>
 
         <div className="my-10 px-5 lg:px-0">
-
           <h3 className="text-3xl text-quaternary font-semibold leading-9 my-5">
             Valores do Imóvel:
           </h3>
 
           <div className="md:flex my-5">
-            <div className="flex flex-col md:w-96 lg:pr-6" ref={mainFeaturesErrorScroll.description}>
+            <div
+              className="flex flex-col md:w-96 lg:pr-6"
+              ref={mainFeaturesErrorScroll.description}
+            >
               <label className="text-2xl font-normal text-quaternary leading-7">
                 {`${isBuy ? 'Valor do Imóvel' : 'Valor do Aluguel'}`}
               </label>
               <input
                 value={maskedPrice(propertyFeaturesData.propertyValue)}
-                placeholder='R$'
-                className={'border border-quaternary rounded-[10px] h-12 w-full text-quaternary text-2xl font-bold p-2 md:font-bold drop-shadow-lg bg-tertiary mt-5'}
-                style={propertyFeaturesErrors.propertyValue ? { border: '1px solid red' } : {}}
+                placeholder="R$"
+                className={
+                  'border border-quaternary rounded-[10px] h-12 w-full text-quaternary text-2xl font-bold p-2 md:font-bold drop-shadow-lg bg-tertiary mt-5'
+                }
+                style={
+                  propertyFeaturesErrors.propertyValue
+                    ? { border: '1px solid red' }
+                    : {}
+                }
                 onChange={(e) => {
-                  setPropertyFeaturesData({...propertyFeaturesData, propertyValue: maskedPrice(e.target.value)});
-                  setPropertyFeaturesErrors({...propertyFeaturesErrors, propertyValue: ''})
-                } }
+                  setPropertyFeaturesData({
+                    ...propertyFeaturesData,
+                    propertyValue: maskedPrice(e.target.value),
+                  });
+                  setPropertyFeaturesErrors({
+                    ...propertyFeaturesErrors,
+                    propertyValue: '',
+                  });
+                }}
               />
               {propertyFeaturesErrors.propertyValue && (
-                <span className="text-red-500 mt-2 text-xs">{propertyFeaturesErrors.propertyValue}</span>
+                <span className="text-red-500 mt-2 text-xs">
+                  {propertyFeaturesErrors.propertyValue}
+                </span>
               )}
             </div>
           </div>
 
           <div className="my-10">
-            <div className="flex" ref={mainFeaturesErrorScroll.condominiumValue}>
+            <div
+              className="flex"
+              ref={mainFeaturesErrorScroll.condominiumValue}
+            >
               <label className="text-2xl font-normal text-quaternary leading-7">
                 Condomínio{' '}
               </label>
@@ -543,47 +661,77 @@ const MainFeatures: React.FC<IMainFeatures> = ({
               </p>
             </div>
             <div className="lg:flex md:w-96 lg:ml-0">
-              <div className='flex flex-col'>
+              <div className="flex flex-col">
                 <input
-                  value={propertyFeaturesData.condominium ? maskedPrice(propertyFeaturesData.condominiumValue) : ''}
-                  placeholder='R$'
-                  className={`border border-quaternary rounded-[10px] h-12 lg:ml-0 md:ml-0 text-quaternary md:text-[26px] text-2xl font-bold md:px-2 drop-shadow-lg mt-5 p-2 ${
-                      !propertyFeaturesData.condominium ? 'bg-[#CACACA]' : 'bg-tertiary'
-                    }`
+                  value={
+                    propertyFeaturesData.condominium
+                      ? maskedPrice(propertyFeaturesData.condominiumValue)
+                      : ''
                   }
-                  style={propertyFeaturesErrors.condominiumValue ? { border: '1px solid red' } : {}}
+                  placeholder="R$"
+                  className={`border border-quaternary rounded-[10px] h-12 lg:ml-0 md:ml-0 text-quaternary md:text-[26px] text-2xl font-bold md:px-2 drop-shadow-lg mt-5 p-2 ${
+                    !propertyFeaturesData.condominium
+                      ? 'bg-[#CACACA]'
+                      : 'bg-tertiary'
+                  }`}
+                  style={
+                    propertyFeaturesErrors.condominiumValue
+                      ? { border: '1px solid red' }
+                      : {}
+                  }
                   onChange={(e) => {
                     if (propertyFeaturesData.condominium) {
-                      setPropertyFeaturesData({...propertyFeaturesData, condominiumValue: maskedPrice(e.target.value)});
-                      setPropertyFeaturesErrors({...propertyFeaturesErrors, condominiumValue: ''});
+                      setPropertyFeaturesData({
+                        ...propertyFeaturesData,
+                        condominiumValue: maskedPrice(e.target.value),
+                      });
+                      setPropertyFeaturesErrors({
+                        ...propertyFeaturesErrors,
+                        condominiumValue: '',
+                      });
                     }
                   }}
                 />
                 {propertyFeaturesErrors.condominiumValue && (
-                  <span className="text-red-500 mt-2 text-xs">{propertyFeaturesErrors.condominiumValue}</span>
+                  <span className="text-red-500 mt-2 text-xs">
+                    {propertyFeaturesErrors.condominiumValue}
+                  </span>
                 )}
               </div>
 
               <div
                 className={`lg:ml-5 w-12 h-12 shrink-0 border bg-tertiary rounded-[10px] mt-5 drop-shadow-lg cursor-pointer ${
-                  propertyFeaturesData.condominium ? 'border-secondary' : 'border-quaternary'
+                  propertyFeaturesData.condominium
+                    ? 'border-secondary'
+                    : 'border-quaternary'
                 }`}
-                onClick={() => setPropertyFeaturesData({...propertyFeaturesData, condominium: !propertyFeaturesData.condominium})}
+                onClick={() =>
+                  setPropertyFeaturesData({
+                    ...propertyFeaturesData,
+                    condominium: !propertyFeaturesData.condominium,
+                  })
+                }
               >
                 {propertyFeaturesData.condominium && (
                   <CheckIcon
                     fill="#F5BF5D"
                     width="42"
-                    className={`pl-1 ${propertyFeaturesData.condominium ? ' border-secondary' : ''}`}
+                    className={`pl-1 ${
+                      propertyFeaturesData.condominium
+                        ? ' border-secondary'
+                        : ''
+                    }`}
                   />
                 )}
-                
               </div>
               <p className="text-xl md:text-2xl font-light text-quaternary leading-7 mt-2 lg:mt-9 lg:ml-5">
                 {!propertyFeaturesData.condominium ? 'Remover' : 'Aplicar'}
               </p>
             </div>
-            <div className="flex mt-10 " ref={mainFeaturesErrorScroll.iptuValue}>
+            <div
+              className="flex mt-10 "
+              ref={mainFeaturesErrorScroll.iptuValue}
+            >
               <label className="text-2xl font-normal text-quaternary leading-7">
                 IPTU
               </label>
@@ -593,44 +741,68 @@ const MainFeatures: React.FC<IMainFeatures> = ({
               </p>
             </div>
             <div className="lg:flex md:w-96 lg:ml-0">
-              <div className='flex flex-col'>
+              <div className="flex flex-col">
                 <input
-                  value={propertyFeaturesData.iptu ? maskedPrice(propertyFeaturesData.iptuValue) : ''}
-                  placeholder='R$'
+                  value={
+                    propertyFeaturesData.iptu
+                      ? maskedPrice(propertyFeaturesData.iptuValue)
+                      : ''
+                  }
+                  placeholder="R$"
                   className={`border border-quaternary rounded-[10px] h-12 lg:ml-0 md:ml-0 text-quaternary md:text-[26px] text-2xl font-bold md:px-2 drop-shadow-lg mt-5 p-2 ${
                     !propertyFeaturesData.iptu ? 'bg-[#CACACA]' : 'bg-tertiary'
                   }`}
-                  style={propertyFeaturesErrors.iptuValue ? { border: '1px solid red' } : {}}
+                  style={
+                    propertyFeaturesErrors.iptuValue
+                      ? { border: '1px solid red' }
+                      : {}
+                  }
                   onChange={(e) => {
                     if (propertyFeaturesData.iptu) {
-                      setPropertyFeaturesData({...propertyFeaturesData, iptuValue: maskedPrice(e.target.value)});
-                      setPropertyFeaturesErrors({...propertyFeaturesErrors, iptuValue: ''});
+                      setPropertyFeaturesData({
+                        ...propertyFeaturesData,
+                        iptuValue: maskedPrice(e.target.value),
+                      });
+                      setPropertyFeaturesErrors({
+                        ...propertyFeaturesErrors,
+                        iptuValue: '',
+                      });
                     }
                   }}
                 />
 
-                {propertyFeaturesData.iptu && propertyFeaturesErrors.iptuValue && (
-                  <span className="text-red-500 mt-2 text-xs">{propertyFeaturesErrors.iptuValue}</span>
-                )}
+                {propertyFeaturesData.iptu &&
+                  propertyFeaturesErrors.iptuValue && (
+                    <span className="text-red-500 mt-2 text-xs">
+                      {propertyFeaturesErrors.iptuValue}
+                    </span>
+                  )}
               </div>
-              
+
               <div
                 className={`lg:ml-5 w-12 h-12 border bg-tertiary rounded-[10px] mt-5 drop-shadow-lg cursor-pointer shrink-0 ${
-                  propertyFeaturesData.iptu ? 'border-secondary' : 'border-quaternary'
+                  propertyFeaturesData.iptu
+                    ? 'border-secondary'
+                    : 'border-quaternary'
                 }`}
-                onClick={() => {setPropertyFeaturesData({...propertyFeaturesData, iptu: !propertyFeaturesData.iptu})}}
+                onClick={() => {
+                  setPropertyFeaturesData({
+                    ...propertyFeaturesData,
+                    iptu: !propertyFeaturesData.iptu,
+                  });
+                }}
               >
                 {propertyFeaturesData.iptu && (
                   <CheckIcon
                     fill="#F5BF5D"
                     width="42"
-                    className={`pl-1 ${propertyFeaturesData.iptu ? ' border-secondary' : ''}`}
+                    className={`pl-1 ${
+                      propertyFeaturesData.iptu ? ' border-secondary' : ''
+                    }`}
                   />
                 )}
               </div>
-              <p
-                className="text-xl md:text-2xl font-light text-quaternary leading-7 mt-2 lg:mt-9 lg:ml-5"
-              >
+              <p className="text-xl md:text-2xl font-light text-quaternary leading-7 mt-2 lg:mt-9 lg:ml-5">
                 {!propertyFeaturesData.iptu ? 'Aplicar' : 'Remover'}
               </p>
             </div>

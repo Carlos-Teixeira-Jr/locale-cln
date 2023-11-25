@@ -10,9 +10,9 @@ import TrashIcon from '../../atoms/icons/trashIcon';
 
 interface IImages {
   editarImages?: string[];
-  onImagesUpdate: (updatedImages: string[]) => void;
-  onErrorsInfo: OnErrorInfo;
-  imagesInputRef: any;
+  onImagesUpdate?: (updatedImages: string[]) => void;
+  onErrorsInfo?: OnErrorInfo;
+  imagesInputRef?: any;
 }
 
 export type OnErrorInfo = {
@@ -45,13 +45,13 @@ const UploadImages = ({
   }, [error]);
 
   useEffect(() => {
-    if (onErrorsInfo.prop === 'images') {
-      setError(onErrorsInfo);
+    if (onErrorsInfo?.prop === 'images') {
+      setError(onErrorsInfo!);
     }
   }, [error, onErrorsInfo]);
 
   useEffect(() => {
-    onImagesUpdate(images.map((image) => image.src));
+    onImagesUpdate!(images.map((image) => image.src));
   }, [images]);
 
   useEffect(() => {
@@ -123,14 +123,14 @@ const UploadImages = ({
           images.length === 0 ? 'hidden' : ''
         }`}
         style={
-          onErrorsInfo.prop === 'images' ? { border: '1px solid red' } : {}
+          onErrorsInfo?.prop === 'images' ? { border: '1px solid red' } : {}
         }
       >
         <DndProvider backend={HTML5Backend}>
           <div
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
             style={
-              onErrorsInfo.prop === 'images' ? { border: '1px solid red' } : {}
+              onErrorsInfo?.prop === 'images' ? { border: '1px solid red' } : {}
             }
           >
             {images.map((image, index) => (
