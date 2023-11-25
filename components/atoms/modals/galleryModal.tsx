@@ -7,16 +7,21 @@ import { IData } from '../../../common/interfaces/property/propertyData';
 export interface IGalleryModal {
   setModalIsOpen: (isOpen: boolean) => void;
   property: IData;
-  selectedImage: number
+  selectedImage: number;
 }
 
-const GalleryModal: React.FC<IGalleryModal> = ({ setModalIsOpen, property, selectedImage }) => {
-
+const GalleryModal: React.FC<IGalleryModal> = ({
+  setModalIsOpen,
+  property,
+  selectedImage,
+}) => {
   const [currentIndex, setCurrentIndex] = useState(selectedImage);
 
   const prevImage = () => {
     const isFirstImage = currentIndex === 0;
-    const newIndex = isFirstImage ? property.images.length - 1 : currentIndex - 1;
+    const newIndex = isFirstImage
+      ? property.images.length - 1
+      : currentIndex - 1;
     setCurrentIndex(newIndex);
   };
 
@@ -27,7 +32,7 @@ const GalleryModal: React.FC<IGalleryModal> = ({ setModalIsOpen, property, selec
   };
 
   return (
-    <div className="h-fit w-full -translate-y-[50%] top-96 pt-20 pb-12 bg-black/90 absolute z-50 group inset-x-0">
+    <div className="h-full w-full -translate-y-[53.2%] top-96 pt-20 pb-12 bg-black/90 absolute z-50 group inset-x-0">
       <div>
         <AiOutlineClose
           className="hidden group-hover:block absolute top-[4%] md:top-[5%] -translate-x-0 -translate-y-[50%] right-2 text-2xl rounded-full p-2 bg-black/20 text-white cursor-pointer"
@@ -35,13 +40,13 @@ const GalleryModal: React.FC<IGalleryModal> = ({ setModalIsOpen, property, selec
           onClick={() => setModalIsOpen(false)}
         />
       </div>
-      <div className='flex justify-center w-full'>
-        <Image 
-          src={property.images[currentIndex]} 
-          alt={''} 
+      <div className="flex justify-center mt-16 w-full">
+        <Image
+          src={property.images[currentIndex]}
+          alt={''}
           width={300}
-          height={300}  
-          className=' rounded-3xl'   
+          height={300}
+          className=" rounded-3xl"
         />
       </div>
       <div>
