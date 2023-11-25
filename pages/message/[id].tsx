@@ -14,7 +14,7 @@ import MessageInfoCard from '../../components/molecules/cards/messageInfoCard/me
 import AdminHeader from '../../components/organisms/adminHeader/adminHeader';
 import SideMenu from '../../components/organisms/sideMenu/sideMenu';
 
-interface IMessagePage {
+type Message = {
   messages: {
     messagesDocs: any[];
     count: number;
@@ -25,7 +25,7 @@ interface IMessagePage {
 
 interface IMessagePage {
   ownerProperties: IOwnerProperties;
-  message: IMessagePage;
+  message: Message;
   dataNot: [];
 }
 

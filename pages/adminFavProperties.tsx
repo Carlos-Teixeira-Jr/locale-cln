@@ -1,6 +1,6 @@
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { GetServerSidePropsContext } from 'next';
-import { getSession } from 'next-auth/react';
+import { getSession, useSession } from 'next-auth/react';
 import { destroyCookie } from 'nookies';
 import { IFavProperties } from '../common/interfaces/properties/favouriteProperties';
 import {
@@ -13,17 +13,17 @@ import PropertyCard from '../components/molecules/cards/propertyCard/PropertyCar
 import AdminHeader from '../components/organisms/adminHeader/adminHeader';
 import SideMenu from '../components/organisms/sideMenu/sideMenu';
 import { NextPageWithLayout } from './page';
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface IAdminFavProperties {
   favouriteProperties: IFavProperties;
-  properties: IPropertyInfo;
+  ownerProperties: IPropertyInfo;
   notifications: [];
 }
 
 const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
   favouriteProperties,
-  properties,
+  ownerProperties,
   notifications,
 }) => {
 
@@ -34,6 +34,13 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
     setIsOwner(properties?.docs?.length > 0 ? true : false);
   }, [properties]);
 
+  const [isOwner, setIsOwner] = useState<boolean>(false);
+
+  // Determina se o usuário já possui anúncios ou não;
+  useEffect(() => {
+    setIsOwner(ownerProperties.docs?.length > 0 ? true : false);
+  }, [ownerProperties]);
+  
   return (
     <>
       <AdminHeader isOwnerProp={isOwner} />
@@ -179,7 +186,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       console.error(error);
     }
 
-    const [notifications, favouriteProperties, properties] = await Promise.all([
+    const [notifications, favouriteProperties, ownerProperties] = await Promise.all([
       fetch(`${baseUrl}/notification/64da04b6052b4d12939684b0`, {
         method: 'GET',
         headers: {
@@ -220,7 +227,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     return {
       props: {
         favouriteProperties,
-        properties,
+        ownerProperties,
         notifications,
       },
     };
