@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { MouseEvent, useState } from 'react';
 import Modal from 'react-modal';
+import { IData } from '../../../../common/interfaces/property/propertyData';
 import BathroomIcon from '../../../atoms/icons/bathroomIcon';
 import BedroomIcon from '../../../atoms/icons/bedroomIcon';
 import DotIcon from '../../../atoms/icons/dotIcon';
@@ -9,7 +10,6 @@ import NextCardIcon from '../../../atoms/icons/nextCardIcon';
 import ParkingIcon from '../../../atoms/icons/parkingIcon';
 import PreviousCardIcon from '../../../atoms/icons/previousCardIcon';
 import MessageModal from '../../../atoms/modals/messageModal';
-import { IData } from '../../../../common/interfaces/property/propertyData';
 Modal.setAppElement('#__next');
 
 export interface IPropertyInfoCard {
@@ -23,7 +23,7 @@ export interface IPropertyInfoCard {
   location: string;
   href: string;
   highlighted: boolean;
-  propertyInfo: IData
+  propertyInfo: IData;
 }
 
 export interface IFormData {
@@ -43,7 +43,7 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
   location,
   href,
   highlighted,
-  propertyInfo
+  propertyInfo,
 }) => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -144,36 +144,37 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
               </p>
             </div>
             <div className="grid grid-auto-cols grid-flow-col gap-3 pb-6 md:pb-0 lg:pb-0">
-              <div className="grid grid-auto-cols grid-flow-col gap-1">
+              <div className="grid grid-auto-cols grid-flow-col gap-1 lg:gap-0">
                 <div className="md:w-[30px] h-[30px]">
                   <BedroomIcon fill="#6B7280" />
                 </div>
-                <div className="font-bold text-2xl leading-7 text-quaternary flex items-center justify-center">
+                <div className="font-bold text-2xl md:ml-[0.2rem] text-quaternary flex items-center justify-center">
                   {bedrooms}
                 </div>
               </div>
-              <div className="grid grid-auto-cols grid-flow-col gap-1">
+              <div className="grid grid-auto-cols grid-flow-col gap-1 lg:gap-0">
                 <div className="md:w-[30px] h-[30px]">
                   <ParkingIcon fill="#6B7280" />
                 </div>
-                <div className="font-bold text-2xl leading-7 text-quaternary flex items-center justify-center">
+                <div className="font-bold text-2xl md:ml-[0.2rem]  text-quaternary flex items-center justify-center">
                   {parking_spaces}
                 </div>
               </div>
-              <div className="grid grid-auto-cols grid-flow-col gap-1">
+              <div className="grid grid-auto-cols grid-flow-col gap-1 lg:gap-0">
                 <div className="md:w-[30px] h-[30px]">
                   <BathroomIcon fill="#6B7280" />
                 </div>
-                <div className="font-bold text-2xl leading-7 text-quaternary flex items-center justify-center">
+                <div className="font-bold text-2xl md:ml-[0.2rem] text-quaternary flex items-center justify-center">
                   {bathrooms}
                 </div>
               </div>
               <div>
                 <button
-                  className="bg-primary md:w-[200px] md:h-12 rounded-full "
+                  className="bg-primary w-[170px] h-[50px] lg:w-[170px] xl:w-[200px] rounded-full items-center justify-center justify-items-center"
                   onClick={handleMessageBtnClick}
                 >
-                  <p className="md:w-[176px] md:h-[24px] font-normal text-sm px-2 md:text-lg lg:text-xl text-tertiary flex mx-auto align-middle justify-center py-0 sm:py-1 md:py-0 lg:py-0 xl:py-0 mb-1 md:mb-1 lg:mb-0">
+                  <p className="font-normal text-sm md:text-lg lg:text-lg xl:text-xl text-tertiary flex justify-center items-center ml-0 md:ml-2 lg:ml-2">
+
                     Enviar Mensagem
                   </p>
                 </button>
@@ -184,11 +185,11 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
       </Link>
 
       {modalIsOpen && (
-        <MessageModal 
-          isOpen={modalIsOpen} 
-          setModalIsOpen={setModalIsOpen} 
+        <MessageModal
+          isOpen={modalIsOpen}
+          setModalIsOpen={setModalIsOpen}
           propertyInfo={propertyInfo}
-         />
+        />
       )}
     </>
   );
