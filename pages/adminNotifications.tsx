@@ -1,5 +1,8 @@
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import { GetServerSidePropsContext } from 'next';
 import { getSession } from 'next-auth/react';
+import { destroyCookie } from 'nookies';
+import { useEffect, useState } from 'react';
 import { IPropertyInfo } from '../common/interfaces/property/propertyData';
 import { fetchJson } from '../common/utils/fetchJson';
 import Pagination from '../components/atoms/pagination/pagination';
@@ -9,22 +12,52 @@ import NotificationCard, {
 import AdminHeader from '../components/organisms/adminHeader/adminHeader';
 import SideMenu from '../components/organisms/sideMenu/sideMenu';
 import { useIsMobile } from '../hooks/useIsMobile';
-import { destroyCookie } from 'nookies';
-import jwt, { JwtPayload } from 'jsonwebtoken';
-import { useState, useEffect } from 'react';
 
 interface IMessageNotifications {
   ownerProperties: IPropertyInfo;
   notifications: [];
 }
 
-const MessageNotifications = ({
+const MessageNotifications = async ({
   notifications,
   ownerProperties,
 }: IMessageNotifications) => {
-
   const isMobile = useIsMobile();
   const [isOwner, setIsOwner] = useState<boolean>(false);
+  const [firstOpen, setFirstOpen] = useState(false);
+  const [showNots, setShowNots] = useState(false);
+
+  if (localStorage) {
+    var visits = localStorage.getItem('visits');
+    if (visits == null) {
+      setFirstOpen(true);
+      setShowNots(true);
+    } else {
+      localStorage.setItem('visits', visits + 1);
+      try {
+        const body = {
+          isRead: firstOpen,
+        };
+
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BASE_API_URL}/notification`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(body),
+          }
+        );
+
+        if (response.ok) {
+          setFirstOpen(false);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }
 
   // Determina se o usuário já possui anúncios ou não;
   useEffect(() => {
@@ -54,23 +87,21 @@ const MessageNotifications = ({
           <div className="lg:mb-10 flex flex-wrap flex-col md:flex-row lg:gap-10">
             {
               <div className="mx-10">
-                {notifications &&
-                  notifications?.map(
-                    ({ description, _id, title }: INotification) => (
-                      <NotificationCard
-                        key={_id}
-                        description={description}
-                        title={title}
-                        _id={_id}
-                      />
+                {showNots
+                  ? notifications &&
+                    notifications?.map(
+                      ({ description, _id, title }: INotification) => (
+                        <NotificationCard
+                          key={_id}
+                          description={description}
+                          title={title}
+                          _id={_id}
+                        />
+                      )
                     )
-                  )}
+                  : ''}
               </div>
             }
-
-            {/* <div className="flex justify-center mb-10">
-              {notifications && <Pagination totalPages={0} />}
-            </div> */}
           </div>
         </div>
       </div>
