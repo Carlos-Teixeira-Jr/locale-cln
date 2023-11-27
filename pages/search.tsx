@@ -133,7 +133,7 @@ const Search: NextPageWithLayout<ISearch> = ({
     <div>
       <Header />
       <div className="flex items-center justify-center mt-20">
-        <div className="lg:flex justify-center max-w-[1232px]">
+        <div className="lg:flex justify-center lg:max-w-[1232px]">
           <div className="flex flex-col lg:flex-row md:mt-0">
             <div className="mx-auto md:w-fit lg:w-[25%]">
               <FilterList
@@ -152,7 +152,7 @@ const Search: NextPageWithLayout<ISearch> = ({
               <div
                 className={`justify-center ${
                   mobileFilterIsOpen ? 'hidden' : ''
-                } flex w-full`}
+                } flex w-screen px-2 md:w-full itens-center md:px-0`}
               >
                 <SearchShortcut
                   onMobileFilterIsOpenChange={(isOpen) =>
@@ -200,7 +200,7 @@ const Search: NextPageWithLayout<ISearch> = ({
                   </div>
                 )}
               </div>
-            </div>
+            {/* </div> */}
 
             {!mobileFilterIsOpen &&
               propertyInfo.docs &&
@@ -337,6 +337,7 @@ const Search: NextPageWithLayout<ISearch> = ({
                   />
                 </div>
               )}
+            </div>
           </div>
         </div>
       </div>
