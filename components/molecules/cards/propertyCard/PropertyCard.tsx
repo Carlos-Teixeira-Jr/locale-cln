@@ -140,7 +140,7 @@ const PropertyCard: React.FC<IPropertyCard> = ({
 
   return (
     <div
-      className={`flex flex-col max-w-[350px] bg-tertiary shadow-lg rounded-[30px] mt-2 cursor-pointer ${
+      className={`flex flex-col lg:max-w-[350px] md:max-w-[250px] bg-tertiary shadow-lg rounded-[30px] mt-2 cursor-pointer ${
         expanded ? `min-h-[470px] max-h-fit` : 'max-h-[470px]'
       }`}
     > 
@@ -209,85 +209,91 @@ const PropertyCard: React.FC<IPropertyCard> = ({
           </div>
         </div>
         {/* Property Info */}
-        <div className="px-4 mt-2">
-          {favorited ? (
-            <div className="flex flex-row items-center">
+        <div className='flex flex-col justify-between'>
+          <div className={`flex flex-col px-4 mt-2 justify-between ${
+            expanded
+            ? 'h-fit'
+            : 'h-36'
+          }`}>
+            {favorited ? (
+              <div className="flex flex-row items-center">
+                <h1 className="font-bold text-2xl text-[#000000]">
+                  {formattedPrice}
+                </h1>
+                <span
+                  className="ml-36 transition hover:text-red-500 hover:scale-105"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleFavouriteIcon();
+                    return false;
+                  }}
+                >
+                  <HeartIcon
+                    fill="#F75D5F"
+                    className="transition hover:text-red-500"
+                  />
+                </span>
+              </div>
+            ) : (
               <h1 className="font-bold text-2xl text-[#000000]">
                 {formattedPrice}
               </h1>
-              <span
-                className="ml-36 transition hover:text-red-500 hover:scale-105"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  handleFavouriteIcon();
-                  return false;
-                }}
-              >
-                <HeartIcon
-                  fill="#F75D5F"
-                  className="transition hover:text-red-500"
-                />
-              </span>
-            </div>
-          ) : (
-            <h1 className="font-bold text-2xl text-[#000000]">
-              {formattedPrice}
-            </h1>
-          )}
-          <p
-            ref={descriptionRef}
-            style={{
-              overflow: expanded ? 'visible' : 'hidden',
-              textOverflow: 'ellipsis',
-              display: '-webkit-box',
-              lineClamp: expanded ? 'unset' : 2,
-              WebkitLineClamp: expanded ? 'unset' : 2,
-              WebkitBoxOrient: 'vertical',
-            }}
-            className="font-medium text-sm text-quaternary mt-4 max-w-[350px] text-justify"
-          >
-            {memoizedCardInfos.description}
-          </p>
-          {descriptionRef.current && isExpandable && (
-            <span
-              onClick={toggleExpanded}
-              className="font-medium text-sm text-primary mt-4 max-w-[350px] text-justify"
+            )}
+            <p
+              ref={descriptionRef}
+              style={{
+                overflow: expanded ? 'visible' : 'hidden',
+                textOverflow: 'ellipsis',
+                display: '-webkit-box',
+                lineClamp: expanded ? 'unset' : 2,
+                WebkitLineClamp: expanded ? 'unset' : 2,
+                WebkitBoxOrient: 'vertical',
+              }}
+              className="font-medium text-sm text-quaternary mt-4 max-w-[350px] text-justify"
             >
-              {!expanded ? 'Ler mais...' : 'Ler menos...'}
-            </span>
-          )}
+              {memoizedCardInfos.description}
+            </p>
+            {descriptionRef.current && isExpandable && (
+              <span
+                onClick={toggleExpanded}
+                className="font-medium text-sm text-primary mt-4 max-w-[350px] text-justify"
+              >
+                {!expanded ? 'Ler mais...' : 'Ler menos...'}
+              </span>
+            )}
 
-          <h3 className="font-bold text-sm text-quaternary mt-4">
-            {memoizedCardInfos.location}
-          </h3>
-        </div>
-        {/* Property tags */}
-        <div className={`flex flex-row items-end justify-around mb-7 mt-4`}>
-          {memoizedCardInfos.bedrooms && (
-            <div className="flex flex-row items-center justify-between">
-              <BedroomIcon fill="#6B7280" />
-              <span className="font-bold text-2xl text-quaternary ml-2">
-                {memoizedCardInfos.bedrooms}
-              </span>
-            </div>
-          )}
-          {memoizedCardInfos.parking_spaces && (
-            <div className="flex flex-row items-center justify-between">
-              <ParkingIcon fill="#6B7280" />
-              <span className="font-bold text-2xl text-quaternary ml-2">
-                {memoizedCardInfos.parking_spaces}
-              </span>
-            </div>
-          )}
-          {memoizedCardInfos.bathrooms && (
-            <div className="flex flex-row items-center justify-between">
-              <BathroomIcon fill="#6B7280" />
-              <span className="font-bold text-2xl text-quaternary ml-2">
-                {memoizedCardInfos.bathrooms}
-              </span>
-            </div>
-          )}
+            <h3 className="font-bold text-sm text-quaternary mt-4">
+              {memoizedCardInfos.location}
+            </h3>
+          </div>
+          {/* Property tags */}
+          <div className={`flex flex-row items-end justify-around mb-7 mt-4`}>
+            {memoizedCardInfos.bedrooms && (
+              <div className="flex flex-row items-center justify-between">
+                <BedroomIcon fill="#6B7280" />
+                <span className="font-bold text-2xl text-quaternary ml-2">
+                  {memoizedCardInfos.bedrooms}
+                </span>
+              </div>
+            )}
+            {memoizedCardInfos.parking_spaces && (
+              <div className="flex flex-row items-center justify-between">
+                <ParkingIcon fill="#6B7280" />
+                <span className="font-bold text-2xl text-quaternary ml-2">
+                  {memoizedCardInfos.parking_spaces}
+                </span>
+              </div>
+            )}
+            {memoizedCardInfos.bathrooms && (
+              <div className="flex flex-row items-center justify-between">
+                <BathroomIcon fill="#6B7280" />
+                <span className="font-bold text-2xl text-quaternary ml-2">
+                  {memoizedCardInfos.bathrooms}
+                </span>
+              </div>
+            )}
+          </div>
         </div>
       </Link>
     </div>
