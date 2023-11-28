@@ -153,8 +153,9 @@ const PropertyCard: React.FC<IPropertyCard> = ({
               src={memoizedCardImage}
               key={currentIndex}
               alt={'Property Image'}
-              width="350"
-              height="200"
+              width={350}
+              height={350}
+              //className='w-full'
             />
             {highlighted && (
               <div className="bg-black absolute m-5 rounded-lg bg-opacity-50">
