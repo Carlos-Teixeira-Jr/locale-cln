@@ -55,7 +55,7 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
               <Pagination totalPages={favouriteProperties?.totalPages} />
             )}
 
-            <div className="flex flex-col md:flex-row flex-wrap md:gap-10 lg:gap-20 my-5 justify-center">
+            <div className="flex flex-col md:flex-row flex-wrap md:gap-10 lg:gap-10 my-5 justify-start px-10">
               {favouriteProperties?.docs?.length > 0 &&
                 favouriteProperties?.docs.map(
                   ({

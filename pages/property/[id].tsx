@@ -185,7 +185,7 @@ export async function getServerSideProps(context: NextPageContext) {
     .then((res) => res.json())
     .catch(() => {});
 
-  const url = `${process.env.NEXT_PUBLIC_BASE_API_URL}/property/filter/?page=1&limit=3`;
+  const url = `${process.env.NEXT_PUBLIC_BASE_API_URL}/property/filter/?page=1&limit=4`;
   const relatedProperties = await fetch(url).then((res) => res.json());
 
   return {

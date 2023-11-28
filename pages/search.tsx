@@ -258,7 +258,7 @@ const Search: NextPageWithLayout<ISearch> = ({
 
             {grid ? (
               <div
-                className={`sm:grid sm:grid-cols-1 md:grid md:grid-cols-2  justify-center gap-9 mx-14 ${
+                className={`sm:grid sm:grid-cols-1 md:grid md:grid-cols-2 justify-start gap-9 mx-14 ${
                   mobileFilterIsOpen ? 'hidden' : ''
                 }`}
               >

@@ -196,7 +196,7 @@ export async function getStaticProps() {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
 
   const [propertyInfo, propertyTypes, locations] = await Promise.all([
-    fetch(`${baseUrl}/property/filter/?page=1&limit=3`)
+    fetch(`${baseUrl}/property/filter/?page=1&limit=4`)
       .then((res) => res.json())
       .catch(() => []),
     fetch(`${baseUrl}/property-type`)
@@ -205,7 +205,7 @@ export async function getStaticProps() {
     fetch(`${baseUrl}/location`)
       .then((res) => res.json())
       .catch(() => []),
-    fetchJson(`${baseUrl}/property/filter/?page=1&limit=3`),
+    fetchJson(`${baseUrl}/property/filter/?page=1&limit=4`),
     fetchJson(`${baseUrl}/property-type`),
     fetchJson(`${baseUrl}/location`),
   ]);
