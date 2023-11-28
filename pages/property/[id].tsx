@@ -181,7 +181,7 @@ export async function getServerSideProps(context: NextPageContext) {
     isFavourite = false;
   }
 
-  const property = await fetch(`${baseUrl}/property/${propertyId}`)
+  const property = await fetch(`${baseUrl}/property/${propertyId}?isEdit=false`)
     .then((res) => res.json())
     .catch(() => {});
 

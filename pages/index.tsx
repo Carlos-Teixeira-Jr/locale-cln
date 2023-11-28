@@ -216,5 +216,6 @@ export async function getStaticProps() {
       propertyTypes: propertyTypes,
       locations: locations,
     },
+    revalidate: propertyInfo?.docs?.length > 0 ? 60 : 1,
   };
 }
