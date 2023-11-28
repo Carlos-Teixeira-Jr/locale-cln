@@ -76,5 +76,6 @@ export async function getStaticProps() {
     props: {
       plans,
     },
+    revalidate: 60,
   };
 }
