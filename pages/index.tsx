@@ -125,7 +125,7 @@ const Home: NextPageWithLayout<IHome> = ({
           <div className="flex sm:flex-col max-w-[1232px] justify-center items-center md:flex-row  mb-3 px-2">
             <div className="flex flex-row px-4">
               <div className="flex flex-col m-auto align-middle mt-2">
-                <div className="sm:grid sm:grid-cols-1 md:flex md:flex-row justify-center md:gap-2 lg:gap-9">
+                <div className="sm:grid sm:grid-cols-1 md:flex md:flex-row md:flex-wrap lg:flex-nowrap justify-center md:gap-10">
                   {/* ISSO COMENTADO ABAIXO É O CÓDIGO QUE RENDERIZA APENAS OS CARDS REFERENTES A LOCALIZAÇÃO DO USUÁRIO */}
                   {propertiesByLocation.docs
                     ? propertiesByLocation.docs.map(
