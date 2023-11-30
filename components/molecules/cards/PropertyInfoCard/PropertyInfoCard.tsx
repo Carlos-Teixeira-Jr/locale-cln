@@ -45,6 +45,7 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
   highlighted,
   propertyInfo,
 }) => {
+
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
 

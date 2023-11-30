@@ -143,6 +143,7 @@ const PropertyCard: React.FC<IPropertyCard> = ({
       className={`flex flex-col max-w-[350px] bg-tertiary shadow-lg rounded-[30px] mt-2 cursor-pointer ${
         expanded ? `min-h-[470px] max-h-fit` : 'max-h-[470px]'
       }`}
+      onClick={() => console.log(id)}
     > 
       <Link href={`/property/${id}`}>
         {/* caroussel */}
