@@ -186,7 +186,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
     const [notifications, favouriteProperties, ownerProperties] =
       await Promise.all([
-        fetch(`${baseUrl}/notification/64da04b6052b4d12939684b0`, {
+        fetch(`${baseUrl}/notification${ownerId}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

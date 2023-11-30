@@ -21,7 +21,7 @@ type Message = {
     totalPages: number;
   };
   property: IData;
-}
+};
 
 interface IMessagePage {
   ownerProperties: IOwnerProperties;
@@ -260,7 +260,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     ]);
 
     const notifications = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API_URL}/notification/64da04b6052b4d12939684b0`,
+      `${process.env.NEXT_PUBLIC_BASE_API_URL}/notification/${ownerId}`,
       {
         method: 'GET',
         headers: {
