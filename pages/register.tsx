@@ -102,6 +102,11 @@ const Register = () => {
   const [open, setOpen] = useState(false);
   const handleClose = () => setOpen(false);
 
+  useEffect(() => {
+    console.log("🚀 ~ file: register.tsx:112 ~ Register ~ registration.propertyValue:", registration.propertyValue)
+  }, [registration.propertyValue])
+  
+
   const handleSubmit = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
@@ -189,11 +194,11 @@ const Register = () => {
         prices: [
           {
             type: PricesType.mensal,
-            value: parseFloat(registration.propertyValue.replace(',', '.'))
+            value: parseFloat(registration.propertyValue.replace('.', '').replace(',', '.'))
           },
           {
             type: PricesType.condominio,
-            value: parseFloat(registration.condominiumValue.replace(',', '.'))
+            value: parseFloat(registration.condominiumValue.replace('.', '').replace(',', '.'))
           }
         ],
         condominium: registration.condominium,
