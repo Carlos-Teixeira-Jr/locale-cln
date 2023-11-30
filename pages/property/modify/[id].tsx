@@ -270,7 +270,9 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
           {
             type: PricesType.mensal,
             value: parseInt(
-              mainFeatures.propertyValue.replace(/\./g, '').replace(/,(.*)/, '')
+              mainFeatures.propertyValue
+                .replace(/\./g, '')
+                .replace(/,(.*)/, '')
             ),
           },
           {
