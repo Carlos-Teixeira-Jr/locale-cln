@@ -85,7 +85,7 @@ const Header: React.FC<IHeader> = () => {
           {session ? (
             <div className='flex gap-2'>
               <p className='my-auto mx-2'>{session.user?.data.username}</p>
-              <Link href={'/admin'}>
+              <Link href={'/admin?page=1'}>
                 {session.user.data.picture!! ? (
                   <Image
                     src={session.user?.data.picture!!}
