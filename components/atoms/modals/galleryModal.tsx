@@ -45,7 +45,7 @@ const GalleryModal: React.FC<IGalleryModal> = ({
           alt={''}
           width={300}
           height={300}
-          className=" rounded-3xl"
+          className="rounded-3xl"
         />
       </div>
       <div>
