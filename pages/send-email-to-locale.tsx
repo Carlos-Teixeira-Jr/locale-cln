@@ -26,14 +26,25 @@ const LocaleContact: NextPageWithLayout = () => {
     name: '',
   });
 
+  // const handleMessageNameMask = (
+  //   event: React.ChangeEvent<HTMLInputElement>
+  // ) => {
+  //   const onlyLetters = /^[a-zA-Z\s]+$/;
+  //   if (onlyLetters.test(event.target.value)) {
+  //     setFormData({ ...formData, name: event.target.value });
+  //   }
+  // };
+
   const handleMessageNameMask = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const onlyLetters = /^[a-zA-Z\s]+$/;
-    if (onlyLetters.test(event.target.value)) {
+  
+    if (event.target.value === '' || onlyLetters.test(event.target.value)) {
       setFormData({ ...formData, name: event.target.value });
     }
   };
+  
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const email = event.target.value;
@@ -42,27 +53,30 @@ const LocaleContact: NextPageWithLayout = () => {
 
   const handleContactField = async (event: any) => {
     event.preventDefault();
+    const errorMessage = 'Este campo é obrigatório.';
+    const invalidEmailError = 'O formato do e-mail informado não é válido.'
+    const incompletePhoneNumber = 'O npumero do telefone está incompleto.'
 
     const newErrors = { email: '', message: '', name: '', telephone: '' };
 
     if (!formData.name) {
-      newErrors.name = 'O campo nome é obrigatório.';
+      newErrors.name = errorMessage;
     }
 
     if (!formData.email) {
-      newErrors.email = 'O campo e-mail é obrigatório.';
+      newErrors.email = errorMessage;
     }
 
     if (!validator.isEmail(formData.email)) {
-      newErrors.email = 'E-mail invalido.';
+      newErrors.email = invalidEmailError;
     }
 
     if (formData.telephone.length < 14) {
-      newErrors.telephone = 'O campo telefone está incompleto.';
+      newErrors.telephone = incompletePhoneNumber;
     }
 
     if (!formData.message) {
-      newErrors.message = 'O campo mensagem é obrigatório.';
+      newErrors.message = errorMessage;
     }
 
     setError(newErrors);
@@ -128,7 +142,7 @@ const LocaleContact: NextPageWithLayout = () => {
             name="name"
             value={formData.name}
             onChange={handleMessageNameMask}
-            className="lg:w-[770px] w-[250px] h-[44px] m-[10px] mb-0 rounded-[10px] border border-quaternary bg-tertiary p-2 required:border-red-500 md:mx-auto lg:mx-2 text-lg text-quaternary font-semibold"
+            className="lg:w-[770px] w-[250px] h-10 m-[10px] mb-0 rounded-[10px] border border-quaternary bg-tertiary p-2 required:border-red-500 md:mx-auto lg:mx-2 text-lg text-quaternary font-semibold"
             style={error.name ? { border: '1px solid red' } : {}}
           />
           {error.name && (
@@ -145,7 +159,7 @@ const LocaleContact: NextPageWithLayout = () => {
             type="tel"
             name="telephone"
             value={formData.telephone}
-            className="lg:w-[770px] w-[250px] h-[44px] m-[10px] mb-0 rounded-[10px] border border-quaternary text-lg text-quaternary font-semibold bg-tertiary p-2 required:border-red-500 md:mx-auto lg:mx-2"
+            className="lg:w-[770px] w-[250px] h-10 m-[10px] mb-0 rounded-[10px] border border-quaternary text-lg text-quaternary font-semibold bg-tertiary p-2 required:border-red-500 md:mx-auto lg:mx-2"
             onChange={(event: any) =>
               setFormData({ ...formData, telephone: event.target.value })
             }
@@ -164,7 +178,7 @@ const LocaleContact: NextPageWithLayout = () => {
             name="email"
             value={formData.email}
             onChange={handleEmailChange}
-            className="lg:w-[770px] w-[250px] h-[44px] m-[10px] mb-0 rounded-[10px] border border-quaternary bg-tertiary p-2 required:border-red-500 md:mx-auto lg:mx-2 text-lg text-quaternary font-semibold"
+            className="lg:w-[770px] w-[250px] h-10 m-[10px] mb-0 rounded-[10px] border border-quaternary bg-tertiary p-2 required:border-red-500 md:mx-auto lg:mx-2 text-lg text-quaternary font-semibold"
             style={error.email ? { border: '1px solid red' } : {}}
           />
           {error.email && (
@@ -172,11 +186,11 @@ const LocaleContact: NextPageWithLayout = () => {
           )}
         </div>
         <div className="flex flex-col">
-          <label className="font-bold lg:text-xl text-quaternary mx-[10px] mt-3 h-fit">
+          <label className="font-bold lg:text-xl text-quaternary mx-[10px] mt-3">
             Deixe sua mensagem
           </label>
           <textarea
-            className="mx-2 mb-0 border border-quaternary mt-1 lg:w-[770px] w-[250px] lg:h-[44px] bg-tertiary rounded-[10px] p-2 required:border-red-500 text-lg text-quaternary font-semibold"
+            className="mx-2 mb-0 border border-quaternary mt-1 lg:w-[770px] w-[250px] lg:h-20 bg-tertiary rounded-[10px] p-2 required:border-red-500 text-lg text-quaternary font-semibold"
             name="message"
             value={formData.message}
             placeholder={'Digite sua mensagem para a Locale.'}
@@ -192,7 +206,7 @@ const LocaleContact: NextPageWithLayout = () => {
         <div className="justify-center md:mb-2 lg:mb-auto">
           <button
             onClick={handleContactField}
-            className="w-[250px] h-[40px] bg-primary rounded-[50px] p-[10px] gap-2.5 mt-3 lg:float-right"
+            className="w-[250px] h-[40px] bg-primary rounded-[50px] p-[10px] gap-2.5 mt-3 lg:float-right hover:bg-red-600 hover:text-tertiary hover:shadow-lg transition-all duration-200"
           >
             <p className="font-normal text-xl text-tertiary leading-6 align-middle">
               Enviar
