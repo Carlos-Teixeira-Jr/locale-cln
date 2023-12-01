@@ -142,7 +142,7 @@ const PropertyCard: React.FC<IPropertyCard> = ({
 
   return (
     <div
-      className={`flex flex-col max-w-[350px] bg-tertiary shadow-lg rounded-[30px] mt-2 cursor-pointer ${
+      className={`flex flex-col lg:max-w-[270px] md:max-w-[250px] bg-tertiary shadow-lg rounded-[30px] mt-2 cursor-pointer ${
         expanded ? `min-h-[470px] max-h-fit` : 'max-h-[470px]'
       }`}
     > 
@@ -155,8 +155,9 @@ const PropertyCard: React.FC<IPropertyCard> = ({
               src={memoizedCardImage}
               key={currentIndex}
               alt={'Property Image'}
-              width="350"
-              height="200"
+              width={350}
+              height={350}
+              //className='w-full'
             />
             {highlighted && (
               <div className="bg-black absolute m-5 rounded-lg bg-opacity-50">
@@ -211,7 +212,11 @@ const PropertyCard: React.FC<IPropertyCard> = ({
           </div>
         </div>
         {/* Property Info */}
-        <div className="px-4 mt-2">
+        <div className={`flex flex-col px-4 mt-2 justify-between ${
+          expanded
+          ? 'h-fit'
+          : 'h-36'
+        }`}>
           {favorited ? (
             <div className="flex flex-row items-center">
               <h1 className="font-bold text-2xl text-[#000000]">

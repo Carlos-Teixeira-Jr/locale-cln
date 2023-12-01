@@ -11,6 +11,9 @@ export default function modifyString(str: string) {
   if (str === '/adminFavProperties') {
     str = '/favoritos'
   }
+  if (str === '/property/[id]') {
+    str = '/Imóvel'
+  }
 
   const firstCharRemoved = str.substring(1);
   const secondCharCapitalized = firstCharRemoved.charAt(0).toUpperCase();
