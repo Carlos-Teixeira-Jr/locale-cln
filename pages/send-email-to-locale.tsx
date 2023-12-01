@@ -26,15 +26,6 @@ const LocaleContact: NextPageWithLayout = () => {
     name: '',
   });
 
-  // const handleMessageNameMask = (
-  //   event: React.ChangeEvent<HTMLInputElement>
-  // ) => {
-  //   const onlyLetters = /^[a-zA-Z\s]+$/;
-  //   if (onlyLetters.test(event.target.value)) {
-  //     setFormData({ ...formData, name: event.target.value });
-  //   }
-  // };
-
   const handleMessageNameMask = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -45,7 +36,6 @@ const LocaleContact: NextPageWithLayout = () => {
     }
   };
   
-
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const email = event.target.value;
     setFormData({ ...formData, email: email });
