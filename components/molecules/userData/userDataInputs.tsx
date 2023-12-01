@@ -216,6 +216,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
               onChange={inputs[0].onChange}
               value={inputs[0].value}
               required
+              maxLength={30}
               style={userDataErrors.username ? { border: '1px solid red' } : {}}
             />
             {userDataErrors.username && (

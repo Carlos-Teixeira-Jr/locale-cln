@@ -74,12 +74,14 @@ export default function AreaCalculatorModal({
             onChange={handleWidhtChange}
             type="number"
             placeholder="Largura:"
+            maxLength={10}
             className="border border-quaternary rounded-lg md:w-full h-10 text-quaternary md:text-md text-base font-semibold px-5 drop-shadow-lg bg-tertiary mt-5"
           />
           <input
             onChange={handleLengthChange}
             type="number"
             placeholder="Comprimento:"
+            maxLength={10}
             className="border border-quaternary rounded-lg md:w-full h-10 text-quaternary md:text-md text-base font-semibold px-5 drop-shadow-lg bg-tertiary mt-5"
           />
         </div>

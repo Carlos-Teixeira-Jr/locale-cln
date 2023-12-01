@@ -240,6 +240,7 @@ const LoginCard: React.FC = () => {
           }`}
           type="email"
           value={email}
+          maxLength={30}
           onChange={(e) => setEmail(e.target.value)}
         />
 
@@ -266,6 +267,7 @@ const LoginCard: React.FC = () => {
                   password: e.target.value,
                 });
               }}
+              maxLength={10}
             />
 
             <button
@@ -310,6 +312,7 @@ const LoginCard: React.FC = () => {
                   type={showPasswordConfirmation ? 'text' : 'password'}
                   value={passwordConfirmation}
                   onChange={(e) => setPasswordConfirmation(e.target.value)}
+                  maxLength={10}
                 />
 
                 <button
