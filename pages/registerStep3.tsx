@@ -331,8 +331,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
           userData,
           plan: propertyDataStep3.plan,
           isPlanFree,
-          phone: userDataForm.cellPhone,
-          cellPhone: userDataForm.phone,
+          phone: userDataForm.phone,
+          cellPhone: userDataForm.cellPhone,
         };
 
         if (!isPlanFree) {
