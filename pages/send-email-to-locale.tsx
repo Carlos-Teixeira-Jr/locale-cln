@@ -2,6 +2,7 @@ import { useState } from 'react';
 import validator from 'validator';
 import PhoneInput from '../components/atoms/masks/masks';
 import { NextPageWithLayout } from './page';
+import { ErrorToastNames, SuccessToastNames, showErrorToast, showSuccessToast } from '../common/utils/toasts';
 
 interface ILocaleContact {
   name: string;
@@ -24,13 +25,6 @@ const LocaleContact: NextPageWithLayout = () => {
     telephone: '',
     name: '',
   });
-
-  const messageData = {
-    email: formData.email,
-    message: formData.message,
-    name: formData.name,
-    telephone: formData.telephone,
-  };
 
   const handleMessageNameMask = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -79,30 +73,43 @@ const LocaleContact: NextPageWithLayout = () => {
       newErrors.name ||
       newErrors.telephone
     ) {
-      return;
-    }
+      showErrorToast(ErrorToastNames.EmptyFields);
+    } else {
+      try {
+        const messageData = {
+          email: formData.email,
+          message: formData.message,
+          name: formData.name,
+          telephone: formData.telephone,
+        };
 
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/send-email-to-locale`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(messageData),
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BASE_API_URL}/send-email-to-locale`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(messageData),
+          }
+        );
+
+        if (response.ok) {
+          showSuccessToast(SuccessToastNames.SendMessage);
+          setError({ email: '', message: '', name: '', telephone: '' });
+          setFormData({
+            email: '',
+            message: '',
+            name: '',
+            telephone: '',
+          });
+        } else {
+          showErrorToast(ErrorToastNames.SendMessage)
         }
-      );
-      setError({ email: '', message: '', name: '', telephone: '' });
-      setFormData({
-        email: '',
-        message: '',
-        name: '',
-        telephone: '',
-      });
-      console.log(response);
-    } catch (error) {
-      console.log(error);
+      } catch (error) {
+        console.log(error);
+        showErrorToast(ErrorToastNames.ServerConnection);
+      }
     }
   };
 
