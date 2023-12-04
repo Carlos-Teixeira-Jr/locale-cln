@@ -13,6 +13,7 @@ import VerifyEmailModal from '../../../atoms/modals/verifyEmailModal';
 import { SocialAuthButton } from '../../buttons/socialAuthButtons';
 
 const LoginCard: React.FC = () => {
+
   const router = useRouter();
   const query = router.query;
   const [email, setEmail] = useState<string>('');
@@ -220,7 +221,7 @@ const LoginCard: React.FC = () => {
   };
 
   return (
-    <div className="md:w-fit md:h-fit md:rounded-[30px] bg-tertiary drop-shadow-xl grid grid-flow-rows justify-items-center">
+    <div className={`md:w-fit md:h-fit md:rounded-[30px] bg-tertiary drop-shadow-xl grid grid-flow-rows justify-items-center`}>
       <div className="md:m-2 w-[125px]">
         <Image
           src={'/images/logo-marker.png'}

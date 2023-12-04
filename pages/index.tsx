@@ -115,13 +115,16 @@ const Home: NextPageWithLayout<IHome> = ({
             <AccessCard />
           </div>
 
-          <div className="flex max-w-[1232px]  justify-center text-left">
-            <h3 className="sm:text-base md:text-2xl font-bold text-quaternary text-center md:text-left ml-5">
-              {propertiesByLocation.length != 0
-                ? 'Veja os imóveis mais próximos de você!'
-                : 'Veja os imóveis em destaque!'}
-            </h3>
-          </div>
+          {propertiesByLocation.length > 0 || propertyInfo?.docs?.length > 0 && (
+            <div className="flex max-w-[1232px]  justify-center text-left">
+              <h3 className="sm:text-base md:text-2xl font-bold text-quaternary text-center md:text-left ml-5">
+                {propertiesByLocation.length != 0
+                  ? 'Veja os imóveis mais próximos de você!'
+                  : 'Veja os imóveis em destaque!'}
+              </h3>
+            </div>
+          )}
+          
           <div className="flex sm:flex-col max-w-[1232px] justify-center items-center md:flex-row  mb-3 px-2">
             <div className="flex flex-row px-4">
               <div className="flex flex-col m-auto align-middle mt-2">
