@@ -12,6 +12,7 @@ import NextIcon from '../../../atoms/icons/nextIcon';
 import ParkingIcon from '../../../atoms/icons/parkingIcon';
 import PreviousIcon from '../../../atoms/icons/previousIcon';
 import formatCurrency from '../../../atoms/masks/currencyFormat';
+import { monetaryFormat } from '../../../../common/utils/masks/monetaryFormat';
 
 export interface IPropertyCard {
   id: string;
@@ -105,8 +106,8 @@ const PropertyCard: React.FC<IPropertyCard> = ({
     location
   ]);
 
-  const price = prices[0].value;
-  const formattedPrice = formatCurrency(price);
+  const priceString = prices[0].value.toString();
+  const formattedPrice = monetaryFormat(priceString);
 
   const handleFavouriteIcon = async () => {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;

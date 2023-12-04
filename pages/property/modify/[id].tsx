@@ -272,7 +272,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
             value: parseInt(
               mainFeatures.propertyValue
                 .replace(/\./g, '')
-                .replace(/,(.*)/, '')
+                .replace(',', '.')
             ),
           },
           {
@@ -281,7 +281,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
               ? parseInt(
                   mainFeatures.condominiumValue
                     .replace(/\./g, '')
-                    .replace(/,(.*)/, '')
+                    .replace(',', '.')
                 )
               : 0,
           },
