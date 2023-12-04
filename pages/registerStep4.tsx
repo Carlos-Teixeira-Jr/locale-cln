@@ -1,15 +1,16 @@
-import { useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import Loading from '../components/atoms/loading';
 import LinearStepper from '../components/atoms/stepper/stepper';
 import Footer from '../components/organisms/footer/footer';
 import Header from '../components/organisms/header/header';
-import { NextPageWithLayout } from './page';
-import { useRouter } from 'next/router';
 import { useProgress } from '../context/registerProgress';
+import { NextPageWithLayout } from './page';
 
 const RegisterStep4: NextPageWithLayout = () => {
-
   const router = useRouter();
   const { progress, updateProgress } = useProgress();
+  const [loading, setLoading] = useState(false);
 
   // Verifica se o estado progress que determina em qual step o usuário está corresponde ao step atual;
   useEffect(() => {
@@ -17,6 +18,11 @@ const RegisterStep4: NextPageWithLayout = () => {
       router.push('/register');
     }
   });
+
+  const handleSubmit = () => {
+    router.push('/login');
+    setLoading(true);
+  };
 
   return (
     <>
@@ -36,9 +42,17 @@ const RegisterStep4: NextPageWithLayout = () => {
               finalizado! A senha da sua conta foi enviada para o seu e-mail.
             </p>
 
-            <button className="w-2/3 mx-auto transition-colors duration-300 hover:bg-red-600 hover:text-white bg-primary text-tertiary rounded-[10px] md:text-3xl text-2xl leading-10 py-5 font-extrabold my-10" onClick={() => router.push('/login')}>Acessar</button>
+            <div className="flex justify-center items-center my-4 max-w-[1215px]">
+              <button
+                className="active:bg-gray-500 cursor-pointer flex items-center gap-2 flex-row justify-around bg-primary w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold text-2xl lg:text-3xl hover:bg-red-600 hover:text-white"
+                disabled={loading}
+                onClick={() => handleSubmit()}
+              >
+                <span className={`${loading ? 'ml-20' : ''}`}>Acessar</span>
+                {loading && <Loading />}
+              </button>
+            </div>
           </div>
-
         </div>
       </div>
       <Footer smallPage={false} />

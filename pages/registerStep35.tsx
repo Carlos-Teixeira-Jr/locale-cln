@@ -89,7 +89,7 @@ const RegisterStep35: NextPageWithLayout<IRegisterStep35> = ({ plans }) => {
           {/**Button */}
           <div className="flex md:justify-end justify-center lg:justify-end xl:justify-end my-4 max-w-[1215px]">
             <button
-              className="active:bg-gray-500 cursor-pointer flex items-center flex-row justify-around bg-primary w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold text-2xl lg:text-3xl hover:bg-red-600 hover:text-white"
+              className="active:bg-gray-500 cursor-pointer flex items-center gap-2 flex-row justify-around bg-primary w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold text-2xl lg:text-3xl hover:bg-red-600 hover:text-white"
               disabled={loading}
               onClick={() => {
                 updateProgress(5);
@@ -108,13 +108,9 @@ const RegisterStep35: NextPageWithLayout<IRegisterStep35> = ({ plans }) => {
                 }
               }}
             >
-              <span
-                className={`${
-                  loading ? 'ml-16' : ''
-                } flex flex-row justify-between items-center`}
-              >
+              <span className={`${loading ? 'ml-16' : ''} flex items-center`}>
                 Continuar
-                {loading && <Loading />}
+                <span className="ml-5">{loading && <Loading />}</span>
               </span>
             </button>
           </div>

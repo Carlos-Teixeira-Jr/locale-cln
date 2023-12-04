@@ -200,6 +200,7 @@ const Register = () => {
       };
 
       toast.loading('Enviando...');
+      setLoading(true);
       store.set('propertyData', propertyDataStep1);
       toast.dismiss();
       updateProgress(2);
