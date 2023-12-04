@@ -258,6 +258,7 @@ const Address: React.FC<IAddressComponent> = ({
               }
               style={addressErrors.city ? { border: '1px solid red' } : {}}
               onChange={handleCityChange}
+              maxLength={30}
               readOnly
             />
             {addressErrors.city && (
@@ -276,6 +277,7 @@ const Address: React.FC<IAddressComponent> = ({
               style={addressErrors.uf ? { border: '1px solid red' } : {}}
               className="border border-quaternary rounded-[10px] md:w-full w-[150px] h-12 text-quaternary md:text-2xl text-xl font-bold px-5 drop-shadow-lg bg-tertiary mt-3"
               value={viaZipCodeData.uf ? viaZipCodeData.uf : addressData.uf}
+              maxLength={2}
               onChange={handleUFChange}
             />
             {addressErrors.uf && (
@@ -302,6 +304,7 @@ const Address: React.FC<IAddressComponent> = ({
                 addressErrors.streetName ? { border: '1px solid red' } : {}
               }
               onChange={handleStreetChange}
+              maxLength={30}
               readOnly
             />
             {addressErrors.streetName && (
@@ -328,6 +331,7 @@ const Address: React.FC<IAddressComponent> = ({
               style={
                 addressErrors.streetNumber ? { border: '1px solid red' } : {}
               }
+              maxLength={10}
               onChange={handleNumberChange}
             />
             {addressErrors.streetNumber && (
@@ -346,6 +350,7 @@ const Address: React.FC<IAddressComponent> = ({
               className={`border border-quaternary rounded-[10px] h-12 text-quaternary md:text-2xl text-xl font-bold px-5 drop-shadow-lg bg-tertiary mt-3`}
               onChange={handleComplementChange}
               value={addressData.complement}
+              maxLength={50}
             />
           </div>
           <div className="flex flex-col lg:ml-5 md:w-full mt-5 lg:mt-0">
@@ -360,6 +365,7 @@ const Address: React.FC<IAddressComponent> = ({
                   : addressData.neighborhood
               }
               onChange={handleNeighborhoodChange}
+              maxLength={30}
               readOnly
             />
           </div>

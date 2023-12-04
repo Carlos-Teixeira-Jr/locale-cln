@@ -146,7 +146,7 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({ property, isFavourite }) => {
             <h3 className="font-extrabold text-quaternary text-3xl pb-2 md:pb-4">
               Descrição
             </h3>
-            <p className="font-normal text-xl text-quaternary text-justify">
+            <p className="font-normal text-xl text-quaternary text-justify pr-5">
               {capitalizeFirstLetter(property.description)}
             </p>
           </div>

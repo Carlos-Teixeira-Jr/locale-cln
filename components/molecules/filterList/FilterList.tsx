@@ -598,6 +598,7 @@ const FilterList: React.FC<IFilterListProps> = ({
                 );
               }}
               value={locationInput}
+              maxLength={30}
             />
             <div
               className={`z-50 w-full h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md ${
@@ -727,6 +728,7 @@ const FilterList: React.FC<IFilterListProps> = ({
                 'bg-transparent outline-none w-full h-12 font-normal text-base text-quaternary leading-[19px] lg:mb-2 shadow-lg p-3 border border-quaternary rounded-xl'
               }
               onChange={(e) => setMinPrice(maskedPrice(e.target.value))}
+              maxLength={10}
             />
             <span className="px-3 md:px-3 mt-2 text-quaternary">a</span>
             <input
@@ -736,6 +738,7 @@ const FilterList: React.FC<IFilterListProps> = ({
                 'bg-transparent outline-none w-full h-12 font-normal text-base text-quaternary leading-[19px] lg:mb-2 shadow-lg p-3 border border-quaternary rounded-xl'
               }
               onChange={(e) => setMaxPrice(maskedPrice(e.target.value))}
+              maxLength={10}
             />
           </div>
 
@@ -750,6 +753,7 @@ const FilterList: React.FC<IFilterListProps> = ({
                 'bg-transparent outline-none w-full h-12 font-normal text-base text-quaternary leading-[19px] lg:mb-2 shadow-lg p-3 border border-quaternary rounded-xl'
               }
               onChange={(e) => setMinCondominium(maskedPrice(e.target.value))}
+              maxLength={10}
             />
             <span className="px-3 md:px-3 mt-2 text-quaternary">a</span>
             <input
@@ -759,6 +763,7 @@ const FilterList: React.FC<IFilterListProps> = ({
                 'bg-transparent outline-none w-full h-12 font-normal text-base text-quaternary leading-[19px] mb-5 lg:mb-2 shadow-lg p-3 border border-quaternary rounded-xl'
               }
               onChange={(e) => setMaxCondominium(maskedPrice(e.target.value))}
+              maxLength={10}
             />
           </div>
         </div>
@@ -1033,6 +1038,7 @@ const FilterList: React.FC<IFilterListProps> = ({
               className="bg-transparent w-full font-normal text-base text-quaternary leading-[19px] mb-1 shadow-lg p-3 border border-quaternary rounded-xl outline-none"
               value={codeToSearch}
               onChange={(e) => setCodeToSearch(e.target.value)}
+              maxLength={30}
             />
             <div
               className="bg-secondary shadow-lg border border-quaternary rounded-xl outline-none px-2 mb-1 cursor-pointer hover:bg-primary active:bg-primary transition-colors"
