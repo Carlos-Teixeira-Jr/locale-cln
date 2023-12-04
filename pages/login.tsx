@@ -74,7 +74,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
             return {
               redirect: {
-                destination: '/admin',
+                destination: '/admin&page=1',
                 permanent: false,
               },
             };
@@ -89,7 +89,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     return {
       redirect: {
-        destination: '/admin',
+        destination: '/admin?page=1',
         permanent: false,
       },
     };

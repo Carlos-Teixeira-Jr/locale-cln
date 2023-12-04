@@ -31,7 +31,7 @@ const GalleryModal: React.FC<IGalleryModal> = ({
   };
 
   return (
-    <div className="h-full w-full -translate-y-[53.2%] top-96 pt-20 pb-12 bg-black/90 absolute z-50 group inset-x-0">
+    <div className="h-[97%] md:h-full md:max-h-[570px] lg:max-h-[540px] w-full -translate-y-[53.2%]. top-96. top-16. top-24 pt-20 pb-12 bg-black/90 absolute z-50 group inset-x-0">
       <div>
         <AiOutlineClose
           className="hidden group-hover:block absolute top-[4%] md:top-[5%] -translate-x-0 -translate-y-[50%] right-2 text-2xl rounded-full p-2 bg-black/20 text-white cursor-pointer"

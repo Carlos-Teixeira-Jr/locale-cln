@@ -160,7 +160,7 @@ const Search: NextPageWithLayout<ISearch> = ({
                   }
                 />
               </div>
-              <div className="flex flex-row items-center justify-around mt-2 md:mt-5 md:mb-5 mr-0 ">
+              <div className="flex flex-row items-center justify-around mt-2 md:my-3 mr-0 ">
                 <h3 className="text-quaternary text-sm md:text-base leading-5 font-bold text-justify ml-2">
                   {propertyInfo.totalCount} imóveis encontrados com base na
                   pesquisa
@@ -258,7 +258,7 @@ const Search: NextPageWithLayout<ISearch> = ({
 
             {grid ? (
               <div
-                className={`sm:grid sm:grid-cols-1 md:grid md:grid-cols-2  justify-center gap-9 mx-14 ${
+                className={`sm:grid sm:grid-cols-1 md:grid. md:grid-cols-2. md:flex flex-wrap justify-between gap-2 lg:gap-5 mx-2 lg:mx-10 ${
                   mobileFilterIsOpen ? 'hidden' : ''
                 }`}
               >
@@ -273,18 +273,20 @@ const Search: NextPageWithLayout<ISearch> = ({
                       metadata,
                       highlighted,
                     }: IData) => (
-                      <PropertyCard
-                        key={_id}
-                        prices={prices}
-                        description={description}
-                        images={images}
-                        location={address.streetName}
-                        bedrooms={metadata[0].amount}
-                        bathrooms={metadata[1].amount}
-                        parking_spaces={metadata[2].amount}
-                        id={_id}
-                        highlighted={highlighted}
-                      />
+                      <div className='md:w-60 lg:w-64' key={_id}>
+                        <PropertyCard
+                          key={_id}
+                          prices={prices}
+                          description={description}
+                          images={images}
+                          location={address.streetName}
+                          bedrooms={metadata[0].amount}
+                          bathrooms={metadata[1].amount}
+                          parking_spaces={metadata[2].amount}
+                          id={_id}
+                          highlighted={highlighted}
+                        />
+                      </div>
                     )
                   )}
               </div>
