@@ -139,7 +139,7 @@ const RegisterStep2: NextPageWithLayout = () => {
           />
         </div>
 
-        <div className="flex flex-row justify-between my-4 max-w-[1215px]">
+        <div className="flex flex-col md:flex-row lg:flex-row xl:flex-row gap-4 md:gap-0 lg:gap-0 xl:gap-0 items-center justify-between my-4 max-w-[1215px]">
           <button
             className="active:bg-gray-500 cursor-pointer flex items-center flex-row justify-around bg-primary w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold text-2xl lg:text-3xl hover:bg-red-600 hover:text-white"
             onClick={handlePreviousStep}
