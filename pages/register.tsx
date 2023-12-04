@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { MouseEvent, useRef, useState, useEffect } from 'react';
+import { MouseEvent, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import store from 'store';
 import {
@@ -97,7 +97,7 @@ const Register = () => {
     city: '',
     streetName: '',
   });
-  
+
   // modal functions
   const [open, setOpen] = useState(false);
   const handleClose = () => setOpen(false);
@@ -189,12 +189,12 @@ const Register = () => {
         prices: [
           {
             type: PricesType.mensal,
-            value: parseFloat(registration.propertyValue.replace(',', '.'))
+            value: parseFloat(registration.propertyValue.replace(',', '.')),
           },
           {
             type: PricesType.condominio,
-            value: parseFloat(registration.condominiumValue.replace(',', '.'))
-          }
+            value: parseFloat(registration.condominiumValue.replace(',', '.')),
+          },
         ],
         condominium: registration.condominium,
       };
@@ -274,7 +274,7 @@ const Register = () => {
           addressInputRefs={addressInputRefs}
         />
 
-        <div className="flex self-end mr-0 md:mr-20 lg:mr-20 xl:mr-20 md:justify-end justify-center px-5 mb-32 mt-16 max-w-[1215px] mx-auto">
+        <div className="flex md:justify-end justify-center lg:justify-end xl:justify-end max-w-[1215px]">
           <button
             className="active:bg-gray-500 cursor-pointer flex items-center flex-row justify-around bg-primary w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold text-2xl lg:text-3xl hover:bg-red-600 hover:text-white"
             onClick={handleSubmit}

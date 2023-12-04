@@ -87,38 +87,36 @@ const RegisterStep35: NextPageWithLayout<IRegisterStep35> = ({ plans }) => {
           <PaymentBoard_Step3_5 storedData={storedData} plans={plans} />
 
           {/**Button */}
-          <div className="grid w-full px-5 lg:px-0 md:mx-0">
-            <div className="flex md:justify-end justify-center md:mb-32 mt-16">
-              <button
-                className="active:bg-gray-500 cursor-pointer bg-primary w-full md:w-96 h-16 rounded transition-colors duration-300 hover:bg-red-600 hover:text-white"
-                disabled={loading}
-                onClick={() => {
-                  updateProgress(5);
-                  store.clearAll();
-                  if (!urlEmail) {
-                    router.push('/registerStep4');
-                    setLoading(true);
-                  } else {
-                    setLoading(true);
-                    router.push({
-                      pathname: '/registerStep4',
-                      query: {
-                        email: urlEmail,
-                      },
-                    });
-                  }
-                }}
+          <div className="flex md:justify-end justify-center lg:justify-end xl:justify-end my-4 max-w-[1215px]">
+            <button
+              className="active:bg-gray-500 cursor-pointer flex items-center flex-row justify-around bg-primary w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold text-2xl lg:text-3xl hover:bg-red-600 hover:text-white"
+              disabled={loading}
+              onClick={() => {
+                updateProgress(5);
+                store.clearAll();
+                if (!urlEmail) {
+                  router.push('/registerStep4');
+                  setLoading(true);
+                } else {
+                  setLoading(true);
+                  router.push({
+                    pathname: '/registerStep4',
+                    query: {
+                      email: urlEmail,
+                    },
+                  });
+                }
+              }}
+            >
+              <span
+                className={`${
+                  loading ? 'ml-16' : ''
+                } flex flex-row justify-between items-center`}
               >
-                <span
-                  className={`${
-                    loading ? 'ml-16' : ''
-                  }text-quinary font-bold text-3xl p-2`}
-                >
-                  Continuar
-                  {loading && <Loading />}
-                </span>
-              </button>
-            </div>
+                Continuar
+                {loading && <Loading />}
+              </span>
+            </button>
           </div>
         </div>
       </div>
