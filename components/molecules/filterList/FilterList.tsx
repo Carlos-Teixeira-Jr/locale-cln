@@ -165,11 +165,7 @@ const FilterList: React.FC<IFilterListProps> = ({
     );
     setFilteredLocations(filtered);
   };
-  useEffect(() => {
-    console.log("🚀 ~ file: FilterList.tsx:171 ~ propertyType:", propertyType)
-  }, [propertyType])
   
-
   // Reorganiza filteredLocations para que se torne um objeto onde cada prop representa uma categoria em forma de um array com todas as strings de localização referentes à essa categoria;
   const categorizedLocations: Record<string, ILocation[]> =
     filteredLocations.reduce(
