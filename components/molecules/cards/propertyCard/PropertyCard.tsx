@@ -271,30 +271,24 @@ const PropertyCard: React.FC<IPropertyCard> = ({
         </div>
         {/* Property tags */}
         <div className={`flex flex-row items-end justify-around mb-7 mt-4`}>
-          {memoizedCardInfos.bedrooms !== 0 && (
-            <div className="flex flex-row items-center justify-between">
-              <BedroomIcon fill="#6B7280" />
-              <span className="font-bold text-2xl text-quaternary ml-2">
-                {memoizedCardInfos.bedrooms}
-              </span>
-            </div>
-          )}
-          {memoizedCardInfos.parking_spaces !== 0 && (
-            <div className="flex flex-row items-center justify-between">
-              <ParkingIcon fill="#6B7280" />
-              <span className="font-bold text-2xl text-quaternary ml-2">
-                {memoizedCardInfos.parking_spaces}
-              </span>
-            </div>
-          )}
-          {memoizedCardInfos.bathrooms !== 0 && (
-            <div className="flex flex-row items-center justify-between">
-              <BathroomIcon fill="#6B7280" />
-              <span className="font-bold text-2xl text-quaternary ml-2">
-                {memoizedCardInfos.bathrooms}
-              </span>
-            </div>
-          )}
+          <div className="flex flex-row items-center justify-between">
+            <BedroomIcon fill="#6B7280" />
+            <span className="font-bold text-2xl text-quaternary ml-2">
+              {memoizedCardInfos.bedrooms}
+            </span>
+          </div>
+          <div className="flex flex-row items-center justify-between">
+            <ParkingIcon fill="#6B7280" />
+            <span className="font-bold text-2xl text-quaternary ml-2">
+              {memoizedCardInfos.parking_spaces}
+            </span>
+          </div>
+          <div className="flex flex-row items-center justify-between">
+            <BathroomIcon fill="#6B7280" />
+            <span className="font-bold text-2xl text-quaternary ml-2">
+              {memoizedCardInfos.bathrooms}
+            </span>
+          </div>
         </div>
       </Link>
     </div>
