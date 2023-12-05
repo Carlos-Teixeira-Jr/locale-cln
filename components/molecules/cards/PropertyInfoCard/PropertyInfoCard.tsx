@@ -10,6 +10,7 @@ import NextCardIcon from '../../../atoms/icons/nextCardIcon';
 import ParkingIcon from '../../../atoms/icons/parkingIcon';
 import PreviousCardIcon from '../../../atoms/icons/previousCardIcon';
 import MessageModal from '../../../atoms/modals/messageModal';
+import { monetaryFormat } from '../../../../common/utils/masks/monetaryFormat';
 Modal.setAppElement('#__next');
 
 export interface IPropertyInfoCard {

@@ -12,6 +12,7 @@ import NextIcon from '../../../atoms/icons/nextIcon';
 import ParkingIcon from '../../../atoms/icons/parkingIcon';
 import PreviousIcon from '../../../atoms/icons/previousIcon';
 import formatCurrency from '../../../atoms/masks/currencyFormat';
+import { monetaryFormat } from '../../../../common/utils/masks/monetaryFormat';
 
 export interface IPropertyCard {
   id: string;
