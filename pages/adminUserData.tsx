@@ -1,6 +1,6 @@
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { GetServerSidePropsContext } from 'next';
-import { getSession } from 'next-auth/react';
+import { getSession, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { destroyCookie } from 'nookies';
 import { useEffect, useRef, useState } from 'react';
@@ -28,6 +28,7 @@ import { useIsMobile } from '../hooks/useIsMobile';
 import { NextPageWithLayout } from './page';
 import { ErrorToastNames, SuccessToastNames, showErrorToast, showSuccessToast } from '../common/utils/toasts';
 import EditPassword, { IPasswordData } from '../components/molecules/userData/editPassword';
+import DeleteAccount from '../components/molecules/userData/deleteAccount';
 Modal.setAppElement('#__next');
 
 interface IAdminUserDataPageProps {
@@ -54,6 +55,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     ownerData?.owner ? ownerData?.owner?.plan : ''
   );
   const [creditCardIsOpen, setCreditCardIsOpen] = useState(false);
+  const [deleteAccountIsOpen, setDeleteAccountIsOpen] = useState(false);
   const [isEditPassword, setIsEditPassword] = useState(false);
   const [isAdminPage, setIsAdminPage] = useState(false);
   const isEdit = true;
@@ -402,7 +404,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
               </button>
             </div>
 
-            <div className="lg:pt-20 pt-0.5 mb-20 mx-4">
+            <div className="lg:pt-20 pt-0.5 mx-4">
               <label className="flex flex-row items-center justify-between max-w-[1232px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 md:text-3xl text-md text-quaternary rounded-xl font-bold transition bg-opacity-90 hover:bg-gray-300">
                 Dados do Cartão de Crédito
                 <span
@@ -430,6 +432,28 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                     userAddress={address}
                     ownerData={ownerData}
                   />
+                )}
+              </div>
+            </div>
+
+            <div className="lg:pt-20 pt-0.5 mb-20 mx-4">
+              <label className="flex flex-row items-center justify-between max-w-[1232px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 md:text-3xl text-md text-quaternary rounded-xl font-bold transition bg-opacity-90 hover:bg-gray-300">
+                Excluir conta
+                <span
+                  className={`transition-transform transform`}
+                  onClick={() => setDeleteAccountIsOpen(!deleteAccountIsOpen)}
+                >
+                  <ArrowDownIcon
+                    width="13"
+                    className={`cursor-pointer ${
+                      deleteAccountIsOpen ? '' : 'rotate-180'
+                    }`}
+                  />
+                </span>
+              </label>
+              <div className="bg-grey-lighter">
+                {deleteAccountIsOpen && (
+                  <DeleteAccount/>
                 )}
               </div>
             </div>
