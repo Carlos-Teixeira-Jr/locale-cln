@@ -108,24 +108,27 @@ const Home: NextPageWithLayout<IHome> = ({
         </div>
 
         <div className="max-w-[1232px] flex sm:items-center md:items-center flex-col m-auto">
-          <h3 className="sm:text-base md:text-2xl font-bold text-quaternary text-left mt-5 ml-5">
+          <h3 className="sm:text-base md:text-2xl font-bold text-quaternary lg:text-left text-center mt-5 md:ml-5">
             O que você procura a um clique de distância
           </h3>
-          <div className="mb-10">
+          <div className="mb-5 lg:mb-10">
             <AccessCard />
           </div>
 
-          <div className="flex max-w-[1232px]  justify-start text-left">
-            <h3 className="sm:text-base md:text-2xl font-bold text-quaternary text-center md:text-left ml-5">
-              {propertiesByLocation.length != 0
-                ? 'Veja os imóveis mais próximos de você!'
-                : 'Veja os imóveis em destaque!'}
-            </h3>
-          </div>
+          {propertiesByLocation.length > 0 || propertyInfo?.docs?.length > 0 && (
+            <div className="flex max-w-[1232px]  justify-center text-left">
+              <h3 className="sm:text-base md:text-2xl font-bold text-quaternary text-center md:text-left ml-5">
+                {propertiesByLocation.length != 0
+                  ? 'Veja os imóveis mais próximos de você!'
+                  : 'Veja os imóveis em destaque!'}
+              </h3>
+            </div>
+          )}
+          
           <div className="flex sm:flex-col max-w-[1232px] justify-center items-center md:flex-row  mb-3 px-2">
             <div className="flex flex-row px-4">
               <div className="flex flex-col m-auto align-middle mt-2">
-                <div className="sm:grid sm:grid-cols-1 md:grid md:grid-cols-2 lg:flex lg:flex-row justify-center gap-9">
+                <div className="sm:grid sm:grid-cols-1 md:flex md:flex-row md:flex-wrap lg:flex-nowrap justify-center md:gap-10">
                   {/* ISSO COMENTADO ABAIXO É O CÓDIGO QUE RENDERIZA APENAS OS CARDS REFERENTES A LOCALIZAÇÃO DO USUÁRIO */}
                   {propertiesByLocation.docs
                     ? propertiesByLocation.docs.map(
@@ -196,7 +199,7 @@ export async function getStaticProps() {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
 
   const [propertyInfo, propertyTypes, locations] = await Promise.all([
-    fetch(`${baseUrl}/property/filter/?page=1&limit=3`)
+    fetch(`${baseUrl}/property/filter/?page=1&limit=4`)
       .then((res) => res.json())
       .catch(() => []),
     fetch(`${baseUrl}/property-type`)
@@ -205,7 +208,7 @@ export async function getStaticProps() {
     fetch(`${baseUrl}/location`)
       .then((res) => res.json())
       .catch(() => []),
-    fetchJson(`${baseUrl}/property/filter/?page=1&limit=3`),
+    fetchJson(`${baseUrl}/property/filter/?page=1&limit=4`),
     fetchJson(`${baseUrl}/property-type`),
     fetchJson(`${baseUrl}/location`),
   ]);

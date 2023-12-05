@@ -55,7 +55,7 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
               <Pagination totalPages={favouriteProperties?.totalPages} />
             )}
 
-            <div className="flex flex-col md:flex-row flex-wrap md:gap-10 lg:gap-20 my-5 justify-center">
+            <div className="flex flex-col md:flex-row flex-wrap md:gap-2 lg:gap-10 my-5 lg:justify-start md:px-2 lg:px-10">
               {favouriteProperties?.docs?.length > 0 &&
                 favouriteProperties?.docs.map(
                   ({
@@ -66,16 +66,18 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
                     highlighted,
                     description,
                   }: IData) => (
-                    <PropertyCard
-                      key={_id}
-                      description={description}
-                      images={images}
-                      location={`${address.city}, ${address.uf} - ${address.streetName}`}
-                      favorited={highlighted}
-                      id={_id}
-                      prices={prices}
-                      highlighted={highlighted}
-                    />
+                    <div className='w-60' key={_id}>
+                      <PropertyCard
+                        key={_id}
+                        description={description}
+                        images={images}
+                        location={`${address.city}, ${address.uf} - ${address.streetName}`}
+                        favorited={highlighted}
+                        id={_id}
+                        prices={prices}
+                        highlighted={highlighted}
+                      />
+                    </div>
                   )
                 )}
             </div>

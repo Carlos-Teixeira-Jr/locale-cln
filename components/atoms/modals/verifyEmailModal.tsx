@@ -201,6 +201,7 @@ const VerifyEmailModal: React.FC<IVerifyEmailModal> = ({
               });
               setInput(e.target.value);
             }}
+            maxLength={10}
           />
 
           {verificationCodeError && (

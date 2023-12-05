@@ -17,6 +17,7 @@ const Pagination: React.FC<IPagination> = ({
   currentPage = 0,
   setCurrentPage = () => {},
 }) => {
+
   const router = useRouter();
   const query = router.query;
   const [pages, setPages] = useState<number | undefined>();
