@@ -15,6 +15,7 @@ import StarIcon from '../../../atoms/icons/starIcon';
 import ViewIcon from '../../../atoms/icons/viewIcon';
 import formatCurrency from '../../../atoms/masks/currencyFormat';
 import ConfirmActivationModal from '../../../atoms/modals/confirmActivationModal';
+import { monetaryFormat } from '../../../../common/utils/masks/monetaryFormat';
 
 interface IAdminPropertyCard {
   _id: string;
@@ -45,8 +46,8 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
   isActiveProp,
   highlighted,
 }: IAdminPropertyCard) => {
-  const priceToInt = price;
-  const formattedPrice = formatCurrency(priceToInt);
+  const priceString = price.toString();
+  const formattedPrice = monetaryFormat(priceString);
   const [isActive, setIsActive] = useState<boolean>(isActiveProp);
   const { data: session } = useSession() as any;
   const user = session?.user?.data._id;

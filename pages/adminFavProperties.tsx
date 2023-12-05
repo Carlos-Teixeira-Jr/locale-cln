@@ -66,7 +66,7 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
                     highlighted,
                     description,
                   }: IData) => (
-                    <div className='w-60' key={_id}>
+                    <div className="w-60" key={_id}>
                       <PropertyCard
                         key={_id}
                         description={description}

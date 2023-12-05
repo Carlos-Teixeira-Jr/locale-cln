@@ -189,11 +189,15 @@ const Register = () => {
         prices: [
           {
             type: PricesType.mensal,
-            value: parseFloat(registration.propertyValue.replace(',', '.')),
+            value: parseFloat(
+              registration.propertyValue.replace(/\./g, '').replace(',', '.')
+            ),
           },
           {
             type: PricesType.condominio,
-            value: parseFloat(registration.condominiumValue.replace(',', '.')),
+            value: parseFloat(
+              registration.condominiumValue.replace(/\./g, '').replace(',', '.')
+            ),
           },
         ],
         condominium: registration.condominium,

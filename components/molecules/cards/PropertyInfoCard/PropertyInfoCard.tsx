@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { MouseEvent, useState } from 'react';
+import { MouseEvent, useEffect, useRef, useState } from 'react';
 import Modal from 'react-modal';
 import { IData } from '../../../../common/interfaces/property/propertyData';
 import BathroomIcon from '../../../atoms/icons/bathroomIcon';
@@ -10,6 +10,7 @@ import NextCardIcon from '../../../atoms/icons/nextCardIcon';
 import ParkingIcon from '../../../atoms/icons/parkingIcon';
 import PreviousCardIcon from '../../../atoms/icons/previousCardIcon';
 import MessageModal from '../../../atoms/modals/messageModal';
+import { monetaryFormat } from '../../../../common/utils/masks/monetaryFormat';
 Modal.setAppElement('#__next');
 
 export interface IPropertyInfoCard {
@@ -48,6 +49,25 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [expanded, setExpanded] = useState(false);
+  const descriptionRef = useRef<HTMLParagraphElement>(null);
+  const [isExpandable, setIsExpandable] = useState(false);
+
+  // Expande o tamanho do corpo do card para mostrar todo o texto;
+  const toggleExpanded = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setExpanded(!expanded);
+  };
+
+  // Verifica se o texto excede os limites do corpo do card e atribui esse valor ao estado isExpandable;
+  useEffect(() => {
+    if (descriptionRef.current) {
+      const isOverflowing =
+        descriptionRef.current.scrollHeight >
+        descriptionRef.current.clientHeight;
+      setIsExpandable(isOverflowing);
+    }
+  }, [description]);
 
   const prevImage = (event: MouseEvent) => {
     event.preventDefault();
@@ -75,7 +95,11 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
   return (
     <>
       <Link href={href}>
-        <div className="lg:h-[265px] bg-tertiary md:grid md:grid-cols-3 rounded-[30px] overflow-hidden drop-shadow-lg my-[29px] md:mx-[35px] mx-2 flex flex-col">
+        <div className={` bg-tertiary md:grid md:grid-cols-3 rounded-[30px] overflow-hidden drop-shadow-lg my-[29px] md:mx-[35px] mx-2 flex flex-col ${
+          expanded
+          ? 'lg:h-fit'
+          : 'lg:h-[255px]'
+        }`}>
           <div className="group relative md:h-[200px]">
             {/* Images */}
             <div className="flex flex-row w-full overflow-hidden scroll-smooth rounded-tl-[30px] md:h-[265px] h-[250px]">
@@ -134,17 +158,38 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
             className="md:flex justify-between md:flex-col md:gap-4 md:col-span-2 md:ml-11 my-auto mx-[17px] md:mx-4"
           >
             <div className="md:w-[218px] h-[44px] top-[17px] left-[336px] font-bold text-3xl text-[#000000] leading-10">
-              R$ {prices},00
+              R$ {prices}
             </div>
-            <p className="font-medium text-xs leading-4 text-quaternary md:w-[383px] h-fit">
-              {description}
-            </p>
+            <div className='flex flex-col'>
+              <p 
+                className="font-medium text-xs leading-4 text-quaternary md:w-[383px] h-fit"
+                ref={descriptionRef}
+                style={{
+                  overflow: expanded ? 'visible' : 'hidden',
+                  textOverflow: 'ellipsis',
+                  display: '-webkit-box',
+                  lineClamp: expanded ? 'unset' : 2,
+                  WebkitLineClamp: expanded ? 'unset' : 2,
+                  WebkitBoxOrient: 'vertical',
+                }}
+              >
+                {description}
+              </p>
+              {descriptionRef.current && isExpandable && (
+                <span
+                  onClick={toggleExpanded}
+                  className="font-medium text-sm text-primary max-w-[350px] text-end"
+                >
+                  {!expanded ? 'Ler mais...' : 'Ler menos...'}
+                </span>
+              )}
+            </div>
             <div className="flex items-center md:py-auto py-2">
               <p className="font-bold text-xs leading-4 text-quaternary md:w-[266px] h-[15px]">
                 {location}
               </p>
             </div>
-            <div className="grid grid-auto-cols grid-flow-col gap-3 pb-6 md:pb-0 lg:pb-0 items-center">
+            <div className="grid grid-auto-cols grid-flow-col gap-3 pb-6 md:pb-5 items-center">
               <div className="grid grid-auto-cols grid-flow-col gap-1">
                 <div className="md:w-fit h-fit">
                   <BedroomIcon fill="#6B7280" />
