@@ -33,6 +33,7 @@ const Home: NextPageWithLayout<IHome> = ({
   propertyTypes,
   locations,
 }) => {
+  console.log("🚀 ~ file: index.tsx:36 ~ propertyInfo:", propertyInfo)
   const { latitude, longitude, location } = useTrackLocation();
   const [propertiesByLocation, setPropertiesByLocation] = useState<any>([]);
   const [propertiesByLocationError, setPropertiesByLocationError] =

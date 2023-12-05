@@ -436,7 +436,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
               </div>
             </div>
 
-            <div className="lg:pt-20 pt-0.5 mb-20 mx-4">
+            <div className="lg:pt-5 pt-0.5 mb-20 mx-4">
               <label className="flex flex-row items-center justify-between max-w-[1232px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 md:text-3xl text-md text-quaternary rounded-xl font-bold transition bg-opacity-90 hover:bg-gray-300">
                 Excluir conta
                 <span

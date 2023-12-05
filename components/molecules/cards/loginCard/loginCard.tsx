@@ -175,7 +175,7 @@ const LoginCard: React.FC = () => {
                 }).then(({ ok, error }: any) => {
                   if (ok) {
                     toast.dismiss();
-                    router.push('/admin');
+                    router.push('/admin?page=1');
                   } else {
                     console.error(error);
                     toast.dismiss();

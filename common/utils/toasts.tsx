@@ -15,7 +15,8 @@ export enum SuccessToastNames {
   HighlightProperty = 'highlightProperty',
   FavouriteProperty = 'favouriteProperty',
   UserDataUpdate = 'userDataUpdate',
-  PropertyUpdate = 'propertyUpdate'
+  PropertyUpdate = 'propertyUpdate',
+  DeleteUser = 'deleteUser'
 }
 
 export enum ErrorToastNames {
@@ -28,7 +29,8 @@ export enum ErrorToastNames {
   ActivateProperty = 'activateProperty',
   FavouriteProperty = 'favouriteProperty',
   UserDataUpdate = 'userDataUpdate',
-  PropertyUpdate = 'propertyUpdate'
+  PropertyUpdate = 'propertyUpdate',
+  DeleteUser = 'deleteUser'
 }
 
 const successToastMessages: Record<SuccessToastNames, ToastMessage> = {
@@ -76,6 +78,12 @@ const successToastMessages: Record<SuccessToastNames, ToastMessage> = {
   },
   [SuccessToastNames.PropertyUpdate]: {
     message: 'Imóvel atualizado com sucesso.',
+    options: {
+      autoClose: 7000,
+    },
+  },
+  [SuccessToastNames.DeleteUser]: {
+    message: 'Usuário excluído com sucesso.',
     options: {
       autoClose: 7000,
     },
@@ -139,6 +147,12 @@ const errorToastMessages: Record<ErrorToastNames, ToastMessage> = {
   },
   [ErrorToastNames.PropertyUpdate]: {
     message: 'Houve um erro na atualização dos dados deste imóvel. Por favor tente novamente.',
+    options: {
+      autoClose: 7000,
+    },
+  },
+  [ErrorToastNames.DeleteUser]: {
+    message: 'Houve um erro ao excluir o usuário. Por favor tente novamente mais tarde.',
     options: {
       autoClose: 7000,
     },

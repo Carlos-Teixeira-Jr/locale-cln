@@ -2,7 +2,10 @@ import CloseIcon from "../icons/closeIcon";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import Image from 'next/image';
 import Modal from 'react-modal';
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
+import { toast } from "react-toastify";
+import { ErrorToastNames, SuccessToastNames, showErrorToast, showSuccessToast } from "../../../common/utils/toasts";
+import { useRouter } from "next/router";
 Modal.setAppElement('#__next');
 
 export interface IDeleteAccountModal {
@@ -18,12 +21,34 @@ const DeleteAccountModal = ({
   const isMobile = useIsMobile();
   const { data: session } = useSession() as any;
   const userId = session?.user?.data?._id;
+  const router = useRouter();
   
-  const handleDeleteAccount = () => {
+  const handleDeleteAccount = async () => {
     try {
-      console.log("teste")
+      toast.loading('Enviando');
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/user`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId,
+        }),
+      })
+
+      if (response.ok) {
+        toast.dismiss();
+        showSuccessToast(SuccessToastNames.DeleteUser);
+        signOut();
+        router.push('/login');
+      } else {
+        toast.dismiss();
+        showErrorToast(ErrorToastNames.DeleteUser)
+      }
     } catch (error) {
+      toast.dismiss();
       console.error(error)
+      showErrorToast(ErrorToastNames.ServerConnection)
     }
   }
 
