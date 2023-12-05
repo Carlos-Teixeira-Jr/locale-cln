@@ -485,6 +485,7 @@ const RegisterFormStep3: React.FC<IProps> = ({ selectedPlanCard }) => {
             id="name"
             value={formData.name}
             style={errors.name ? { border: '1px solid red' } : {}}
+            maxLength={50}
             required
           />
           {errors.name && (
@@ -501,6 +502,7 @@ const RegisterFormStep3: React.FC<IProps> = ({ selectedPlanCard }) => {
               onChange={handleEmailChange}
               type="e-mail"
               id="email"
+              maxLength={30}
               style={errors.email ? { border: '1px solid red' } : {}}
               required
             />
@@ -666,6 +668,7 @@ const RegisterFormStep3: React.FC<IProps> = ({ selectedPlanCard }) => {
                   style={viaCepErrors.city ? { border: '1px solid red' } : {}}
                   onChange={handleCityChange}
                   id="city"
+                  maxLength={50}
                   required
                 />
                 {viaCepErrors.city && (
@@ -701,6 +704,7 @@ const RegisterFormStep3: React.FC<IProps> = ({ selectedPlanCard }) => {
                   value={viaCepData.logradouro ? viaCepData.logradouro : street}
                   style={viaCepErrors.street ? { border: '1px solid red' } : {}}
                   id="street"
+                  maxLength={30}
                   onChange={handleStreetChange}
                 />
                 {viaCepErrors.street && (
@@ -719,6 +723,7 @@ const RegisterFormStep3: React.FC<IProps> = ({ selectedPlanCard }) => {
                   value={viaCepData.numero ? viaCepData.numero : number}
                   style={viaCepErrors.number ? { border: '1px solid red' } : {}}
                   id="number"
+                  maxLength={10}
                   onChange={handleNumberChange}
                 />
                 {viaCepErrors.number && (
@@ -736,6 +741,7 @@ const RegisterFormStep3: React.FC<IProps> = ({ selectedPlanCard }) => {
                 <input
                   className="border border-quaternary rounded-[10px] h-[66px] text-quaternary md:text-[26px] text-xl font-bold px-5 drop-shadow-lg bg-tertiary mt-5"
                   onChange={handleComplementChange}
+                  maxLength={50}
                   value={complement}
                 />
               </div>
@@ -751,6 +757,7 @@ const RegisterFormStep3: React.FC<IProps> = ({ selectedPlanCard }) => {
                   }
                   onChange={handleDistrictChange}
                   id="district"
+                  maxLength={30}
                   required
                 />
                 {viaCepErrors.district && (
@@ -816,6 +823,7 @@ const RegisterFormStep3: React.FC<IProps> = ({ selectedPlanCard }) => {
                       className={`border border-quaternary rounded-[10px] h-[66px] text-quaternary lg:text-[26px] text-xl font-bold px-5 drop-shadow-lg bg-tertiary mt-5 md:ml-5`}
                       id="card-name"
                       style={errors.cardName ? { border: '1px solid red' } : {}}
+                      maxLength={10}
                       required
                     />
                     {errors.cardName && (
