@@ -144,6 +144,7 @@ const EditPassword= ({
                       });
                     }
                   }}
+                  maxLength={15}
                   value={input.value}
                   style={input.error ? { border: '1px solid red' } : {}}
                 />

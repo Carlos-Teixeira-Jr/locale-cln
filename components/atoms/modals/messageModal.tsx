@@ -55,6 +55,7 @@ const MessageModal: React.FC<IMessageModal> = ({
       label: 'Nome',
       value: formData.name,
       error: errors.name,
+      maxLength: 30,
       onChange: (event: ChangeEvent<any>) => {
         const value = event.target.value;
         const maskedValue = value.replace(/[^A-Za-z\sÀ-ú]/g, '');
@@ -90,6 +91,7 @@ const MessageModal: React.FC<IMessageModal> = ({
       value: formData.email,
       error: errors.email,
       type: 'email',
+      maxLength: 30,
       onChange: (event: any) => {
         const email = event.target.value;
         setFormData({ ...formData, email: email });
@@ -101,6 +103,7 @@ const MessageModal: React.FC<IMessageModal> = ({
       value: formData.message,
       error: errors.message,
       type: 'text',
+      maxLength: 1000,
       onChange: (event: any) => {
         const onlyLetters = /^[a-zA-Z\s]+$/;
         if (onlyLetters.test(event.target.value)) {
@@ -221,6 +224,7 @@ const MessageModal: React.FC<IMessageModal> = ({
               <textarea
                 value={input.value}
                 className="w-full h-fit md:m-2 mb-0 rounded-[10px] border border-quaternary bg-tertiary p-1 required:border-red-500 mr-0 md:mx-auto text-md text-quaternary font-semibold"
+                maxLength={input.maxLength}
                 onChange={input.onChange}
               />
             ) : (
@@ -229,6 +233,7 @@ const MessageModal: React.FC<IMessageModal> = ({
                 value={input.value}
                 className="w-full h-fit md:m-2 lg:m-0 rounded-[10px] border border-quaternary bg-tertiary p-1 required:border-red-500 mr-0 md:mx-auto md:text-xl text-quaternary font-semibold"
                 onChange={input.onChange}
+                maxLength={input.maxLength}
               />
             )}
             {input.error && (

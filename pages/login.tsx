@@ -11,7 +11,7 @@ const LoginPage: NextPageWithLayout = () => {
     <>
       <Header />
       <div>
-        <div className="h-screen flex justify-center items-center mt-10 lg:mt-24">
+        <div className="flex justify-center items-center lg:mt-24">
           <LoginCard />
         </div>
       </div>
@@ -74,7 +74,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
             return {
               redirect: {
-                destination: '/admin',
+                destination: '/admin&page=1',
                 permanent: false,
               },
             };
@@ -89,7 +89,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     return {
       redirect: {
-        destination: '/admin',
+        destination: '/admin?page=1',
         permanent: false,
       },
     };

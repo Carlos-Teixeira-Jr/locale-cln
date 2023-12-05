@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 export default function DropdownMenu() {
   return (
-    <div className="flex flex-col md:hidden absolute w-36 h-[110px] z-10 top-[82px] right-[48px] overflow-hidden mt-2 bg-tertiary items-center rounded-b-[10px] shadow-md">
+    <div className="flex flex-col md:hidden absolute w-36 h-[110px] z-10 top-[82px] right-7 md:right-[48px] overflow-hidden mt-2. bg-tertiary items-center rounded-b-[10px] shadow-md">
       <div className="flex flex-col text-center font-semibold text-lg text-quaternary leading-4">
         <Link
           href={'/search'}

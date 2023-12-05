@@ -153,6 +153,7 @@ const PasswordForm: React.FC<IPasswordForm> = ({ userEmail, storedData }) => {
               value={input.value}
               onChange={input.onChange}
               style={input.error ? { border: '1px solid red' } : {}}
+              maxLength={10}
             />
             {input.error && (
               <label className="mx-[10px] text-red-500 mt-5">

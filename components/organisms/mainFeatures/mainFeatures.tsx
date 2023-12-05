@@ -467,6 +467,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                 className={
                   'border border-quaternary rounded-[10px] h-12 w-full text-quaternary text-2xl font-bold p-2 md:font-bold drop-shadow-lg bg-tertiary mt-5'
                 }
+                maxLength={8}
                 style={
                   propertyFeaturesErrors.totalArea
                     ? { border: '1px solid red' }
@@ -515,6 +516,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
               <input
                 value={propertyFeaturesData.size.useableArea}
                 placeholder="m²"
+                maxLength={8}
                 className={
                   'border border-quaternary rounded-[10px] h-12 w-full text-quaternary text-2xl font-bold p-2 md:font-bold drop-shadow-lg bg-tertiary mt-5'
                 }
@@ -579,6 +581,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
             <textarea
               className="bg-tertiary border border-quaternary rounded-[10px] h-40 drop-shadow-xl text-lg p-2 font-semibold text-quaternary"
               value={propertyFeaturesData.description}
+              maxLength={1000}
               onChange={(e) => {
                 setPropertyFeaturesData({
                   ...propertyFeaturesData,
@@ -620,6 +623,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
               <input
                 value={maskedPrice(propertyFeaturesData.propertyValue)}
                 placeholder="R$"
+                maxLength={15}
                 className={
                   'border border-quaternary rounded-[10px] h-12 w-full text-quaternary text-2xl font-bold p-2 md:font-bold drop-shadow-lg bg-tertiary mt-5'
                 }
@@ -669,6 +673,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                       : ''
                   }
                   placeholder="R$"
+                  maxLength={15}
                   className={`border border-quaternary rounded-[10px] h-12 lg:ml-0 md:ml-0 text-quaternary md:text-[26px] text-2xl font-bold md:px-2 drop-shadow-lg mt-5 p-2 ${
                     !propertyFeaturesData.condominium
                       ? 'bg-[#CACACA]'
@@ -749,6 +754,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                       : ''
                   }
                   placeholder="R$"
+                  maxLength={15}
                   className={`border border-quaternary rounded-[10px] h-12 lg:ml-0 md:ml-0 text-quaternary md:text-[26px] text-2xl font-bold md:px-2 drop-shadow-lg mt-5 p-2 ${
                     !propertyFeaturesData.iptu ? 'bg-[#CACACA]' : 'bg-tertiary'
                   }`}

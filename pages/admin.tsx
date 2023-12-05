@@ -13,6 +13,7 @@ import AdminPropertyCard from '../components/molecules/cards/adminPropertyCard/a
 import AdminHeader from '../components/organisms/adminHeader/adminHeader';
 import SideMenu from '../components/organisms/sideMenu/sideMenu';
 import { NextPageWithLayout } from './page';
+import { useRouter } from 'next/router';
 
 interface AdminPageProps {
   ownerProperties: IOwnerProperties;
@@ -25,12 +26,40 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
 }) => {
   
   const { data: session } = useSession() as any;
+  console.log("🚀 ~ file: admin.tsx:29 ~ session:", session)
   const [isOwner, setIsOwner] = useState<boolean>(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const router = useRouter();
+  const query = router.query as any;
 
   // Determina se o usuário já possui anúncios ou não;
   useEffect(() => {
     setIsOwner(ownerProperties.docs?.length > 0 ? true : false);
   }, [ownerProperties]);
+
+  useEffect(() => {
+    if (router.query.page !== undefined && typeof query.page === 'string') {
+      const parsedPage = parseInt(query.page);
+      setCurrentPage(parsedPage);
+    }
+  });
+
+  useEffect(() => {
+    // Check if the page parameter in the URL matches the current page
+    const pageQueryParam =
+      router.query.page !== undefined && typeof query.page === 'string'
+        ? parseInt(query.page)
+        : 1;
+
+    // Only update the URL if the page parameter is different from the current page
+    if (pageQueryParam !== currentPage) {
+      const queryParams = {
+        ...query,
+        page: currentPage,
+      };
+      router.push({ query: queryParams }, undefined, { scroll: false });
+    }
+  }, [currentPage]);
 
   return (
     <div>
@@ -41,12 +70,16 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
         </div>
         <div className="flex flex-col items-center mt-24 lg:ml-[305px]">
           <div className="flex flex-col items-center">
-            <h1 className="font-extrabold text-2xl md:text-4xl text-quaternary md:mb-10 md:mr-20 text-center">
+            <h1 className="font-extrabold text-2xl md:text-4xl text-quaternary md:mb-5 md:mr-20. text-center">
               Bem vindo{' '}
               {session?.username !== undefined ? session?.username : ''}!
             </h1>
             {isOwner && ownerProperties?.docs && (
-              <Pagination totalPages={ownerProperties.totalPages} />
+              <Pagination 
+                totalPages={ownerProperties.totalPages} 
+                setCurrentPage={setCurrentPage}
+                currentPage={currentPage}
+              />
             )}
           </div>
 
@@ -91,6 +124,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const userId = session?.user.data._id;
   let token;
   let refreshToken;
+  const { query } = context;
+  const page = query.page;
 
   if (!session) {
     return {
@@ -179,6 +214,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       console.error(error);
     }
 
+
+
     const [ownerProperties] = await Promise.all([
       fetch(`${baseUrl}/property/owner-properties`, {
         method: 'POST',
@@ -187,13 +224,11 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         },
         body: JSON.stringify({
           ownerId,
-          page: 1,
+          page,
         }),
       })
         .then((res) => res.json())
         .catch(() => []),
-      fetchJson(`${baseUrl}/notification/${userId}`),
-
       fetchJson(`${baseUrl}/property/owner-properties`),
     ]);
 

@@ -46,7 +46,7 @@ const Header: React.FC<IHeader> = () => {
 
   return (
     <div>
-      <div className="top-0 fixed z-10 w-[95%] justify-between grid grid-cols-2 md:grid md:grid-cols-3 bg-tertiary h-fit shadow-md mt-8 p-2 rounded-[50px] left-1/2 transform -translate-x-1/2">
+      <div className="top-0 fixed z-40 w-[95%] justify-between grid grid-cols-2 md:grid md:grid-cols-3 bg-tertiary h-fit shadow-md mt-8 p-2 rounded-[50px] left-1/2 transform -translate-x-1/2">
         <Link
           href="/"
           className="relative flex items-center cursor-pointer my-auto ml-4"
@@ -85,7 +85,7 @@ const Header: React.FC<IHeader> = () => {
           {session ? (
             <div className='flex gap-2'>
               <p className='my-auto mx-2'>{session.user?.data.username}</p>
-              <Link href={'/admin'}>
+              <Link href={'/admin?page=1'}>
                 {session.user.data.picture!! ? (
                   <Image
                     src={session.user?.data.picture!!}

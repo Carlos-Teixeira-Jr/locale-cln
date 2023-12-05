@@ -124,6 +124,7 @@ const ForgotPasswordModal: React.FC<IForgotPasswordModal> = ({
           type="text"
           value={emailForChangePassword}
           onChange={handleOnChangeEmail}
+          maxLength={50}
         />
 
         <button
