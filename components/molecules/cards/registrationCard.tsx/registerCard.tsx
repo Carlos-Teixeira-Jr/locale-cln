@@ -116,6 +116,7 @@ const RegisterCard: React.FC = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           onBlur={handleEmailValidation}
+          maxLength={10}
         />
 
         {emailError !== '' && (

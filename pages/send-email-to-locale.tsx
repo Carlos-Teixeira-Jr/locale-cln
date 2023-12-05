@@ -122,6 +122,7 @@ const LocaleContact: NextPageWithLayout = () => {
             value={formData.name}
             onChange={handleMessageNameMask}
             className="lg:w-[770px] w-[250px] h-[44px] m-[10px] mb-0 rounded-[10px] border border-quaternary bg-tertiary p-2 required:border-red-500 md:mx-auto lg:mx-2 text-lg text-quaternary font-semibold"
+            maxLength={30}
             style={error.name ? { border: '1px solid red' } : {}}
           />
           {error.name && (
@@ -157,6 +158,7 @@ const LocaleContact: NextPageWithLayout = () => {
             name="email"
             value={formData.email}
             onChange={handleEmailChange}
+            maxLength={30}
             className="lg:w-[770px] w-[250px] h-[44px] m-[10px] mb-0 rounded-[10px] border border-quaternary bg-tertiary p-2 required:border-red-500 md:mx-auto lg:mx-2 text-lg text-quaternary font-semibold"
             style={error.email ? { border: '1px solid red' } : {}}
           />
@@ -171,6 +173,7 @@ const LocaleContact: NextPageWithLayout = () => {
           <textarea
             className="mx-2 mb-0 border border-quaternary mt-1 lg:w-[770px] w-[250px] lg:h-[44px] bg-tertiary rounded-[10px] p-2 required:border-red-500 text-lg text-quaternary font-semibold"
             name="message"
+            maxLength={500}
             value={formData.message}
             placeholder={'Digite sua mensagem para a Locale.'}
             style={error.message ? { border: '1px solid red' } : {}}

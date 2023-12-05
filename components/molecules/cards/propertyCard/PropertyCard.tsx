@@ -105,6 +105,8 @@ const PropertyCard: React.FC<IPropertyCard> = ({
     location
   ]);
 
+  memoizedCardInfos.bathrooms
+
   const price = prices[0].value;
   const formattedPrice = formatCurrency(price);
 
@@ -143,7 +145,6 @@ const PropertyCard: React.FC<IPropertyCard> = ({
       className={`flex flex-col lg:max-w-[270px] md:max-w-[250px] bg-tertiary shadow-lg rounded-[30px] mt-2 cursor-pointer ${
         expanded ? `min-h-[470px] max-h-fit` : 'max-h-[470px]'
       }`}
-      onClick={() => console.log(id)}
     > 
       <Link href={`/property/${id}`}>
         {/* caroussel */}
@@ -270,30 +271,24 @@ const PropertyCard: React.FC<IPropertyCard> = ({
         </div>
         {/* Property tags */}
         <div className={`flex flex-row items-end justify-around mb-7 mt-4`}>
-          {memoizedCardInfos.bedrooms && (
-            <div className="flex flex-row items-center justify-between">
-              <BedroomIcon fill="#6B7280" />
-              <span className="font-bold text-2xl text-quaternary ml-2">
-                {memoizedCardInfos.bedrooms}
-              </span>
-            </div>
-          )}
-          {memoizedCardInfos.parking_spaces && (
-            <div className="flex flex-row items-center justify-between">
-              <ParkingIcon fill="#6B7280" />
-              <span className="font-bold text-2xl text-quaternary ml-2">
-                {memoizedCardInfos.parking_spaces}
-              </span>
-            </div>
-          )}
-          {memoizedCardInfos.bathrooms && (
-            <div className="flex flex-row items-center justify-between">
-              <BathroomIcon fill="#6B7280" />
-              <span className="font-bold text-2xl text-quaternary ml-2">
-                {memoizedCardInfos.bathrooms}
-              </span>
-            </div>
-          )}
+          <div className="flex flex-row items-center justify-between">
+            <BedroomIcon fill="#6B7280" />
+            <span className="font-bold text-2xl text-quaternary ml-2">
+              {memoizedCardInfos.bedrooms}
+            </span>
+          </div>
+          <div className="flex flex-row items-center justify-between">
+            <ParkingIcon fill="#6B7280" />
+            <span className="font-bold text-2xl text-quaternary ml-2">
+              {memoizedCardInfos.parking_spaces}
+            </span>
+          </div>
+          <div className="flex flex-row items-center justify-between">
+            <BathroomIcon fill="#6B7280" />
+            <span className="font-bold text-2xl text-quaternary ml-2">
+              {memoizedCardInfos.bathrooms}
+            </span>
+          </div>
         </div>
       </Link>
     </div>

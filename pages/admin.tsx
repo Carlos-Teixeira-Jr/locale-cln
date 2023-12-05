@@ -26,6 +26,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
 }) => {
   
   const { data: session } = useSession() as any;
+  console.log("🚀 ~ file: admin.tsx:29 ~ session:", session)
   const [isOwner, setIsOwner] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState(1);
   const router = useRouter();
@@ -69,7 +70,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
         </div>
         <div className="flex flex-col items-center mt-24 lg:ml-[305px]">
           <div className="flex flex-col items-center">
-            <h1 className="font-extrabold text-2xl md:text-4xl text-quaternary md:mb-10 md:mr-20 text-center">
+            <h1 className="font-extrabold text-2xl md:text-4xl text-quaternary md:mb-5 md:mr-20. text-center">
               Bem vindo{' '}
               {session?.username !== undefined ? session?.username : ''}!
             </h1>
@@ -124,7 +125,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   let token;
   let refreshToken;
   const { query } = context;
-  const page = Number(query.page);
+  const page = query.page;
 
   if (!session) {
     return {
@@ -213,6 +214,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       console.error(error);
     }
 
+
+
     const [ownerProperties] = await Promise.all([
       fetch(`${baseUrl}/property/owner-properties`, {
         method: 'POST',
@@ -221,7 +224,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         },
         body: JSON.stringify({
           ownerId,
-          page: page,
+          page,
         }),
       })
         .then((res) => res.json())

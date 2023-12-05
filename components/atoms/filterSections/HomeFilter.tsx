@@ -313,6 +313,7 @@ const HomeFilter: React.FC<IHomeFilter> = ({
                 <input
                   className="lg:h-9 lg:text-lg border bg-transparent border-quaternary rounded-lg p-2 mt-[0.1rem] placeholder:text-sm"
                   placeholder="Digite um bairro, cidade, rua..."
+                  maxLength={30}
                   onChange={(event: ChangeEvent<HTMLInputElement>) => {
                     const newName = event.target.value;
                     setInputValue(newName);
