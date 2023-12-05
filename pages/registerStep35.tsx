@@ -115,7 +115,7 @@ const RegisterStep35: NextPageWithLayout<IRegisterStep35> = ({ plans }) => {
         </div>
       </div>
 
-      <Footer smallPage={false} />
+      <Footer smallPage={true} />
     </>
   );
 };

@@ -55,7 +55,7 @@ const RegisterStep4: NextPageWithLayout = () => {
           </div>
         </div>
       </div>
-      <Footer smallPage={false} />
+      <Footer smallPage={true} />
     </>
   );
 };
