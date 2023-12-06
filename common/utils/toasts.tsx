@@ -41,7 +41,7 @@ const successToastMessages: Record<SuccessToastNames, ToastMessage> = {
     },
   },
   [SuccessToastNames.SendMessage]: {
-    message: 'Sua mensagem foi enviada ao proprietário do imóvel com sucesso!',
+    message: 'Sua mensagem foi enviada com sucesso!',
     options: {
       autoClose: 7000,
     },

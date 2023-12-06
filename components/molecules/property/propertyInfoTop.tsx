@@ -6,6 +6,7 @@ import {
   ISize,
   propType,
 } from '../../../common/interfaces/property/propertyData';
+import { monetaryFormat } from '../../../common/utils/masks/monetaryFormat';
 import { capitalizeFirstLetter } from '../../../common/utils/strings/capitalizeFirstLetter';
 import AreaIcon from '../../atoms/icons/areaIcon';
 import BathroomIcon from '../../atoms/icons/bathroomIcon';
@@ -17,8 +18,11 @@ interface IInfoTop {
   propertyID: IData;
 }
 
-const PropertyInfoTop: React.FC<IInfoTop> = ({ propertyID }: any) => {
+const PropertyInfoTop = ({ propertyID }: any) => {
 
+
+  const priceString = propertyID.prices[0].value.toString();
+  const formattedPrice = monetaryFormat(priceString)
   const getSections = (
     areaValue: ISize,
     numBedrooms: IMetadata,
@@ -65,7 +69,7 @@ const PropertyInfoTop: React.FC<IInfoTop> = ({ propertyID }: any) => {
             {capitalizeFirstLetter(propertyID.address.streetNumber)} -{' '}
             {capitalizeFirstLetter(propertyID.address.neighborhood)}
           </h3>
-          <h1 className="lg:text-6xl mt-2 md:mt-5 text-4xl font-extrabold text-quaternary">{`R$ ${propertyID.prices[0].value},00`}</h1>
+          <h1 className="lg:text-6xl mt-2 md:mt-5 text-4xl font-extrabold text-quaternary">{formattedPrice}</h1>
         </div>
       </div>
       <div className="flex flex-row items-end text-quaternary font-semibold lg:text-2xl justify-between mt-2 md:mt-0">
