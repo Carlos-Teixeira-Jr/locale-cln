@@ -15,19 +15,26 @@ import {
 } from '../common/interfaces/property/propertyData';
 import { IUser, IUserDataComponent } from '../common/interfaces/user/user';
 import { fetchJson } from '../common/utils/fetchJson';
+import {
+  ErrorToastNames,
+  SuccessToastNames,
+  showErrorToast,
+  showSuccessToast,
+} from '../common/utils/toasts';
 import ArrowDownIcon from '../components/atoms/icons/arrowDownIcon';
 import Address from '../components/molecules/address/address';
 import PlansCardsHidden from '../components/molecules/cards/plansCards/plansCardHidden';
 import CreditCard, {
   CreditCardForm,
 } from '../components/molecules/userData/creditCard';
+import EditPassword, {
+  IPasswordData,
+} from '../components/molecules/userData/editPassword';
 import UserDataInputs from '../components/molecules/userData/userDataInputs';
 import AdminHeader from '../components/organisms/adminHeader/adminHeader';
 import SideMenu from '../components/organisms/sideMenu/sideMenu';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { NextPageWithLayout } from './page';
-import { ErrorToastNames, SuccessToastNames, showErrorToast, showSuccessToast } from '../common/utils/toasts';
-import EditPassword, { IPasswordData } from '../components/molecules/userData/editPassword';
 Modal.setAppElement('#__next');
 
 interface IAdminUserDataPageProps {
@@ -47,7 +54,6 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   properties,
   ownerData,
 }) => {
-  
   const router = useRouter();
   const isOwner = properties?.docs?.length > 0 ? true : false;
   const [selectedPlan, setSelectedPlan] = useState(
@@ -82,13 +88,13 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
 
   const [passwordFormData, setPasswordFormData] = useState({
     password: '',
-    passwordConfirmattion: ''
+    passwordConfirmattion: '',
   });
 
   const [passwordError, setPasswordErrors] = useState({
     password: '',
-    passwordConfirmattion: ''
-  })
+    passwordConfirmattion: '',
+  });
 
   // Lida com o autoscroll das validações de erro dos inputs;
   const userDataInputRefs = {
@@ -155,8 +161,10 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const handleUpdateBtn = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const error = 'Este campo é obrigatório';
-    const emptyPasswordError = 'Este campo é orbigatório caso deseje alterar a senha';
-    const invalidPasswordConfimattion = 'A senha e a confirmação de senha precisam ser iguais';
+    const emptyPasswordError =
+      'Este campo é orbigatório caso deseje alterar a senha';
+    const invalidPasswordConfimattion =
+      'A senha e a confirmação de senha precisam ser iguais';
     const invalidPasswordLenght = 'A senha precisa ter pelo meno 6 caracteres';
 
     setFormDataErrors({
@@ -173,11 +181,11 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       streetNumber: '',
       uf: '',
     });
-    
+
     setPasswordErrors({
       password: '',
-      passwordConfirmattion: ''
-    })
+      passwordConfirmattion: '',
+    });
 
     const newFormDataErrors = {
       username: '',
@@ -196,8 +204,8 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
 
     const newPasswordErrors = {
       password: '',
-      passwordConfirmattion: ''
-    }
+      passwordConfirmattion: '',
+    };
 
     if (!formData.username) newFormDataErrors.username = error;
     if (!formData.email) newFormDataErrors.email = error;
@@ -211,12 +219,18 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     if (!address.streetNumber) newAddressErrors.streetNumber = error;
 
     if (isEditPassword) {
-      if (!passwordFormData.password) newPasswordErrors.password = emptyPasswordError;
-      if (!passwordFormData.passwordConfirmattion) newPasswordErrors.passwordConfirmattion = emptyPasswordError;
-      if (passwordFormData.password !== passwordFormData.passwordConfirmattion) newPasswordErrors.password = invalidPasswordConfimattion;
-      if (passwordFormData.password !== passwordFormData.passwordConfirmattion) newPasswordErrors.passwordConfirmattion = invalidPasswordConfimattion;
-      if (passwordFormData.password.length < 6) newPasswordErrors.password = invalidPasswordLenght;
-      if (passwordFormData.passwordConfirmattion.length < 6) newPasswordErrors.passwordConfirmattion = invalidPasswordLenght;
+      if (!passwordFormData.password)
+        newPasswordErrors.password = emptyPasswordError;
+      if (!passwordFormData.passwordConfirmattion)
+        newPasswordErrors.passwordConfirmattion = emptyPasswordError;
+      if (passwordFormData.password !== passwordFormData.passwordConfirmattion)
+        newPasswordErrors.password = invalidPasswordConfimattion;
+      if (passwordFormData.password !== passwordFormData.passwordConfirmattion)
+        newPasswordErrors.passwordConfirmattion = invalidPasswordConfimattion;
+      if (passwordFormData.password.length < 6)
+        newPasswordErrors.password = invalidPasswordLenght;
+      if (passwordFormData.passwordConfirmattion.length < 6)
+        newPasswordErrors.passwordConfirmattion = invalidPasswordLenght;
     }
 
     setFormDataErrors(newFormDataErrors);
@@ -229,7 +243,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       combinedErrors = {
         ...newAddressErrors,
         ...newFormDataErrors,
-        ...newPasswordErrors
+        ...newPasswordErrors,
       };
     } else {
       combinedErrors = {
@@ -238,7 +252,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       };
     }
 
-    if (isEditPassword) combinedErrors
+    if (isEditPassword) combinedErrors;
 
     // Verifica se algum dos valores do objeto de erros combinados não é uma string vazia
     const hasErrors = Object.values(combinedErrors).some(
@@ -264,21 +278,21 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
 
       const editPasswordFormData = {
         password: passwordFormData.password,
-        passwordConfirmattion: passwordFormData.passwordConfirmattion
-      }
+        passwordConfirmattion: passwordFormData.passwordConfirmattion,
+      };
 
       let body;
       if (isEditPassword) {
         body = {
           user: userFormData,
           owner: ownerFormData,
-          password: editPasswordFormData
-        }
+          password: editPasswordFormData,
+        };
       } else {
         body = {
           user: userFormData,
           owner: ownerFormData,
-        }
+        };
       }
 
       try {
@@ -331,17 +345,22 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                 isEdit={isEdit}
                 userData={ownerData}
                 onUserDataUpdate={(updatedUserData: IUserDataComponent) => {
-                  setFormData(updatedUserData)}}
+                  setFormData(updatedUserData);
+                }}
                 error={formDataErrors}
                 userDataInputRefs={userDataInputRefs}
               />
 
-              <div className='mx-5 my-10'>
-                <EditPassword 
-                  onPasswordUpdate={(passwordData: IPasswordData) => setPasswordFormData(passwordData)} 
+              <div className="mx-5 my-10">
+                <EditPassword
+                  onPasswordUpdate={(passwordData: IPasswordData) =>
+                    setPasswordFormData(passwordData)
+                  }
                   error={passwordError}
                   passwordInputRefs={passwordInputRefs}
-                  onEditPasswordSwitchChange={(isEditPassword: boolean) => setIsEditPassword(isEditPassword)}
+                  onEditPasswordSwitchChange={(isEditPassword: boolean) =>
+                    setIsEditPassword(isEditPassword)
+                  }
                 />
               </div>
 
@@ -363,7 +382,8 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                       <PlansCardsHidden
                         selectedPlanCard={selectedPlan}
                         setSelectedPlanCard={(selectedCard: string) => {
-                          setSelectedPlan(selectedCard)}}
+                          setSelectedPlan(selectedCard);
+                        }}
                         isAdminPage={isAdminPage}
                         key={_id}
                         name={name}
@@ -386,7 +406,9 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                 <Address
                   isEdit={isEdit}
                   address={ownerData?.user?.address}
-                  onAddressUpdate={(updateAddres: IAddress) => setAddress(updateAddres)}
+                  onAddressUpdate={(updateAddres: IAddress) =>
+                    setAddress(updateAddres)
+                  }
                   errors={addressErrors}
                   addressInputRefs={addressInputRefs}
                 />
@@ -444,7 +466,10 @@ export default AdminUserDataPage;
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = (await getSession(context)) as any;
-  const userId = session?.user.data._id;
+  const userId =
+    session?.user.data.id !== undefined
+      ? session?.user.data.id
+      : session?.user.id;
   let token = session?.user?.data?.access_token!!;
   let refreshToken = session?.user?.data.refresh_token;
   if (!session) {
@@ -586,7 +611,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         userData,
         plans,
         properties,
-        ownerData
+        ownerData,
       },
     };
   }

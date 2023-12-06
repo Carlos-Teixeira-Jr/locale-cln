@@ -1,6 +1,7 @@
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { GetServerSidePropsContext } from 'next';
 import { getSession, useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import { destroyCookie } from 'nookies';
 import { useEffect, useState } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
@@ -13,7 +14,6 @@ import AdminPropertyCard from '../components/molecules/cards/adminPropertyCard/a
 import AdminHeader from '../components/organisms/adminHeader/adminHeader';
 import SideMenu from '../components/organisms/sideMenu/sideMenu';
 import { NextPageWithLayout } from './page';
-import { useRouter } from 'next/router';
 
 interface AdminPageProps {
   ownerProperties: IOwnerProperties;
@@ -25,7 +25,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
   notifications,
 }) => {
   const { data: session } = useSession() as any;
-  console.log("🚀 ~ file: admin.tsx:29 ~ session:", session)
+  console.log('🚀 ~ file: admin.tsx:29 ~ session:', session);
   const [isOwner, setIsOwner] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState(1);
   const router = useRouter();
@@ -74,8 +74,8 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
               {session?.username !== undefined ? session?.username : ''}!
             </h1>
             {isOwner && ownerProperties?.docs && (
-              <Pagination 
-                totalPages={ownerProperties.totalPages} 
+              <Pagination
+                totalPages={ownerProperties.totalPages}
                 setCurrentPage={setCurrentPage}
                 currentPage={currentPage}
               />
@@ -120,7 +120,10 @@ export default AdminPage;
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = (await getSession(context)) as any;
-  const userId = session?.user.data._id;
+  const userId =
+    session?.user.data.id !== undefined
+      ? session?.user.data.id
+      : session?.user.id;
   let token;
   let refreshToken;
   const { query } = context;
@@ -212,8 +215,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     } catch (error) {
       console.error(error);
     }
-
-
 
     const [ownerProperties] = await Promise.all([
       fetch(`${baseUrl}/property/owner-properties`, {

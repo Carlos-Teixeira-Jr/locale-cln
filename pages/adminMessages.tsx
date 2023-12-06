@@ -116,7 +116,10 @@ export default AdminMessages;
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = (await getSession(context)) as any;
-  const userId = session?.user.data._id;
+  const userId =
+    session?.user.data.id !== undefined
+      ? session?.user.data.id
+      : session?.user.id;
   let token;
   let refreshToken;
   const page = Number(context.query.page);

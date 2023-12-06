@@ -21,7 +21,7 @@ const MessageNotifications = ({
   const isOwner = properties?.docs?.length > 0 ? true : false;
 
   useEffect(() => {
-    console.log(notifications);
+    console.log('notificações:', notifications);
   });
 
   return (
@@ -72,7 +72,10 @@ export default MessageNotifications;
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = (await getSession(context)) as any;
-  const userId = session?.user.data._id;
+  const userId =
+    session?.user.data.id !== undefined
+      ? session?.user.data.id
+      : session?.user.id;
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
 
   const [notifications, properties] = await Promise.all([

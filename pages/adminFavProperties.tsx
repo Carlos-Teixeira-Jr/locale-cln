@@ -66,7 +66,7 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
                     highlighted,
                     description,
                   }: IData) => (
-                    <div className='w-60' key={_id}>
+                    <div className="w-60" key={_id}>
                       <PropertyCard
                         key={_id}
                         description={description}
@@ -95,7 +95,10 @@ export default AdminFavProperties;
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = (await getSession(context)) as any;
-  const userId = session?.user.data._id;
+  const userId =
+    session?.user.data.id !== undefined
+      ? session?.user.data.id
+      : session?.user.id;
   let token;
   let refreshToken;
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;

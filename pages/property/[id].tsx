@@ -1,5 +1,6 @@
 import { NextPageContext } from 'next';
 import { getSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import {
   IAddress,
@@ -21,7 +22,6 @@ import Footer from '../../components/organisms/footer/footer';
 import Header from '../../components/organisms/header/header';
 import PropertyInfo from '../../components/organisms/propertyInfo/PropertyInfo';
 import { NextPageWithLayout } from '../page';
-import { useRouter } from 'next/router';
 
 export interface IIDPage {
   location: IGeolocation;
@@ -55,15 +55,14 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
   isFavourite,
   relatedProperties,
 }: IPropertyPage) => {
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [mapIsActive, setMapIsActive] = useState(false);
   const dynamicRoute = useRouter().asPath;
 
   // Atualiza o valor de mapIsActive quando o usuário clica em um novo card apresentado nesta página;
   useEffect(() => {
-    setMapIsActive(false)
-  }, [dynamicRoute])
+    setMapIsActive(false);
+  }, [dynamicRoute]);
 
   return (
     <>
@@ -130,7 +129,6 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
           <div id="static-map" className={`${mapIsActive ? '' : 'hidden'}`}>
             <DynamicMap geolocation={property.geolocation} />
           </div>
-
         </div>
       </div>
 
@@ -143,7 +141,10 @@ export default PropertyPage;
 
 export async function getServerSideProps(context: NextPageContext) {
   const session = (await getSession(context)) as any;
-  const userId = session?.user.data._id;
+  const userId =
+    session?.user.data.id !== undefined
+      ? session?.user.data.id
+      : session?.user.id;
   const propertyId = context.query.id;
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
   let isFavourite: boolean = false;
