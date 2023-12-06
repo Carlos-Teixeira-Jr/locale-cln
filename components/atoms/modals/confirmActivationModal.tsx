@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import ReactModal from 'react-modal';
 import { toast } from 'react-toastify';
 import CloseIcon from '../icons/closeIcon';
+import { ErrorToastNames, showErrorToast } from '../../../common/utils/toasts';
 ReactModal.setAppElement('#__next');
 
 interface IConfirmActivationModal {
@@ -38,6 +39,10 @@ export default function confirmActivationModal({
 
   const handleIsActive = async () => {
     try {
+      console.log("🚀 ~ file: confirmActivationModal.tsx:52 ~ handleIsActive ~ propertyId:", propertyId)
+      console.log("🚀 ~ file: confirmActivationModal.tsx:55 ~ handleIsActive ~ !isActive:", !isActive)
+      console.log("🚀 ~ file: confirmActivationModal.tsx:58 ~ handleIsActive ~ userId:", userId)
+
       toast.loading('Desativando anúncio...');
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/property/property-activation`,
@@ -60,7 +65,7 @@ export default function confirmActivationModal({
         window.location.reload();
       } else {
         toast.dismiss();
-        toast.warning('Houve um erro ao desativar o anuncio.');
+        showErrorToast(ErrorToastNames.AdActivation);
       }
     } catch (error) {
       toast.dismiss();

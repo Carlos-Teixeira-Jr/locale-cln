@@ -30,7 +30,9 @@ export enum ErrorToastNames {
   FavouriteProperty = 'favouriteProperty',
   UserDataUpdate = 'userDataUpdate',
   PropertyUpdate = 'propertyUpdate',
-  DeleteUser = 'deleteUser'
+  DeleteUser = 'deleteUser',
+  EmailAlreadyInUse = 'emailAlreadyInUse',
+  AdActivation = 'adActivation'
 }
 
 const successToastMessages: Record<SuccessToastNames, ToastMessage> = {
@@ -153,6 +155,18 @@ const errorToastMessages: Record<ErrorToastNames, ToastMessage> = {
   },
   [ErrorToastNames.DeleteUser]: {
     message: 'Houve um erro ao excluir o usuário. Por favor tente novamente mais tarde.',
+    options: {
+      autoClose: 7000,
+    },
+  },
+  [ErrorToastNames.EmailAlreadyInUse]: {
+    message: 'O e-mail já está sendo usado por outra conta. Por favor faça login em sua conta usando seu e-mail.',
+    options: {
+      autoClose: 7000,
+    },
+  },
+  [ErrorToastNames.AdActivation]: {
+    message: 'Não foi possível alterar o status de ativação deste imóvel. Verifique se você ainda tem créditos restantes para realizar essa operação.',
     options: {
       autoClose: 7000,
     },
