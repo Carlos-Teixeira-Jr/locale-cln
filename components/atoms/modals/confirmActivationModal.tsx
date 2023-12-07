@@ -39,10 +39,6 @@ export default function confirmActivationModal({
 
   const handleIsActive = async () => {
     try {
-      console.log("🚀 ~ file: confirmActivationModal.tsx:52 ~ handleIsActive ~ propertyId:", propertyId)
-      console.log("🚀 ~ file: confirmActivationModal.tsx:55 ~ handleIsActive ~ !isActive:", !isActive)
-      console.log("🚀 ~ file: confirmActivationModal.tsx:58 ~ handleIsActive ~ userId:", userId)
-
       toast.loading('Desativando anúncio...');
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/property/property-activation`,

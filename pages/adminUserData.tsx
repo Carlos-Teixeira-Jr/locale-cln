@@ -397,7 +397,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
 
             <div className="lg:float-right flex md:justify-end justify-center md:w-[90%] lg:w-full mb-10 md:mr-16 lg:mr-5">
               <button
-                className="bg-primary w-fit h-16 item text-quinary rounded-[10px] py-5 px-20 text-xl md:text-2xl font-extrabold transition-colors duration-300 hover:bg-red-600 hover:text-white"
+                className="bg-primary w-fit h-16 flex items-center text-quinary rounded-[10px] py-5 px-20 text-xl md:text-2xl font-extrabold transition-colors duration-300 hover:bg-red-600 hover:text-white"
                 onClick={handleUpdateBtn}
               >
                 Atualizar Dados
