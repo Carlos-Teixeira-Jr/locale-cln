@@ -46,6 +46,12 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications }) => {
     }
   }, [router.pathname, isOwner]);
 
+  const notReadNots = notifications?.filter(
+    (item: any) => item.isRead == false
+  );
+
+  const notsNotRead = notReadNots as [];
+
   const options: Options[] = [
     {
       key: 'myAnnounces',
@@ -123,7 +129,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications }) => {
           {notifications && notifications?.length > 0 && (
             <div className="absolute top-100 mt-4 ml-[0.4rem] left-10">
               <div
-                data-nots={notifications?.length}
+                data-nots={notsNotRead?.length}
                 id={'notifications-value'}
                 className="before:content-[attr(data-nots)] before:text-xs before:bg-tertiary before:font-medium before:text-primary before:border-secondary before:rounded-full before:border before:flex before:items-center before:justify-center before:min-w-[1.4em] before:min-h-[0.4em]"
               ></div>

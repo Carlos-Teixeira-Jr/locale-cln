@@ -4,14 +4,19 @@ export interface INotification {
   description: string;
   title: string;
   _id: string;
+  isRead: boolean;
 }
 
-const NotificationCard: React.FC<INotification> = ({ description, title }) => {
+const NotificationCard: React.FC<INotification> = ({
+  description,
+  title,
+  isRead,
+}) => {
   const [expanded, setExpanded] = useState(false);
   const [isExpandable, setIsExpandable] = useState(false);
   const [deleteNot, setDeleteNot] = useState<boolean>(false);
   const messageRef = useRef<HTMLParagraphElement>(null);
-  const [seen, setSeen] = useState<boolean>(false);
+  const [seen, setSeen] = useState<boolean>(isRead);
 
   useEffect(() => {
     if (messageRef.current) {
@@ -36,9 +41,9 @@ const NotificationCard: React.FC<INotification> = ({ description, title }) => {
       {/** ! */}
       <div
         className={`${
-          !seen
-            ? 'relative top-10 left-[94%] w-10 h-10 bg-white border-2 border-secondary rounded-full text-primary font-bold text-3xl text-center'
-            : ''
+          !seen && !deleteNot
+            ? 'relative top-7 left-[94%] w-10 h-10 bg-white border-2 border-secondary rounded-full text-primary font-bold text-3xl text-center'
+            : 'hidden'
         }`}
       >
         !
@@ -49,12 +54,12 @@ const NotificationCard: React.FC<INotification> = ({ description, title }) => {
           className={`${
             !seen
               ? 'border-4 border-secondary bg-tertiary p-5'
-              : 'border-4 border-tertiary bg-tertiary p-5'
+              : 'border-4 border-quaternary bg-tertiary p-5 mt-10'
           } `}
         >
           <div>
             {/** Text part */}
-            <div className="flex flex-col md:flex-row lg:flex-row xl:flex-row gap-2 justify-between items-center">
+            <div className="flex flex-col md:flex-row lg:flex-row xl:flex-row gap-1 justify-between items-center">
               <div>
                 <h1 className="text-quaternary text-xl font-semibold">
                   {title}
@@ -67,7 +72,7 @@ const NotificationCard: React.FC<INotification> = ({ description, title }) => {
                       textOverflow: 'ellipsis',
                       display: '-webkit-box',
                       lineClamp: expanded ? 'unset' : 2,
-                      WebkitLineClamp: expanded ? 'unset' : 3,
+                      WebkitLineClamp: expanded ? 'unset' : 4,
                       WebkitBoxOrient: 'vertical',
                       whiteSpace: 'initial',
                     }}
