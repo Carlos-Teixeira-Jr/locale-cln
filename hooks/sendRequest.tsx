@@ -1,4 +1,5 @@
 import { toast } from "react-toastify";
+import { ErrorToastNames, SuccessToastNames, showErrorToast, showSuccessToast } from "../common/utils/toasts";
 
 export const sendRequest = async (url: string, method: string, body: any) => {
   try {
@@ -16,6 +17,7 @@ export const sendRequest = async (url: string, method: string, body: any) => {
       return await response.json();
     } else {
       toast.dismiss();
+      showErrorToast(ErrorToastNames.EmailNotFound)
       return null;
     }
   } catch (error) {

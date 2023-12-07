@@ -16,7 +16,7 @@ export enum SuccessToastNames {
   FavouriteProperty = 'favouriteProperty',
   UserDataUpdate = 'userDataUpdate',
   PropertyUpdate = 'propertyUpdate',
-  DeleteUser = 'deleteUser'
+  DeleteUser = 'deleteUser',
 }
 
 export enum ErrorToastNames {
@@ -32,7 +32,8 @@ export enum ErrorToastNames {
   PropertyUpdate = 'propertyUpdate',
   DeleteUser = 'deleteUser',
   EmailAlreadyInUse = 'emailAlreadyInUse',
-  AdActivation = 'adActivation'
+  AdActivation = 'adActivation',
+  EmailNotFound = 'emailNotFound'
 }
 
 const successToastMessages: Record<SuccessToastNames, ToastMessage> = {
@@ -167,6 +168,12 @@ const errorToastMessages: Record<ErrorToastNames, ToastMessage> = {
   },
   [ErrorToastNames.AdActivation]: {
     message: 'Não foi possível alterar o status de ativação deste imóvel. Verifique se você ainda tem créditos restantes para realizar essa operação.',
+    options: {
+      autoClose: 7000,
+    },
+  },
+  [ErrorToastNames.EmailNotFound]: {
+    message: 'Não há nenhuma conta vinculada a esse e-mail.',
     options: {
       autoClose: 7000,
     },
