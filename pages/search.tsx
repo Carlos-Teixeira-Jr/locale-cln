@@ -40,10 +40,10 @@ const Search: NextPageWithLayout<ISearch> = ({
   locations,
   tagsData,
 }) => {
+
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const query = router.query as any;
-
   const [currentPage, setCurrentPage] = useState(1);
 
   // mobile

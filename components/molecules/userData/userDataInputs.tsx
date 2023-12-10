@@ -20,6 +20,7 @@ type Input = {
   label: string;
   value: string;
   ref?: any;
+  maxLenght?: number;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
 };
 
@@ -104,6 +105,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
       key: 'username',
       label: 'Nome Completo',
       value: formData.username,
+      maxLenght: 50,
       ref: userDataErrorScroll.username,
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
@@ -115,6 +117,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
       key: 'email',
       label: 'E-mail',
       value: formData.email,
+      maxLenght: 50,
       ref: userDataErrorScroll.email,
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
@@ -216,6 +219,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
               onChange={inputs[0].onChange}
               value={inputs[0].value}
               required
+              maxLength={inputs[0].maxLenght}
               style={userDataErrors.username ? { border: '1px solid red' } : {}}
             />
             {userDataErrors.username && (
@@ -235,6 +239,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
                   className="border w-full p-5 h-12 border-quaternary rounded-[10px] bg-tertiary font-bold text-xl md:text-2xl text-quaternary leading-7 drop-shadow-xl"
                   onChange={input.onChange}
                   value={input.value}
+                  maxLength={input.key === 'username' || input.key === 'email' ? input.maxLenght : undefined}
                   required
                   style={
                     userDataErrors[input.key] !== ''
@@ -261,6 +266,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
                   className="border w-full p-5 h-12 border-quaternary rounded-[10px] bg-tertiary font-bold text-xl md:text-2xl text-quaternary leading-7 drop-shadow-xl"
                   onChange={input.onChange}
                   value={input.value}
+                  maxLength={input.key === 'username' || input.key === 'email' ? input.maxLenght : undefined}
                   style={
                     Object.keys(userDataErrors).includes(input.key) &&
                     userDataErrors[input.key] !== ''

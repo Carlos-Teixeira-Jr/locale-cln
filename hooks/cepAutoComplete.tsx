@@ -119,6 +119,7 @@ const ViaCep = ({
               className="border border-quaternary rounded-[10px] w-full h-[66px] text-quaternary text-[26px] font-bold md:px-5 drop-shadow-lg bg-tertiary mt-5"
               value={viaCepData.localidade}
               style={cityStyle}
+              maxLength={15}
               required
             />
             {cityError && (
@@ -132,6 +133,7 @@ const ViaCep = ({
             <input
               required
               style={UFStyle}
+              maxLength={2}
               className="border border-quaternary rounded-[10px] md:w-full w-[150px] h-[66px] text-quaternary text-[26px] font-bold md:px-5 drop-shadow-lg bg-tertiary mt-5"
               value={viaCepData.uf}
             />

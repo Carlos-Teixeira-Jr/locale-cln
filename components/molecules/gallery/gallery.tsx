@@ -217,7 +217,7 @@ const Gallery: React.FC<IGallery> = ({
             />
           </div>
           {/* Index */}
-          <div className="flex relative -top-8 left-[320px] w-9 rounded-lg bg-black opacity-50">
+          <div className="flex relative -top-8 left-[300px] w-9 rounded-lg bg-black opacity-50">
             <span className="text-sm font-normal text-tertiary ml-[7px] z-50">
               {currentIndex + 1}/{propertyID.images.length}
             </span>

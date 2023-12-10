@@ -2,6 +2,8 @@ import { useState } from 'react';
 import validator from 'validator';
 import PhoneInput from '../components/atoms/masks/masks';
 import { NextPageWithLayout } from './page';
+import { ErrorToastNames, SuccessToastNames, showErrorToast, showSuccessToast } from '../common/utils/toasts';
+import Link from 'next/link';
 
 interface ILocaleContact {
   name: string;
@@ -25,22 +27,16 @@ const LocaleContact: NextPageWithLayout = () => {
     name: '',
   });
 
-  const messageData = {
-    email: formData.email,
-    message: formData.message,
-    name: formData.name,
-    telephone: formData.telephone,
-  };
-
   const handleMessageNameMask = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const onlyLetters = /^[a-zA-Z\s]+$/;
-    if (onlyLetters.test(event.target.value)) {
+  
+    if (event.target.value === '' || onlyLetters.test(event.target.value)) {
       setFormData({ ...formData, name: event.target.value });
     }
   };
-
+  
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const email = event.target.value;
     setFormData({ ...formData, email: email });
@@ -48,27 +44,30 @@ const LocaleContact: NextPageWithLayout = () => {
 
   const handleContactField = async (event: any) => {
     event.preventDefault();
+    const errorMessage = 'Este campo é obrigatório.';
+    const invalidEmailError = 'O formato do e-mail informado não é válido.'
+    const incompletePhoneNumber = 'O npumero do telefone está incompleto.'
 
     const newErrors = { email: '', message: '', name: '', telephone: '' };
 
     if (!formData.name) {
-      newErrors.name = 'O campo nome é obrigatório.';
+      newErrors.name = errorMessage;
     }
 
     if (!formData.email) {
-      newErrors.email = 'O campo e-mail é obrigatório.';
+      newErrors.email = errorMessage;
     }
 
     if (!validator.isEmail(formData.email)) {
-      newErrors.email = 'E-mail invalido.';
+      newErrors.email = invalidEmailError;
     }
 
     if (formData.telephone.length < 14) {
-      newErrors.telephone = 'O campo telefone está incompleto.';
+      newErrors.telephone = incompletePhoneNumber;
     }
 
     if (!formData.message) {
-      newErrors.message = 'O campo mensagem é obrigatório.';
+      newErrors.message = errorMessage;
     }
 
     setError(newErrors);
@@ -79,30 +78,43 @@ const LocaleContact: NextPageWithLayout = () => {
       newErrors.name ||
       newErrors.telephone
     ) {
-      return;
-    }
+      showErrorToast(ErrorToastNames.EmptyFields);
+    } else {
+      try {
+        const messageData = {
+          email: formData.email,
+          message: formData.message,
+          name: formData.name,
+          telephone: formData.telephone,
+        };
 
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/send-email-to-locale`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(messageData),
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BASE_API_URL}/send-email-to-locale`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(messageData),
+          }
+        );
+
+        if (response.ok) {
+          showSuccessToast(SuccessToastNames.SendMessage);
+          setError({ email: '', message: '', name: '', telephone: '' });
+          setFormData({
+            email: '',
+            message: '',
+            name: '',
+            telephone: '',
+          });
+        } else {
+          showErrorToast(ErrorToastNames.SendMessage)
         }
-      );
-      setError({ email: '', message: '', name: '', telephone: '' });
-      setFormData({
-        email: '',
-        message: '',
-        name: '',
-        telephone: '',
-      });
-      console.log(response);
-    } catch (error) {
-      console.log(error);
+      } catch (error) {
+        console.log(error);
+        showErrorToast(ErrorToastNames.ServerConnection);
+      }
     }
   };
 
@@ -122,6 +134,7 @@ const LocaleContact: NextPageWithLayout = () => {
             value={formData.name}
             onChange={handleMessageNameMask}
             className="lg:w-[770px] w-[250px] h-[44px] m-[10px] mb-0 rounded-[10px] border border-quaternary bg-tertiary p-2 required:border-red-500 md:mx-auto lg:mx-2 text-lg text-quaternary font-semibold"
+            maxLength={30}
             style={error.name ? { border: '1px solid red' } : {}}
           />
           {error.name && (
@@ -138,7 +151,7 @@ const LocaleContact: NextPageWithLayout = () => {
             type="tel"
             name="telephone"
             value={formData.telephone}
-            className="lg:w-[770px] w-[250px] h-[44px] m-[10px] mb-0 rounded-[10px] border border-quaternary text-lg text-quaternary font-semibold bg-tertiary p-2 required:border-red-500 md:mx-auto lg:mx-2"
+            className="lg:w-[770px] w-[250px] h-10 m-[10px] mb-0 rounded-[10px] border border-quaternary text-lg text-quaternary font-semibold bg-tertiary p-2 required:border-red-500 md:mx-auto lg:mx-2"
             onChange={(event: any) =>
               setFormData({ ...formData, telephone: event.target.value })
             }
@@ -157,6 +170,7 @@ const LocaleContact: NextPageWithLayout = () => {
             name="email"
             value={formData.email}
             onChange={handleEmailChange}
+            maxLength={30}
             className="lg:w-[770px] w-[250px] h-[44px] m-[10px] mb-0 rounded-[10px] border border-quaternary bg-tertiary p-2 required:border-red-500 md:mx-auto lg:mx-2 text-lg text-quaternary font-semibold"
             style={error.email ? { border: '1px solid red' } : {}}
           />
@@ -165,12 +179,13 @@ const LocaleContact: NextPageWithLayout = () => {
           )}
         </div>
         <div className="flex flex-col">
-          <label className="font-bold lg:text-xl text-quaternary mx-[10px] mt-3 h-fit">
+          <label className="font-bold lg:text-xl text-quaternary mx-[10px] mt-3">
             Deixe sua mensagem
           </label>
           <textarea
-            className="mx-2 mb-0 border border-quaternary mt-1 lg:w-[770px] w-[250px] lg:h-[44px] bg-tertiary rounded-[10px] p-2 required:border-red-500 text-lg text-quaternary font-semibold"
+            className="mx-2 mb-0 border border-quaternary mt-1 lg:w-[770px] w-[250px] lg:h-20 bg-tertiary rounded-[10px] p-2 required:border-red-500 text-lg text-quaternary font-semibold"
             name="message"
+            maxLength={500}
             value={formData.message}
             placeholder={'Digite sua mensagem para a Locale.'}
             style={error.message ? { border: '1px solid red' } : {}}
@@ -182,15 +197,25 @@ const LocaleContact: NextPageWithLayout = () => {
             <label className="mx-[10px] text-red-500">{error.message}</label>
           )}
         </div>
-        <div className="justify-center md:mb-2 lg:mb-auto">
+        <div className="flex justify-between w-full md:mb-2 lg:mb-auto">
+          <Link href={'/'}>
+            <button
+              className="w-[250px] h-[40px] bg-primary rounded-[50px] p-[10px] gap-2.5 mt-3 lg:float-right hover:bg-red-600 hover:text-tertiary hover:shadow-lg transition-all duration-200"
+            >
+              <p className="font-normal text-xl text-tertiary leading-6 align-middle">
+                Voltar
+              </p>
+            </button>
+          </Link>
           <button
             onClick={handleContactField}
-            className="w-[250px] h-[40px] bg-primary rounded-[50px] p-[10px] gap-2.5 mt-3 lg:float-right"
+            className="w-[250px] h-[40px] bg-primary rounded-[50px] p-[10px] gap-2.5 mt-3 lg:float-right hover:bg-red-600 hover:text-tertiary hover:shadow-lg transition-all duration-200"
           >
             <p className="font-normal text-xl text-tertiary leading-6 align-middle">
               Enviar
             </p>
           </button>
+          
         </div>
       </div>
     </div>
