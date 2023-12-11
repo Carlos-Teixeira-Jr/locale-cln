@@ -7,6 +7,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { v4 as uuidv4 } from 'uuid';
 import CameraIcon from '../../atoms/icons/cameraIcon';
 import TrashIcon from '../../atoms/icons/trashIcon';
+import { addImageToDB } from '../../../common/utils/indexDb';
 
 interface IImages {
   editarImages?: string[];
@@ -60,23 +61,54 @@ const UploadImages = ({
     }
   }, [editarImages]);
 
-  const handleAddImage = (event: any) => {
+  // const handleAddImage = (event: any) => {
+  //   const files = Array.from(event.target.files);
+  //   if (files.length + images.length > 20) {
+  //     alert('Você pode adicionar no máximo 20 imagens');
+  //     return;
+  //   }
+
+  //   files.forEach((file: any) => {
+  //     const reader = new FileReader();
+  //     reader.onloadend = () => {
+  //       setImages((prevImages) => [
+  //         ...prevImages,
+  //         { src: reader.result, id: uuidv4() },
+  //       ]);
+  //     };
+  //     reader.readAsDataURL(file);
+  //   });
+  // };
+  const handleAddImage = async (event: any) => {
     const files = Array.from(event.target.files);
+  
     if (files.length + images.length > 20) {
       alert('Você pode adicionar no máximo 20 imagens');
       return;
     }
-
-    files.forEach((file: any) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImages((prevImages) => [
-          ...prevImages,
-          { src: reader.result, id: uuidv4() },
-        ]);
-      };
-      reader.readAsDataURL(file);
-    });
+  
+    for (const file of files) {
+      if (file instanceof File) {
+        const reader = new FileReader();
+  
+        reader.onloadend = async () => {
+          const imageData = reader.result as any;
+  
+          // Adiciona a imagem ao IndexDB
+          await addImageToDB(imageData);
+  
+          // Atualiza o estado com a imagem (opcional)
+          setImages((prevImages) => [
+            ...prevImages,
+            { src: URL.createObjectURL(file), id: uuidv4() },
+          ]);
+        };
+  
+        reader.readAsArrayBuffer(file);
+      } else {
+        console.error('O objeto de arquivo não é uma instância de File.');
+      }
+    }
   };
 
   const handleRemoveImage = (id: string) => {
