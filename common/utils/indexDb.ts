@@ -27,12 +27,12 @@ export const openDatabase = () => {
   });
 };
 
-export const addImageToDB = (imageData: ArrayBuffer) => {
+export const addImageToDB = (id: string, imageData: ArrayBuffer) => {
   openDatabase().then((db) => {
     const transaction = db.transaction(['imagens'], 'readwrite');
     const objectStore = transaction.objectStore('imagens');
 
-    const request = objectStore.add({ data: imageData });
+    const request = objectStore.add({ id, data: imageData });
 
     request.onsuccess = () => {
       console.log('Imagem adicionada com sucesso ao IndexedDB.');
@@ -62,4 +62,47 @@ export const getAllImagesFromDB = () => {
     });
   });
 };
+
+export const removeImageFromDB = (id: string) => {
+  return new Promise<void>((resolve, reject) => {
+    openDatabase().then(db => {
+      const transaction = db.transaction(['imagens'], 'readwrite');
+      const objectStore = transaction.objectStore('imagens');
+
+      // Encontrar a imagem a ser removida com base no ID
+      const index = objectStore.index('id');
+      const request = index.get(id);
+
+      request.onsuccess = () => {
+        const imageData = request.result;
+        console.log("🚀 ~ file: indexDb.ts:78 ~ openDatabase ~ imageData:", imageData);
+
+        if (imageData) {
+          // Remover a imagem do IndexedDB usando o ID UUID
+          const deleteRequest = objectStore.delete(imageData.id);
+
+          deleteRequest.onsuccess = () => {
+            console.log('Imagem removida com sucesso do IndexedDB.');
+            resolve();
+          };
+
+          deleteRequest.onerror = (event) => {
+            console.error(`Erro ao remover a imagem do IndexedDB: ${(event.target as IDBRequest).error}`);
+            reject();
+          };
+        } else {
+          console.error('Imagem não encontrada com o ID:', id);
+          reject();
+        }
+      };
+
+      request.onerror = (event) => {
+        console.error(`Erro ao buscar a imagem do IndexedDB: ${(event.target as IDBRequest).error}`);
+        reject();
+      };
+    });
+  });
+};
+
+
 

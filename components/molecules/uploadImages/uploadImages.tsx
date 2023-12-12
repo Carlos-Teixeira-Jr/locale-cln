@@ -7,7 +7,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { v4 as uuidv4 } from 'uuid';
 import CameraIcon from '../../atoms/icons/cameraIcon';
 import TrashIcon from '../../atoms/icons/trashIcon';
-import { addImageToDB } from '../../../common/utils/indexDb';
+import { addImageToDB, removeImageFromDB } from '../../../common/utils/indexDb';
 
 interface IImages {
   editarImages?: string[];
@@ -30,6 +30,11 @@ const UploadImages = ({
   const imagesErrorScroll = useRef(imagesInputRef);
 
   const [images, setImages] = useState<any[]>(editarImages || []);
+
+  useEffect(() => {
+    console.log("🚀 ~ file: uploadImages.tsx:41 ~ images:", images)
+  }, [images])
+  
 
   const [error, setError] = useState<OnErrorInfo>({
     prop: '',
@@ -80,40 +85,57 @@ const UploadImages = ({
   //   });
   // };
   const handleAddImage = async (event: any) => {
-    const files = Array.from(event.target.files);
-  
-    if (files.length + images.length > 20) {
-      alert('Você pode adicionar no máximo 20 imagens');
-      return;
-    }
-  
-    for (const file of files) {
-      if (file instanceof File) {
-        const reader = new FileReader();
-  
-        reader.onloadend = async () => {
-          const imageData = reader.result as any;
-  
-          // Adiciona a imagem ao IndexDB
-          await addImageToDB(imageData);
-  
-          // Atualiza o estado com a imagem (opcional)
-          setImages((prevImages) => [
-            ...prevImages,
-            { src: URL.createObjectURL(file), id: uuidv4() },
-          ]);
-        };
-  
-        reader.readAsArrayBuffer(file);
-      } else {
-        console.error('O objeto de arquivo não é uma instância de File.');
-      }
-    }
-  };
+  for (const file of event.target.files) {
+    const reader = new FileReader();
 
-  const handleRemoveImage = (id: string) => {
-    setImages(images.filter((image) => image.id !== id));
+    reader.onloadend = async () => {
+      const imageData = reader.result as ArrayBuffer;
+
+      // Gera um novo ID UUID
+      const uuid = uuidv4();
+
+      // Adiciona a imagem ao IndexedDB junto com o ID UUID
+      await addImageToDB(uuid, imageData);
+
+      // Atualiza o estado com a imagem usando o ID UUID
+      setImages((prevImages) => [
+        ...prevImages,
+        { src: URL.createObjectURL(file), id: uuid },
+      ]);
+    };
+
+    reader.readAsArrayBuffer(file);
+  }
+};
+
+  // const handleRemoveImage = (id: string) => {
+  //   setImages(images.filter((image) => image.id !== id));
+  // };
+
+  const handleRemoveImage = async (id: string) => {
+    try {
+      // Obter o ID numérico correspondente ao ID fornecido
+      const numericId = images.find((image) => image.id === id)?.numericId;
+  
+      if (numericId === undefined) {
+        console.error('Imagem não encontrada com o ID:', id);
+        return;
+      }
+  
+      // Remover a imagem do IndexedDB usando o ID UUID
+      await removeImageFromDB(id);
+  
+      // Atualizar o estado com as imagens restantes
+      setImages((prevImages) => prevImages.filter((image) => image.id !== id));
+      //setErrorMessage(''); // Limpar mensagem de erro se a remoção for bem-sucedida
+    } catch (error) {
+      console.error('Erro ao remover a imagem:', error);
+      //setErrorMessage('Erro ao remover a imagem. Por favor, tente novamente.');
+    }
   };
+  
+  
+  
 
   const moveImage = (dragIndex: number, hoverIndex: number) => {
     const dragImage = images[dragIndex];
