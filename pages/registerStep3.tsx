@@ -150,11 +150,11 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
   });
 
   // Verifica se o estado progress que determina em qual step o usuário está corresponde ao step atual;
-  useEffect(() => {
-    if (progress < 3) {
-      router.push('/register');
-    }
-  });
+  // useEffect(() => {
+  //   if (progress < 3) {
+  //     router.push('/register');
+  //   }
+  // });
 
   // // Busca o endereço do imóvel armazenado no local storage e atualiza o valor de addressData sempre que há o componente de endereço é aberto ou fechado - isso é necessário para que o componente ChangeAddressCheckbox recupere o endereço do localStorage quando a opção é alterada;
   useEffect(() => {
@@ -369,14 +369,12 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
 
           // Salvar imagens
 
-          const indexDbImages = await getAllImagesFromDB() as (string | Blob)[];
+          const indexDbImages = await getAllImagesFromDB() as ({ id: string, data: Blob })[];
+          console.log("🚀 ~ file: registerStep3.tsx:373 ~ handleSubmit ~ indexDbImages:", indexDbImages);
 
           const formData = new FormData();
-          indexDbImages.forEach((image: string | Blob, index: any) => {
-            formData.append(`image_${index}`, image);
-          });
 
-          formData.append('propertyId', data._id);
+          formData.append('images', indexDbImages[0].data)
 
           const imagesResponse = await fetch(`${baseUrl}/property/uploadDropImageWithRarity`,
             {
@@ -385,21 +383,21 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
             }
           )
 
-          if (imagesResponse.ok) {
-            updateProgress(4);
-            if (!urlEmail) {
-              router.push('/registerStep35');
-            } else {
-              router.push({
-                pathname: '/registerStep35',
-                query: {
-                  email: urlEmail,
-                },
-              });
-            }
-          } else {
-            console.log("Erro ao enviar as imagens")
-          }
+          // if (imagesResponse.ok) {
+          //   //updateProgress(4);
+          //   if (!urlEmail) {
+          //     router.push('/registerStep35');
+          //   } else {
+          //     router.push({
+          //       pathname: '/registerStep35',
+          //       query: {
+          //         email: urlEmail,
+          //       },
+          //     });
+          //   }
+          // } else {
+          //   console.log("Erro ao enviar as imagens")
+          // }
         } else {
           toast.dismiss();
           const error = await response.json();
@@ -526,7 +524,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
               <button
                 className="bg-primary w-28 md:w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold hover:bg-red-600 hover:text-white"
                 onClick={handleSubmit}
-                disabled={loading}
+                //disabled={loading}
               >
                 <span className={`${loading ? 'ml-16' : ''}`}>Continuar</span>
                 {loading && <Loading />}

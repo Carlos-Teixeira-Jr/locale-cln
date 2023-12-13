@@ -115,10 +115,11 @@ const UploadImages = ({
   const handleRemoveImage = async (id: string) => {
     try {
       // Obter o ID numérico correspondente ao ID fornecido
-      const numericId = images.find((image) => image.id === id)?.numericId;
+      const numericId = images.find((image) => image.id === id);
+      console.log("🚀 ~ file: uploadImages.tsx:119 ~ handleRemoveImage ~ numericId:", numericId)
   
       if (numericId === undefined) {
-        console.error('Imagem não encontrada com o ID:', id);
+        console.error('compr: Imagem não encontrada com o ID:', id);
         return;
       }
   
@@ -193,7 +194,7 @@ const UploadImages = ({
                 id={image.id}
                 src={image.src}
                 index={index}
-                onRemove={handleRemoveImage}
+                onRemove={() => handleRemoveImage(image.id)}
                 moveImage={moveImage}
               />
             ))}

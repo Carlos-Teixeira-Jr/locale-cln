@@ -1,4 +1,3 @@
-// utils/indexedDBUtils.ts
 
 export const openDatabase = () => {
   return new Promise<IDBDatabase>((resolve, reject) => {
@@ -63,46 +62,68 @@ export const getAllImagesFromDB = () => {
   });
 };
 
+// export const removeImageFromDB = (id: string) => {
+//   return new Promise<void>((resolve, reject) => {
+//     openDatabase().then(db => {
+//       const transaction = db.transaction(['imagens'], 'readwrite');
+//       const objectStore = transaction.objectStore('imagens');
+
+//       // Encontrar a imagem a ser removida com base no ID
+//       const index = objectStore.index(id);
+//       const request = index.get(id);
+
+//       request.onsuccess = () => {
+//         const imageData = request.result;
+
+//         if (imageData) {
+//           // Remover a imagem do IndexedDB usando o ID UUID
+//           const deleteRequest = objectStore.delete(imageData.id);
+
+//           deleteRequest.onsuccess = () => {
+//             console.log('Imagem removida com sucesso do IndexedDB.');
+//             resolve();
+//           };
+
+//           deleteRequest.onerror = (event) => {
+//             console.error(`Erro ao remover a imagem do IndexedDB: ${(event.target as IDBRequest).error}`);
+//             reject();
+//           };
+//         } else {
+//           console.error('Imagem não encontrada com o ID:', id);
+//           reject();
+//         }
+//       };
+
+//       console.log("🚀 ~ file: indexDb.ts:70 ~ openDatabase ~ objectStore:", objectStore)
+
+//       request.onerror = (event) => {
+//         console.error(`Erro ao buscar a imagem do IndexedDB: ${(event.target as IDBRequest).error}`);
+//         reject();
+//       };
+//     });
+//   });
+// };
+
 export const removeImageFromDB = (id: string) => {
+  console.log("🚀 ~ file: indexDb.ts:66 ~ removeImageFromDB ~ id:", id);
+
   return new Promise<void>((resolve, reject) => {
     openDatabase().then(db => {
       const transaction = db.transaction(['imagens'], 'readwrite');
       const objectStore = transaction.objectStore('imagens');
 
-      // Encontrar a imagem a ser removida com base no ID
-      const index = objectStore.index('id');
-      const request = index.get(id);
+      // Deletar a imagem do IndexedDB usando o ID UUID
+      const deleteRequest = objectStore.delete(id);
 
-      request.onsuccess = () => {
-        const imageData = request.result;
-        console.log("🚀 ~ file: indexDb.ts:78 ~ openDatabase ~ imageData:", imageData);
-
-        if (imageData) {
-          // Remover a imagem do IndexedDB usando o ID UUID
-          const deleteRequest = objectStore.delete(imageData.id);
-
-          deleteRequest.onsuccess = () => {
-            console.log('Imagem removida com sucesso do IndexedDB.');
-            resolve();
-          };
-
-          deleteRequest.onerror = (event) => {
-            console.error(`Erro ao remover a imagem do IndexedDB: ${(event.target as IDBRequest).error}`);
-            reject();
-          };
-        } else {
-          console.error('Imagem não encontrada com o ID:', id);
-          reject();
-        }
+      deleteRequest.onsuccess = () => {
+        console.log('Imagem removida com sucesso do IndexedDB.');
+        resolve();
       };
 
-      request.onerror = (event) => {
-        console.error(`Erro ao buscar a imagem do IndexedDB: ${(event.target as IDBRequest).error}`);
+      deleteRequest.onerror = (event) => {
+        console.error(`Erro ao remover a imagem do IndexedDB: ${(event.target as IDBRequest).error}`);
         reject();
       };
     });
   });
 };
-
-
-
