@@ -44,7 +44,7 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
       <AdminHeader isOwnerProp={isOwner} />
       <div className="flex flex-row items-center justify-evenly">
         <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:flex">
-          <SideMenu isOwnerProp={isOwner} notifications={notifications} />
+          <SideMenu isOwnerProp={isOwner} notifications={notifications as []} />
         </div>
         <div className="flex flex-col items-center mt-24 w-full lg:pl-72">
           <div className="flex flex-col items-center mb-5 max-w-[1215px]">
@@ -189,44 +189,44 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       console.error(error);
     }
 
-    const [notifications, favouriteProperties, ownerProperties] =
-      await Promise.all([
-        fetch(`${baseUrl}/notification${ownerId}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-          .then((res) => res.json())
-          .catch(() => []),
-        fetch(`${baseUrl}/user/favourite`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            id: userId,
-            page: 1,
-          }),
-        })
-          .then((res) => res.json())
-          .catch(() => []),
-        fetch(`${baseUrl}/property/owner-properties`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            ownerId,
-            page: 1,
-          }),
-        })
-          .then((res) => res.json())
-          .catch(() => []),
-        fetchJson(`${baseUrl}/notification/${userId}`),
-        fetchJson(`${baseUrl}/user/favourite`),
-        fetchJson(`${baseUrl}/property/owner-properties`),
-      ]);
+    const [favouriteProperties, ownerProperties] = await Promise.all([
+      fetch(`${baseUrl}/user/favourite`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: userId,
+          page: 1,
+        }),
+      })
+        .then((res) => res.json())
+        .catch(() => []),
+      fetch(`${baseUrl}/property/owner-properties`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ownerId,
+          page: 1,
+        }),
+      })
+        .then((res) => res.json())
+        .catch(() => []),
+      fetchJson(`${baseUrl}/notification/${userId}`),
+      fetchJson(`${baseUrl}/user/favourite`),
+      fetchJson(`${baseUrl}/property/owner-properties`),
+    ]);
+
+    const notifications = fetch(`${baseUrl}/notification/${userId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => res.json())
+      .catch(() => []);
 
     return {
       props: {

@@ -65,7 +65,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
       <AdminHeader isOwnerProp={isOwner} />
       <div className="flex flex-row items-center justify-evenly">
         <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:flex">
-          <SideMenu isOwnerProp={isOwner} notifications={notifications} />
+          <SideMenu isOwnerProp={isOwner} notifications={notifications as []} />
         </div>
         <div className="flex flex-col items-center mt-24 lg:ml-[305px]">
           <div className="flex flex-col items-center">
@@ -233,7 +233,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     ]);
 
     const notifications = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API_URL}/notification/${ownerId}`,
+      `${process.env.NEXT_PUBLIC_BASE_API_URL}/notification/${userId}`,
       {
         method: 'GET',
         headers: {

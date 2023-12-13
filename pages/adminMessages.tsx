@@ -135,7 +135,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     token = session?.user.data.access_token!!;
     refreshToken = session.user?.data.refresh_token;
     const decodedToken = jwt.decode(token) as JwtPayload;
-    const isTokenExpired = decodedToken.exp
+    const isTokenExpired = decodedToken?.exp
       ? decodedToken.exp <= Math.floor(Date.now() / 1000)
       : false;
 
@@ -241,7 +241,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     ]);
 
     const notifications = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API_URL}/notification/${ownerId}`,
+      `${process.env.NEXT_PUBLIC_BASE_API_URL}/notification/${userId}`,
       {
         method: 'GET',
         headers: {

@@ -18,7 +18,6 @@ interface IMessageNotifications {
 
 const MessageNotifications = ({ notifications }: IMessageNotifications) => {
   const isMobile = useIsMobile();
-  //const isOwner = properties?.docs?.length > 0 ? true : false;
 
   useEffect(() => {
     console.log('notificações:', notifications);
@@ -30,7 +29,7 @@ const MessageNotifications = ({ notifications }: IMessageNotifications) => {
       <div className="flex flex-row items-center justify-center lg:ml-72 xl:ml-72">
         <div className="fixed sm:hidden hidden md:hidden lg:flex xl:flex left-0 top-20">
           {!isMobile ? (
-            <SideMenu isOwnerProp={true} notifications={notifications} />
+            <SideMenu isOwnerProp={true} notifications={notifications as []} />
           ) : (
             ''
           )}
