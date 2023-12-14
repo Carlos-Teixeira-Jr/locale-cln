@@ -10,6 +10,7 @@ import Header from '../components/organisms/header/header';
 import PropertyDifferentials from '../components/organisms/register/propertyDifferential';
 import { useProgress } from '../context/registerProgress';
 import { NextPageWithLayout } from './page';
+import { clearIndexDB } from '../common/utils/indexDb';
 
 const RegisterStep2: NextPageWithLayout = () => {
   const imagesInputRef = useRef<HTMLElement>(null);
@@ -28,11 +29,16 @@ const RegisterStep2: NextPageWithLayout = () => {
   const isCondominium = storedData?.condominium ? true : false;
 
   // Verifica se o estado progress que determina em qual step o usuário está corresponde ao step atual;
-  // useEffect(() => {
-  //   if (progress < 2) {
-  //     router.push('/register');
-  //   }
-  // });
+  useEffect(() => {
+    if (progress < 2) {
+      router.push('/register');
+    }
+  });
+
+  // impao indexDB logo que a página é renderizada;
+  useEffect(() => {
+    clearIndexDB();
+  }, [])
 
   // Envia as mensagens de erros para o componente UploadImages;
   const [errorInfo, setErrorInfo] = useState({
@@ -83,7 +89,7 @@ const RegisterStep2: NextPageWithLayout = () => {
       setLoading(true);
       store.set('propertyData', existingData);
       toast.dismiss();
-      //updateProgress(3);
+      updateProgress(3);
       if (urlEmail !== undefined) {
         router.push({
           pathname: '/registerStep3',

@@ -30,12 +30,7 @@ const UploadImages = ({
   const imagesErrorScroll = useRef(imagesInputRef);
 
   const [images, setImages] = useState<any[]>(editarImages || []);
-
-  useEffect(() => {
-    console.log("🚀 ~ file: uploadImages.tsx:41 ~ images:", images)
-  }, [images])
   
-
   const [error, setError] = useState<OnErrorInfo>({
     prop: '',
     error: '',
@@ -66,60 +61,29 @@ const UploadImages = ({
     }
   }, [editarImages]);
 
-  // const handleAddImage = (event: any) => {
-  //   const files = Array.from(event.target.files);
-  //   if (files.length + images.length > 20) {
-  //     alert('Você pode adicionar no máximo 20 imagens');
-  //     return;
-  //   }
-
-  //   files.forEach((file: any) => {
-  //     const reader = new FileReader();
-  //     reader.onloadend = () => {
-  //       setImages((prevImages) => [
-  //         ...prevImages,
-  //         { src: reader.result, id: uuidv4() },
-  //       ]);
-  //     };
-  //     reader.readAsDataURL(file);
-  //   });
-  // };
   const handleAddImage = async (event: any) => {
-  for (const file of event.target.files) {
-    const reader = new FileReader();
+    for (const file of event.target.files) {
 
-    reader.onloadend = async () => {
-      const imageData = reader.result as ArrayBuffer;
-
-      // Gera um novo ID UUID
-      const uuid = uuidv4();
+      const id = uuidv4();
 
       // Adiciona a imagem ao IndexedDB junto com o ID UUID
-      await addImageToDB(uuid, imageData);
-
+      await addImageToDB(file, id);
+  
       // Atualiza o estado com a imagem usando o ID UUID
       setImages((prevImages) => [
         ...prevImages,
-        { src: URL.createObjectURL(file), id: uuid },
+        { src: URL.createObjectURL(file), id },
       ]);
-    };
-
-    reader.readAsArrayBuffer(file);
-  }
-};
-
-  // const handleRemoveImage = (id: string) => {
-  //   setImages(images.filter((image) => image.id !== id));
-  // };
+    }
+  };
 
   const handleRemoveImage = async (id: string) => {
     try {
       // Obter o ID numérico correspondente ao ID fornecido
-      const numericId = images.find((image) => image.id === id);
-      console.log("🚀 ~ file: uploadImages.tsx:119 ~ handleRemoveImage ~ numericId:", numericId)
+      const foundId = images.find((image) => image.id === id);
   
-      if (numericId === undefined) {
-        console.error('compr: Imagem não encontrada com o ID:', id);
+      if (foundId === undefined) {
+        console.error('Imagem não encontrada com o ID:', id);
         return;
       }
   
@@ -128,15 +92,10 @@ const UploadImages = ({
   
       // Atualizar o estado com as imagens restantes
       setImages((prevImages) => prevImages.filter((image) => image.id !== id));
-      //setErrorMessage(''); // Limpar mensagem de erro se a remoção for bem-sucedida
     } catch (error) {
       console.error('Erro ao remover a imagem:', error);
-      //setErrorMessage('Erro ao remover a imagem. Por favor, tente novamente.');
     }
   };
-  
-  
-  
 
   const moveImage = (dragIndex: number, hoverIndex: number) => {
     const dragImage = images[dragIndex];

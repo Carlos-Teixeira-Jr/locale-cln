@@ -27,7 +27,7 @@ import Footer from '../components/organisms/footer/footer';
 import Header from '../components/organisms/header/header';
 import { useProgress } from '../context/registerProgress';
 import { NextPageWithLayout } from './page';
-import { getAllImagesFromDB } from '../common/utils/indexDb';
+import { clearIndexDB, getAllImagesFromDB } from '../common/utils/indexDb';
 
 interface IRegisterStep3Props {
   selectedPlanCard: string;
@@ -369,35 +369,39 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
 
           // Salvar imagens
 
-          const indexDbImages = await getAllImagesFromDB() as ({ id: string, data: Blob })[];
-          console.log("🚀 ~ file: registerStep3.tsx:373 ~ handleSubmit ~ indexDbImages:", indexDbImages);
+          const indexDbImages = await getAllImagesFromDB() as ({ id: string, data: Blob, name: string })[];
 
           const formData = new FormData();
 
-          formData.append('images', indexDbImages[0].data)
+          for (let i = 0; i < indexDbImages.length; i++) {
+            const file = new File([indexDbImages[i].data], `${indexDbImages[i].name}`);
+            formData.append('images', file);
+          }
 
-          const imagesResponse = await fetch(`${baseUrl}/property/uploadDropImageWithRarity`,
-            {
-              method: 'POST',
-              body: formData,
+          formData.append('propertyId', data.createdProperty._id);
+
+          const imagesResponse = await fetch(`${baseUrl}/property/uploadDropImageWithRarity`, {
+            method: 'POST',
+            body: formData,
+          });
+
+
+          if (imagesResponse.ok) {
+            clearIndexDB()
+            updateProgress(4);
+            if (!urlEmail) {
+              router.push('/registerStep35');
+            } else {
+              router.push({
+                pathname: '/registerStep35',
+                query: {
+                  email: urlEmail,
+                },
+              });
             }
-          )
-
-          // if (imagesResponse.ok) {
-          //   //updateProgress(4);
-          //   if (!urlEmail) {
-          //     router.push('/registerStep35');
-          //   } else {
-          //     router.push({
-          //       pathname: '/registerStep35',
-          //       query: {
-          //         email: urlEmail,
-          //       },
-          //     });
-          //   }
-          // } else {
-          //   console.log("Erro ao enviar as imagens")
-          // }
+          } else {
+            console.log("Erro ao enviar as imagens")
+          }
         } else {
           toast.dismiss();
           const error = await response.json();
