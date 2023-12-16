@@ -26,7 +26,6 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
 }) => {
   
   const { data: session } = useSession() as any;
-  console.log("🚀 ~ file: admin.tsx:29 ~ session:", session)
   const [isOwner, setIsOwner] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState(1);
   const router = useRouter();

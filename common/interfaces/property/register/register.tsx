@@ -60,7 +60,7 @@ export interface ICreateProperty_propertyData {
   description: string
   metadata: IMetadata[]
   geolocation: any
-  images: string[]
+  //images: string[]
   size: ISize
   tags: string[]
   condominiumTags: string[]

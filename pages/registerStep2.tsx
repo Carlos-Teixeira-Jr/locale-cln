@@ -10,6 +10,7 @@ import Header from '../components/organisms/header/header';
 import PropertyDifferentials from '../components/organisms/register/propertyDifferential';
 import { useProgress } from '../context/registerProgress';
 import { NextPageWithLayout } from './page';
+import { clearIndexDB } from '../common/utils/indexDb';
 
 const RegisterStep2: NextPageWithLayout = () => {
   const imagesInputRef = useRef<HTMLElement>(null);
@@ -33,6 +34,11 @@ const RegisterStep2: NextPageWithLayout = () => {
       router.push('/register');
     }
   });
+
+  // impao indexDB logo que a página é renderizada;
+  useEffect(() => {
+    clearIndexDB();
+  }, [])
 
   // Envia as mensagens de erros para o componente UploadImages;
   const [errorInfo, setErrorInfo] = useState({
