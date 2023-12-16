@@ -27,6 +27,7 @@ import Footer from '../components/organisms/footer/footer';
 import Header from '../components/organisms/header/header';
 import { useProgress } from '../context/registerProgress';
 import { NextPageWithLayout } from './page';
+import { clearIndexDB, getAllImagesFromDB } from '../common/utils/indexDb';
 
 interface IRegisterStep3Props {
   selectedPlanCard: string;
@@ -149,11 +150,11 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
   });
 
   // Verifica se o estado progress que determina em qual step o usuário está corresponde ao step atual;
-  useEffect(() => {
-    if (progress < 3) {
-      router.push('/register');
-    }
-  });
+  // useEffect(() => {
+  //   if (progress < 3) {
+  //     router.push('/register');
+  //   }
+  // });
 
   // // Busca o endereço do imóvel armazenado no local storage e atualiza o valor de addressData sempre que há o componente de endereço é aberto ou fechado - isso é necessário para que o componente ChangeAddressCheckbox recupere o endereço do localStorage quando a opção é alterada;
   useEffect(() => {
@@ -310,7 +311,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
             : addressData,
         description: storedData.description,
         metadata: storedData.metadata,
-        images: storedData.images,
+        //images: storedData.images,
         size: storedData.size,
         tags: storedData.tags,
         condominiumTags: storedData.condominiumTags,
@@ -338,8 +339,11 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         if (!isPlanFree) {
           body.creditCardData = creditCard;
         }
+
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_API_URL}/property`,
+          `${baseUrl}/property`,
           {
             method: 'POST',
             headers: {
@@ -362,16 +366,41 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
             storedData,
             paymentData,
           });
-          updateProgress(4);
-          if (!urlEmail) {
-            router.push('/registerStep35');
+
+          // Salvar imagens
+
+          const indexDbImages = await getAllImagesFromDB() as ({ id: string, data: Blob, name: string })[];
+
+          const formData = new FormData();
+
+          for (let i = 0; i < indexDbImages.length; i++) {
+            const file = new File([indexDbImages[i].data], `${indexDbImages[i].name}`);
+            formData.append('images', file);
+          }
+
+          formData.append('propertyId', data.createdProperty._id);
+
+          const imagesResponse = await fetch(`${baseUrl}/property/uploadDropImageWithRarity`, {
+            method: 'POST',
+            body: formData,
+          });
+
+
+          if (imagesResponse.ok) {
+            clearIndexDB()
+            updateProgress(4);
+            if (!urlEmail) {
+              router.push('/registerStep35');
+            } else {
+              router.push({
+                pathname: '/registerStep35',
+                query: {
+                  email: urlEmail,
+                },
+              });
+            }
           } else {
-            router.push({
-              pathname: '/registerStep35',
-              query: {
-                email: urlEmail,
-              },
-            });
+            console.log("Erro ao enviar as imagens")
           }
         } else {
           toast.dismiss();
@@ -499,7 +528,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
               <button
                 className="bg-primary w-28 md:w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold hover:bg-red-600 hover:text-white"
                 onClick={handleSubmit}
-                disabled={loading}
+                //disabled={loading}
               >
                 <span className={`${loading ? 'ml-16' : ''}`}>Continuar</span>
                 {loading && <Loading />}
