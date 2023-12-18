@@ -517,16 +517,16 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
               termsError={termsError}
             />
 
-            <div className="flex self-end mr-0 md:mr-20 lg:mr-20 xl:mr-20 md:justify-end justify-center px-5 mb-32 mt-16 max-w-[1215px] mx-auto">
+            <div className="flex flex-col md:flex-row lg:flex-row xl:flex-row gap-4 md:gap-0 lg:gap-0 xl:gap-0 items-center justify-between my-4 max-w-[1215px]">
               <button
-                className="bg-primary w-28 md:w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold hover:bg-red-600 hover:text-white"
+                className="active:bg-gray-500 cursor-pointer flex items-center flex-row justify-around bg-primary w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold text-2xl lg:text-3xl hover:bg-red-600 hover:text-white"
                 onClick={handlePreviousStep}
               >
                 Voltar
               </button>
 
               <button
-                className="bg-primary w-28 md:w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold hover:bg-red-600 hover:text-white"
+                className="active:bg-gray-500 cursor-pointer flex items-center flex-row justify-around bg-primary w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold text-2xl lg:text-3xl hover:bg-red-600 hover:text-white"
                 onClick={handleSubmit}
                 //disabled={loading}
               >
