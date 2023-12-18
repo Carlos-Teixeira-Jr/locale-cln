@@ -1,5 +1,7 @@
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import { GetServerSidePropsContext } from 'next';
 import { getSession } from 'next-auth/react';
+import { destroyCookie } from 'nookies';
 import { useEffect } from 'react';
 import { IPropertyInfo } from '../common/interfaces/property/propertyData';
 import SentimentIcon from '../components/atoms/icons/sentimentIcon';
@@ -83,34 +85,93 @@ export default MessageNotifications;
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = (await getSession(context)) as any;
   const userId =
-    session?.user.data.id !== undefined
-      ? session?.user.data.id
+    session?.user.data._id !== undefined
+      ? session?.user.data._id
       : session?.user.id;
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+  console.log(userId);
+  let token;
+  let refreshToken;
 
-  console.log(session);
-  const id = userId.toString();
-  const userIdentification = String(userId);
-  const iDD = '' + userId;
-  const idUser = `${userId}`;
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      },
+    };
+  } else {
+    token = session?.user?.data.access_token!!;
+    refreshToken = session?.user?.data.refresh_token;
+    const decodedToken = jwt.decode(token) as JwtPayload;
+    const isTokenExpired = decodedToken?.exp
+      ? decodedToken?.exp <= Math.floor(Date.now() / 1000)
+      : false;
 
-  console.log(id);
-  console.log(userIdentification);
-  console.log(iDD);
-  console.log(idUser);
+    if (isTokenExpired) {
+      const decodedRefreshToken = jwt.decode(refreshToken) as JwtPayload;
+      const isRefreshTokenExpired = decodedRefreshToken?.exp
+        ? decodedRefreshToken?.exp <= Math.floor(Date.now() / 1000)
+        : false;
 
-  const notifications = await fetch(`${baseUrl}/notification/user/${id}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-    .then((res) => res.json())
-    .catch(() => []);
-  console.log(notifications);
-  return {
-    props: {
-      notifications,
-    },
-  };
+      if (isRefreshTokenExpired) {
+        destroyCookie(context, 'next-auth.session-token');
+        destroyCookie(context, 'next-auth.csrf-token');
+
+        return {
+          redirect: {
+            destination: '/login',
+            permanent: false,
+          },
+        };
+      } else {
+        try {
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/refresh`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                refresh_token: refreshToken,
+              }),
+            }
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            const newToken = data.access_token;
+            const newRefreshToken = data.refresh_token;
+            refreshToken = newRefreshToken;
+            token = newToken;
+            session.user.data.refresh_token = newRefreshToken;
+            token = newToken;
+            session.user.data.access_token = newToken;
+          } else {
+            console.log('Não foi possível atualizar o token.');
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    }
+
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+    const id = userId.toString();
+
+    const notifications = await fetch(`${baseUrl}/notification/user/${id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => res.json())
+      .catch(() => []);
+    console.log(notifications);
+    return {
+      props: {
+        notifications,
+      },
+    };
+  }
 }
