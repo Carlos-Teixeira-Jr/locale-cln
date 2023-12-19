@@ -7,6 +7,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { v4 as uuidv4 } from 'uuid';
 import CameraIcon from '../../atoms/icons/cameraIcon';
 import TrashIcon from '../../atoms/icons/trashIcon';
+import { addImageToDB, removeImageFromDB } from '../../../common/utils/indexDb';
 
 interface IImages {
   editarImages?: string[];
@@ -29,7 +30,7 @@ const UploadImages = ({
   const imagesErrorScroll = useRef(imagesInputRef);
 
   const [images, setImages] = useState<any[]>(editarImages || []);
-
+  
   const [error, setError] = useState<OnErrorInfo>({
     prop: '',
     error: '',
@@ -60,27 +61,40 @@ const UploadImages = ({
     }
   }, [editarImages]);
 
-  const handleAddImage = (event: any) => {
-    const files = Array.from(event.target.files);
-    if (files.length + images.length > 20) {
-      alert('Você pode adicionar no máximo 20 imagens');
-      return;
-    }
+  const handleAddImage = async (event: any) => {
+    for (const file of event.target.files) {
 
-    files.forEach((file: any) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImages((prevImages) => [
-          ...prevImages,
-          { src: reader.result, id: uuidv4() },
-        ]);
-      };
-      reader.readAsDataURL(file);
-    });
+      const id = uuidv4();
+
+      // Adiciona a imagem ao IndexedDB junto com o ID UUID
+      await addImageToDB(file, id);
+  
+      // Atualiza o estado com a imagem usando o ID UUID
+      setImages((prevImages) => [
+        ...prevImages,
+        { src: URL.createObjectURL(file), id },
+      ]);
+    }
   };
 
-  const handleRemoveImage = (id: string) => {
-    setImages(images.filter((image) => image.id !== id));
+  const handleRemoveImage = async (id: string) => {
+    try {
+      // Obter o ID numérico correspondente ao ID fornecido
+      const foundId = images.find((image) => image.id === id);
+  
+      if (foundId === undefined) {
+        console.error('Imagem não encontrada com o ID:', id);
+        return;
+      }
+  
+      // Remover a imagem do IndexedDB usando o ID UUID
+      await removeImageFromDB(id);
+  
+      // Atualizar o estado com as imagens restantes
+      setImages((prevImages) => prevImages.filter((image) => image.id !== id));
+    } catch (error) {
+      console.error('Erro ao remover a imagem:', error);
+    }
   };
 
   const moveImage = (dragIndex: number, hoverIndex: number) => {
@@ -139,7 +153,7 @@ const UploadImages = ({
                 id={image.id}
                 src={image.src}
                 index={index}
-                onRemove={handleRemoveImage}
+                onRemove={() => handleRemoveImage(image.id)}
                 moveImage={moveImage}
               />
             ))}
