@@ -24,8 +24,10 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
   ownerProperties,
   notifications,
 }) => {
+  console.log("🚀 ~ file: admin.tsx:27 ~ ownerProperties:", ownerProperties)
   
   const { data: session } = useSession() as any;
+  console.log("🚀 ~ file: admin.tsx:29 ~ session:", session)
   const [isOwner, setIsOwner] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState(1);
   const router = useRouter();
@@ -98,7 +100,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
                     key={_id}
                     _id={_id}
                     image={images[0]}
-                    price={prices[0]?.value}
+                    price={prices.length > 0 ? prices[0]?.value : 0}
                     location={address.streetName}
                     views={views}
                     messages={ownerProperties?.messages?.filter(
