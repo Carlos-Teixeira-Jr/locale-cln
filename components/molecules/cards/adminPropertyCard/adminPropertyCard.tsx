@@ -148,8 +148,9 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
             className={`flex flex-col mt-6 px-5 ${
               !isActive ? 'opacity-30' : ''
             }`}
+            style={{ overflow: 'hidden' }}
           >
-            <h1 className="font-bold text-4xl text-black mb-5">
+            <h1 className="font-bold text-4xl text-black mb-5" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
               {' '}
               {formattedPrice}
             </h1>

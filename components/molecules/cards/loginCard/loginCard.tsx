@@ -11,6 +11,7 @@ import TurnedOffEyeIcon from '../../../atoms/icons/turnedOffEyeIcon';
 import ForgotPasswordModal from '../../../atoms/modals/forgotPasswordModal';
 import VerifyEmailModal from '../../../atoms/modals/verifyEmailModal';
 import { SocialAuthButton } from '../../buttons/socialAuthButtons';
+import { ErrorToastNames, showErrorToast } from '../../../../common/utils/toasts';
 
 const LoginCard: React.FC = () => {
 
@@ -148,6 +149,8 @@ const LoginCard: React.FC = () => {
               password,
             });
             setVerifyEmailModalIsOpen(true);
+          } else {
+            showErrorToast(ErrorToastNames.EmailAlreadyInUse)
           }
         } catch (error) {
           console.error(error);
@@ -175,7 +178,7 @@ const LoginCard: React.FC = () => {
                 }).then(({ ok, error }: any) => {
                   if (ok) {
                     toast.dismiss();
-                    router.push('/admin');
+                    router.push('/admin?page=1');
                   } else {
                     console.error(error);
                     toast.dismiss();
@@ -305,7 +308,7 @@ const LoginCard: React.FC = () => {
             <div className="flex flex-col">
               <div className="flex">
                 <input
-                  className={`w-full h-fit md:h-12 rounded-[10px] border-[1px] border-quaternary drop-shadow-xl bg-tertiary text-quaternary md:p-2 text-xl font-semibold ${
+                  className={`w-full h-fit md:h-12 rounded-[10px] border-[1px] border-quaternary drop-shadow-xl bg-tertiary text-quaternary p-2 md:text-xl font-semibold  ${
                     passwordConfirmationError === ''
                       ? ''
                       : 'border-[2px] border-red-500'
@@ -317,7 +320,7 @@ const LoginCard: React.FC = () => {
                 />
 
                 <button
-                  className="w-fit md:p-2 md:mt-0 md:flex absolute md:right-3 right-4 mx-2 pb-2 md:pt-1"
+                  className="w-fit md:p-2 md:mt-0 md:flex absolute md:right-3 right-4 m-2 md:pt-1"
                   onClick={() =>
                     handlePasswordVisibility('passwordConfirmation')
                   }
