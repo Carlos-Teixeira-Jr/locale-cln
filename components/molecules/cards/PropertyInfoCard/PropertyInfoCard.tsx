@@ -9,6 +9,7 @@ import DotIcon from '../../../atoms/icons/dotIcon';
 import NextCardIcon from '../../../atoms/icons/nextCardIcon';
 import ParkingIcon from '../../../atoms/icons/parkingIcon';
 import PreviousCardIcon from '../../../atoms/icons/previousCardIcon';
+import formatCurrency from '../../../atoms/masks/currencyFormat';
 import MessageModal from '../../../atoms/modals/messageModal';
 Modal.setAppElement('#__next');
 
@@ -50,7 +51,7 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
   const [expanded, setExpanded] = useState(false);
   const descriptionRef = useRef<HTMLParagraphElement>(null);
   const [isExpandable, setIsExpandable] = useState(false);
-
+  const formattedPrice = formatCurrency(Number(prices));
   // Expande o tamanho do corpo do card para mostrar todo o texto;
   const toggleExpanded = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -158,7 +159,7 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
                 prices.length > 10 ? 'md:w-[270px]' : 'md:w-[240px]'
               } text-3xl md:w-[240px] h-[44px] top-[17px] left-[336px] font-bold text-[#000000]`}
             >
-              R$ {prices}
+              {formattedPrice}
             </div>
             <div className="flex flex-col">
               <p
