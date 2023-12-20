@@ -13,12 +13,12 @@ interface IAdminHeader {
 }
 
 const AdminHeader: React.FC<IAdminHeader> = ({ isOwnerProp }) => {
-
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  const { data: session } = useSession() as any;
   const isMobile = useIsMobile();
   const isOwner = isOwnerProp ? isOwnerProp : false;
+  const { data: session } = useSession() as any;
+  console.log('🚀 ~ file: admin.tsx:29 ~ session:', session);
 
   return (
     <div className="flex flex-row fixed top-0 w-full z-50 justify-between bg-tertiary h-20 drop-shadow-md">
@@ -38,13 +38,9 @@ const AdminHeader: React.FC<IAdminHeader> = ({ isOwnerProp }) => {
           className="flex items-center justify-center max-w-[50px] max-h-[50px] cursor-pointer shrink-0"
           onClick={() => setOpen(!isMobile ? !open : false)}
         >
-          {session?.user?.data.picture ? (
+          {session?.user?.image ? (
             <Image
-              src={
-                session.user?.data.picture
-                  ? session.user?.data.picture
-                  : session.user.picture
-              }
+              src={session?.user?.image}
               alt={'User profile picture'}
               width={50}
               height={50}
