@@ -379,7 +379,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
           }
 
           formData.append('propertyId', data.createdProperty._id);
-          console.log("🚀 ~ file: registerStep3.tsx:382 ~ handleSubmit ~ data.createdProperty._id:", data.createdProperty._id)
 
           const imagesResponse = await fetch(`${baseUrl}/property/uploadDropImageWithRarity`, {
             method: 'POST',

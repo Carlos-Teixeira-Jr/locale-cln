@@ -30,7 +30,6 @@ const PropertyInfoTop = ({ propertyID }: any) => {
     numGarage: any
   ) => [
     {
-      // icon: AreaIcon,
       icon: <AreaIcon/>,
       value: areaValue,
       description: 'm² area',
