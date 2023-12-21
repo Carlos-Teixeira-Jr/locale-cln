@@ -8,6 +8,7 @@ import { IMessage } from '../common/interfaces/message/messages';
 import { IOwnerProperties } from '../common/interfaces/properties/propertiesList';
 import { IData } from '../common/interfaces/property/propertyData';
 import { fetchJson } from '../common/utils/fetchJson';
+import SentimentIcon from '../components/atoms/icons/sentimentIcon';
 import Pagination from '../components/atoms/pagination/pagination';
 import MessagesCard from '../components/molecules/cards/messagesCard.tsx/messagesCard';
 import AdminHeader from '../components/organisms/adminHeader/adminHeader';
@@ -84,27 +85,40 @@ const AdminMessages = ({
             <h1 className="font-extrabold text-2xl md:text-4xl text-quaternary md:mb-5 text-center">
               Mensagens
             </h1>
-
-            <Pagination
-              totalPages={totalPages}
-              setCurrentPage={setCurrentPage}
-              currentPage={currentPage}
-            />
+            {messagesCount == 0 ? (
+              ''
+            ) : (
+              <Pagination
+                totalPages={totalPages}
+                setCurrentPage={setCurrentPage}
+                currentPage={currentPage}
+              />
+            )}
           </div>
 
           <div className="lg:mb-10 flex flex-wrap flex-col md:flex-row lg:gap-10">
-            {messagesCount > 0 &&
-              properties.map(({ _id, images, address }: IData) => (
-                <MessagesCard
-                  key={_id}
-                  image={images[0]}
-                  address={address}
-                  messages={messages?.docs.filter(
-                    (message) => message.propertyId === _id
-                  )}
-                  propertyId={_id}
-                />
-              ))}
+            <div className="mx-10 nb-5 mt-[-1rem]">
+              {messagesCount == 0 ? (
+                <div className="flex flex-col items-center align-middle mt-36">
+                  <SentimentIcon />
+                  <h1 className="text-3xl text-quaternary">
+                    Não tem nenhuma mensagem.
+                  </h1>
+                </div>
+              ) : (
+                properties.map(({ _id, images, address }: IData) => (
+                  <MessagesCard
+                    key={_id}
+                    image={images[0]}
+                    address={address}
+                    messages={messages?.docs.filter(
+                      (message) => message.propertyId === _id
+                    )}
+                    propertyId={_id}
+                  />
+                ))
+              )}
+            </div>
           </div>
         </div>
       </div>

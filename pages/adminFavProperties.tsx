@@ -9,6 +9,7 @@ import {
   IPropertyInfo,
 } from '../common/interfaces/property/propertyData';
 import { fetchJson } from '../common/utils/fetchJson';
+import SentimentIcon from '../components/atoms/icons/sentimentIcon';
 import Pagination from '../components/atoms/pagination/pagination';
 import PropertyCard from '../components/molecules/cards/propertyCard/PropertyCard';
 import AdminHeader from '../components/organisms/adminHeader/adminHeader';
@@ -51,12 +52,14 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
             <h1 className="font-extrabold text-2xl md:text-4xl text-quaternary md:mb-5 text-center">
               Imóveis Favoritos
             </h1>
-            {favouriteProperties?.docs?.length > 0 && (
+            {favouriteProperties?.docs?.length === 0 ? (
+              ''
+            ) : (
               <Pagination totalPages={favouriteProperties?.totalPages} />
             )}
 
             <div className="flex flex-col md:flex-row flex-wrap md:gap-2 lg:gap-10 my-5 lg:justify-start md:px-2 lg:px-10">
-              {favouriteProperties?.docs?.length > 0 &&
+              {favouriteProperties?.docs?.length > 0 ? (
                 favouriteProperties?.docs.map(
                   ({
                     _id,
@@ -79,7 +82,15 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
                       />
                     </div>
                   )
-                )}
+                )
+              ) : (
+                <div className="flex flex-col items-center align-middle mt-36">
+                  <SentimentIcon />
+                  <h1 className="text-3xl text-quaternary">
+                    Você ainda não favotirou nenhum imóvel.
+                  </h1>
+                </div>
+              )}
             </div>
             {/* <Pagination 
               totalPages={0} 
