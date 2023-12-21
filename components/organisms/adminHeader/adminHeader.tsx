@@ -18,7 +18,6 @@ const AdminHeader: React.FC<IAdminHeader> = ({ isOwnerProp }) => {
   const isMobile = useIsMobile();
   const isOwner = isOwnerProp ? isOwnerProp : false;
   const { data: session } = useSession() as any;
-  console.log('🚀 ~ file: admin.tsx:29 ~ session:', session);
 
   return (
     <div className="flex flex-row fixed top-0 w-full z-50 justify-between bg-tertiary h-20 drop-shadow-md">

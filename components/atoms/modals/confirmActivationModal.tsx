@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import ReactModal from 'react-modal';
 import { toast } from 'react-toastify';
 import CloseIcon from '../icons/closeIcon';
+import { ErrorToastNames, showErrorToast } from '../../../common/utils/toasts';
 ReactModal.setAppElement('#__next');
 
 interface IConfirmActivationModal {
@@ -60,7 +61,7 @@ export default function confirmActivationModal({
         window.location.reload();
       } else {
         toast.dismiss();
-        toast.warning('Houve um erro ao desativar o anuncio.');
+        showErrorToast(ErrorToastNames.AdActivation);
       }
     } catch (error) {
       toast.dismiss();
