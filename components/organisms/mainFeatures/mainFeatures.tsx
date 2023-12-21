@@ -730,7 +730,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                 )}
               </div>
               <p className="text-xl md:text-2xl font-light text-quaternary leading-7 mt-2 lg:mt-9 lg:ml-5">
-                {!propertyFeaturesData.condominium ? 'Remover' : 'Aplicar'}
+                {!propertyFeaturesData.condominium ? 'Aplicar' : 'Remover'}
               </p>
             </div>
             <div

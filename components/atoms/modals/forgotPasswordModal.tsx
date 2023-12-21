@@ -52,7 +52,7 @@ const ForgotPasswordModal: React.FC<IForgotPasswordModal> = ({
         toast.error(errorMessage);
       }
     } catch (error) {
-      showErrorToast(ErrorToastNames.ServerConnection);
+      //showErrorToast(ErrorToastNames.ServerConnection);
       console.error(error);
     }
   };
