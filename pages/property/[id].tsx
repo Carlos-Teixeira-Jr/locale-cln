@@ -148,6 +148,7 @@ export async function getServerSideProps(context: NextPageContext) {
   const propertyId = context.query.id;
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
   let isFavourite: boolean = false;
+  let property;
 
   if (userId) {
     try {
@@ -182,9 +183,30 @@ export async function getServerSideProps(context: NextPageContext) {
     isFavourite = false;
   }
 
-  const property = await fetch(`${baseUrl}/property/${propertyId}?isEdit=false`)
-    .then((res) => res.json())
-    .catch(() => {});
+  try {
+    const propertyResponse = await fetch(`${baseUrl}/property/${propertyId}?isEdit=false`)
+
+    if (propertyResponse.ok) {
+      property = await propertyResponse.json();
+    } else {
+      return {
+        redirect: {
+          destination: '/',
+          permanent: false, // Se for true, indica um redirecionamento permanente (HTTP 301)
+        },
+      };
+    }
+  } catch (error) {
+    console.log(error)
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false, // Se for true, indica um redirecionamento permanente (HTTP 301)
+      },
+    };
+  }
+  
+  
 
   const url = `${process.env.NEXT_PUBLIC_BASE_API_URL}/property/filter/?page=1&limit=4`;
   const relatedProperties = await fetch(url).then((res) => res.json());

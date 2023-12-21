@@ -33,7 +33,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
 
   // Determina se o usuário já possui anúncios ou não;
   useEffect(() => {
-    setIsOwner(ownerProperties.docs?.length > 0 ? true : false);
+    setIsOwner(ownerProperties?.docs?.length > 0 ? true : false);
   }, [ownerProperties]);
 
   useEffect(() => {
@@ -98,7 +98,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
                     key={_id}
                     _id={_id}
                     image={images[0]}
-                    price={prices[0]?.value}
+                    price={prices.length > 0 ? prices[0]?.value : 0}
                     location={address.streetName}
                     views={views}
                     messages={ownerProperties?.messages?.filter(
@@ -128,6 +128,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   let refreshToken;
   const { query } = context;
   const page = query.page;
+  let ownerProperties;
 
   if (!session) {
     return {
@@ -211,6 +212,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       if (ownerIdResponse.ok) {
         const ownerData = await ownerIdResponse.json();
         ownerId = ownerData?.owner?._id;
+      } else {
+        console.log('erro', ownerIdResponse);
       }
     } catch (error) {
       console.error(error);
@@ -244,9 +247,33 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       .then((res) => res.json())
       .catch(() => []);
 
+    if (ownerId) {
+      [ownerProperties] = await Promise.all([
+        fetch(`${baseUrl}/property/owner-properties`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ownerId,
+            page: Number(page),
+          }),
+        })
+          .then((res) => res.json())
+          .catch(() => []),
+        fetchJson(`${baseUrl}/property/owner-properties`),
+      ]);
+
+      return {
+        props: {
+          ownerProperties,
+          notifications,
+        },
+      };
+    }
+
     return {
       props: {
-        ownerProperties,
         notifications,
       },
     };

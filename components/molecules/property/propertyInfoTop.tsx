@@ -21,7 +21,7 @@ interface IInfoTop {
 const PropertyInfoTop = ({ propertyID }: any) => {
 
 
-  const priceString = propertyID.prices[0].value.toString();
+  const priceString = propertyID.prices.lenght > 0 ? propertyID.prices[0].value.toString() : 0;
   const formattedPrice = monetaryFormat(priceString)
   const getSections = (
     areaValue: ISize,
@@ -30,7 +30,6 @@ const PropertyInfoTop = ({ propertyID }: any) => {
     numGarage: any
   ) => [
     {
-      // icon: AreaIcon,
       icon: <AreaIcon/>,
       value: areaValue,
       description: 'm² area',
