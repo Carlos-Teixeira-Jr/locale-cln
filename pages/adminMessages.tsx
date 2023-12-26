@@ -23,13 +23,13 @@ interface IMessages {
 interface IAdminMessagesPage {
   ownerProperties: IOwnerProperties;
   messages: IMessages;
-  dataNot: [];
+  notifications: [];
 }
 
 const AdminMessages = ({
   ownerProperties,
   messages,
-  dataNot,
+  notifications,
 }: IAdminMessagesPage) => {
   const router = useRouter();
   const query = router.query as any;
@@ -76,7 +76,7 @@ const AdminMessages = ({
 
       <div className="flex flex-row items-center justify-evenly">
         <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:flex">
-          <SideMenu isOwnerProp={isOwner} notifications={dataNot} />
+          <SideMenu isOwnerProp={isOwner} notifications={notifications} />
         </div>
 
         <div className="flex flex-col items-center mt-24 w-full lg:ml-[320px]">
@@ -117,12 +117,14 @@ export default AdminMessages;
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = (await getSession(context)) as any;
   const userId =
-    session?.user.data.id !== undefined
-      ? session?.user.data.id
+    session?.user.data._id !== undefined
+      ? session?.user.data._id
       : session?.user.id;
   let token;
   let refreshToken;
   const page = Number(context.query.page);
+
+  console.log('adminMessages:', userId);
 
   if (!session) {
     return {
@@ -211,7 +213,15 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       console.error(error);
     }
 
-    const [ownerProperties, messages] = await Promise.all([
+    const [notifications, ownerProperties, messages] = await Promise.all([
+      fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/notification/${userId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then((res) => res.json())
+        .catch(() => []),
       fetch(`${baseUrl}/property/owner-properties`, {
         method: 'POST',
         headers: {
@@ -236,29 +246,17 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       })
         .then((res) => res.json())
         .catch(() => []),
+      fetchJson(`${baseUrl}/notification/${userId}`),
+
       fetchJson(`${baseUrl}/property/owner-properties`),
       fetchJson(`${baseUrl}/message/find-all-by-ownerId`),
     ]);
-
-    const notifications = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API_URL}/notification/${userId}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    )
-      .then((res) => res.json())
-      .catch(() => []);
-
-    const dataNot = notifications;
 
     return {
       props: {
         ownerProperties,
         messages,
-        dataNot,
+        notifications,
       },
     };
   }

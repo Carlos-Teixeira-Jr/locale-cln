@@ -2,8 +2,10 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import { GetServerSidePropsContext } from 'next';
 import { getSession } from 'next-auth/react';
 import { destroyCookie } from 'nookies';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { IOwnerProperties } from '../common/interfaces/properties/propertiesList';
 import { IPropertyInfo } from '../common/interfaces/property/propertyData';
+import { fetchJson } from '../common/utils/fetchJson';
 import SentimentIcon from '../components/atoms/icons/sentimentIcon';
 import Pagination from '../components/atoms/pagination/pagination';
 import NotificationCard, {
@@ -16,14 +18,19 @@ import { useIsMobile } from '../hooks/useIsMobile';
 interface IMessageNotifications {
   properties: IPropertyInfo;
   notifications: [];
+  ownerProperties?: IOwnerProperties;
 }
 
-const MessageNotifications = ({ notifications }: IMessageNotifications) => {
+const MessageNotifications = ({
+  ownerProperties,
+  notifications,
+}: IMessageNotifications) => {
   const isMobile = useIsMobile();
+  const [isOwner, setIsOwner] = useState<boolean>(false);
 
   useEffect(() => {
-    console.log('notificações:', notifications);
-  });
+    setIsOwner(ownerProperties?.docs?.length > 0 ? true : false);
+  }, [ownerProperties]);
 
   return (
     <main>
@@ -31,7 +38,7 @@ const MessageNotifications = ({ notifications }: IMessageNotifications) => {
       <div className="flex flex-row items-center justify-center lg:ml-72 xl:ml-72">
         <div className="fixed sm:hidden hidden md:hidden lg:flex xl:flex left-0 top-20">
           {!isMobile ? (
-            <SideMenu isOwnerProp={true} notifications={notifications as []} />
+            <SideMenu isOwnerProp={isOwner} notifications={notifications} />
           ) : (
             ''
           )}
@@ -79,7 +86,6 @@ const MessageNotifications = ({ notifications }: IMessageNotifications) => {
     </main>
   );
 };
-
 export default MessageNotifications;
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
@@ -88,9 +94,10 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     session?.user.data._id !== undefined
       ? session?.user.data._id
       : session?.user.id;
-  console.log(userId);
   let token;
   let refreshToken;
+  const { query } = context;
+  const page = query.page;
 
   if (!session) {
     return {
@@ -106,17 +113,14 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     const isTokenExpired = decodedToken?.exp
       ? decodedToken?.exp <= Math.floor(Date.now() / 1000)
       : false;
-
     if (isTokenExpired) {
       const decodedRefreshToken = jwt.decode(refreshToken) as JwtPayload;
       const isRefreshTokenExpired = decodedRefreshToken?.exp
         ? decodedRefreshToken?.exp <= Math.floor(Date.now() / 1000)
         : false;
-
       if (isRefreshTokenExpired) {
         destroyCookie(context, 'next-auth.session-token');
         destroyCookie(context, 'next-auth.csrf-token');
-
         return {
           redirect: {
             destination: '/login',
@@ -137,7 +141,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
               }),
             }
           );
-
           if (response.ok) {
             const data = await response.json();
             const newToken = data.access_token;
@@ -159,19 +162,62 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
     const id = userId.toString();
 
-    const notifications = await fetch(`${baseUrl}/notification/user/${id}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((res) => res.json())
-      .catch(() => []);
-    console.log(notifications);
-    return {
-      props: {
-        notifications,
-      },
-    };
+    let ownerId;
+
+    try {
+      const ownerIdResponse = await fetch(
+        `${baseUrl}/user/find-owner-by-user`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ _id: userId }),
+        }
+      );
+
+      if (ownerIdResponse.ok) {
+        const ownerData = await ownerIdResponse.json();
+        ownerId = ownerData?.owner?._id;
+      } else {
+        console.log('erro', ownerIdResponse);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+
+    if (ownerId) {
+      const [ownerProperties] = await Promise.all([
+        fetch(`${baseUrl}/property/owner-properties`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ownerId,
+            page: Number(page),
+          }),
+        })
+          .then((res) => res.json())
+          .catch(() => []),
+        fetchJson(`${baseUrl}/property/owner-properties`),
+      ]);
+
+      const notifications = await fetch(`${baseUrl}/notification/user/${id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then((res) => res.json())
+        .catch(() => []);
+      console.log('adminNotifications:', userId);
+      return {
+        props: {
+          notifications,
+          ownerProperties,
+        },
+      };
+    }
   }
 }

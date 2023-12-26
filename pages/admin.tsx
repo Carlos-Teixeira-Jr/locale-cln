@@ -65,7 +65,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
       <AdminHeader isOwnerProp={isOwner} />
       <div className="flex flex-row items-center justify-evenly">
         <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:flex">
-          <SideMenu isOwnerProp={isOwner} notifications={notifications as []} />
+          <SideMenu isOwnerProp={isOwner} notifications={notifications} />
         </div>
         <div className="flex flex-col items-center mt-24 lg:ml-[305px]">
           <div className="flex flex-col items-center">
@@ -121,8 +121,8 @@ export default AdminPage;
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = (await getSession(context)) as any;
   const userId =
-    session?.user.data.id !== undefined
-      ? session?.user.data.id
+    session?.user.data._id !== undefined
+      ? session?.user.data._id
       : session?.user.id;
   let token;
   let refreshToken;
@@ -248,7 +248,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       .catch(() => []);
 
     if (ownerId) {
-      [ownerProperties] = await Promise.all([
+      const [ownerProperties] = await Promise.all([
         fetch(`${baseUrl}/property/owner-properties`, {
           method: 'POST',
           headers: {
@@ -263,6 +263,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           .catch(() => []),
         fetchJson(`${baseUrl}/property/owner-properties`),
       ]);
+
+      console.log('admin:', userId);
 
       return {
         props: {
