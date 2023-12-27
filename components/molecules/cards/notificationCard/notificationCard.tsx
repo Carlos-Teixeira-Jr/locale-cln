@@ -57,14 +57,14 @@ const NotificationCard: React.FC<INotification> = ({
               : 'border-4 border-quaternary bg-tertiary p-5 mt-10'
           } `}
         >
-          <div>
+          <div className="flex flex-col md:flex-row lg:flex-row xl:flex-row items-center justify-between sm:w-[250px] md:w-[500px] w-[250px] lg:w-[600px] xl:w-[600px] gap-5">
             {/** Text part */}
-            <div className="flex flex-col md:flex-row lg:flex-row xl:flex-row gap-1 justify-between items-center">
-              <div>
+            <div className="flex flex-col md:flex-row lg:flex-row xl:flex-row items-center justify-between">
+              <div className="flex flex-col items-start">
                 <h1 className="text-quaternary text-xl font-semibold">
                   {title}
                 </h1>
-                <div className="max-w-[1000px]">
+                <div className="">
                   <p
                     ref={messageRef}
                     style={{
@@ -76,22 +76,23 @@ const NotificationCard: React.FC<INotification> = ({
                       WebkitBoxOrient: 'vertical',
                       whiteSpace: 'initial',
                     }}
-                    className="font-medium text-sm text-quaternary mt-4 max-w-[1000px] text-justify"
+                    className="font-medium text-sm text-quaternary mt-4  text-justify"
                   >
                     {description}
                   </p>
                   {messageRef.current && isExpandable && (
                     <span
                       onClick={toggleExpanded}
-                      className="font-semibold text-sm text-secondary mt-4 max-w-[1000px] text-justify"
+                      className="font-semibold text-sm text-secondary mt-4  text-justify"
                     >
                       {!expanded ? 'Continuar lendo...' : 'Ler menos...'}
                     </span>
                   )}
                 </div>
               </div>
-
               {/** delete icon part */}
+            </div>
+            <div className="flex items-end">
               <button
                 className="flex items-center justify-center bg-primary rounded-md w-8 h-8"
                 onClick={() => deleteNotification(!deleteNot)}

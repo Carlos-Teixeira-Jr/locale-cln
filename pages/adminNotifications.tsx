@@ -47,13 +47,13 @@ const MessageNotifications = ({
           <h1 className="flex text-4xl md:text-5xl text-quaternary font-bold justify-center">
             Notificações
           </h1>
-          <div className="flex flex-col items-center justify-center max-w-[1232px]">
+          <div className="flex flex-col items-center justify-center ">
             <div className="flex justify-center mt-8">
               {notifications.length !== 0 && <Pagination totalPages={0} />}
             </div>
 
             {
-              <div className="mx-10 mb-5 mt-[-1rem]">
+              <div className="mx-10 mb-5 mt-[-1rem] ">
                 {notifications.length == 0 ? (
                   <div className="flex flex-col items-center align-middle mt-36">
                     <SentimentIcon />
