@@ -43,22 +43,24 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
   return (
     <>
       <AdminHeader isOwnerProp={isOwner} />
-      <div className="flex flex-row items-center justify-evenly">
+      <div className="flex flex-row items-center justify-center  lg:ml-80 xl:ml-96">
         <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:flex">
           <SideMenu isOwnerProp={isOwner} notifications={notifications} />
         </div>
-        <div className="flex flex-col items-center mt-24 w-full lg:pl-72">
+        <div className="flex flex-col items-center mt-24 w-full ">
           <div className="flex flex-col items-center mb-5 max-w-[1215px]">
-            <h1 className="font-extrabold text-2xl md:text-4xl text-quaternary md:mb-5 text-center">
+            <h1 className="font-extrabold text-2xl md:text-4xl text-quaternary md:mb-5 text-center md:mr-16">
               Imóveis Favoritos
             </h1>
             {favouriteProperties?.docs?.length === 0 ? (
               ''
             ) : (
-              <Pagination totalPages={favouriteProperties?.totalPages} />
+              <div className=" md:mr-16">
+                <Pagination totalPages={favouriteProperties?.totalPages} />
+              </div>
             )}
 
-            <div className="flex flex-col md:flex-row flex-wrap md:gap-2 lg:gap-10 my-5 lg:justify-start md:px-2 lg:px-10">
+            <div className="grid sm:grid-cols-1 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 my-5 gap-10 lg:justify-start">
               {favouriteProperties?.docs?.length > 0 ? (
                 favouriteProperties?.docs.map(
                   ({
