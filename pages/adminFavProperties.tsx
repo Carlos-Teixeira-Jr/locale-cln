@@ -15,6 +15,7 @@ import PropertyCard from '../components/molecules/cards/propertyCard/PropertyCar
 import AdminHeader from '../components/organisms/adminHeader/adminHeader';
 import SideMenu from '../components/organisms/sideMenu/sideMenu';
 import { NextPageWithLayout } from './page';
+import { useRouter } from 'next/router';
 
 interface IAdminFavProperties {
   favouriteProperties: IFavProperties;
@@ -29,6 +30,14 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
 }) => {
   const [isOwner, setIsOwner] = useState<boolean>(false);
   const [properties, _setProperties] = useState<IPropertyInfo>(ownerProperties);
+  const [currentPage, setCurrentPage] = useState(1);
+  const router = useRouter();
+  const query = router.query as any;
+
+  useEffect(() => {
+    console.log("🚀 ~ file: adminFavProperties.tsx:44 ~ currentPage:", currentPage)
+  }, [currentPage])
+  
 
   // Determina se o usuário já possui anúncios ou não;
   useEffect(() => {
@@ -39,6 +48,31 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
   useEffect(() => {
     setIsOwner(ownerProperties.docs?.length > 0 ? true : false);
   }, [ownerProperties]);
+
+  useEffect(() => {
+    if (router.query.page !== undefined && typeof query.page === 'string') {
+      const parsedPage = parseInt(query.page);
+      setCurrentPage(parsedPage);
+    }
+  });
+
+  useEffect(() => {
+    // Check if the page parameter in the URL matches the current page
+    const pageQueryParam =
+      router.query.page !== undefined && typeof query.page === 'string'
+        ? parseInt(query.page)
+        : 1;
+
+    // Only update the URL if the page parameter is different from the current page
+    if (pageQueryParam !== currentPage) {
+      const queryParams = {
+        ...query,
+        page: currentPage,
+      };
+      router.push({ query: queryParams }, undefined, { scroll: false });
+    }
+  }, [currentPage]);
+
 
   return (
     <>
@@ -55,7 +89,11 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
             {favouriteProperties?.docs?.length === 0 ? (
               ''
             ) : (
-              <Pagination totalPages={favouriteProperties?.totalPages} />
+              <Pagination 
+                totalPages={favouriteProperties?.totalPages} 
+                setCurrentPage={setCurrentPage}
+                currentPage={currentPage}
+              />
             )}
 
             <div className="flex flex-col md:flex-row flex-wrap md:gap-2 lg:gap-10 my-5 lg:justify-start md:px-2 lg:px-10">
@@ -111,6 +149,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   let refreshToken;
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
   let ownerId;
+  const { query } = context;
+  const page = query.page;
 
   if (!session) {
     return {
@@ -214,7 +254,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           },
           body: JSON.stringify({
             id: userId,
-            page: 1,
+            page: Number(page),
           }),
         })
           .then((res) => res.json())
