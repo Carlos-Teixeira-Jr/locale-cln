@@ -120,14 +120,14 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
     <div className="flex flex-col items-center mt-10 justify-between">
       <Link href={`/property/${_id}?isEdit=true`}>
         <div
-          className={`flex flex-col md:flex-row bg-tertiary max-w-5xl h-fit md:h-64 shadow-lg ${
+          className={`flex flex-col md:flex-row bg-tertiary max-w-5xl. w-full h-fit md:h-64 shadow-lg lg:w-[850px] ${
             isActive ? '' : 'opacity-100'
           }`}
         >
           <Image
             src={image}
             alt={'Admin property image'}
-            className={!isActive ? 'opacity-30' : ''}
+            className={`lg:w-1/3 ${!isActive ? 'opacity-30' : ''}`}
             width={310}
             height={265}
           />
@@ -145,7 +145,7 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
             </div>
           )}
           <div
-            className={`flex flex-col mt-6 px-5 ${
+            className={`flex flex-col mt-6 px-5 w-full ${
               !isActive ? 'opacity-30' : ''
             }`}
             style={{ overflow: 'hidden' }}
@@ -169,7 +169,7 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
             </h3>
           </div>
 
-          <div className="flex flex-col gap-1 justify-center px-2 mt-4 md:mt-0 pr-2">
+          <div className="flex flex-col gap-1 justify-center px-2 mt-4 md:mt-0 pr-2 w-full md:w-fit">
             {buttons.map((btn: btnTypes) =>
               btn.key !== 'highlight' ? (
                 <Link
