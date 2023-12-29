@@ -21,6 +21,7 @@ import Footer from '../components/organisms/footer/footer';
 import Header from '../components/organisms/header/header';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { NextPageWithLayout } from './page';
+import Image from 'next/image';
 
 export interface IPropertyInfo {
   docs: IData[];
@@ -45,6 +46,7 @@ const Search: NextPageWithLayout<ISearch> = ({
   const router = useRouter();
   const query = router.query as any;
   const [currentPage, setCurrentPage] = useState(1);
+  const isCodeSearch = query.code ? true : false;
 
   // mobile
   const [open, setOpen] = useState(false);
@@ -219,13 +221,12 @@ const Search: NextPageWithLayout<ISearch> = ({
                 <h2 className="text-quaternary text-sm md:text-base lg:text-2xl leading-5 font-bold md:ml-4 text-justify px-5">
                   Oops! Não encontramos nenhum resultado para essa busca.
                 </h2>
-                <div className="flex flex-col mx-auto justify-center my-5 md:my-10">
-                  <LocationIcon width="100" height="100" fill="#F75D5F" />
-                  <CloseIcon
-                    fill="red"
-                    width="100"
-                    height="100"
-                    className="ml-1"
+                <div className="flex flex-col mx-auto justify-center my-5">
+                  <Image 
+                    src={'/images/property-not-found.png'} 
+                    width={300}
+                    height={300}
+                    alt={'Property not found'}                  
                   />
                 </div>
                 <h2 className="text-quaternary text-sm md:text-base lg:text-2xl leading-5 font-bold md:ml-4 text-justify px-5">
@@ -235,19 +236,18 @@ const Search: NextPageWithLayout<ISearch> = ({
               </div>
             )}
 
-            {!propertyInfo.docs && (
+            {!propertyInfo.docs && isCodeSearch  && (
               <div className="flex flex-col mt-5">
                 <h2 className="text-quaternary text-sm md:text-base lg:text-2xl leading-5 font-bold md:ml-4 text-justify px-5">
                   Oops! Não encontramos nenhum imóvel referente ao código
                   informado.
                 </h2>
-                <div className="flex flex-col mx-auto justify-center my-5 md:my-10">
-                  <LocationIcon width="100" height="100" fill="#F75D5F" />
-                  <CloseIcon
-                    fill="red"
-                    width="100"
-                    height="100"
-                    className="ml-1"
+                <div className="flex flex-col mx-auto justify-center my-5">
+                  <Image 
+                    src={'/images/property-not-found.png'} 
+                    width={300}
+                    height={300}
+                    alt={'Property not found'}                  
                   />
                 </div>
                 <h2 className="text-quaternary text-sm md:text-base lg:text-2xl leading-5 font-bold md:ml-4 text-justify px-5">

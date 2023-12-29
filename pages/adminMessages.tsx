@@ -96,8 +96,8 @@ const AdminMessages = ({
             )}
           </div>
 
-          <div className="lg:mb-10 flex flex-wrap flex-col md:flex-row lg:gap-10">
-            <div className="mx-10 nb-5 mt-[-1rem]">
+          {/* <div className="lg:mb-10 flex flex-wrap flex-col md:flex-row lg:gap-10">
+            <div className="mx-10 mb-5 flex">
               {messagesCount == 0 ? (
                 <div className="flex flex-col items-center align-middle mt-36">
                   <SentimentIcon />
@@ -119,6 +119,31 @@ const AdminMessages = ({
                 ))
               )}
             </div>
+          </div> */}
+
+          <div className="flex flex-col md:flex-row flex-wrap md:gap-2 lg:gap-10 md:my-5 md:justify-between lg:justify-start md:px-2 lg:px-10">
+            {messagesCount == 0 ? (
+              <div className="flex flex-col items-center align-middle mt-36">
+                <SentimentIcon />
+                <h1 className="text-3xl text-quaternary">
+                  Não tem nenhuma mensagem.
+                </h1>
+              </div>
+            ) : (
+              properties?.map(({ _id, images, address }: IData) => (
+                <div className="w-60" key={_id}>
+                  <MessagesCard
+                    key={_id}
+                    image={images[0]}
+                    address={address}
+                    messages={messages?.docs.filter(
+                      (message) => message.propertyId === _id
+                    )}
+                    propertyId={_id}
+                  />
+                </div>                
+              ))
+            )}
           </div>
         </div>
       </div>

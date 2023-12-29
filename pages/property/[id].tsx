@@ -91,7 +91,7 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
         </div>
         <div className="flex flex-col md:flex-row gap-5 justify-center m-5 lg:my-5 lg:mx-0">
           {relatedProperties.docs.length > 0 &&
-            relatedProperties?.docs.map((prop: IData) => (
+            relatedProperties?.docs.slice(0, 3).map((prop: IData) => (
               <PropertyCard
                 key={prop._id}
                 prices={prop.prices}

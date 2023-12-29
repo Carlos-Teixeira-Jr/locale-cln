@@ -95,7 +95,7 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
     <>
       <Link href={href}>
         <div
-          className={` bg-tertiary md:grid md:grid-cols-3 rounded-[30px] overflow-hidden drop-shadow-lg my-[29px] md:mx-[35px] mx-2 flex flex-col ${
+          className={` bg-tertiary md:grid md:grid-cols-3 rounded-[30px] overflow-hidden drop-shadow-lg my-7 md:mx-9 mx-2 flex flex-col ${
             expanded ? 'lg:h-fit' : 'lg:h-[255px]'
           }`}
         >
