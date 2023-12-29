@@ -121,7 +121,7 @@ const AdminMessages = ({
             </div>
           </div> */}
 
-          <div className="flex flex-col md:flex-row flex-wrap md:gap-2 lg:gap-10 my-5 lg:justify-start md:px-2 lg:px-10">
+          <div className="flex flex-col md:flex-row flex-wrap md:gap-2 lg:gap-10 md:my-5 md:justify-between lg:justify-start md:px-2 lg:px-10">
             {messagesCount == 0 ? (
               <div className="flex flex-col items-center align-middle mt-36">
                 <SentimentIcon />

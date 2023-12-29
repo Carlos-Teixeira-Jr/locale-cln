@@ -34,11 +34,6 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
   const router = useRouter();
   const query = router.query as any;
 
-  useEffect(() => {
-    console.log("🚀 ~ file: adminFavProperties.tsx:44 ~ currentPage:", currentPage)
-  }, [currentPage])
-  
-
   // Determina se o usuário já possui anúncios ou não;
   useEffect(() => {
     setIsOwner(properties?.docs?.length > 0 ? true : false);
@@ -72,7 +67,6 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
       router.push({ query: queryParams }, undefined, { scroll: false });
     }
   }, [currentPage]);
-
 
   return (
     <>
