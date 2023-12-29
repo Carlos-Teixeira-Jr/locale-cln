@@ -33,19 +33,18 @@ const MessagesCard = ({
       }}
     >
       <div className="rounded-[30px] bg-tertiary w-fit m-2 drop-shadow-lg flex flex-col justify-between">
-        <div className="md:w-64 h-fit">
+        <div className="md:w-64 h-fit max-h-36">
           <div className="rounded-t-[30px] w-full">
             <Image
               src={image}
               alt={'Property image'}
               width={150}
               height={150}
-              className="rounded-t-[30px] w-full max-h-[150px]"
+              className="rounded-t-[30px] w-full min-h-[150px] max-h-[150px]"
             />
           </div>
-          
         </div>
-        <div className="bg-tertiary rounded-b-[30px] mx-5">
+        <div className="bg-tertiary rounded-b-[30px] px-5">
           <h2 className="text-lg my-3 font-bold leading-6">
             {`${address.streetName}, ${address.streetNumber}`}
           </h2>
