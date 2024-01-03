@@ -17,8 +17,8 @@ import { useIsMobile } from '../hooks/useIsMobile';
 
 interface IMessageNotifications {
   properties: IPropertyInfo;
-  notifications: [];
-  ownerProperties?: IOwnerProperties;
+  notifications: [] | any;
+  ownerProperties?: IOwnerProperties | any;
 }
 
 const MessageNotifications = ({
@@ -44,20 +44,20 @@ const MessageNotifications = ({
           )}
         </div>
         <div className="flex flex-col max-w-[1232px] items-center mt-28">
-          <h1 className="flex text-4xl md:text-5xl text-quaternary font-bold justify-center">
+          <h1 className="font-extrabold text-2xl md:text-4xl text-quaternary md:mb-5 text-center">
             Notificações
           </h1>
           <div className="flex flex-col items-center justify-center ">
             <div className="flex justify-center mt-8">
-              {notifications.length !== 0 && <Pagination totalPages={0} />}
+              {notifications && <Pagination totalPages={0} />}
             </div>
 
             {
               <div className="mx-10 mb-5 mt-[-1rem] ">
-                {notifications.length == 0 ? (
+                {!notifications ? (
                   <div className="flex flex-col items-center align-middle mt-36">
                     <SentimentIcon />
-                    <h1 className="text-4xl text-quaternary">
+                    <h1 className="text-2xl text-quaternary">
                       Não tem nenhuma notificação.
                     </h1>
                   </div>
@@ -79,7 +79,7 @@ const MessageNotifications = ({
           </div>
 
           <div className="flex justify-center mb-10">
-            {notifications.length !== 0 && <Pagination totalPages={0} />}
+            {notifications && <Pagination totalPages={0} />}
           </div>
         </div>
       </div>
@@ -203,21 +203,27 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         fetchJson(`${baseUrl}/property/owner-properties`),
       ]);
 
-      const notifications = await fetch(`${baseUrl}/notification/user/${id}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-        .then((res) => res.json())
-        .catch(() => []);
       console.log('adminNotifications:', userId);
       return {
         props: {
-          notifications,
           ownerProperties,
         },
       };
     }
+
+    const notifications = await fetch(`${baseUrl}/notification/user/${id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => res.json())
+      .catch(() => []);
+    console.log('ADMINNOTIFICATIONS:', notifications);
+    return {
+      props: {
+        notifications,
+      },
+    };
   }
 }

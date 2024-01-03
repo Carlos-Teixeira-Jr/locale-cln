@@ -43,7 +43,7 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
   return (
     <>
       <AdminHeader isOwnerProp={isOwner} />
-      <div className="flex flex-row items-center justify-center  lg:ml-80 xl:ml-96">
+      <div className="flex flex-row items-center justify-center  lg:ml-96 xl:ml-96">
         <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:flex">
           <SideMenu isOwnerProp={isOwner} notifications={notifications} />
         </div>

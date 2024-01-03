@@ -13,6 +13,7 @@ import Pagination from '../components/atoms/pagination/pagination';
 import MessagesCard from '../components/molecules/cards/messagesCard.tsx/messagesCard';
 import AdminHeader from '../components/organisms/adminHeader/adminHeader';
 import SideMenu from '../components/organisms/sideMenu/sideMenu';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 interface IMessages {
   docs: IMessage[];
@@ -70,55 +71,74 @@ const AdminMessages = ({
   useEffect(() => {
     setIsOwner(ownerProperties?.docs?.length > 0 ? true : false);
   }, [ownerProperties]);
+  const isMobile = useIsMobile();
 
   return (
     <main>
       <AdminHeader isOwnerProp={isOwner} />
 
-      <div className="flex flex-row items-center justify-evenly">
-        <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:flex">
-          <SideMenu isOwnerProp={isOwner} notifications={notifications} />
+      <div className="flex flex-row items-center justify-center lg:ml-72 xl:ml-72">
+        <div className="fixed sm:hidden hidden md:hidden lg:flex xl:flex left-0 top-20">
+          {!isMobile ? (
+            <SideMenu isOwnerProp={isOwner} notifications={notifications} />
+          ) : (
+            ''
+          )}
         </div>
 
-        <div className="flex flex-col items-center mt-24 w-full lg:ml-[320px]">
-          <div className="flex flex-col items-center">
-            <h1 className="font-extrabold text-2xl md:text-4xl text-quaternary md:mb-5 text-center">
-              Mensagens
-            </h1>
-            {messagesCount == 0 ? (
-              ''
-            ) : (
+        <div className="flex flex-col max-w-[1232px] items-center mt-28">
+          <h1 className="font-extrabold text-2xl md:text-4xl text-quaternary md:mb-5 text-center">
+            Mensagens
+          </h1>
+          <div className="flex flex-col items-center justify-center ">
+            <div className="flex justify-center mt-8">
+              {!messagesCount ? (
+                ''
+              ) : (
+                <Pagination
+                  totalPages={totalPages}
+                  setCurrentPage={setCurrentPage}
+                  currentPage={currentPage}
+                />
+              )}
+            </div>
+
+            {
+              <div className="mx-10 mb-5 mt-[-1rem] ">
+                {!messagesCount ? (
+                  <div className="flex flex-col items-center align-middle mt-36">
+                    <SentimentIcon />
+                    <h1 className="text-2xl text-quaternary">
+                      Não tem nenhuma mensagem.
+                    </h1>
+                  </div>
+                ) : (
+                  properties.map(({ _id, images, address }: IData) => (
+                    <MessagesCard
+                      key={_id}
+                      image={images[0]}
+                      address={address}
+                      messages={messages?.docs.filter(
+                        (message) => message.propertyId === _id
+                      )}
+                      propertyId={_id}
+                    />
+                  ))
+                )}
+              </div>
+            }
+          </div>
+
+          <div className="flex justify-center mb-10">
+            {messagesCount ? (
               <Pagination
                 totalPages={totalPages}
                 setCurrentPage={setCurrentPage}
                 currentPage={currentPage}
               />
+            ) : (
+              ''
             )}
-          </div>
-
-          <div className="lg:mb-10 flex flex-wrap flex-col md:flex-row lg:gap-10">
-            <div className="mx-10 nb-5 mt-[-1rem]">
-              {messagesCount == 0 ? (
-                <div className="flex flex-col items-center align-middle mt-36">
-                  <SentimentIcon />
-                  <h1 className="text-3xl text-quaternary">
-                    Não tem nenhuma mensagem.
-                  </h1>
-                </div>
-              ) : (
-                properties.map(({ _id, images, address }: IData) => (
-                  <MessagesCard
-                    key={_id}
-                    image={images[0]}
-                    address={address}
-                    messages={messages?.docs.filter(
-                      (message) => message.propertyId === _id
-                    )}
-                    propertyId={_id}
-                  />
-                ))
-              )}
-            </div>
           </div>
         </div>
       </div>

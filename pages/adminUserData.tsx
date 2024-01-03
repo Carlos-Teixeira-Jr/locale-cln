@@ -70,6 +70,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     ? ownerData?.owner?.newCreditCardData.creditCard.number
     : ownerData?.owner?.creditCardInfo;
   const planObj = plans.find((plan) => plan._id === selectedPlan);
+
   const [formData, setFormData] = useState<IUserDataComponent>({
     username: '',
     email: '',
