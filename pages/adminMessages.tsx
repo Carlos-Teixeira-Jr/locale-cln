@@ -248,12 +248,15 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     }
 
     const [notifications, ownerProperties, messages] = await Promise.all([
-      fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/notification/${userId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
+      fetch(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/notification/user/${userId}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
         .then((res) => res.json())
         .catch(() => []),
       fetch(`${baseUrl}/property/owner-properties`, {

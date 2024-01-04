@@ -236,7 +236,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     ]);
 
     const notifications = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API_URL}/notification/${userId}`,
+      `${process.env.NEXT_PUBLIC_BASE_API_URL}/notification/user/${userId}`,
       {
         method: 'GET',
         headers: {
@@ -265,7 +265,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       ]);
 
       console.log('admin:', userId);
-
+      console.log('ADMIN:', notifications);
       return {
         props: {
           ownerProperties,

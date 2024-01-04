@@ -16,21 +16,37 @@ import SideMenu from '../components/organisms/sideMenu/sideMenu';
 import { useIsMobile } from '../hooks/useIsMobile';
 
 interface IMessageNotifications {
-  properties: IPropertyInfo;
-  notifications: [] | any;
+  properties?: IPropertyInfo;
+  notificationsAdmin?: [] | any;
+  notificationsNotAdmin?: [] | any;
   ownerProperties?: IOwnerProperties | any;
 }
 
 const MessageNotifications = ({
   ownerProperties,
-  notifications,
+  notificationsAdmin,
+  notificationsNotAdmin,
 }: IMessageNotifications) => {
   const isMobile = useIsMobile();
   const [isOwner, setIsOwner] = useState<boolean>(false);
+  const [adminNotifications, setAdminNotifications] = useState<[]>([]);
+  const [notAdminNotifications, setNotAdminNotifications] = useState<[]>([]);
 
   useEffect(() => {
     setIsOwner(ownerProperties?.docs?.length > 0 ? true : false);
   }, [ownerProperties]);
+
+  useEffect(() => {
+    if (Array.isArray(notificationsAdmin)) {
+      setAdminNotifications(notificationsAdmin as []);
+    }
+  }, [notificationsAdmin]);
+
+  useEffect(() => {
+    if (Array.isArray(notificationsNotAdmin)) {
+      setNotAdminNotifications(notificationsNotAdmin as []);
+    }
+  }, [notificationsNotAdmin]);
 
   return (
     <main>
@@ -38,7 +54,14 @@ const MessageNotifications = ({
       <div className="flex flex-row items-center justify-center lg:ml-72 xl:ml-72">
         <div className="fixed sm:hidden hidden md:hidden lg:flex xl:flex left-0 top-20">
           {!isMobile ? (
-            <SideMenu isOwnerProp={isOwner} notifications={notifications} />
+            <SideMenu
+              isOwnerProp={isOwner}
+              notifications={
+                adminNotifications?.length > 0
+                  ? adminNotifications
+                  : notAdminNotifications
+              }
+            />
           ) : (
             ''
           )}
@@ -49,20 +72,36 @@ const MessageNotifications = ({
           </h1>
           <div className="flex flex-col items-center justify-center ">
             <div className="flex justify-center mt-8">
-              {notifications && <Pagination totalPages={0} />}
+              {adminNotifications?.length > 0 ||
+                (notAdminNotifications?.length > 0 && (
+                  <Pagination totalPages={0} />
+                ))}
             </div>
 
             {
               <div className="mx-10 mb-5 mt-[-1rem] ">
-                {!notifications ? (
+                {!adminNotifications || !notAdminNotifications ? (
                   <div className="flex flex-col items-center align-middle mt-36">
                     <SentimentIcon />
                     <h1 className="text-2xl text-quaternary">
                       Não tem nenhuma notificação.
                     </h1>
                   </div>
+                ) : adminNotifications?.length > 0 ? (
+                  adminNotifications?.map(
+                    ({ description, _id, title, isRead }: INotification) => (
+                      <NotificationCard
+                        key={_id}
+                        description={description}
+                        title={title}
+                        _id={_id}
+                        isRead={isRead}
+                      />
+                    )
+                  )
                 ) : (
-                  notifications?.map(
+                  notAdminNotifications?.length > 0 &&
+                  notAdminNotifications?.map(
                     ({ description, _id, title, isRead }: INotification) => (
                       <NotificationCard
                         key={_id}
@@ -79,7 +118,8 @@ const MessageNotifications = ({
           </div>
 
           <div className="flex justify-center mb-10">
-            {notifications && <Pagination totalPages={0} />}
+            {adminNotifications ||
+              (notAdminNotifications && <Pagination totalPages={0} />)}
           </div>
         </div>
       </div>
@@ -203,27 +243,45 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         fetchJson(`${baseUrl}/property/owner-properties`),
       ]);
 
+      const notificationsAdmin = await fetch(
+        `${baseUrl}/notification/user/${id}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+        .then((res) => res.json())
+        .catch(() => []);
+
       console.log('adminNotifications:', userId);
+      console.log('ADMINNOTIFICATIONS (admin):', notificationsAdmin);
+
       return {
         props: {
           ownerProperties,
+          notificationsAdmin,
+        },
+      };
+    } else {
+      const notificationsNotAdmin = await fetch(
+        `${baseUrl}/notification/user/${id}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+        .then((res) => res.json())
+        .catch(() => []);
+      console.log('ADMINNOTIFICATIONS (not admin):', notificationsNotAdmin);
+      return {
+        props: {
+          notificationsNotAdmin,
         },
       };
     }
-
-    const notifications = await fetch(`${baseUrl}/notification/user/${id}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((res) => res.json())
-      .catch(() => []);
-    console.log('ADMINNOTIFICATIONS:', notifications);
-    return {
-      props: {
-        notifications,
-      },
-    };
   }
 }
