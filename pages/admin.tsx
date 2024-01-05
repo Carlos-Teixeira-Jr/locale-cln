@@ -82,7 +82,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
             )}
           </div>
 
-          <div className="mb-10">
+          <div className="mb-10 md:px-5 lg:px-0">
             {isOwner &&
               ownerProperties?.docs?.map(
                 ({

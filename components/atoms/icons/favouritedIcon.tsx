@@ -1,9 +1,14 @@
-function FavouritedIcon() {
+function FavouritedIcon({
+  width="48",
+  height="48",
+  className=""
+}) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="48"
-      height="48"
+      width={width}
+      height={height}
+      className={className}
       fill="#F7F7F6"
       viewBox="0 96 960 960"
     >

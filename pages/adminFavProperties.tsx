@@ -1,6 +1,7 @@
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { GetServerSidePropsContext } from 'next';
 import { getSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import { destroyCookie } from 'nookies';
 import { useEffect, useState } from 'react';
 import { IFavProperties } from '../common/interfaces/properties/favouriteProperties';
@@ -29,6 +30,9 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
 }) => {
   const [isOwner, setIsOwner] = useState<boolean>(false);
   const [properties, _setProperties] = useState<IPropertyInfo>(ownerProperties);
+  const [currentPage, setCurrentPage] = useState(1);
+  const router = useRouter();
+  const query = router.query as any;
 
   // Determina se o usuário já possui anúncios ou não;
   useEffect(() => {
@@ -39,6 +43,30 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
   useEffect(() => {
     setIsOwner(ownerProperties.docs?.length > 0 ? true : false);
   }, [ownerProperties]);
+
+  useEffect(() => {
+    if (router.query.page !== undefined && typeof query.page === 'string') {
+      const parsedPage = parseInt(query.page);
+      setCurrentPage(parsedPage);
+    }
+  });
+
+  useEffect(() => {
+    // Check if the page parameter in the URL matches the current page
+    const pageQueryParam =
+      router.query.page !== undefined && typeof query.page === 'string'
+        ? parseInt(query.page)
+        : 1;
+
+    // Only update the URL if the page parameter is different from the current page
+    if (pageQueryParam !== currentPage) {
+      const queryParams = {
+        ...query,
+        page: currentPage,
+      };
+      router.push({ query: queryParams }, undefined, { scroll: false });
+    }
+  }, [currentPage]);
 
   return (
     <>
@@ -116,6 +144,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   let refreshToken;
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
   let ownerId;
+  const { query } = context;
+  const page = query.page;
 
   if (!session) {
     return {
@@ -219,7 +249,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           },
           body: JSON.stringify({
             id: userId,
-            page: 1,
+            page: Number(page),
           }),
         })
           .then((res) => res.json())
