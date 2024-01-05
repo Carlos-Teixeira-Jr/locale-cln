@@ -35,11 +35,9 @@ const MessageNotifications = ({
   }, [ownerProperties]);
 
   const adminNots = notificationsAdmin as [];
-  const notAdminNots = notificationsNotAdmin as [];
 
   useEffect(() => {
     console.log('adminNots:', adminNots);
-    console.log('notAdminNots:', notAdminNots);
   }, [notificationsAdmin]);
 
   return (
@@ -50,7 +48,7 @@ const MessageNotifications = ({
           {!isMobile ? (
             <SideMenu
               isOwnerProp={isOwner}
-              notifications={adminNots?.length > 0 ? adminNots : notAdminNots}
+              notifications={adminNots && adminNots}
             />
           ) : (
             ''
@@ -62,34 +60,21 @@ const MessageNotifications = ({
           </h1>
           <div className="flex flex-col items-center justify-center ">
             <div className="flex justify-center mt-8">
-              {adminNots?.length > 0 ||
-                (notAdminNots?.length > 0 && <Pagination totalPages={0} />)}
+              {adminNots?.length > 0 && <Pagination totalPages={0} />}
             </div>
 
             {
               <div className="mx-10 mb-5 mt-[-1rem] ">
-                {adminNots?.length == 0 || notAdminNots?.length == 0 ? (
+                {adminNots?.length == 0 ? (
                   <div className="flex flex-col items-center align-middle mt-36">
                     <SentimentIcon />
                     <h1 className="text-2xl text-quaternary">
                       Não tem nenhuma notificação.
                     </h1>
                   </div>
-                ) : adminNots ? (
-                  adminNots?.map(
-                    ({ description, _id, title, isRead }: INotification) => (
-                      <NotificationCard
-                        key={_id}
-                        description={description}
-                        title={title}
-                        _id={_id}
-                        isRead={isRead}
-                      />
-                    )
-                  )
                 ) : (
-                  notAdminNots &&
-                  notAdminNots?.map(
+                  adminNots &&
+                  adminNots?.map(
                     ({ description, _id, title, isRead }: INotification) => (
                       <NotificationCard
                         key={_id}
@@ -106,7 +91,7 @@ const MessageNotifications = ({
           </div>
 
           <div className="flex justify-center mb-10">
-            {adminNots || (notAdminNots && <Pagination totalPages={0} />)}
+            {adminNots && <Pagination totalPages={0} />}
           </div>
         </div>
       </div>
@@ -231,7 +216,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       ]);
 
       const notificationsAdmin = await fetch(
-        `${baseUrl}/notification/user/${id}`,
+        `${baseUrl}/notification/user/${id}?isRead=true`,
         {
           method: 'GET',
           headers: {
