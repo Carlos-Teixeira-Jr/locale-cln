@@ -29,24 +29,18 @@ const MessageNotifications = ({
 }: IMessageNotifications) => {
   const isMobile = useIsMobile();
   const [isOwner, setIsOwner] = useState<boolean>(false);
-  const [adminNotifications, setAdminNotifications] = useState<[]>([]);
-  const [notAdminNotifications, setNotAdminNotifications] = useState<[]>([]);
 
   useEffect(() => {
     setIsOwner(ownerProperties?.docs?.length > 0 ? true : false);
   }, [ownerProperties]);
 
-  useEffect(() => {
-    if (Array.isArray(notificationsAdmin)) {
-      setAdminNotifications(notificationsAdmin as []);
-    }
-  }, [notificationsAdmin]);
+  const adminNots = notificationsAdmin as [];
+  const notAdminNots = notificationsNotAdmin as [];
 
   useEffect(() => {
-    if (Array.isArray(notificationsNotAdmin)) {
-      setNotAdminNotifications(notificationsNotAdmin as []);
-    }
-  }, [notificationsNotAdmin]);
+    console.log('adminNots:', adminNots);
+    console.log('notAdminNots:', notAdminNots);
+  }, [notificationsAdmin]);
 
   return (
     <main>
@@ -56,11 +50,7 @@ const MessageNotifications = ({
           {!isMobile ? (
             <SideMenu
               isOwnerProp={isOwner}
-              notifications={
-                adminNotifications?.length > 0
-                  ? adminNotifications
-                  : notAdminNotifications
-              }
+              notifications={adminNots?.length > 0 ? adminNots : notAdminNots}
             />
           ) : (
             ''
@@ -72,23 +62,21 @@ const MessageNotifications = ({
           </h1>
           <div className="flex flex-col items-center justify-center ">
             <div className="flex justify-center mt-8">
-              {adminNotifications?.length > 0 ||
-                (notAdminNotifications?.length > 0 && (
-                  <Pagination totalPages={0} />
-                ))}
+              {adminNots?.length > 0 ||
+                (notAdminNots?.length > 0 && <Pagination totalPages={0} />)}
             </div>
 
             {
               <div className="mx-10 mb-5 mt-[-1rem] ">
-                {!adminNotifications || !notAdminNotifications ? (
+                {adminNots?.length == 0 || notAdminNots?.length == 0 ? (
                   <div className="flex flex-col items-center align-middle mt-36">
                     <SentimentIcon />
                     <h1 className="text-2xl text-quaternary">
                       Não tem nenhuma notificação.
                     </h1>
                   </div>
-                ) : adminNotifications?.length > 0 ? (
-                  adminNotifications?.map(
+                ) : adminNots ? (
+                  adminNots?.map(
                     ({ description, _id, title, isRead }: INotification) => (
                       <NotificationCard
                         key={_id}
@@ -100,8 +88,8 @@ const MessageNotifications = ({
                     )
                   )
                 ) : (
-                  notAdminNotifications?.length > 0 &&
-                  notAdminNotifications?.map(
+                  notAdminNots &&
+                  notAdminNots?.map(
                     ({ description, _id, title, isRead }: INotification) => (
                       <NotificationCard
                         key={_id}
@@ -118,8 +106,7 @@ const MessageNotifications = ({
           </div>
 
           <div className="flex justify-center mb-10">
-            {adminNotifications ||
-              (notAdminNotifications && <Pagination totalPages={0} />)}
+            {adminNots || (notAdminNots && <Pagination totalPages={0} />)}
           </div>
         </div>
       </div>
