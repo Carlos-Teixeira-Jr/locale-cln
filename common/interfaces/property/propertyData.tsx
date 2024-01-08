@@ -64,6 +64,7 @@ export interface IOwnerInfo {
   creci?: string;
   email: string;
   cpf?: string;
+  whatsapp?: string;
 }
 
 export interface ISize {

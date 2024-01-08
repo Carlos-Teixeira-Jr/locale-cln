@@ -36,4 +36,3 @@ export interface IUserDataComponentErrors {
   cellPhone?: any;
   phone?: any;
 }
-
