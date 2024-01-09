@@ -5,8 +5,10 @@ import {
   IUserDataComponentErrors,
 } from '../../../common/interfaces/user/user';
 import { applyNumericMask } from '../../../common/utils/masks/numericMask';
+import CameraIcon from '../../atoms/icons/cameraIcon';
 import ErrorOnUpdateModal from '../../atoms/modals/errorOnUpdateModal';
 import SuccessOnUpdateModal from '../../atoms/modals/successOnUpdateModal';
+import Image from '../uploadImages/uploadProfilePic';
 
 export type UserDataErrorsTypes = {
   username: string;
@@ -44,6 +46,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
   const userDataErrorScroll = {
     ...userDataInputRefs,
   };
+  const [images, setImages] = useState<any>('');
 
   const [errorModalIsOpen, setErrorModalIsOpen] = useState(false);
   const [succesModalIsOpen, setSuccesModalIsOpen] = useState(false);
@@ -54,7 +57,14 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
     cpf: userData ? userData?.user?.cpf : '',
     cellPhone: userData && userData.owner ? userData.owner.cellPhone : '',
     phone: userData && userData.owner ? userData.owner.phone : '',
+    profilePicture: images && images,
   });
+
+  useEffect(() => {
+    console.log('images', images);
+    console.log('profilePicture', formData.profilePicture);
+    setFormData({ ...formData, profilePicture: images });
+  }, [images, setImages]);
 
   // Pega o email da url caso o usuário tenha passado o mesmo no início do cadastro na pagina announcement;
   useEffect(() => {
@@ -203,12 +213,85 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
     },
   ];
 
+  const handleAddImage = (event: any) => {
+    const files = event.target.files;
+
+    if (files.length === 0) {
+      return;
+    }
+
+    if (files.length > 1 || images) {
+      alert('Você só pode adicionar uma imagem');
+      return;
+    }
+
+    const file = files[0];
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImages(reader.result);
+    };
+
+    reader.readAsDataURL(file);
+  };
+
+  const handleRemoveImage = () => {
+    setImages(null);
+
+    const fileInput = document.getElementById(
+      'uploadImages'
+    ) as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
+  };
+
   return (
     <div className="mx-5">
       <h1 className="md:text-3xl text-2xl leading-10 text-quaternary font-bold md:mb-10">
         {isEdit ? 'Dados Pessoais' : 'Informações para contratação'}
       </h1>
       <div className="my-5">
+        {/** ADICIONAR IMAGEM DE PERFIL */}
+        <div className="flex flex-col justify-center items-center">
+          <h1 className="text-xl font-normal text-quaternary leading-7">
+            Adicionar foto de perfil (Opcional)
+          </h1>
+          <div className="flex items-center">
+            {images && (
+              <Image
+                key={images.id ? images.id : `${images}`}
+                id={images.id}
+                src={images}
+                index={0}
+                onRemove={handleRemoveImage}
+                alt={'Foto de perfil'}
+              />
+            )}
+          </div>
+          <label
+            className="flex flex-row items-center px-6 w-64 h-12 border rounded-[50px] bg-secondary cursor-pointer mt-4 "
+            htmlFor="uploadImages"
+          >
+            <CameraIcon />
+            <span className="font-bold text-quinary text-2xl">
+              Adicionar foto
+            </span>
+          </label>
+          <div className="hidden">
+            {' '}
+            <input
+              type="file"
+              accept=".jpg,.jpeg,.png,.webm"
+              multiple={false}
+              onChange={handleAddImage}
+              style={{ display: 'hidden' }}
+              id="uploadImages"
+              title=""
+            />
+          </div>
+        </div>
+        {/** FIM */}
         <div>
           <div className="my-5 w-full" ref={inputs[0].ref}>
             <h3 className="text-xl font-normal text-quaternary leading-7">
@@ -239,7 +322,11 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
                   className="border w-full p-5 h-12 border-quaternary rounded-[10px] bg-tertiary font-bold text-xl md:text-2xl text-quaternary leading-7 drop-shadow-xl"
                   onChange={input.onChange}
                   value={input.value}
-                  maxLength={input.key === 'username' || input.key === 'email' ? input.maxLenght : undefined}
+                  maxLength={
+                    input.key === 'username' || input.key === 'email'
+                      ? input.maxLenght
+                      : undefined
+                  }
                   required
                   style={
                     userDataErrors[input.key] !== ''
@@ -266,7 +353,11 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
                   className="border w-full p-5 h-12 border-quaternary rounded-[10px] bg-tertiary font-bold text-xl md:text-2xl text-quaternary leading-7 drop-shadow-xl"
                   onChange={input.onChange}
                   value={input.value}
-                  maxLength={input.key === 'username' || input.key === 'email' ? input.maxLenght : undefined}
+                  maxLength={
+                    input.key === 'username' || input.key === 'email'
+                      ? input.maxLenght
+                      : undefined
+                  }
                   style={
                     Object.keys(userDataErrors).includes(input.key) &&
                     userDataErrors[input.key] !== ''
