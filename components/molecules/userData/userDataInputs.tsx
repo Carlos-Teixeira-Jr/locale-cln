@@ -61,10 +61,18 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
   });
 
   useEffect(() => {
-    console.log('images', images);
-    console.log('profilePicture', formData.profilePicture);
-    setFormData({ ...formData, profilePicture: images });
-  }, [images, setImages]);
+    console.log('profilePicture:', formData.profilePicture);
+  }, [formData.profilePicture]);
+
+  // useEffect(() => {
+  //   console.log('images (foto adicionada no input:', images);
+  //   console.log(
+  //     'profilePicture (foto que vai para o formulario do step3):',
+  //     formData.profilePicture
+  //   );
+  //   setImages(images);
+  //   setFormData({ ...formData, profilePicture: images });
+  // }, [images]);
 
   // Pega o email da url caso o usuário tenha passado o mesmo no início do cadastro na pagina announcement;
   useEffect(() => {
@@ -229,14 +237,16 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
 
     const reader = new FileReader();
     reader.onloadend = () => {
-      setImages(reader.result);
+      //setImages(reader.result);
+      setFormData({ ...formData, profilePicture: reader.result });
     };
 
     reader.readAsDataURL(file);
   };
 
   const handleRemoveImage = () => {
-    setImages(null);
+    //setImages(null);
+    setFormData({ ...formData, profilePicture: '' });
 
     const fileInput = document.getElementById(
       'uploadImages'
@@ -258,11 +268,15 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
             Adicionar foto de perfil (Opcional)
           </h1>
           <div className="flex items-center">
-            {images && (
+            {formData.profilePicture && (
               <Image
-                key={images.id ? images.id : `${images}`}
-                id={images.id}
-                src={images}
+                key={
+                  formData.profilePicture.id
+                    ? formData.profilePicture.id
+                    : `${formData.profilePicture}`
+                }
+                id={formData.profilePicture.id}
+                src={formData.profilePicture}
                 index={0}
                 onRemove={handleRemoveImage}
                 alt={'Foto de perfil'}

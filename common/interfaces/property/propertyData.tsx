@@ -63,6 +63,7 @@ export interface IOwnerInfo {
   phones: string[];
   creci?: string;
   email: string;
+  profilePicture: string;
   cpf?: string;
 }
 
