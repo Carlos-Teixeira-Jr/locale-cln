@@ -269,20 +269,23 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
         username: formData.username,
         email: formData.email,
         cpf: formData.cpf,
+        profilePicture: formData.profilePicture
+          ? formData.profilePicture
+          : 'https://static.vecteezy.com/system/resources/previews/019/879/186/non_2x/user-icon-on-transparent-background-free-png.png',
       };
 
       const picture = formData.profilePicture
         ? formData.profilePicture
-        : ownerData.owner?.profilePicture
-        ? ownerData.owner?.profilePicture
-        : 'https://static.vecteezy.com/system/resources/previews/019/879/186/non_2x/user-icon-on-transparent-background-free-png.png';
+        : ownerData.owner?.profilePicture;
 
       const ownerFormData: IOwner = {
         id: ownerData.owner ? ownerData.owner._id : '',
         ownername: formData.username,
         phones: [formData.cellPhone, formData.phone],
         userId: userData._id,
-        profilePicture: picture,
+        profilePicture: picture
+          ? picture
+          : 'https://static.vecteezy.com/system/resources/previews/019/879/186/non_2x/user-icon-on-transparent-background-free-png.png',
         adCredits: ownerData.owner?.adCredits ? ownerData.owner?.adCredits : 0,
       };
 
@@ -317,10 +320,10 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
             body: JSON.stringify(body),
           }
         );
-
         if (response.ok) {
           toast.dismiss();
           showSuccessToast(SuccessToastNames.UserDataUpdate);
+
           router.push('/admin');
         } else {
           toast.dismiss();
@@ -334,7 +337,8 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       showErrorToast(ErrorToastNames.EmptyFields);
     }
   };
-
+  console.log('formData', formData.profilePicture);
+  console.log('ownerData', ownerData.owner?.profilePicture);
   return (
     <div className="max-w-[1232px] mx-auto justify-center items-center">
       <div className="fixed z-50 top-0 w-full inset-x-0">

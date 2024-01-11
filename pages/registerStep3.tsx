@@ -320,6 +320,13 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         metadata: storedData.metadata,
         //images: storedData.images,
         size: storedData.size,
+        ownerInfo: {
+          profilePicture: userDataForm.profilePicture
+            ? userDataForm.profilePicture
+            : 'https://static.vecteezy.com/system/resources/previews/019/879/186/non_2x/user-icon-on-transparent-background-free-png.png',
+          name: userDataForm.username,
+          phones: [userDataForm.cellPhone, userDataForm.phone],
+        },
         tags: storedData.tags,
         condominiumTags: storedData.condominiumTags,
         prices: storedData.prices,
@@ -359,6 +366,11 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
 
         if (response.ok) {
           const data = await response.json();
+          console.log(
+            'propertyData.ownerInfo.profilePicture',
+            propertyData.ownerInfo.profilePicture
+          );
+          console.log('userData.profilePicture', userData.profilePicture);
           const paymentData = {
             cardBrand: data.creditCardBrand ? data.creditCardBrand : 'Free',
             value: data.paymentValue ? data.paymentValue : '00',

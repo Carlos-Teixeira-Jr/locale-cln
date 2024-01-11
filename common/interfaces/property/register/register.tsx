@@ -70,6 +70,11 @@ export interface ICreateProperty_propertyData {
   description: string;
   metadata: IMetadata[];
   geolocation: any;
+  ownerInfo: {
+    name: string;
+    phones: string[];
+    profilePicture: string;
+  };
   //images: string[]
   size: ISize;
   tags: string[];
@@ -85,5 +90,5 @@ export interface ICreateProperty_userData {
   email: string;
   address: IAddress;
   cpf: string;
-  profilePicture?: string;
+  profilePicture: string;
 }

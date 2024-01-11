@@ -20,6 +20,7 @@ const ContactBox: React.FC<IContactBox> = ({ propertyID }: any) => {
 
   console.log(session);
   console.log(propertyID);
+  console.log(profilePicture);
 
   const handleWhatsappBtnClick = () => {
     const propertyStreet = propertyID.address.streetName;
