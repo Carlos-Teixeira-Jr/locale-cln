@@ -6,7 +6,7 @@ export type User = {
   cpf: string;
   email: string;
   address: IAddress;
-  profilePicture?: any;
+  profilePicture: string;
 };
 
 export interface IUserDataComponent {
@@ -15,7 +15,7 @@ export interface IUserDataComponent {
   cpf: string;
   cellPhone: string;
   phone: string;
-  profilePicture?: any;
+  profilePicture: string;
 }
 
 export interface IUserData extends IUserDataComponent {

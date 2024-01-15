@@ -1,3 +1,5 @@
+/* eslint-disable @next/next/no-img-element */
+/* eslint-disable react/jsx-no-undef */
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { GetServerSidePropsContext } from 'next';
 import { getSession } from 'next-auth/react';
@@ -338,7 +340,9 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     }
   };
   console.log('formData', formData.profilePicture);
-  console.log('ownerData', ownerData.owner?.profilePicture);
+  console.log('ownerData', ownerData);
+  console.log('userData', userData);
+  console.log('properties', properties);
   return (
     <div className="max-w-[1232px] mx-auto justify-center items-center">
       <div className="fixed z-50 top-0 w-full inset-x-0">
@@ -363,6 +367,12 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                 }}
                 error={formDataErrors}
                 userDataInputRefs={userDataInputRefs}
+                profilePicPropertyData={
+                  properties?.docs[properties.docs.length - 1]?.ownerInfo
+                    ?.profilePicture &&
+                  properties.docs[properties.docs.length - 1].ownerInfo
+                    .profilePicture
+                }
               />
 
               <div className="mx-5 my-10">

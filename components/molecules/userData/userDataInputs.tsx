@@ -33,6 +33,7 @@ interface IUserDataInputs {
   urlEmail?: string | undefined;
   error: UserDataErrorsTypes;
   userDataInputRefs?: any;
+  profilePicPropertyData?: string;
 }
 
 const UserDataInputs: React.FC<IUserDataInputs> = ({
@@ -42,6 +43,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
   urlEmail,
   error,
   userDataInputRefs,
+  profilePicPropertyData,
 }) => {
   const userDataErrorScroll = {
     ...userDataInputRefs,
@@ -57,7 +59,9 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
     cpf: userData ? userData?.user?.cpf : '',
     cellPhone: userData && userData.owner ? userData.owner.cellPhone : '',
     phone: userData && userData.owner ? userData.owner.phone : '',
-    profilePicture: images && images,
+    profilePicture: profilePicPropertyData
+      ? profilePicPropertyData
+      : images && images,
   });
 
   useEffect(() => {
@@ -238,7 +242,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
     const reader = new FileReader();
     reader.onloadend = () => {
       //setImages(reader.result);
-      setFormData({ ...formData, profilePicture: reader.result });
+      setFormData({ ...formData, profilePicture: String(reader.result) });
     };
 
     reader.readAsDataURL(file);
@@ -271,11 +275,11 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
             {formData.profilePicture && (
               <Image
                 key={
-                  formData.profilePicture.id
-                    ? formData.profilePicture.id
+                  formData.profilePicture
+                    ? formData.profilePicture
                     : `${formData.profilePicture}`
                 }
-                id={formData.profilePicture.id}
+                id={formData.profilePicture}
                 src={formData.profilePicture}
                 index={0}
                 onRemove={handleRemoveImage}

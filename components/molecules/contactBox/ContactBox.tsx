@@ -19,7 +19,7 @@ const ContactBox: React.FC<IContactBox> = ({ propertyID }: any) => {
   const owner = propertyID.ownerInfo.name;
 
   console.log(session);
-  console.log(propertyID);
+  console.log('contactBox, propertyID', propertyID);
   console.log(profilePicture);
 
   const handleWhatsappBtnClick = () => {
