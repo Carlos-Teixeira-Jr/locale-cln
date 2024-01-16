@@ -59,9 +59,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
     cpf: userData ? userData?.user?.cpf : '',
     cellPhone: userData && userData.owner ? userData.owner.cellPhone : '',
     phone: userData && userData.owner ? userData.owner.phone : '',
-    profilePicture: profilePicPropertyData
-      ? profilePicPropertyData
-      : images && images,
+    profilePicture: profilePicPropertyData ? profilePicPropertyData : images,
   });
 
   useEffect(() => {

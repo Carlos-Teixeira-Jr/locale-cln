@@ -343,6 +343,10 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   console.log('ownerData', ownerData);
   console.log('userData', userData);
   console.log('properties', properties);
+  console.log(
+    'profilePicture',
+    properties?.docs[properties.docs.length - 1]?.ownerInfo?.profilePicture
+  );
   return (
     <div className="max-w-[1232px] mx-auto justify-center items-center">
       <div className="fixed z-50 top-0 w-full inset-x-0">
@@ -513,6 +517,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const userId = session?.user.data._id;
   let token = session?.user?.data?.access_token!!;
   let refreshToken = session?.user?.data.refresh_token;
+
   if (!session) {
     return {
       redirect: {
@@ -645,7 +650,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         fetchJson(`${baseUrl}/plan`),
         fetchJson(`${baseUrl}/property/owner-properties`),
       ]);
-
     return {
       props: {
         notifications,
