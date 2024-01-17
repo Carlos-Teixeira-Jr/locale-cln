@@ -292,8 +292,10 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       };
 
       const editPasswordFormData = {
-        password: passwordFormData.password,
-        passwordConfirmattion: passwordFormData.passwordConfirmattion,
+        password: passwordFormData.password ? passwordFormData.password : '',
+        passwordConfirmattion: passwordFormData.passwordConfirmattion
+          ? passwordFormData.passwordConfirmattion
+          : '',
       };
 
       let body;
@@ -307,6 +309,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
         body = {
           user: userFormData,
           owner: ownerFormData,
+          password: editPasswordFormData,
         };
       }
 
@@ -339,14 +342,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       showErrorToast(ErrorToastNames.EmptyFields);
     }
   };
-  console.log('formData', formData.profilePicture);
-  console.log('ownerData', ownerData);
-  console.log('userData', userData);
-  console.log('properties', properties);
-  console.log(
-    'profilePicture',
-    properties?.docs[properties.docs.length - 1]?.ownerInfo?.profilePicture
-  );
+
   return (
     <div className="max-w-[1232px] mx-auto justify-center items-center">
       <div className="fixed z-50 top-0 w-full inset-x-0">
@@ -372,9 +368,9 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                 error={formDataErrors}
                 userDataInputRefs={userDataInputRefs}
                 profilePicPropertyData={
-                  properties?.docs[properties.docs.length - 1]?.ownerInfo
+                  properties?.docs[properties?.docs?.length - 1]?.ownerInfo
                     ?.profilePicture &&
-                  properties.docs[properties.docs.length - 1].ownerInfo
+                  properties?.docs[properties?.docs?.length - 1]?.ownerInfo
                     .profilePicture
                 }
               />
