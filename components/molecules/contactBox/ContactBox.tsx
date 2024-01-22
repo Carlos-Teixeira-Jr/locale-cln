@@ -60,9 +60,9 @@ const ContactBox: React.FC<IContactBox> = ({ propertyID }: any) => {
             <Image
               src={profilePicture}
               alt={'A image of the property owner'}
-              width={93}
-              height={93}
-              className="rounded-full border-4 border-quaternary drop-shadow-lg"
+              width={90}
+              height={90}
+              className="rounded-full border-4 w-[90px] max-w-[90px] h-[90px] max-h-[90px]"
             />
           ) : (
             <UserIcon

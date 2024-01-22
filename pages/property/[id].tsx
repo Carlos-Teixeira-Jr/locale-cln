@@ -19,7 +19,6 @@ import ContactBox from '../../components/molecules/contactBox/ContactBox';
 import Gallery from '../../components/molecules/gallery/gallery';
 import PropertyInfoTop from '../../components/molecules/property/propertyInfoTop';
 import Footer from '../../components/organisms/footer/footer';
-import Header from '../../components/organisms/header/header';
 import PropertyInfo from '../../components/organisms/propertyInfo/PropertyInfo';
 import { NextPageWithLayout } from '../page';
 
@@ -66,10 +65,13 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
 
   return (
     <>
-      <Header />
-      <div className="flex flex-col max-w-5xl items-center mx-auto lg:pt-10 pt-[90px]">
+      <div
+        className={
+          'flex flex-col max-w-5xl items-center mx-auto lg:pt-10 pt-[90px]'
+        }
+      >
         <div
-          className={`lg:mx-auto m-5 mb-36 md:mb-5 md:mt-0 lg:mt-5 ${
+          className={`lg:mx-auto m-5 mb-36 md:mb-5 md:mt-0 lg:mt-5  ${
             isModalOpen ? 'z-50' : 'z-30'
           }`}
         >
