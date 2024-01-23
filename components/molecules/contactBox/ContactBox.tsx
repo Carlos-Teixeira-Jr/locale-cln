@@ -17,10 +17,8 @@ const ContactBox: React.FC<IContactBox> = ({ propertyID }: any) => {
   const profilePicture = propertyID.ownerInfo.profilePicture;
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const owner = propertyID.ownerInfo.name;
-
-  console.log(session);
-  console.log('contactBox, propertyID', propertyID);
-  console.log(profilePicture);
+  const ownerPropertyWpp = propertyID.ownerInfo.phones[1];
+  const ownerWhatsapp = ownerPropertyWpp?.replace(/[^0-9]+/g, '');
 
   const handleWhatsappBtnClick = () => {
     const propertyStreet = propertyID.address.streetName;
@@ -28,7 +26,7 @@ const ContactBox: React.FC<IContactBox> = ({ propertyID }: any) => {
     const propertyCity = capitalizeFirstLetter(propertyID.address.city);
     const whatsappMessage = `Olá, gostaria de obter mais informações sobre o imóvel localizado em ${propertyStreet}, número ${propertyNumber}, na cidade de ${propertyCity}. 🏡✨`;
 
-    const whatsappLink = `https://api.whatsapp.com/send/?phone=5553991775245&text=${encodeURIComponent(
+    const whatsappLink = `https://api.whatsapp.com/send/?phone=${ownerWhatsapp}&text=${encodeURIComponent(
       whatsappMessage
     )}&type=phone_number&app_absent=0`;
 

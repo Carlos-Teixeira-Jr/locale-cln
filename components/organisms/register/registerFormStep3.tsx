@@ -627,6 +627,7 @@ const RegisterFormStep3: React.FC<IProps> = ({ selectedPlanCard }) => {
               <span className="text-red-500 mt-2">{errors.cellPhone}</span>
             )}
           </div>
+
           <div className="flex flex-col w-full">
             <h3 className="text-2xl text-quaternary font-bold leading-7">
               Telefone
