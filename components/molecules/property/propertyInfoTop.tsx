@@ -17,7 +17,7 @@ interface IInfoTop {
 const PropertyInfoTop = ({ propertyID }: any) => {
   const formattedPrice = monetaryFormat(propertyID.prices[0].value);
   const getSections = (
-    //areaValue: ISize,
+    areaValue: any,
     numBedrooms: IMetadata,
     numBathrooms: IMetadata,
     numGarage: any
@@ -43,6 +43,7 @@ const PropertyInfoTop = ({ propertyID }: any) => {
       description: 'garagem',
     },
   ];
+  console.log('totalArea', propertyID?.size?.totalArea);
 
   return (
     <div className="m-5 lg:mx-auto md:w-2/3">
