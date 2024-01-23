@@ -1,5 +1,6 @@
 import { NextPageContext } from 'next';
 import { getSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import {
   IAddress,
@@ -21,7 +22,6 @@ import Footer from '../../components/organisms/footer/footer';
 import Header from '../../components/organisms/header/header';
 import PropertyInfo from '../../components/organisms/propertyInfo/PropertyInfo';
 import { NextPageWithLayout } from '../page';
-import { useRouter } from 'next/router';
 
 export interface IIDPage {
   location: IGeolocation;
@@ -55,15 +55,14 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
   isFavourite,
   relatedProperties,
 }: IPropertyPage) => {
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [mapIsActive, setMapIsActive] = useState(false);
   const dynamicRoute = useRouter().asPath;
 
   // Atualiza o valor de mapIsActive quando o usuário clica em um novo card apresentado nesta página;
   useEffect(() => {
-    setMapIsActive(false)
-  }, [dynamicRoute])
+    setMapIsActive(false);
+  }, [dynamicRoute]);
 
   return (
     <>
@@ -91,25 +90,29 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
         </div>
         <div className="flex flex-col md:flex-row gap-5 justify-center m-5 lg:my-5 lg:mx-0">
           {relatedProperties.docs.length > 0 &&
-            relatedProperties?.docs.slice(0, 3).map((prop: IData) => (
-              <PropertyCard
-                key={prop._id}
-                prices={prop.prices}
-                description={prop.description}
-                images={prop.images}
-                bedrooms={
-                  prop.metadata.find((item) => item.type === 'bedroom')?.amount
-                }
-                bathrooms={
-                  prop.metadata.find((item) => item.type === 'bathroom')?.amount
-                }
-                parking_spaces={
-                  prop.metadata.find((item) => item.type === 'garage')?.amount
-                }
-                id={prop._id}
-                highlighted={prop.highlighted}
-              />
-            ))}
+            relatedProperties?.docs
+              .slice(0, 3)
+              .map((prop: IData) => (
+                <PropertyCard
+                  key={prop._id}
+                  prices={prop.prices}
+                  description={prop.description}
+                  images={prop.images}
+                  bedrooms={
+                    prop.metadata.find((item) => item.type === 'bedroom')
+                      ?.amount
+                  }
+                  bathrooms={
+                    prop.metadata.find((item) => item.type === 'bathroom')
+                      ?.amount
+                  }
+                  parking_spaces={
+                    prop.metadata.find((item) => item.type === 'garage')?.amount
+                  }
+                  id={prop._id}
+                  highlighted={prop.highlighted}
+                />
+              ))}
         </div>
         <div className="w-full md:h-fit mx-auto mb-20 drop-shadow-xl">
           {!mapIsActive && (
@@ -130,7 +133,6 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
           <div id="static-map" className={`${mapIsActive ? '' : 'hidden'}`}>
             <DynamicMap geolocation={property.geolocation} />
           </div>
-
         </div>
       </div>
 
@@ -183,7 +185,9 @@ export async function getServerSideProps(context: NextPageContext) {
   }
 
   try {
-    const propertyResponse = await fetch(`${baseUrl}/property/${propertyId}?isEdit=false`)
+    const propertyResponse = await fetch(
+      `${baseUrl}/property/${propertyId}?isEdit=false`
+    );
 
     if (propertyResponse.ok) {
       property = await propertyResponse.json();
@@ -196,7 +200,7 @@ export async function getServerSideProps(context: NextPageContext) {
       };
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return {
       redirect: {
         destination: '/',
@@ -204,8 +208,6 @@ export async function getServerSideProps(context: NextPageContext) {
       },
     };
   }
-  
-  
 
   const url = `${process.env.NEXT_PUBLIC_BASE_API_URL}/property/filter/?page=1&limit=4`;
   const relatedProperties = await fetch(url).then((res) => res.json());

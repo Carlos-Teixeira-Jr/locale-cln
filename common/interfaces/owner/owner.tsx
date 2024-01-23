@@ -17,6 +17,7 @@ type Owner = {
   customerId: string;
   isNewCreditCard: boolean;
   newCreditCardData: any;
+  profilePicture: string;
 };
 
 export interface IOwnerData {
@@ -30,4 +31,5 @@ export interface IOwner {
   userId: string;
   phones: string[];
   adCredits: number;
+  profilePicture: string;
 }

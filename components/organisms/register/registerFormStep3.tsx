@@ -4,9 +4,11 @@ import Cards, { Focused } from 'react-credit-cards';
 import 'react-credit-cards/es/styles-compiled.css';
 import Modal from 'react-modal';
 import { scroller } from 'react-scroll';
+import CameraIcon from '../../atoms/icons/cameraIcon';
 import CheckIcon from '../../atoms/icons/checkIcon';
 import MaskedInput from '../../atoms/masks/maskedInput';
 import PaymentFailModal from '../../atoms/modals/paymentFailModal';
+import Image from '../../molecules/uploadImages/uploadProfilePic';
 Modal.setAppElement('#__next');
 
 interface ViaCepData {
@@ -38,6 +40,7 @@ const RegisterFormStep3: React.FC<IProps> = ({ selectedPlanCard }) => {
   const [district, setDistrict] = useState('');
   const [complement, setComplement] = useState('');
   const [termsAreRead, setTermsAreRead] = useState(false);
+  const [images, setImages] = useState<any>('');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -45,6 +48,7 @@ const RegisterFormStep3: React.FC<IProps> = ({ selectedPlanCard }) => {
     cellPhone: '',
     phone: '',
     plan: '',
+    profilePicture: '',
   });
 
   const [errors, setErrors] = useState({
@@ -261,6 +265,9 @@ const RegisterFormStep3: React.FC<IProps> = ({ selectedPlanCard }) => {
       email: formData.email,
       cpf: formData.cpf,
       cellPhone: formData.cellPhone,
+      profilePicture: formData.profilePicture
+        ? formData.profilePicture
+        : 'https://static.vecteezy.com/system/resources/previews/019/879/186/non_2x/user-icon-on-transparent-background-free-png.png',
       phone: formData.phone,
       plan: formData.plan,
       cvc: cvc,
@@ -469,12 +476,88 @@ const RegisterFormStep3: React.FC<IProps> = ({ selectedPlanCard }) => {
     }
   };
 
+  const handleAddImage = (event: any) => {
+    const files = event.target.files;
+
+    if (files.length === 0) {
+      return;
+    }
+
+    if (files.length > 1 || images) {
+      alert('Você só pode adicionar uma imagem');
+      return;
+    }
+
+    const file = files[0];
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      //setImages(reader.result);
+
+      setFormData({ ...formData, profilePicture: String(reader.result) });
+    };
+
+    reader.readAsDataURL(file);
+  };
+
+  const handleRemoveImage = () => {
+    //setImages(null);
+    setFormData({ ...formData, profilePicture: '' });
+
+    const fileInput = document.getElementById(
+      'uploadImages'
+    ) as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
+  };
+
   return (
     <div className="my-10 mx-2 lg:mx-0">
       <h1 className="md:text-4xl text-2xl leading-10 text-quaternary font-bold mb-10">
         Informações sobre o contato
       </h1>
       <div className="my-5">
+        {/** ADICIONAR IMAGEM DE PERFIL */}
+        <div className="flex flex-col justify-center items-center">
+          <h1 className="text-xl font-normal text-quaternary leading-7">
+            Adicionar foto de perfil (Opcional)
+          </h1>
+          <div className="flex items-center">
+            {formData.profilePicture && (
+              <Image
+                key={formData.profilePicture}
+                id={formData.profilePicture}
+                src={formData.profilePicture}
+                index={0}
+                onRemove={handleRemoveImage}
+                alt={'Foto de perfil'}
+              />
+            )}
+          </div>
+          <label
+            className="flex flex-row items-center px-6 w-64 h-12 border rounded-[50px] bg-secondary cursor-pointer mt-4 "
+            htmlFor="uploadImages"
+          >
+            <CameraIcon />
+            <span className="font-bold text-quinary text-2xl">
+              Adicionar foto
+            </span>
+          </label>
+          <div className="hidden">
+            {' '}
+            <input
+              type="file"
+              accept=".jpg,.jpeg,.png,.webm"
+              multiple={false}
+              onChange={handleAddImage}
+              style={{ display: 'hidden' }}
+              id="uploadImages"
+              title=""
+            />
+          </div>
+        </div>
+        {/** FIM */}
         <div className="my-5">
           <h3 className="text-2xl text-quaternary font-bold leading-7">
             Nome Completo

@@ -5,9 +5,11 @@ import {
   IUserDataComponentErrors,
 } from '../../../common/interfaces/user/user';
 import { applyNumericMask } from '../../../common/utils/masks/numericMask';
+import CameraIcon from '../../atoms/icons/cameraIcon';
 import WhatsAppIcon from '../../atoms/icons/wppIcon';
 import ErrorOnUpdateModal from '../../atoms/modals/errorOnUpdateModal';
 import SuccessOnUpdateModal from '../../atoms/modals/successOnUpdateModal';
+import Image from '../uploadImages/uploadProfilePic';
 
 export type UserDataErrorsTypes = {
   username: string;
@@ -32,6 +34,7 @@ interface IUserDataInputs {
   urlEmail?: string | undefined;
   error: UserDataErrorsTypes;
   userDataInputRefs?: any;
+  profilePicPropertyData?: string;
 }
 
 const UserDataInputs: React.FC<IUserDataInputs> = ({
@@ -41,10 +44,12 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
   urlEmail,
   error,
   userDataInputRefs,
+  profilePicPropertyData,
 }) => {
   const userDataErrorScroll = {
     ...userDataInputRefs,
   };
+  const [images, setImages] = useState<any>('');
 
   // Whatsapp
   const [isSameNumber, setIsSameNumber] = useState(true);
@@ -59,9 +64,26 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
     username: userData ? userData?.user?.username : '',
     email: userData ? userData?.user?.email : '',
     cpf: userData ? userData?.user?.cpf : '',
-    cellPhone: userData && userData?.owner ? userData?.owner?.cellPhone : '',
+    cellPhone: userData && userData.owner ? userData.owner.cellPhone : '',
+    profilePicture: profilePicPropertyData
+      ? profilePicPropertyData
+      : images && images,
     phone: wppNumber ? wppNumber : phone,
   });
+
+  useEffect(() => {
+    console.log('profilePicture:', formData.profilePicture);
+  }, [formData.profilePicture]);
+
+  // useEffect(() => {
+  //   console.log('images (foto adicionada no input:', images);
+  //   console.log(
+  //     'profilePicture (foto que vai para o formulario do step3):',
+  //     formData.profilePicture
+  //   );
+  //   setImages(images);
+  //   setFormData({ ...formData, profilePicture: images });
+  // }, [images]);
 
   // Pega o email da url caso o usuário tenha passado o mesmo no início do cadastro na pagina announcement;
   useEffect(() => {
@@ -211,12 +233,91 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
     },
   ];
 
+  const handleAddImage = (event: any) => {
+    const files = event.target.files;
+
+    if (files.length === 0) {
+      return;
+    }
+
+    if (files.length > 1 || images) {
+      alert('Você só pode adicionar uma imagem');
+      return;
+    }
+
+    const file = files[0];
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      //setImages(reader.result);
+      setFormData({ ...formData, profilePicture: String(reader.result) });
+    };
+
+    reader.readAsDataURL(file);
+  };
+
+  const handleRemoveImage = () => {
+    //setImages(null);
+    setFormData({ ...formData, profilePicture: '' });
+
+    const fileInput = document.getElementById(
+      'uploadImages'
+    ) as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
+  };
+
   return (
     <div className="mx-5">
       <h1 className="md:text-3xl text-2xl leading-10 text-quaternary font-bold md:mb-10">
         {isEdit ? 'Dados Pessoais' : 'Informações para contratação'}
       </h1>
       <div className="my-5">
+        {/** ADICIONAR IMAGEM DE PERFIL */}
+        <div className="flex flex-col justify-center items-center">
+          <h1 className="text-xl font-normal text-quaternary leading-7">
+            Adicionar foto de perfil (Opcional)
+          </h1>
+          <div className="flex items-center">
+            {formData.profilePicture && (
+              <Image
+                key={
+                  formData.profilePicture
+                    ? formData.profilePicture
+                    : `${formData.profilePicture}`
+                }
+                id={formData.profilePicture}
+                src={formData.profilePicture}
+                index={0}
+                onRemove={handleRemoveImage}
+                alt={'Foto de perfil'}
+              />
+            )}
+          </div>
+          <label
+            className="flex flex-row items-center px-6 w-64 h-12 border rounded-[50px] bg-secondary cursor-pointer mt-4 "
+            htmlFor="uploadImages"
+          >
+            <CameraIcon />
+            <span className="font-bold text-quinary text-2xl">
+              Adicionar foto
+            </span>
+          </label>
+          <div className="hidden">
+            {' '}
+            <input
+              type="file"
+              accept=".jpg,.jpeg,.png,.webm"
+              multiple={false}
+              onChange={handleAddImage}
+              style={{ display: 'hidden' }}
+              id="uploadImages"
+              title=""
+            />
+          </div>
+        </div>
+        {/** FIM */}
         <div>
           <div className="my-5 w-full" ref={inputs[0].ref}>
             <h3 className="text-xl font-normal text-quaternary leading-7">

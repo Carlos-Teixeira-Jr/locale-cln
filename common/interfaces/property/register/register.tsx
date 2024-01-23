@@ -46,6 +46,7 @@ export interface IRegisterPropertyData_Step2 {
 
 export interface IRegisterPropertyData_Step3 {
   username: string;
+  profilePicture: string;
   email: string;
   cpf: string;
   cellPhone: string;
@@ -69,7 +70,11 @@ export interface ICreateProperty_propertyData {
   description: string;
   metadata: IMetadata[];
   geolocation: any;
-  //images: string[]
+  ownerInfo: {
+    name: string;
+    phones: string[];
+    profilePicture: string;
+  };
   size: ISize;
   tags: string[];
   condominiumTags: string[];
@@ -84,4 +89,5 @@ export interface ICreateProperty_userData {
   email: string;
   address: IAddress;
   cpf: string;
+  profilePicture: string;
 }

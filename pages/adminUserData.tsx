@@ -1,3 +1,5 @@
+/* eslint-disable @next/next/no-img-element */
+/* eslint-disable react/jsx-no-undef */
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { GetServerSidePropsContext } from 'next';
 import { getSession } from 'next-auth/react';
@@ -77,6 +79,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     cpf: '',
     cellPhone: '',
     phone: '',
+    profilePicture: '',
   });
   const [formDataErrors, setFormDataErrors] = useState({
     username: '',
@@ -252,12 +255,24 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
         username: formData.username,
         email: formData.email,
         cpf: formData.cpf,
+        profilePicture: formData.profilePicture
+          ? formData.profilePicture
+          : 'https://static.vecteezy.com/system/resources/previews/019/879/186/non_2x/user-icon-on-transparent-background-free-png.png',
       };
+
+      const picture = formData.profilePicture
+        ? formData.profilePicture
+        : ownerData.owner?.profilePicture;
+
+
       const ownerFormData: IOwner = {
         id: ownerData.owner ? ownerData.owner._id : '',
         ownername: formData.username,
         phones: [formData.cellPhone, formData.phone],
         userId: userData._id,
+        profilePicture: picture
+          ? picture
+          : 'https://static.vecteezy.com/system/resources/previews/019/879/186/non_2x/user-icon-on-transparent-background-free-png.png',
         adCredits: ownerData.owner?.adCredits ? ownerData.owner?.adCredits : 0,
       };
 
@@ -295,6 +310,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
         if (response.ok) {
           toast.dismiss();
           showSuccessToast(SuccessToastNames.UserDataUpdate);
+
           router.push('/admin');
         } else {
           toast.dismiss();
@@ -308,6 +324,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       showErrorToast(ErrorToastNames.EmptyFields);
     }
   };
+        
   return (
     <div className="max-w-[1232px] mx-auto justify-center items-center">
       <div className="fixed z-50 top-0 w-full inset-x-0">
@@ -331,6 +348,12 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                 }}
                 error={formDataErrors}
                 userDataInputRefs={userDataInputRefs}
+                profilePicPropertyData={
+                  properties?.docs[properties.docs.length - 1]?.ownerInfo
+                    ?.profilePicture &&
+                  properties.docs[properties.docs.length - 1].ownerInfo
+                    .profilePicture
+                }
               />
 
               <div className="mx-5 my-10">

@@ -14,13 +14,11 @@ export interface IContactBox {
 
 const ContactBox: React.FC<IContactBox> = ({ propertyID }: any) => {
   const session = useSession() as any;
-  const profilePicture = session.data?.user?.data?.picture;
+  const profilePicture = propertyID.ownerInfo.profilePicture;
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const owner = propertyID.ownerInfo.name;
   const ownerPropertyWpp = propertyID.ownerInfo.phones[1];
   const ownerWhatsapp = ownerPropertyWpp?.replace(/[^0-9]+/g, '');
-  console.log('whatsapp:', ownerWhatsapp);
-  console.log(propertyID.ownerInfo);
 
   const handleWhatsappBtnClick = () => {
     const propertyStreet = propertyID.address.streetName;
