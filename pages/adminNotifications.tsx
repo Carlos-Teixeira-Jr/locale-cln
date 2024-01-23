@@ -90,8 +90,8 @@ const MessageNotifications = ({
             }
           </div>
 
-          <div className="flex justify-center mb-10">
-            {adminNots && <Pagination totalPages={0} />}
+          <div className="flex justify-center mt-8">
+            {adminNots?.length > 0 && <Pagination totalPages={0} />}
           </div>
         </div>
       </div>
