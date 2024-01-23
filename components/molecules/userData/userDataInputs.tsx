@@ -6,6 +6,7 @@ import {
 } from '../../../common/interfaces/user/user';
 import { applyNumericMask } from '../../../common/utils/masks/numericMask';
 import CameraIcon from '../../atoms/icons/cameraIcon';
+import WhatsAppIcon from '../../atoms/icons/wppIcon';
 import ErrorOnUpdateModal from '../../atoms/modals/errorOnUpdateModal';
 import SuccessOnUpdateModal from '../../atoms/modals/successOnUpdateModal';
 import Image from '../uploadImages/uploadProfilePic';
@@ -50,18 +51,24 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
   };
   const [images, setImages] = useState<any>('');
 
+  // Whatsapp
+  const [isSameNumber, setIsSameNumber] = useState(true);
+  const [wppNumber, setWappNumber] = useState('');
+
   const [errorModalIsOpen, setErrorModalIsOpen] = useState(false);
   const [succesModalIsOpen, setSuccesModalIsOpen] = useState(false);
+
+  const phone = userData && userData?.owner ? userData?.owner.phone : '';
 
   const [formData, setFormData] = useState<IUserDataComponent>({
     username: userData ? userData?.user?.username : '',
     email: userData ? userData?.user?.email : '',
     cpf: userData ? userData?.user?.cpf : '',
     cellPhone: userData && userData.owner ? userData.owner.cellPhone : '',
-    phone: userData && userData.owner ? userData.owner.phone : '',
     profilePicture: profilePicPropertyData
       ? profilePicPropertyData
       : images && images,
+    phone: wppNumber ? wppNumber : phone,
   });
 
   useEffect(() => {
@@ -83,7 +90,8 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
     if (urlEmail) {
       setFormData({ ...formData, email: urlEmail });
     }
-  }, [urlEmail]);
+    console.log('numero do wpp:', wppNumber);
+  }, [urlEmail, wppNumber]);
 
   const [userDataErrors, setUserDataErrors] =
     useState<IUserDataComponentErrors>({
@@ -352,7 +360,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
                       : {}
                   }
                 />
-                {Object.keys(userDataErrors).includes(input.key) && (
+                {Object.keys(userDataErrors).includes('input.key') && (
                   <span className="text-red-500 text-xs">
                     {userDataErrors[input.key]}
                   </span>
@@ -392,6 +400,82 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
               </div>
             ))}
           </div>
+        </div>
+
+        {/**Whatsapp */}
+        <div className="flex flex-row">
+          <button
+            className={` w-8 h-8 rounded-full bg-tertiary drop-shadow-lg mr-5 flex justify-center cursor-pointer ${
+              !isSameNumber
+                ? 'border-[3px] border-secondary'
+                : 'border border-quaternary'
+            }`}
+            onClick={() => setIsSameNumber(!isSameNumber)}
+          >
+            {!isSameNumber && (
+              <div className="bg-secondary w-4 h-4 rounded-full mt-[5px]"></div>
+            )}
+          </button>
+          <div className="flex flex-row gap-1">
+            <h1
+              className={`text-lg leading-10 font-normal cursor-pointer ${
+                !isSameNumber ? 'text-secondary' : 'text-quaternary'
+              }`}
+            >
+              Este não é o meu{' '}
+              <span className="text-green-500 text-lg font-semibold mr-2">
+                WhatsApp
+              </span>
+            </h1>
+            <WhatsAppIcon />
+          </div>
+        </div>
+
+        <div className="flex flex-col">
+          {!isSameNumber && (
+            <div className="flex flex-col">
+              <div className="max-w-[250px]" ref={userDataErrorScroll.whatsapp}>
+                <h3 className="text-xl font-normal text-quaternary leading-7">
+                  WhatsApp
+                </h3>
+                <input
+                  style={
+                    userDataErrors.whatsapp ? { border: '1px solid red' } : {}
+                  }
+                  className="border w-full p-5 h-12 border-quaternary rounded-[10px] bg-tertiary font-bold text-xl md:text-2xl text-quaternary leading-7 drop-shadow-xl"
+                  value={wppNumber}
+                  maxLength={200}
+                  required={isSameNumber ? false : true}
+                  onChange={(event) => {
+                    const input = event.target;
+                    const value = input.value;
+                    const maskedValue = applyNumericMask(
+                      value,
+                      '(99) 99999-9999'
+                    );
+                    const selectionStart = input.selectionStart || 0;
+                    const selectionEnd = input.selectionEnd || 0;
+                    const previousValue = input.value;
+                    if (
+                      selectionStart === previousValue.length ||
+                      previousValue.length > maskedValue.length
+                    ) {
+                      input.value = maskedValue;
+                    } else {
+                      input.value = previousValue;
+                      input.setSelectionRange(selectionStart, selectionEnd);
+                    }
+                    setWappNumber(maskedValue);
+                  }}
+                />
+                {userDataErrors.whatsapp && (
+                  <span className="text-red-500 text-xs">
+                    {userDataErrors.whatsapp}
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </div>
       {errorModalIsOpen ? (
