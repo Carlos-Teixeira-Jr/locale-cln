@@ -12,6 +12,7 @@ import {
 } from '../common/interfaces/property/register/register';
 import { IUserDataComponent } from '../common/interfaces/user/user';
 import { geocodeAddress } from '../common/utils/geocodeAddress';
+import { clearIndexDB, getAllImagesFromDB } from '../common/utils/indexDb';
 import Loading from '../components/atoms/loading';
 import PaymentFailModal from '../components/atoms/modals/paymentFailModal';
 import LinearStepper from '../components/atoms/stepper/stepper';
@@ -27,7 +28,6 @@ import Footer from '../components/organisms/footer/footer';
 import Header from '../components/organisms/header/header';
 import { useProgress } from '../context/registerProgress';
 import { NextPageWithLayout } from './page';
-import { clearIndexDB, getAllImagesFromDB } from '../common/utils/indexDb';
 
 interface IRegisterStep3Props {
   selectedPlanCard: string;
@@ -342,16 +342,13 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
 
         const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
 
-        const response = await fetch(
-          `${baseUrl}/property`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(body),
-          }
-        );
+        const response = await fetch(`${baseUrl}/property`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(body),
+        });
 
         if (response.ok) {
           const data = await response.json();
@@ -369,25 +366,34 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
 
           // Salvar imagens
 
-          const indexDbImages = await getAllImagesFromDB() as ({ id: string, data: Blob, name: string })[];
+          const indexDbImages = (await getAllImagesFromDB()) as {
+            id: string;
+            data: Blob;
+            name: string;
+          }[];
 
           const formData = new FormData();
 
           for (let i = 0; i < indexDbImages.length; i++) {
-            const file = new File([indexDbImages[i].data], `${indexDbImages[i].name}`);
+            const file = new File(
+              [indexDbImages[i].data],
+              `${indexDbImages[i].name}`
+            );
             formData.append('images', file);
           }
 
           formData.append('propertyId', data.createdProperty._id);
 
-          const imagesResponse = await fetch(`${baseUrl}/property/uploadDropImageWithRarity`, {
-            method: 'POST',
-            body: formData,
-          });
-
+          const imagesResponse = await fetch(
+            `${baseUrl}/property/uploadDropImageWithRarity`,
+            {
+              method: 'POST',
+              body: formData,
+            }
+          );
 
           if (imagesResponse.ok) {
-            clearIndexDB()
+            clearIndexDB();
             updateProgress(4);
             if (!urlEmail) {
               router.push('/registerStep35');
@@ -400,7 +406,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
               });
             }
           } else {
-            console.log("Erro ao enviar as imagens")
+            console.log('Erro ao enviar as imagens');
           }
         } else {
           toast.dismiss();
