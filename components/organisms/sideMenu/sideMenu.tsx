@@ -8,7 +8,6 @@ import HeartIcon from '../../atoms/icons/heartIcon';
 import MailIcon from '../../atoms/icons/mailIcon';
 import MyAnnouncesIcon from '../../atoms/icons/myAnnouncesIcon';
 import UserIcon from '../../atoms/icons/userIcon';
-import SettingsIcon from '../../atoms/icons/settingsIcon';
 
 type Options = {
   key: string;

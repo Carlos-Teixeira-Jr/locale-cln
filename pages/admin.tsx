@@ -208,9 +208,18 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
       if (ownerIdResponse.ok) {
         const ownerData = await ownerIdResponse.json();
-        ownerId = ownerData?.owner?._id;
+        if (ownerData?.owner?._id) {
+          ownerId = ownerData?.owner?._id;
+        } else {
+          return {
+            redirect: {
+              destination: '/adminFavProperties?page=1',
+              permanent: false,
+            },
+          };
+        }
       } else {
-        console.log("erro", ownerIdResponse)
+        console.error("Não é proprietário");
       }
     } catch (error) {
       console.error(error);
@@ -252,8 +261,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         },
       };
     }
-
-
 
     return {
       props: {
