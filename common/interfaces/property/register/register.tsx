@@ -75,7 +75,6 @@ export interface ICreateProperty_propertyData {
     phones: string[];
     profilePicture: string;
   };
-  //images: string[]
   size: ISize;
   tags: string[];
   condominiumTags: string[];
