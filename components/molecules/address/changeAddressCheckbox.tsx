@@ -1,33 +1,42 @@
-import React, { useEffect, useMemo, useState } from "react"
-import { IAddress } from "../../../common/interfaces/property/propertyData";
+import React, { useEffect, useState } from 'react';
+import { IAddress } from '../../../common/interfaces/property/propertyData';
 
 interface IChangeAddressCheckbox {
   onAddressCheckboxChange: (value: boolean) => void;
-  propertyAddress: any
-  userAddress: IAddress
+  propertyAddress: any;
+  userAddress: IAddress;
 }
 
 const ChangeAddressCheckbox: React.FC<IChangeAddressCheckbox> = ({
   onAddressCheckboxChange,
   propertyAddress,
-  userAddress
+  userAddress,
 }) => {
-
   const [isSameAddress, setIsSameAddress] = useState(true);
 
   const propertyAddressData = {
-    zipCode: isSameAddress ? propertyAddress?.address?.zipCode : userAddress?.zipCode,
+    zipCode: isSameAddress
+      ? propertyAddress?.address?.zipCode
+      : userAddress?.zipCode,
     city: isSameAddress ? propertyAddress?.address?.city : userAddress.city,
-    streetName: isSameAddress ? propertyAddress?.address?.streetName : userAddress.streetName,
-    streetNumber: isSameAddress ? propertyAddress?.address?.streetNumber : userAddress.streetNumber,
-    complement: isSameAddress ? propertyAddress?.address?.complement : userAddress.complement,
-    neighborhood: isSameAddress ? propertyAddress?.address?.neighborhood : userAddress.neighborhood,
+    streetName: isSameAddress
+      ? propertyAddress?.address?.streetName
+      : userAddress.streetName,
+    streetNumber: isSameAddress
+      ? propertyAddress?.address?.streetNumber
+      : userAddress.streetNumber,
+    complement: isSameAddress
+      ? propertyAddress?.address?.complement
+      : userAddress.complement,
+    neighborhood: isSameAddress
+      ? propertyAddress?.address?.neighborhood
+      : userAddress.neighborhood,
     uf: isSameAddress ? propertyAddress?.address?.uf : userAddress.uf,
   };
 
   useEffect(() => {
-    onAddressCheckboxChange(isSameAddress)
-  }, [isSameAddress])
+    onAddressCheckboxChange(isSameAddress);
+  }, [isSameAddress]);
 
   return (
     <div className="mx-5">
@@ -45,7 +54,7 @@ const ChangeAddressCheckbox: React.FC<IChangeAddressCheckbox> = ({
             onClick={() => setIsSameAddress(true)}
           >
             {isSameAddress && (
-              <div className="bg-secondary w-4 h-4 rounded-full mt-1"></div>
+              <div className="bg-secondary w-4 h-4 rounded-full mt-[5px]"></div>
             )}
           </div>
           <p className="text-xl font-normal text-quaternary leading-7">
@@ -90,7 +99,7 @@ const ChangeAddressCheckbox: React.FC<IChangeAddressCheckbox> = ({
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default ChangeAddressCheckbox
+export default ChangeAddressCheckbox;
