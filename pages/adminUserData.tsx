@@ -277,8 +277,10 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       };
 
       const editPasswordFormData = {
-        password: passwordFormData.password,
-        passwordConfirmattion: passwordFormData.passwordConfirmattion,
+        password: passwordFormData.password ? passwordFormData.password : '',
+        passwordConfirmattion: passwordFormData.passwordConfirmattion
+          ? passwordFormData.passwordConfirmattion
+          : '',
       };
 
       let body;
@@ -292,6 +294,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
         body = {
           user: userFormData,
           owner: ownerFormData,
+          password: editPasswordFormData,
         };
       }
 
@@ -324,7 +327,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       showErrorToast(ErrorToastNames.EmptyFields);
     }
   };
-        
+
   return (
     <div className="max-w-[1232px] mx-auto justify-center items-center">
       <div className="fixed z-50 top-0 w-full inset-x-0">
@@ -349,9 +352,9 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                 error={formDataErrors}
                 userDataInputRefs={userDataInputRefs}
                 profilePicPropertyData={
-                  properties?.docs[properties.docs.length - 1]?.ownerInfo
+                  properties?.docs[properties?.docs?.length - 1]?.ownerInfo
                     ?.profilePicture &&
-                  properties.docs[properties.docs.length - 1].ownerInfo
+                  properties?.docs[properties?.docs?.length - 1]?.ownerInfo
                     .profilePicture
                 }
               />
@@ -491,6 +494,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       : session?.user.id;
   let token = session?.user?.data?.access_token!!;
   let refreshToken = session?.user?.data.refresh_token;
+
   if (!session) {
     return {
       redirect: {
@@ -616,7 +620,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         fetchJson(`${baseUrl}/plan`),
         fetchJson(`${baseUrl}/property/owner-properties`),
       ]);
-    console.log('adminUserData:', userId);
 
     return {
       props: {
