@@ -75,13 +75,20 @@ const MessageNotifications = ({
                 ) : (
                   adminNots &&
                   adminNots?.map(
-                    ({ description, _id, title, isRead }: INotification) => (
+                    ({
+                      description,
+                      _id,
+                      title,
+                      isRead,
+                      adminNots,
+                    }: INotification) => (
                       <NotificationCard
                         key={_id}
                         description={description}
                         title={title}
                         _id={_id}
                         isRead={isRead}
+                        adminNots={adminNots}
                       />
                     )
                   )

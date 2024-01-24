@@ -5,12 +5,14 @@ export interface INotification {
   title: string;
   _id: string;
   isRead: boolean;
+  adminNots?: [];
 }
 
 const NotificationCard: React.FC<INotification> = ({
   description,
   title,
   isRead,
+  _id,
 }) => {
   const [expanded, setExpanded] = useState(false);
   const [isExpandable, setIsExpandable] = useState(false);
@@ -32,8 +34,24 @@ const NotificationCard: React.FC<INotification> = ({
     expanded && setSeen(!seen);
   };
 
-  const deleteNotification = (_del: boolean) => {
-    setDeleteNot(!deleteNot);
+  const handleDelete = async (_id: any) => {
+    try {
+      setDeleteNot(!deleteNot);
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/notification`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            _id,
+          }),
+        }
+      ).then((response) => response.json());
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -95,7 +113,7 @@ const NotificationCard: React.FC<INotification> = ({
             <div className="flex items-end">
               <button
                 className="flex items-center justify-center bg-primary rounded-md w-8 h-8"
-                onClick={() => deleteNotification(!deleteNot)}
+                onClick={() => handleDelete(_id)}
               >
                 <DeleteIcon />
               </button>
