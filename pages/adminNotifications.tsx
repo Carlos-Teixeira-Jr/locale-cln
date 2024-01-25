@@ -25,10 +25,11 @@ interface IMessageNotifications {
 const MessageNotifications = ({
   ownerProperties,
   notificationsAdmin,
-  notificationsNotAdmin,
 }: IMessageNotifications) => {
   const isMobile = useIsMobile();
   const [isOwner, setIsOwner] = useState<boolean>(false);
+  const [showPagination, setShowPagination] = useState<boolean>(true);
+  const [notifications, setNotifications] = useState(notificationsAdmin);
 
   useEffect(() => {
     setIsOwner(ownerProperties?.docs?.length > 0 ? true : false);
@@ -37,8 +38,11 @@ const MessageNotifications = ({
   const adminNots = notificationsAdmin as [];
 
   useEffect(() => {
-    console.log('adminNots:', adminNots);
-  }, [notificationsAdmin]);
+    if (notifications.length == 0) {
+      setShowPagination(!showPagination);
+    }
+    console.log(adminNots);
+  }, [notifications]);
 
   return (
     <main>
@@ -60,12 +64,12 @@ const MessageNotifications = ({
           </h1>
           <div className="flex flex-col items-center justify-center ">
             <div className="flex justify-center mt-8">
-              {adminNots?.length > 0 && <Pagination totalPages={0} />}
+              {showPagination && <Pagination totalPages={0} />}
             </div>
 
             {
               <div className="mx-10 mb-5 mt-[-1rem] ">
-                {adminNots?.length == 0 ? (
+                {notifications?.length == 0 ? (
                   <div className="flex flex-col items-center align-middle mt-36">
                     <SentimentIcon />
                     <h1 className="text-2xl text-quaternary">
@@ -73,14 +77,16 @@ const MessageNotifications = ({
                     </h1>
                   </div>
                 ) : (
-                  adminNots &&
-                  adminNots?.map(
+                  notifications?.length > 0 &&
+                  notifications?.map(
                     ({
                       description,
                       _id,
                       title,
                       isRead,
-                      adminNots,
+                      notifications,
+                      setShowPagination,
+                      showPagination,
                     }: INotification) => (
                       <NotificationCard
                         key={_id}
@@ -88,7 +94,10 @@ const MessageNotifications = ({
                         title={title}
                         _id={_id}
                         isRead={isRead}
-                        adminNots={adminNots}
+                        notifications={notifications}
+                        setNotifications={setNotifications}
+                        showPagination={showPagination}
+                        setShowPagination={setShowPagination}
                       />
                     )
                   )
@@ -98,7 +107,7 @@ const MessageNotifications = ({
           </div>
 
           <div className="flex justify-center mt-8">
-            {adminNots?.length > 0 && <Pagination totalPages={0} />}
+            {showPagination && <Pagination totalPages={0} />}
           </div>
         </div>
       </div>

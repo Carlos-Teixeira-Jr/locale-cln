@@ -5,13 +5,20 @@ export interface INotification {
   title: string;
   _id: string;
   isRead: boolean;
-  adminNots?: [];
+  notifications: [];
+  setShowPagination: (showPagination: boolean) => void;
+  showPagination: boolean;
+  setNotifications: (notifications: []) => void;
 }
 
 const NotificationCard: React.FC<INotification> = ({
   description,
   title,
   isRead,
+  notifications,
+  setNotifications,
+  showPagination,
+  setShowPagination,
   _id,
 }) => {
   const [expanded, setExpanded] = useState(false);
@@ -36,7 +43,11 @@ const NotificationCard: React.FC<INotification> = ({
 
   const handleDelete = async (_id: any) => {
     try {
+      if (notifications?.length == 0) {
+        setShowPagination(!showPagination);
+      }
       setDeleteNot(!deleteNot);
+      location.reload();
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/notification`,
         {
@@ -49,13 +60,14 @@ const NotificationCard: React.FC<INotification> = ({
           }),
         }
       ).then((response) => response.json());
+      setNotifications(notifications);
     } catch (error) {
       console.log(error);
     }
   };
 
   return (
-    <>
+    <div>
       {/** ! */}
       <div
         className={`${
@@ -67,7 +79,7 @@ const NotificationCard: React.FC<INotification> = ({
         !
       </div>
 
-      {!deleteNot ? (
+      {!deleteNot && (
         <div
           className={`${
             !seen
@@ -113,17 +125,17 @@ const NotificationCard: React.FC<INotification> = ({
             <div className="flex items-end">
               <button
                 className="flex items-center justify-center bg-primary rounded-md w-8 h-8"
-                onClick={() => handleDelete(_id)}
+                onClick={() => {
+                  handleDelete(_id);
+                }}
               >
                 <DeleteIcon />
               </button>
             </div>
           </div>
         </div>
-      ) : (
-        ''
       )}
-    </>
+    </div>
   );
 };
 export default NotificationCard;
