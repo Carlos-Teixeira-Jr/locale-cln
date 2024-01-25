@@ -1,4 +1,3 @@
-import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import React, { useState } from 'react';
 import Modal from 'react-modal';
@@ -13,7 +12,6 @@ export interface IContactBox {
 }
 
 const ContactBox: React.FC<IContactBox> = ({ propertyID }: any) => {
-  const session = useSession() as any;
   const profilePicture = propertyID.ownerInfo.profilePicture;
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const owner = propertyID.ownerInfo.name;
@@ -69,7 +67,11 @@ const ContactBox: React.FC<IContactBox> = ({ propertyID }: any) => {
             />
           )}
 
-          <p className="w-48 md:w-full h-fit text-quaternary font-extrabold text-2xl md:text-3xl text-center pt-3 md:pt-0 drop-shadow-lg">
+          <p
+            className={`${
+              owner.length > 25 ? 'text-xl' : 'text-2xl'
+            } w-48 md:w-full h-fit text-quaternary font-extrabold text-center pt-3 md:pt-0 drop-shadow-lg`}
+          >
             {owner}
           </p>
         </div>

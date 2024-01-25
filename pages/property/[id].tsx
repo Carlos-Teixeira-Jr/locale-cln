@@ -81,7 +81,7 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
             onGalleryModalOpen={(isOpen: boolean) => setIsModalOpen(isOpen)}
           />
         </div>
-        <div className="md:flex w-full justify-between">
+        <div className="md:flex w-full justify-between mb-4">
           <PropertyInfoTop propertyID={property} />
 
           <ContactBox propertyID={property} />
