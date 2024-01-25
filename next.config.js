@@ -12,7 +12,8 @@ const nextConfig = {
       'www.procuraseimovel.com.br',
       'www.correio24horas.com.br',
       'lh3.googleusercontent.com',
-      'platform-lookaside.fbsbx.com'
+      'platform-lookaside.fbsbx.com',
+      'static.vecteezy.com',
     ],
   },
 };
