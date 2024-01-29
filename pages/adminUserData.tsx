@@ -24,7 +24,7 @@ import {
   showSuccessToast,
 } from '../common/utils/toasts';
 import ArrowDownIcon from '../components/atoms/icons/arrowDownIcon';
-import Address from '../components/molecules/address/address';
+import UserAddress from '../components/molecules/address/userAdress';
 import PlansCardsHidden from '../components/molecules/cards/plansCards/plansCardHidden';
 import CreditCard, {
   CreditCardForm,
@@ -327,6 +327,8 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     }
   };
 
+  console.log('endereço do user', userData.address);
+
   return (
     <div className="max-w-[1232px] mx-auto justify-center items-center">
       <div className="fixed z-50 top-0 w-full inset-x-0">
@@ -407,10 +409,11 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                   )
                 )}
               </div>
+              {/** Endereço do imóvel */}
               <div className="flex mt-1 md:mt-1">
-                <Address
+                <UserAddress
                   isEdit={isEdit}
-                  address={ownerData?.user?.address}
+                  address={userData.address}
                   onAddressUpdate={(updateAddres: IAddress) =>
                     setAddress(updateAddres)
                   }
@@ -418,6 +421,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                   addressInputRefs={addressInputRefs}
                 />
               </div>
+              {/** Endereço do imóvel */}
             </div>
             <div className="lg:float-right flex md:justify-end justify-center md:w-[90%] lg:w-full mb-10 md:mr-16 lg:mr-5">
               <button
