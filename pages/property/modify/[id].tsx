@@ -346,7 +346,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
   return (
     <div>
       <AdminHeader isOwnerProp={true} />
-      <div className="flex flex-row justify-center lg:justify-end xl:justify-end 2xl:justify-center">
+      <div className="flex flex-row justify-center lg:justify-end xl:justify-end 2xl:justify-center w-full">
         <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:flex">
           <SideMenu
             isOwnerProp={property !== undefined && true}
