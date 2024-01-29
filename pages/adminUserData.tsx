@@ -264,7 +264,6 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
         ? formData.profilePicture
         : ownerData.owner?.profilePicture;
 
-
       const ownerFormData: IOwner = {
         id: ownerData.owner ? ownerData.owner._id : '',
         ownername: formData.username,
@@ -327,7 +326,6 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       showErrorToast(ErrorToastNames.EmptyFields);
     }
   };
-
   return (
     <div className="max-w-[1232px] mx-auto justify-center items-center">
       <div className="fixed z-50 top-0 w-full inset-x-0">
@@ -577,7 +575,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
     const [notifications, userData, ownerData, plans, properties] =
       await Promise.all([
-        fetch(`${baseUrl}/notification/${userId}`, {
+        fetch(`${baseUrl}/notification/user/${userId}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -614,12 +612,13 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         })
           .then((res) => res.json())
           .catch(() => []),
-        fetchJson(`${baseUrl}/notification/${userId}`),
+        fetchJson(`${baseUrl}/notification/user/${userId}`),
         fetchJson(`${baseUrl}/user/${userId}`),
         fetchJson(`${baseUrl}/user/find-owner-by-user`),
         fetchJson(`${baseUrl}/plan`),
         fetchJson(`${baseUrl}/property/owner-properties`),
       ]);
+    console.log('adminUserData:', userId);
 
     return {
       props: {
