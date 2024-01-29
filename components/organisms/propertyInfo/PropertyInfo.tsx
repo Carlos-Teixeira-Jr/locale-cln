@@ -128,7 +128,7 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({ property, isFavourite }) => {
           </h3>
           <div className="lg:grid md:grid-cols-6 md:gap-4 flex">
             <div className="flex flex-col">
-              <div className="font-normal text-xl text-quaternary flex md:justify-between gap-2">
+              <div className="font-normal text-xl text-quaternary flex lg:justify-between gap-2">
                 {getMetadataValue('bedroom')}
                 <span>quarto(s)</span>
               </div>
@@ -151,7 +151,7 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({ property, isFavourite }) => {
             </p>
           </div>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-1 mt-10 md:my-auto md:mx-14 justify-items-center">
+        <div className="grid grid-cols-2 md:grid-cols-1 mt-10 md:my-auto lg:mx-14 justify-items-center gap-5 md:gap-0">
           <LinkCopiedTooltip
             open={tooltipIsVisible}
             onRequestClose={hideTooltip}
@@ -159,7 +159,7 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({ property, isFavourite }) => {
           />
           <button
             id="tooltip"
-            className="lg:w-[320px] w-40 h-12 md:h-[67px] bg-primary p-2.5 rounded-[10px] text-tertiary text-xl font-extrabold mb-6"
+            className="lg:w-[320px] w-40 h-12 md:h-[67px] md:w-full bg-primary p-2.5 rounded-[10px] text-tertiary text-xl font-extrabold mb-6"
             onClick={handleCopy}
           >
             Compartilhar
@@ -167,7 +167,7 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({ property, isFavourite }) => {
 
           {property.acceptFunding && (
             <button
-              className="lg:w-80 md:h-16 h-12 bg-primary p-2.5 rounded-[10px] text-tertiary text-xl font-extrabold mb-6 md:flex md:items-center md:justify-center"
+              className="lg:w-80 md:w-full md:h-16 h-12 bg-primary p-2.5 rounded-[10px] text-tertiary text-xl font-extrabold mb-6 md:flex md:items-center md:justify-center"
               onClick={handleCalculatorBtnClick}
             >
               Simular Financiamento
@@ -184,13 +184,16 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({ property, isFavourite }) => {
 
           <button
             id="fav-property-tooltip"
-            className={`lg:w-80 w-40 h-12 md:h-16 bg-primary p-2.5 rounded-[10px] text-tertiary text-xl font-extrabold flex justify-center mb-5 ${
+            className={`lg:w-80 w-40 md:w-full h-12 md:h-16 bg-primary p-2.5 rounded-[10px] text-tertiary text-xl font-extrabold flex justify-center mb-5 ${
               userIsLogged ? 'opacity opacity-100 cursor-pointer' : 'opacity-50'
             }`}
             onClick={handleFavouriteBtnClick}
           >
             <p className="my-auto pr-4">Favoritar</p>
-            {favourited ? <FavouritedIcon /> : <UnfavouritedIcon />}
+            {favourited 
+              ? <FavouritedIcon className='pb-4 md:pb-0'/> 
+              : <UnfavouritedIcon className='pb-4 md:pb-0'/>
+            }
           </button>
         </div>
 

@@ -9,8 +9,8 @@ import DotIcon from '../../../atoms/icons/dotIcon';
 import NextCardIcon from '../../../atoms/icons/nextCardIcon';
 import ParkingIcon from '../../../atoms/icons/parkingIcon';
 import PreviousCardIcon from '../../../atoms/icons/previousCardIcon';
+import formatCurrency from '../../../atoms/masks/currencyFormat';
 import MessageModal from '../../../atoms/modals/messageModal';
-import { monetaryFormat } from '../../../../common/utils/masks/monetaryFormat';
 Modal.setAppElement('#__next');
 
 export interface IPropertyInfoCard {
@@ -46,13 +46,12 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
   highlighted,
   propertyInfo,
 }) => {
-
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [expanded, setExpanded] = useState(false);
   const descriptionRef = useRef<HTMLParagraphElement>(null);
   const [isExpandable, setIsExpandable] = useState(false);
-
+  const formattedPrice = formatCurrency(Number(prices));
   // Expande o tamanho do corpo do card para mostrar todo o texto;
   const toggleExpanded = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -95,11 +94,11 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
   return (
     <>
       <Link href={href}>
-        <div className={` bg-tertiary md:grid md:grid-cols-3 rounded-[30px] overflow-hidden drop-shadow-lg my-[29px] md:mx-[35px] mx-2 flex flex-col ${
-          expanded
-          ? 'lg:h-fit'
-          : 'lg:h-[255px]'
-        }`}>
+        <div
+          className={` bg-tertiary md:grid md:grid-cols-3 rounded-[30px] overflow-hidden drop-shadow-lg my-7 md:mx-9 mx-2 flex flex-col ${
+            expanded ? 'lg:h-fit' : 'lg:h-[255px]'
+          }`}
+        >
           <div className="group relative md:h-[200px]">
             {/* Images */}
             <div className="flex flex-row w-full overflow-hidden scroll-smooth rounded-tl-[30px] md:h-[265px] h-[250px]">
@@ -154,14 +153,16 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
             </div>
           </div>
 
-          <div
-            className="md:flex justify-between md:flex-col md:gap-4 md:col-span-2 md:ml-11 my-auto mx-[17px] md:mx-4"
-          >
-            <div className="md:w-[218px] h-[44px] top-[17px] left-[336px] font-bold text-3xl text-[#000000] leading-10">
-              R$ {prices}
+          <div className="md:flex justify-between md:flex-col md:gap-4 md:col-span-2 md:ml-11 my-auto mx-[17px] md:mx-4">
+            <div
+              className={`${
+                prices.length > 10 ? 'md:w-[270px]' : 'md:w-[240px]'
+              } text-3xl md:w-[240px] h-[44px] top-[17px] left-[336px] font-bold text-[#000000]`}
+            >
+              {formattedPrice}
             </div>
-            <div className='flex flex-col'>
-              <p 
+            <div className="flex flex-col">
+              <p
                 className="font-medium text-xs leading-4 text-quaternary md:w-[383px] h-fit"
                 ref={descriptionRef}
                 style={{

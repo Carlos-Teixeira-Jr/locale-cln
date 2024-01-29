@@ -8,7 +8,7 @@ import TwoArrowRightIcon from '../icons/twoArrowRightIcon';
 
 export interface IPagination {
   totalPages?: number;
-  setCurrentPage?: any;
+  setCurrentPage?: (page: number) => void;
   currentPage?: number;
 }
 
