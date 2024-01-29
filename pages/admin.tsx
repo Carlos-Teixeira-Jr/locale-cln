@@ -1,6 +1,7 @@
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { GetServerSidePropsContext } from 'next';
 import { getSession, useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import { destroyCookie } from 'nookies';
 import { useEffect, useState } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
@@ -13,7 +14,6 @@ import AdminPropertyCard from '../components/molecules/cards/adminPropertyCard/a
 import AdminHeader from '../components/organisms/adminHeader/adminHeader';
 import SideMenu from '../components/organisms/sideMenu/sideMenu';
 import { NextPageWithLayout } from './page';
-import { useRouter } from 'next/router';
 
 interface AdminPageProps {
   ownerProperties: IOwnerProperties;
@@ -24,8 +24,8 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
   ownerProperties,
   notifications,
 }) => {
-  
   const { data: session } = useSession() as any;
+  console.log('🚀 ~ file: admin.tsx:29 ~ session:', session);
   const [isOwner, setIsOwner] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState(1);
   const router = useRouter();
@@ -74,15 +74,15 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
               {session?.username !== undefined ? session?.username : ''}!
             </h1>
             {isOwner && ownerProperties?.docs && (
-              <Pagination 
-                totalPages={ownerProperties.totalPages} 
+              <Pagination
+                totalPages={ownerProperties.totalPages}
                 setCurrentPage={setCurrentPage}
                 currentPage={currentPage}
               />
             )}
           </div>
 
-          <div className="mb-10">
+          <div className="mb-10 md:px-5 lg:px-0">
             {isOwner &&
               ownerProperties?.docs?.map(
                 ({
@@ -120,7 +120,10 @@ export default AdminPage;
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = (await getSession(context)) as any;
-  const userId = session?.user.data._id;
+  const userId =
+    session?.user.data._id !== undefined
+      ? session?.user.data._id
+      : session?.user.id;
   let token;
   let refreshToken;
   const { query } = context;
@@ -208,16 +211,41 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
       if (ownerIdResponse.ok) {
         const ownerData = await ownerIdResponse.json();
-        ownerId = ownerData?.owner?._id;
+        if (ownerData?.owner?._id) {
+          ownerId = ownerData?.owner?._id;
+        } else {
+          return {
+            redirect: {
+              destination: '/adminFavProperties?page=1',
+              permanent: false,
+            },
+          };
+        }
       } else {
-        console.log("erro", ownerIdResponse)
+        console.log('erro', ownerIdResponse);
       }
     } catch (error) {
       console.error(error);
     }
 
+    const [ownerProperties] = await Promise.all([
+      fetch(`${baseUrl}/property/owner-properties`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ownerId,
+          page,
+        }),
+      })
+        .then((res) => res.json())
+        .catch(() => []),
+      fetchJson(`${baseUrl}/property/owner-properties`),
+    ]);
+
     const notifications = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API_URL}/notification/64da04b6052b4d12939684b0`,
+      `${process.env.NEXT_PUBLIC_BASE_API_URL}/notification/user/${userId}`,
       {
         method: 'GET',
         headers: {
@@ -225,11 +253,11 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         },
       }
     )
-    .then((res) => res.json())
-    .catch(() => []);
+      .then((res) => res.json())
+      .catch(() => []);
 
     if (ownerId) {
-      [ownerProperties] = await Promise.all([
+      const [ownerProperties] = await Promise.all([
         fetch(`${baseUrl}/property/owner-properties`, {
           method: 'POST',
           headers: {
@@ -245,6 +273,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         fetchJson(`${baseUrl}/property/owner-properties`),
       ]);
 
+      console.log('admin:', userId);
+      console.log('ADMIN:', notifications);
       return {
         props: {
           ownerProperties,
@@ -252,9 +282,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         },
       };
     }
-
-
-
     return {
       props: {
         notifications,
