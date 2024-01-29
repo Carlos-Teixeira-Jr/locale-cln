@@ -326,7 +326,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
           </div>
         )}
 
-        <div className="flex flex-col mt-16 lg:ml-80 max-w-[1232px] justify-center mx-5">
+        <div className="flex flex-col mt-16 lg:ml-80 max-w-[1232px] justify-center md:mx-5">
           <div className="my-5 lg:mx-10 md:mx-2 max-w-[1232px]">
             <div className="my-5">
               <UserDataInputs
@@ -347,7 +347,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                 />
               </div>
 
-              <h2 className="md:text-3xl text-2xl leading-10 text-quaternary font-bold mb-5 lg:mb-10 lg:mx-5">
+              <h2 className="md:text-3xl text-2xl leading-10 text-quaternary font-bold mb-5 lg:mb-10 mx-5">
                 Dados de Cobrança
               </h2>
 

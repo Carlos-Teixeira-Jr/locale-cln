@@ -29,9 +29,9 @@ const AdminHeader: React.FC<IAdminHeader> = ({ isOwnerProp }) => {
       </Link>
       <div className="flex flex-row items-center lg:px-10">
         <div className="flex items-center mr-2 md:mr-10">
-          <Link href={''} className="font-medium text-base text-secondary">
+          {/* <Link href={''} className="font-medium text-base text-secondary">
             Precisa de Ajuda?
-          </Link>
+          </Link> */}
         </div>
         <div
           className="flex items-center justify-center max-w-[50px] max-h-[50px] cursor-pointer shrink-0"

@@ -1056,7 +1056,7 @@ const FilterList: React.FC<IFilterListProps> = ({
           <div className="bg-tertiary sticky z-10 bottom-0 flex flex-row items-center justify-between mt-2 p-4 w-full">
             <h3 className="text-primary text-lg font-bold">Remover filtros</h3>
             <button
-              className="bg-primary rounded-[30px] p-2 text-tertiary text-lg font-extrabold"
+              className="bg-primary rounded-[30px] p-2 text-tertiary px-10 text-lg font-extrabold"
               onClick={onSearchBtnClick}
             >
               Buscar
