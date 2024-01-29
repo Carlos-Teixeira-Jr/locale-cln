@@ -31,7 +31,7 @@ const PlansCards: React.FC<IPlansCard> = ({
   
   return (
     <div
-      className="md:flex justify-center my-10"
+      className="md:flex justify-center md:my-10"
       onClick={() => getUserPlan(_id)}
     >
       <Link href={'/register'}>

@@ -373,7 +373,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
               <h2 className="md:text-3xl text-2xl leading-10 text-quaternary font-bold mb-5 lg:mb-10 mx-5">
                 Dados de Cobrança
               </h2>
-              <div className="grid sm:grid-cols-1 grid-cols-1 md:grid-cols-3 xl:grid-cols-3 gap-6">
+              <div className="grid sm:grid-cols-1 grid-cols-1 md:grid-cols-3 xl:grid-cols-3 md:gap-6">
                 {reversedCards.map(
                   ({
                     _id,
