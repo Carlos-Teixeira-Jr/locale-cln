@@ -12,6 +12,7 @@ import {
 } from '../common/interfaces/property/register/register';
 import { IUserDataComponent } from '../common/interfaces/user/user';
 import { geocodeAddress } from '../common/utils/geocodeAddress';
+import { clearIndexDB, getAllImagesFromDB } from '../common/utils/indexDb';
 import Loading from '../components/atoms/loading';
 import PaymentFailModal from '../components/atoms/modals/paymentFailModal';
 import LinearStepper from '../components/atoms/stepper/stepper';
@@ -27,7 +28,6 @@ import Footer from '../components/organisms/footer/footer';
 import Header from '../components/organisms/header/header';
 import { useProgress } from '../context/registerProgress';
 import { NextPageWithLayout } from './page';
-import { clearIndexDB, getAllImagesFromDB } from '../common/utils/indexDb';
 
 interface IRegisterStep3Props {
   selectedPlanCard: string;
@@ -43,6 +43,7 @@ type BodyReq = {
   phone: string;
   cellPhone: string;
   creditCardData?: CreditCardForm;
+  profilePicture?: string;
 };
 
 const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
@@ -108,6 +109,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     cpf: '',
     cellPhone: '',
     phone: '',
+    profilePicture: '',
   });
 
   const [userDataErrors, setUserDataErrors] = useState({
@@ -220,7 +222,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
       ccv: '',
       expiry: '',
     };
-
     if (!userDataForm.username) newUserDataErrors.username = error;
     if (!userDataForm.email) newUserDataErrors.email = error;
     if (!userDataForm.cpf) newUserDataErrors.cpf = error;
@@ -279,6 +280,9 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         email: userDataForm.email,
         cpf: userDataForm.cpf,
         cellPhone: userDataForm.cellPhone,
+        profilePicture: userDataForm.profilePicture
+          ? userDataForm.profilePicture
+          : 'https://static.vecteezy.com/system/resources/previews/019/879/186/non_2x/user-icon-on-transparent-background-free-png.png',
         phone: userDataForm.phone,
         zipCode: addressData.zipCode,
         city: addressData.city,
@@ -298,6 +302,9 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         email: userDataForm.email,
         address: isSameAddress ? storedData.address : addressData,
         cpf: userDataForm.cpf.replace(/\D/g, ''),
+        profilePicture: userDataForm.profilePicture
+          ? userDataForm.profilePicture
+          : 'https://static.vecteezy.com/system/resources/previews/019/879/186/non_2x/user-icon-on-transparent-background-free-png.png',
       };
 
       const propertyData: ICreateProperty_propertyData = {
@@ -313,6 +320,13 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         metadata: storedData.metadata,
         //images: storedData.images,
         size: storedData.size,
+        ownerInfo: {
+          profilePicture: userDataForm.profilePicture
+            ? userDataForm.profilePicture
+            : 'https://static.vecteezy.com/system/resources/previews/019/879/186/non_2x/user-icon-on-transparent-background-free-png.png',
+          name: userDataForm.username,
+          phones: [userDataForm.cellPhone, userDataForm.phone],
+        },
         tags: storedData.tags,
         condominiumTags: storedData.condominiumTags,
         prices: storedData.prices,
@@ -342,19 +356,21 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
 
         const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
 
-        const response = await fetch(
-          `${baseUrl}/property`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(body),
-          }
-        );
+        const response = await fetch(`${baseUrl}/property`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(body),
+        });
 
         if (response.ok) {
           const data = await response.json();
+          console.log(
+            'propertyData.ownerInfo.profilePicture',
+            propertyData.ownerInfo.profilePicture
+          );
+          console.log('userData.profilePicture', userData.profilePicture);
           const paymentData = {
             cardBrand: data.creditCardBrand ? data.creditCardBrand : 'Free',
             value: data.paymentValue ? data.paymentValue : '00',
@@ -369,25 +385,34 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
 
           // Salvar imagens
 
-          const indexDbImages = await getAllImagesFromDB() as ({ id: string, data: Blob, name: string })[];
+          const indexDbImages = (await getAllImagesFromDB()) as {
+            id: string;
+            data: Blob;
+            name: string;
+          }[];
 
           const formData = new FormData();
 
           for (let i = 0; i < indexDbImages.length; i++) {
-            const file = new File([indexDbImages[i].data], `${indexDbImages[i].name}`);
+            const file = new File(
+              [indexDbImages[i].data],
+              `${indexDbImages[i].name}`
+            );
             formData.append('images', file);
           }
 
           formData.append('propertyId', data.createdProperty._id);
 
-          const imagesResponse = await fetch(`${baseUrl}/property/uploadDropImageWithRarity`, {
-            method: 'POST',
-            body: formData,
-          });
-
+          const imagesResponse = await fetch(
+            `${baseUrl}/property/uploadDropImageWithRarity`,
+            {
+              method: 'POST',
+              body: formData,
+            }
+          );
 
           if (imagesResponse.ok) {
-            clearIndexDB()
+            clearIndexDB();
             updateProgress(4);
             if (!urlEmail) {
               router.push('/registerStep35');
@@ -400,7 +425,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
               });
             }
           } else {
-            console.log("Erro ao enviar as imagens")
+            console.log('Erro ao enviar as imagens');
           }
         } else {
           toast.dismiss();

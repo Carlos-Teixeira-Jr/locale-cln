@@ -1,25 +1,24 @@
+import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import React, { useState } from 'react';
 import Modal from 'react-modal';
-import MessageModal from '../../atoms/modals/messageModal';
-import { useSession } from 'next-auth/react';
-import UserIcon from '../../atoms/icons/userIcon';
-import { capitalizeFirstLetter } from '../../../common/utils/strings/capitalizeFirstLetter';
 import { IData } from '../../../common/interfaces/property/propertyData';
+import { capitalizeFirstLetter } from '../../../common/utils/strings/capitalizeFirstLetter';
+import UserIcon from '../../atoms/icons/userIcon';
+import MessageModal from '../../atoms/modals/messageModal';
 Modal.setAppElement('#__next');
 
 export interface IContactBox {
   propertyID: IData;
 }
 
-const ContactBox: React.FC<IContactBox> = (
-  { propertyID }: any,
-) => {
-
+const ContactBox: React.FC<IContactBox> = ({ propertyID }: any) => {
   const session = useSession() as any;
-  const profilePicture = session.data?.user?.data?.picture;
+  const profilePicture = propertyID.ownerInfo.profilePicture;
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const owner = propertyID.ownerInfo.name;
+  const ownerPropertyWpp = propertyID.ownerInfo.phones[1];
+  const ownerWhatsapp = ownerPropertyWpp?.replace(/[^0-9]+/g, '');
 
   const handleWhatsappBtnClick = () => {
     const propertyStreet = propertyID.address.streetName;
@@ -27,7 +26,9 @@ const ContactBox: React.FC<IContactBox> = (
     const propertyCity = capitalizeFirstLetter(propertyID.address.city);
     const whatsappMessage = `Olá, gostaria de obter mais informações sobre o imóvel localizado em ${propertyStreet}, número ${propertyNumber}, na cidade de ${propertyCity}. 🏡✨`;
 
-    const whatsappLink = `https://api.whatsapp.com/send/?phone=5553991775245&text=${encodeURIComponent(whatsappMessage)}&type=phone_number&app_absent=0`;
+    const whatsappLink = `https://api.whatsapp.com/send/?phone=${ownerWhatsapp}&text=${encodeURIComponent(
+      whatsappMessage
+    )}&type=phone_number&app_absent=0`;
 
     window.open(whatsappLink, '_blank');
   };
@@ -63,24 +64,21 @@ const ContactBox: React.FC<IContactBox> = (
             />
           ) : (
             <UserIcon
-              className='rounded-full border-4 border-quaternary drop-shadow-lg w-20 h-20 p-2 mx-2 shrink-0'
-              fill='#F75D5F'
+              className="rounded-full border-4 border-quaternary drop-shadow-lg w-20 h-20 p-2 mx-2 shrink-0"
+              fill="#F75D5F"
             />
           )}
-          
+
           <p className="w-48 md:w-full h-fit text-quaternary font-extrabold text-2xl md:text-3xl text-center pt-3 md:pt-0 drop-shadow-lg">
             {owner}
           </p>
         </div>
-        <div className='flex md:flex-col gap-4 mt-5 w-full justify-between'>
-
+        <div className="flex md:flex-col gap-4 mt-5 w-full justify-between">
           {buttons.map((btn) => (
-            <div 
+            <div
               onClick={() => btn.onClick()}
               className={`md:w-full w-36 h-12 md:h-14 text-tertiary font-extrabold text-xl rounded-[10px] p-2.5 top-[861px] left-[999px] gap-y-2.5 md:grid flex drop-shadow-lg md:m-2 align-middle my-auto justify-center mr-2 cursor-pointer ${
-                btn.key === 'contact' ?
-                'bg-secondary' :
-                'bg-[#25D366]'
+                btn.key === 'contact' ? 'bg-secondary' : 'bg-[#25D366]'
               }`}
               key={btn.key}
             >
@@ -91,14 +89,13 @@ const ContactBox: React.FC<IContactBox> = (
       </div>
 
       {modalIsOpen && (
-        <div className=''>
+        <div className="">
           <MessageModal
             isOpen={modalIsOpen}
             setModalIsOpen={handleModalClose}
             propertyInfo={propertyID}
           />
         </div>
-        
       )}
     </>
   );
