@@ -26,6 +26,7 @@ type SideMenuProps = {
 const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications }) => {
   const router = useRouter();
   const [activeButton, setActiveButton] = useState('');
+  const [notReadNots, setNotReadNots] = useState([]);
   const isMobile = useIsMobile();
   const isOwner = isOwnerProp;
 
@@ -45,6 +46,17 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications }) => {
       setActiveButton('notifications-button');
     }
   }, [router.pathname, isOwner]);
+
+  useEffect(() => {
+    if (Array.isArray(notifications)) {
+      const notReadNotifications = notifications?.filter(
+        (item: any) => !item.isRead
+      );
+      setNotReadNots(notReadNotifications);
+    }
+    console.log('NOTIFICAÇÕES NÃO LIDAS:', notReadNots.length);
+    console.log('NOTIFICAÇÕES:', notifications?.length);
+  }, [notifications, setNotReadNots]);
 
   const options: Options[] = [
     {
@@ -120,15 +132,13 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications }) => {
             width="35"
             height="35"
           />
-          {notifications && notifications?.length > 0 && (
-            <div className="absolute top-100 mt-4 ml-[0.4rem] left-10">
-              <div
-                data-nots={notifications?.length}
-                id={'notifications-value'}
-                className="before:content-[attr(data-nots)] before:text-xs before:bg-tertiary before:font-medium before:text-primary before:border-secondary before:rounded-full before:border before:flex before:items-center before:justify-center before:min-w-[1.4em] before:min-h-[0.4em]"
-              ></div>
-            </div>
-          )}
+          <div className="absolute top-100 mt-4 ml-[0.4rem] left-10">
+            <div
+              data-nots={notReadNots?.length > 0 ? notReadNots?.length : 0}
+              id={'notifications-value'}
+              className="before:content-[attr(data-nots)] before:text-xs before:bg-tertiary before:font-medium before:text-primary before:border-secondary before:rounded-full before:border before:flex before:items-center before:justify-center before:min-w-[1.4em] before:min-h-[0.4em]"
+            ></div>
+          </div>
         </div>
       ),
       title: 'Minhas Notificações',

@@ -152,7 +152,10 @@ export default PropertyPage;
 
 export async function getServerSideProps(context: NextPageContext) {
   const session = (await getSession(context)) as any;
-  const userId = session?.user.data._id;
+  const userId =
+    session?.user.data.id !== undefined
+      ? session?.user.data.id
+      : session?.user.id;
   const propertyId = context.query.id;
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
   let isFavourite: boolean = false;

@@ -13,6 +13,7 @@ import Pagination from '../components/atoms/pagination/pagination';
 import MessagesCard from '../components/molecules/cards/messagesCard.tsx/messagesCard';
 import AdminHeader from '../components/organisms/adminHeader/adminHeader';
 import SideMenu from '../components/organisms/sideMenu/sideMenu';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 interface IMessages {
   docs: IMessage[];
@@ -24,13 +25,13 @@ interface IMessages {
 interface IAdminMessagesPage {
   ownerProperties: IOwnerProperties;
   messages: IMessages;
-  dataNot: [];
+  notifications: [];
 }
 
 const AdminMessages = ({
   ownerProperties,
   messages,
-  dataNot,
+  notifications,
 }: IAdminMessagesPage) => {
   const router = useRouter();
   const query = router.query as any;
@@ -70,79 +71,73 @@ const AdminMessages = ({
   useEffect(() => {
     setIsOwner(ownerProperties?.docs?.length > 0 ? true : false);
   }, [ownerProperties]);
+  const isMobile = useIsMobile();
 
   return (
     <main>
       <AdminHeader isOwnerProp={isOwner} />
 
-      <div className="flex flex-row items-center justify-evenly">
-        <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:flex">
-          <SideMenu isOwnerProp={isOwner} notifications={dataNot} />
+      <div className="flex flex-row items-center justify-center lg:ml-72 xl:ml-72">
+        <div className="fixed sm:hidden hidden md:hidden lg:flex xl:flex left-0 top-20">
+          {!isMobile ? (
+            <SideMenu isOwnerProp={isOwner} notifications={notifications} />
+          ) : (
+            ''
+          )}
         </div>
 
-        <div className="flex flex-col items-center mt-24 w-full lg:ml-[320px]">
-          <div className="flex flex-col items-center">
-            <h1 className="font-extrabold text-2xl md:text-4xl text-quaternary md:mb-5 text-center">
-              Mensagens
-            </h1>
-            {messagesCount == 0 ? (
-              ''
-            ) : (
+        <div className="flex flex-col max-w-[1232px] items-center mt-28">
+          <h1 className="font-extrabold text-2xl md:text-4xl text-quaternary md:mb-5 text-center">
+            Mensagens
+          </h1>
+          <div className="flex flex-col items-center justify-center ">
+            <div className="flex justify-center mt-8">
+              {!messagesCount ? (
+                ''
+              ) : (
+                <Pagination
+                  totalPages={totalPages}
+                  setCurrentPage={setCurrentPage}
+                  currentPage={currentPage}
+                />
+              )}
+            </div>
+
+            {
+              <div className="mx-10 mb-5 mt-[-1rem] ">
+                {!messagesCount ? (
+                  <div className="flex flex-col items-center align-middle mt-36">
+                    <SentimentIcon />
+                    <h1 className="text-2xl text-quaternary">
+                      Não tem nenhuma mensagem.
+                    </h1>
+                  </div>
+                ) : (
+                  properties.map(({ _id, images, address }: IData) => (
+                    <MessagesCard
+                      key={_id}
+                      image={images[0]}
+                      address={address}
+                      messages={messages?.docs.filter(
+                        (message) => message.propertyId === _id
+                      )}
+                      propertyId={_id}
+                    />
+                  ))
+                )}
+              </div>
+            }
+          </div>
+
+          <div className="flex justify-center mb-10">
+            {messagesCount ? (
               <Pagination
                 totalPages={totalPages}
                 setCurrentPage={setCurrentPage}
                 currentPage={currentPage}
               />
-            )}
-          </div>
-
-          {/* <div className="lg:mb-10 flex flex-wrap flex-col md:flex-row lg:gap-10">
-            <div className="mx-10 mb-5 flex">
-              {messagesCount == 0 ? (
-                <div className="flex flex-col items-center align-middle mt-36">
-                  <SentimentIcon />
-                  <h1 className="text-3xl text-quaternary">
-                    Não tem nenhuma mensagem.
-                  </h1>
-                </div>
-              ) : (
-                properties.map(({ _id, images, address }: IData) => (
-                  <MessagesCard
-                    key={_id}
-                    image={images[0]}
-                    address={address}
-                    messages={messages?.docs.filter(
-                      (message) => message.propertyId === _id
-                    )}
-                    propertyId={_id}
-                  />
-                ))
-              )}
-            </div>
-          </div> */}
-
-          <div className="flex flex-col md:flex-row flex-wrap md:gap-2 lg:gap-10 md:my-5 md:justify-between lg:justify-start md:px-2 lg:px-10">
-            {messagesCount == 0 ? (
-              <div className="flex flex-col items-center align-middle mt-36">
-                <SentimentIcon />
-                <h1 className="text-3xl text-quaternary">
-                  Não tem nenhuma mensagem.
-                </h1>
-              </div>
             ) : (
-              properties?.map(({ _id, images, address }: IData) => (
-                <div className="w-60" key={_id}>
-                  <MessagesCard
-                    key={_id}
-                    image={images[0]}
-                    address={address}
-                    messages={messages?.docs.filter(
-                      (message) => message.propertyId === _id
-                    )}
-                    propertyId={_id}
-                  />
-                </div>                
-              ))
+              ''
             )}
           </div>
         </div>
@@ -155,10 +150,15 @@ export default AdminMessages;
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = (await getSession(context)) as any;
-  const userId = session?.user.data._id;
+  const userId =
+    session?.user.data._id !== undefined
+      ? session?.user.data._id
+      : session?.user.id;
   let token;
   let refreshToken;
   const page = Number(context.query.page);
+
+  console.log('adminMessages:', userId);
 
   if (!session) {
     return {
@@ -171,7 +171,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     token = session?.user.data.access_token!!;
     refreshToken = session.user?.data.refresh_token;
     const decodedToken = jwt.decode(token) as JwtPayload;
-    const isTokenExpired = decodedToken.exp
+    const isTokenExpired = decodedToken?.exp
       ? decodedToken.exp <= Math.floor(Date.now() / 1000)
       : false;
 
@@ -247,7 +247,18 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       console.error(error);
     }
 
-    const [ownerProperties, messages] = await Promise.all([
+    const [notifications, ownerProperties, messages] = await Promise.all([
+      fetch(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/notification/user/${userId}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+        .then((res) => res.json())
+        .catch(() => []),
       fetch(`${baseUrl}/property/owner-properties`, {
         method: 'POST',
         headers: {
@@ -272,29 +283,17 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       })
         .then((res) => res.json())
         .catch(() => []),
+      fetchJson(`${baseUrl}/notification/${userId}`),
+
       fetchJson(`${baseUrl}/property/owner-properties`),
       fetchJson(`${baseUrl}/message/find-all-by-ownerId`),
     ]);
-
-    const notifications = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API_URL}/notification/64da04b6052b4d12939684b0`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    )
-      .then((res) => res.json())
-      .catch(() => []);
-
-    const dataNot = notifications;
 
     return {
       props: {
         ownerProperties,
         messages,
-        dataNot,
+        notifications,
       },
     };
   }

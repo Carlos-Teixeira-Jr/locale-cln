@@ -110,12 +110,16 @@ const FilterList: React.FC<IFilterListProps> = ({
   };
 
   // Estilos do switch button de compra/aluguel;
-  const buyBtnClassName = `w-full h-[34px] md:h-fit lg:h-[34px] rounded-full border-black text-quaternary font-bold lg:text-lg transition-all ${
-    isBuy ? 'bg-secondary text-quinary border' : 'bg-tertiary  text-quaternary'
+  const buyBtnClassName = `w-full h-[34px] md:h-fit lg:h-[33px] rounded-full border-black text-quaternary font-bold lg:text-lg transition-all ${
+    isBuy
+      ? 'bg-secondary text-quinary border-secondary border'
+      : 'bg-tertiary  text-quaternary'
   }`;
 
-  const rentBtnClassName = `w-full h-[34px] md:h-fit lg:h-[34px] rounded-full border-black text-quaternary font-bold lg:text-lg transition-all ${
-    isRent ? 'bg-secondary text-quinary border' : 'bg-tertiary text-quaternary'
+  const rentBtnClassName = `w-full h-[34px] md:h-fit lg:h-[33px] rounded-full border-black text-quaternary font-bold lg:text-lg transition-all ${
+    isRent
+      ? 'bg-secondary text-quinary border border-secondary'
+      : 'bg-tertiary text-quaternary'
   }`;
 
   // PROPERTY TYPE
@@ -165,7 +169,7 @@ const FilterList: React.FC<IFilterListProps> = ({
     );
     setFilteredLocations(filtered);
   };
-  
+
   // Reorganiza filteredLocations para que se torne um objeto onde cada prop representa uma categoria em forma de um array com todas as strings de localização referentes à essa categoria;
   const categorizedLocations: Record<string, ILocation[]> =
     filteredLocations.reduce(

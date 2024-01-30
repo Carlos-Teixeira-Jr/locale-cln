@@ -1,6 +1,7 @@
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { GetServerSidePropsContext } from 'next';
 import { getSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import { destroyCookie } from 'nookies';
 import { useEffect, useState } from 'react';
 import { IFavProperties } from '../common/interfaces/properties/favouriteProperties';
@@ -15,7 +16,6 @@ import PropertyCard from '../components/molecules/cards/propertyCard/PropertyCar
 import AdminHeader from '../components/organisms/adminHeader/adminHeader';
 import SideMenu from '../components/organisms/sideMenu/sideMenu';
 import { NextPageWithLayout } from './page';
-import { useRouter } from 'next/router';
 
 interface IAdminFavProperties {
   favouriteProperties: IFavProperties;
@@ -72,26 +72,24 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
   return (
     <>
       <AdminHeader isOwnerProp={isOwner} />
-      <div className="flex flex-row items-center justify-evenly">
+      <div className="flex flex-row items-center justify-center  lg:ml-96 xl:ml-96">
         <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:flex">
           <SideMenu isOwnerProp={isOwner} notifications={notifications} />
         </div>
-        <div className="flex flex-col items-center mt-24 w-full lg:pl-72">
+        <div className="flex flex-col items-center mt-24 w-full ">
           <div className="flex flex-col items-center mb-5 max-w-[1215px]">
-            <h1 className="font-extrabold text-2xl md:text-4xl text-quaternary md:mb-5 text-center">
+            <h1 className="font-extrabold text-2xl md:text-4xl text-quaternary md:mb-5 text-center md:mr-16">
               Imóveis Favoritos
             </h1>
             {favouriteProperties?.docs?.length === 0 ? (
               ''
             ) : (
-              <Pagination 
-                totalPages={favouriteProperties?.totalPages} 
-                setCurrentPage={setCurrentPage}
-                currentPage={currentPage}
-              />
+              <div className=" md:mr-16">
+                <Pagination totalPages={favouriteProperties?.totalPages} />
+              </div>
             )}
 
-            <div className="flex flex-col md:flex-row flex-wrap md:gap-2 lg:gap-10 my-5 lg:justify-start md:px-2 lg:px-10">
+            <div className="grid sm:grid-cols-1 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 my-5 gap-10 lg:justify-start">
               {favouriteProperties?.docs?.length > 0 ? (
                 favouriteProperties?.docs.map(
                   ({
@@ -139,7 +137,10 @@ export default AdminFavProperties;
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = (await getSession(context)) as any;
-  const userId = session?.user.data._id;
+  const userId =
+    session?.user.data._id !== undefined
+      ? session?.user.data._id
+      : session?.user.id;
   let token;
   let refreshToken;
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
@@ -226,7 +227,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       if (ownerIdResponse.ok) {
         const ownerData = await ownerIdResponse.json();
         ownerId = ownerData?.owner?._id;
-        console.log(ownerId);
+        console.log('adminFavProperties:', userId);
       }
     } catch (error) {
       console.error(error);
@@ -234,7 +235,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
     const [notifications, favouriteProperties, ownerProperties] =
       await Promise.all([
-        fetch(`${baseUrl}/notification/64da04b6052b4d12939684b0`, {
+        fetch(`${baseUrl}/notification/user/${userId}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -266,7 +267,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         })
           .then((res) => res.json())
           .catch(() => []),
-        fetchJson(`${baseUrl}/notification/${userId}`),
+        fetchJson(`${baseUrl}/notification/user/${userId}`),
         fetchJson(`${baseUrl}/user/favourite`),
         fetchJson(`${baseUrl}/property/owner-properties`),
       ]);

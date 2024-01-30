@@ -327,10 +327,6 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     }
   };
 
-  console.log('endereço do user', userData.address);
-  console.log('firstProperty:', properties?.docs[0]);
-  console.log('properties:', properties);
-
   return (
     <div className="max-w-[1232px] mx-auto justify-center items-center">
       <div className="fixed z-50 top-0 w-full inset-x-0">
@@ -581,7 +577,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
     const [notifications, userData, ownerData, plans, properties] =
       await Promise.all([
-        fetch(`${baseUrl}/notification/${userId}`, {
+        fetch(`${baseUrl}/notification/user/${userId}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -618,12 +614,13 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         })
           .then((res) => res.json())
           .catch(() => []),
-        fetchJson(`${baseUrl}/notification/${userId}`),
+        fetchJson(`${baseUrl}/notification/user/${userId}`),
         fetchJson(`${baseUrl}/user/${userId}`),
         fetchJson(`${baseUrl}/user/find-owner-by-user`),
         fetchJson(`${baseUrl}/plan`),
         fetchJson(`${baseUrl}/property/owner-properties`),
       ]);
+
     return {
       props: {
         notifications,
