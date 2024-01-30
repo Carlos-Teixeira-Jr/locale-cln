@@ -264,7 +264,6 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
         ? formData.profilePicture
         : ownerData.owner?.profilePicture;
 
-
       const ownerFormData: IOwner = {
         id: ownerData.owner ? ownerData.owner._id : '',
         ownername: formData.username,
@@ -277,8 +276,10 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       };
 
       const editPasswordFormData = {
-        password: passwordFormData.password,
-        passwordConfirmattion: passwordFormData.passwordConfirmattion,
+        password: passwordFormData.password ? passwordFormData.password : '',
+        passwordConfirmattion: passwordFormData.passwordConfirmattion
+          ? passwordFormData.passwordConfirmattion
+          : '',
       };
 
       let body;
@@ -292,6 +293,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
         body = {
           user: userFormData,
           owner: ownerFormData,
+          password: editPasswordFormData,
         };
       }
 
@@ -349,9 +351,9 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                 error={formDataErrors}
                 userDataInputRefs={userDataInputRefs}
                 profilePicPropertyData={
-                  properties?.docs[properties.docs.length - 1]?.ownerInfo
+                  properties?.docs[properties?.docs?.length - 1]?.ownerInfo
                     ?.profilePicture &&
-                  properties.docs[properties.docs.length - 1].ownerInfo
+                  properties?.docs[properties?.docs?.length - 1]?.ownerInfo
                     .profilePicture
                 }
               />
@@ -574,7 +576,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
     const [notifications, userData, ownerData, plans, properties] =
       await Promise.all([
-        fetch(`${baseUrl}/notification/${userId}`, {
+        fetch(`${baseUrl}/notification/user/${userId}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -611,7 +613,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         })
           .then((res) => res.json())
           .catch(() => []),
-        fetchJson(`${baseUrl}/notification/${userId}`),
+        fetchJson(`${baseUrl}/notification/user/${userId}`),
         fetchJson(`${baseUrl}/user/${userId}`),
         fetchJson(`${baseUrl}/user/find-owner-by-user`),
         fetchJson(`${baseUrl}/plan`),

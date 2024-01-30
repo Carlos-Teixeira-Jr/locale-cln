@@ -1,7 +1,12 @@
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import { GetServerSidePropsContext } from 'next';
 import { getSession } from 'next-auth/react';
+import { destroyCookie } from 'nookies';
+import { useEffect, useState } from 'react';
+import { IOwnerProperties } from '../common/interfaces/properties/propertiesList';
 import { IPropertyInfo } from '../common/interfaces/property/propertyData';
 import { fetchJson } from '../common/utils/fetchJson';
+import SentimentIcon from '../components/atoms/icons/sentimentIcon';
 import Pagination from '../components/atoms/pagination/pagination';
 import NotificationCard, {
   INotification,
@@ -9,82 +14,118 @@ import NotificationCard, {
 import AdminHeader from '../components/organisms/adminHeader/adminHeader';
 import SideMenu from '../components/organisms/sideMenu/sideMenu';
 import { useIsMobile } from '../hooks/useIsMobile';
-import { destroyCookie } from 'nookies';
-import jwt, { JwtPayload } from 'jsonwebtoken';
-import { useState, useEffect } from 'react';
 
 interface IMessageNotifications {
-  ownerProperties: IPropertyInfo;
-  notifications: [];
+  properties?: IPropertyInfo;
+  notificationsAdmin?: [] | any;
+  notificationsNotAdmin?: [] | any;
+  ownerProperties?: IOwnerProperties | any;
 }
 
 const MessageNotifications = ({
-  notifications,
   ownerProperties,
+  notificationsAdmin,
 }: IMessageNotifications) => {
-
   const isMobile = useIsMobile();
   const [isOwner, setIsOwner] = useState<boolean>(false);
+  const [showPagination, setShowPagination] = useState<boolean>(true);
+  const [notifications, setNotifications] = useState(notificationsAdmin);
 
-  // Determina se o usuário já possui anúncios ou não;
   useEffect(() => {
-    setIsOwner(ownerProperties.docs?.length > 0 ? true : false);
+    setIsOwner(ownerProperties?.docs?.length > 0 ? true : false);
   }, [ownerProperties]);
+
+  const adminNots = notificationsAdmin as [];
+
+  useEffect(() => {
+    if (notifications.length == 0) {
+      setShowPagination(!showPagination);
+    }
+    console.log(adminNots);
+  }, [notifications]);
 
   return (
     <main>
       <AdminHeader />
-      <div className="flex flex-row items-center justify-evenly">
-        <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:flex">
+      <div className="flex flex-row items-center justify-center lg:ml-72 xl:ml-72">
+        <div className="fixed sm:hidden hidden md:hidden lg:flex xl:flex left-0 top-20">
           {!isMobile ? (
-            <SideMenu isOwnerProp={isOwner} notifications={notifications} />
+            <SideMenu
+              isOwnerProp={isOwner}
+              notifications={adminNots && adminNots}
+            />
           ) : (
             ''
           )}
         </div>
+        <div className="flex flex-col max-w-[1232px] items-center mt-28">
+          <h1 className="font-extrabold text-2xl md:text-4xl text-quaternary md:mb-5 text-center">
+            Notificações
+          </h1>
+          <div className="flex flex-col items-center justify-center ">
+            <div className="flex justify-center mt-8">
+              {showPagination && <Pagination totalPages={0} />}
+            </div>
 
-        <div className="flex flex-col items-center mt-24 w-full lg:ml-[320px]">
-          <div className="flex flex-col items-center">
-            <h1 className="font-extrabold text-2xl md:text-4xl text-quaternary text-center lg:my-5">
-              Notificações
-            </h1>
-            {notifications && <Pagination totalPages={0} />}
-          </div>
-
-          <div className="lg:mb-10 flex flex-wrap flex-col md:flex-row lg:gap-10">
             {
-              <div className="mx-10">
-                {notifications &&
+              <div className="mx-10 mb-5 mt-[-1rem] ">
+                {notifications?.length == 0 ? (
+                  <div className="flex flex-col items-center align-middle mt-36">
+                    <SentimentIcon />
+                    <h1 className="text-2xl text-quaternary">
+                      Não tem nenhuma notificação.
+                    </h1>
+                  </div>
+                ) : (
+                  notifications?.length > 0 &&
                   notifications?.map(
-                    ({ description, _id, title }: INotification) => (
+                    ({
+                      description,
+                      _id,
+                      title,
+                      isRead,
+                      notifications,
+                      setShowPagination,
+                      showPagination,
+                    }: INotification) => (
                       <NotificationCard
                         key={_id}
                         description={description}
                         title={title}
                         _id={_id}
+                        isRead={isRead}
+                        notifications={notifications}
+                        setNotifications={setNotifications}
+                        showPagination={showPagination}
+                        setShowPagination={setShowPagination}
                       />
                     )
-                  )}
+                  )
+                )}
               </div>
             }
+          </div>
 
-            {/* <div className="flex justify-center mb-10">
-              {notifications && <Pagination totalPages={0} />}
-            </div> */}
+          <div className="flex justify-center mt-8">
+            {showPagination && <Pagination totalPages={0} />}
           </div>
         </div>
       </div>
     </main>
   );
 };
-
 export default MessageNotifications;
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = (await getSession(context)) as any;
-  const userId = session?.user.data._id;
+  const userId =
+    session?.user.data._id !== undefined
+      ? session?.user.data._id
+      : session?.user.id;
   let token;
   let refreshToken;
+  const { query } = context;
+  const page = query.page;
 
   if (!session) {
     return {
@@ -100,17 +141,14 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     const isTokenExpired = decodedToken?.exp
       ? decodedToken?.exp <= Math.floor(Date.now() / 1000)
       : false;
-
     if (isTokenExpired) {
       const decodedRefreshToken = jwt.decode(refreshToken) as JwtPayload;
       const isRefreshTokenExpired = decodedRefreshToken?.exp
         ? decodedRefreshToken?.exp <= Math.floor(Date.now() / 1000)
         : false;
-
       if (isRefreshTokenExpired) {
         destroyCookie(context, 'next-auth.session-token');
         destroyCookie(context, 'next-auth.csrf-token');
-
         return {
           redirect: {
             destination: '/login',
@@ -131,7 +169,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
               }),
             }
           );
-
           if (response.ok) {
             const data = await response.json();
             const newToken = data.access_token;
@@ -151,6 +188,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     }
 
     const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+    const id = userId.toString();
+
     let ownerId;
 
     try {
@@ -168,46 +207,69 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       if (ownerIdResponse.ok) {
         const ownerData = await ownerIdResponse.json();
         ownerId = ownerData?.owner?._id;
+      } else {
+        console.log('erro', ownerIdResponse);
       }
     } catch (error) {
       console.error(error);
     }
 
-    const [ownerProperties] = await Promise.all([
-      fetch(`${baseUrl}/property/owner-properties`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ownerId,
-          page: 1,
-        }),
-      })
+    if (ownerId) {
+      const [ownerProperties] = await Promise.all([
+        fetch(`${baseUrl}/property/owner-properties`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ownerId,
+            page: Number(page),
+          }),
+        })
+          .then((res) => res.json())
+          .catch(() => []),
+        fetchJson(`${baseUrl}/property/owner-properties`),
+      ]);
+
+      const notificationsAdmin = await fetch(
+        `${baseUrl}/notification/user/${id}?isRead=true`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
         .then((res) => res.json())
-        .catch(() => []),
-      fetchJson(`${baseUrl}/notification/${userId}`),
+        .catch(() => []);
 
-      fetchJson(`${baseUrl}/property/owner-properties`),
-    ]);
+      console.log('adminNotifications:', userId);
+      console.log('ADMINNOTIFICATIONS (admin):', notificationsAdmin);
 
-    const notifications = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API_URL}/notification/64da04b6052b4d12939684b0`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
+      return {
+        props: {
+          ownerProperties,
+          notificationsAdmin,
         },
-      }
-    )
-      .then((res) => res.json())
-      .catch(() => []);
-
-    return {
-      props: {
-        ownerProperties,
-        notifications,
-      },
-    };
+      };
+    } else {
+      const notificationsNotAdmin = await fetch(
+        `${baseUrl}/notification/user/${id}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+        .then((res) => res.json())
+        .catch(() => []);
+      console.log('ADMINNOTIFICATIONS (not admin):', notificationsNotAdmin);
+      return {
+        props: {
+          notificationsNotAdmin,
+        },
+      };
+    }
   }
 }

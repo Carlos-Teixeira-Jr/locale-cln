@@ -226,7 +226,11 @@ const CreditCard = ({
         if (response.ok) {
           toast.dismiss();
           toast.success('Dados do cartão atualizados com sucesso.');
-          router.push('/admin');
+          if (ownerData?.owner) {
+            router.push('/admin');
+          } else {
+            router.push('/adminFavProperties?page=1');
+          }
         } else {
           toast.dismiss();
           toast.error(
