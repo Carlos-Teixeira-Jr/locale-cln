@@ -11,6 +11,7 @@ type Owner = {
   name: string;
   adCredits: number;
   cellPhone: string;
+  email: string;
   phone: string;
   plan: string;
   creditCardInfo: ICreditCardInfo;
@@ -30,6 +31,7 @@ export interface IOwner {
   ownername: string;
   userId: string;
   phones: string[];
+  email: string;
   adCredits: number;
   profilePicture: string;
 }
