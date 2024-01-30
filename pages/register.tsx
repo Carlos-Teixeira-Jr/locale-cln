@@ -279,7 +279,7 @@ const Register = () => {
           addressInputRefs={addressInputRefs}
         />
 
-        <div className="flex md:justify-end justify-center lg:justify-end xl:justify-end max-w-[1215px]">
+        <div className="flex md:justify-end justify-center lg:justify-end xl:justify-end px-5 max-w-[1215px]">
           <button
             className="active:bg-gray-500 cursor-pointer flex items-center flex-row justify-around bg-primary w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold text-2xl lg:text-3xl hover:bg-red-600 hover:text-white"
             onClick={handleSubmit}

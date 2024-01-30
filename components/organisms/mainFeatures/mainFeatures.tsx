@@ -449,7 +449,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
           ))}
         </div>
 
-        <div className="my-5 px-5 lg:px-0 lg:ml-0">
+        <div className="my-5 px-5. lg:px-0 lg:ml-0">
           <h3 className="md:text-3xl text-2xl text-quaternary font-semibold leading-9 my-5">
             Dados do Imóvel:
           </h3>
@@ -548,7 +548,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
               <div className="flex my-5 justify-center">
                 <div className="rounded-full md:w-8 md:h-8 w-8 h-8 border border-secondary drop-shadow-xl md:flex justify-center">
                   <p
-                    className="text-secondary font-extrabold text-4xl md:leading-5 leading-[18px] cursor-pointer ml-1.5 md:ml-0"
+                    className="text-secondary font-extrabold text-4xl flex align-middle justify-center md:leading-5 leading-[18px] cursor-pointer"
                     onClick={btn.clickMinus}
                   >
                     -
@@ -559,7 +559,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                 </span>
                 <div className="rounded-full md:w-8 md:h-8 w-8 h-8 border border-secondary drop-shadow-xl md:flex justify-center">
                   <p
-                    className="text-secondary font-extrabold text-4xl md:leading-5 leading-[20px] cursor-pointer"
+                    className="text-secondary font-extrabold text-4xl flex align-middle justify-center leading-[23px] cursor-pointer"
                     onClick={btn.clickAdd}
                   >
                     +
@@ -572,7 +572,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
 
         <div className="my-5">
           <div
-            className="flex flex-col mx-5 lg:mx-0"
+            className="flex flex-col lg:mx-0"
             ref={mainFeaturesErrorScroll.description}
           >
             <label className="text-2xl font-normal text-quaternary leading-7 mb-5 drop-shadow-xl">
@@ -607,7 +607,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
           </div>
         </div>
 
-        <div className="my-10 px-5 lg:px-0">
+        <div className="my-10 lg:px-0">
           <h3 className="text-3xl text-quaternary font-semibold leading-9 my-5">
             Valores do Imóvel:
           </h3>

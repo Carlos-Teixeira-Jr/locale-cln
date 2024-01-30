@@ -424,7 +424,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
           </button>
           <div className="flex flex-row gap-1">
             <h1
-              className={`text-lg leading-10 font-normal cursor-pointer ${
+              className={`text-md md:text-lg leading-10 font-normal cursor-pointer ${
                 !isSameNumber ? 'text-secondary' : 'text-quaternary'
               }`}
             >
@@ -440,7 +440,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
         <div className="flex flex-col">
           {!isSameNumber && (
             <div className="flex flex-col">
-              <div className="max-w-[250px]" ref={userDataErrorScroll.whatsapp}>
+              <div className="md:max-w-[250px]" ref={userDataErrorScroll.whatsapp}>
                 <h3 className="text-xl font-normal text-quaternary leading-7">
                   WhatsApp
                 </h3>

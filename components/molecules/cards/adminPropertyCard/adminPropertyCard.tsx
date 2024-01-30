@@ -117,7 +117,7 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
   ];
 
   return (
-    <div className="flex flex-col items-center mt-10 justify-between">
+    <div className="flex flex-col items-center mb-10 justify-between">
       <Link href={`/property/${_id}?isEdit=true`}>
         <div
           className={`flex flex-col md:flex-row bg-tertiary max-w-5xl. w-full h-fit md:h-64 shadow-lg lg:w-[850px] ${
