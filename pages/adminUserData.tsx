@@ -328,6 +328,8 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   };
 
   console.log('endereço do user', userData.address);
+  console.log('firstProperty:', properties?.docs[0]);
+  console.log('properties:', properties);
 
   return (
     <div className="max-w-[1232px] mx-auto justify-center items-center">
@@ -350,13 +352,12 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                 onUserDataUpdate={(updatedUserData: IUserDataComponent) => {
                   setFormData(updatedUserData);
                 }}
+                firstProperty={properties?.docs[0]}
                 error={formDataErrors}
                 userDataInputRefs={userDataInputRefs}
                 profilePicPropertyData={
-                  properties?.docs[properties?.docs?.length - 1]?.ownerInfo
-                    ?.profilePicture &&
-                  properties?.docs[properties?.docs?.length - 1]?.ownerInfo
-                    .profilePicture
+                  properties?.docs[0]?.ownerInfo?.profilePicture &&
+                  properties?.docs[0]?.ownerInfo.profilePicture
                 }
               />
 

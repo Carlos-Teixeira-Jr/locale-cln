@@ -47,12 +47,14 @@ interface IPropertyPage {
   property: IData;
   isFavourite: boolean;
   relatedProperties: RelatedProperties;
+  ownerData: any;
 }
 
 const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
   property,
   isFavourite,
   relatedProperties,
+  ownerData,
 }: IPropertyPage) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [mapIsActive, setMapIsActive] = useState(false);
@@ -62,6 +64,9 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
   useEffect(() => {
     setMapIsActive(false);
   }, [dynamicRoute]);
+
+  console.log('property', property);
+  console.log('ownerData', ownerData);
 
   return (
     <>
@@ -84,7 +89,7 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
         <div className="md:flex w-full justify-between mb-4">
           <PropertyInfoTop propertyID={property} />
 
-          <ContactBox propertyID={property} />
+          <ContactBox property={property} ownerInfo={property.ownerInfo} />
         </div>
 
         <div className="w-full h-fit">
@@ -214,11 +219,24 @@ export async function getServerSideProps(context: NextPageContext) {
   const url = `${process.env.NEXT_PUBLIC_BASE_API_URL}/property/filter/?page=1&limit=4`;
   const relatedProperties = await fetch(url).then((res) => res.json());
 
+  const ownerData = await fetch(`${baseUrl}/user/find-owner-by-user`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      _id: userId,
+    }),
+  })
+    .then((res) => res.json())
+    .catch(() => []);
+
   return {
     props: {
       property,
       isFavourite,
       relatedProperties,
+      ownerData,
     },
   };
 }

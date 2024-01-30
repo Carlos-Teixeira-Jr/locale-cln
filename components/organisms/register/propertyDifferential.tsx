@@ -106,7 +106,7 @@ const PropertyDifferentials = ({
           className="my-5 h-12 md:w-[500px] w-full border border-quaternary drop-shadow-xl rounded-[10px] bg-tertiary px-5 text-xl font-bold text-quaternary"
           id="first-input"
           value={firstInputValue}
-          maxLength={10}
+          maxLength={20}
           onChange={(event) => setFirstInputValue(event.target.value)}
         />
         <button
@@ -280,7 +280,7 @@ const PropertyDifferentials = ({
                 className="h-12 md:w-[500px] w-full border border-quaternary drop-shadow-xl rounded-[10px] px-5 text-xl font-bold text-quaternary"
                 id="second-input"
                 value={secondInputValue}
-                maxLength={10}
+                maxLength={20}
                 onChange={(event) => setSecondInputValue(event.target.value)}
               />
               <button

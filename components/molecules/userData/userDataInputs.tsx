@@ -35,6 +35,7 @@ interface IUserDataInputs {
   error: UserDataErrorsTypes;
   userDataInputRefs?: any;
   profilePicPropertyData?: string;
+  firstProperty?: any;
 }
 
 const UserDataInputs: React.FC<IUserDataInputs> = ({
@@ -45,6 +46,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
   error,
   userDataInputRefs,
   profilePicPropertyData,
+  firstProperty,
 }) => {
   const userDataErrorScroll = {
     ...userDataInputRefs,
@@ -61,13 +63,17 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
   const phone = userData && userData?.owner ? userData?.owner.phone : '';
 
   const [formData, setFormData] = useState<IUserDataComponent>({
-    username: userData ? userData?.user?.username : '',
-    email: userData ? userData?.user?.email : '',
+    username: firstProperty.ownerInfo.name
+      ? firstProperty.ownerInfo.name
+      : userData?.user?.username,
+    email: firstProperty.ownerInfo.email
+      ? firstProperty.ownerInfo.email
+      : userData?.user?.email,
     cpf: userData ? userData?.user?.cpf : '',
     cellPhone: userData && userData.owner ? userData.owner.cellPhone : '',
-    profilePicture: profilePicPropertyData
-      ? profilePicPropertyData
-      : images && images,
+    profilePicture: firstProperty.ownerInfo.profilePicture
+      ? firstProperty.ownerInfo.profilePicture
+      : images,
     phone: wppNumber ? wppNumber : phone,
   });
 
