@@ -110,7 +110,7 @@ const PasswordForm: React.FC<IPasswordForm> = ({ userEmail, storedData }) => {
                 store.remove('propertyData');
                 store.remove('creditCard');
                 store.remove('userAlreadyExists');
-                router.push('/admin');
+                router.push('/admin?page=1');
               } else {
                 console.error(error);
                 toast.dismiss();

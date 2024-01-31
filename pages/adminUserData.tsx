@@ -314,7 +314,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
           toast.dismiss();
           showSuccessToast(SuccessToastNames.UserDataUpdate);
 
-          router.push('/admin');
+          router.push('/admin?page=1');
         } else {
           toast.dismiss();
           showErrorToast(ErrorToastNames.UserDataUpdate);

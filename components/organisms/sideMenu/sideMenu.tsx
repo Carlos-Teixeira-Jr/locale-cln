@@ -34,7 +34,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications }) => {
     const path = router.pathname;
     const messageIdPath = 'message';
 
-    if (path === '/admin') {
+    if (path === '/admin?page=1') {
       setActiveButton(isOwner ? 'my-announces-button' : 'favourites-button');
     } else if (path === '/adminUserData') {
       setActiveButton('my-data-button');
@@ -73,7 +73,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications }) => {
         />
       ),
       title: 'Meus Anúncios',
-      link: '/admin',
+      link: '/admin?page=1',
     },
     {
       key: 'myData',

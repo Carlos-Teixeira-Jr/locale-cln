@@ -122,7 +122,7 @@ const PropertyDifferentials = ({
           Adicionar
         </button>
       </div>
-      <div className="flex flex-wrap">
+      <div className="flex flex-wrap mt-4">
         {updatedTags.map((tag) => (
           <span
             className="bg-tertiary text-quaternary text-base font-semibold rounded-full drop-shadow-lg grid grid-flow-col border border-quaternary ml-2 mb-2"

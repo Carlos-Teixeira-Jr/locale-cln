@@ -61,7 +61,7 @@ const SuccessOnUpdateModal: React.FC<ISuccessOnUpdateModal> = ({
             <CloseIcon fill="white" viewBox="-1 -9 48 48" />
           </div>
         </div>
-        <Link href={'/admin'}>
+        <Link href={'/admin?page=1'}>
           <button className="bg-primary rounded-[10px] py-8 w-fit px-40 mx-auto text-tertiary text-xl font-extrabold">
             OK
           </button>
