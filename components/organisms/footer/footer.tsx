@@ -1,5 +1,7 @@
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import useDeviceSize from '../../../hooks/deviceSize';
+import { useIsMobile } from '../../../hooks/useIsMobile';
 import EmailIcon from '../../atoms/icons/emailIcon';
 import InstragramIcon from '../../atoms/icons/instagramIcon';
 import TwitterIcon from '../../atoms/icons/twitterIcon';
@@ -10,9 +12,29 @@ interface IFooter {
 
 const Footer = ({ smallPage }: IFooter) => {
   const [width, height] = useDeviceSize();
+  const [mobile, setMobile] = useState(false);
+  const [notebook, setNotebook] = useState(false);
+  const [desktop, setDesktop] = useState(false);
+  const isMobile = useIsMobile();
+
+  useEffect(() => {
+    if (height > 900) {
+      setDesktop(!desktop);
+    } else if (height < 500) {
+      setMobile(!mobile);
+    } else if (height < 700 && height > 500) {
+      setNotebook(!notebook);
+    }
+  }, [height]);
 
   const footerPositionCSS = `bg-tertiary block w-full ${
-    height > 820 ? 'fixed bottom-0 mt-5' : 'absolute mt-36'
+    desktop
+      ? 'fixed bottom-0 mt-5'
+      : mobile
+      ? 'absolute mt-36'
+      : notebook
+      ? 'absolute mt-36'
+      : 'absolute mt-36'
   }`;
 
   return (
