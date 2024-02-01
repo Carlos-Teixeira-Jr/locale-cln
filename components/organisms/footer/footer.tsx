@@ -1,19 +1,22 @@
 import Link from 'next/link';
+import useDeviceSize from '../../../hooks/deviceSize';
 import EmailIcon from '../../atoms/icons/emailIcon';
 import InstragramIcon from '../../atoms/icons/instagramIcon';
 import TwitterIcon from '../../atoms/icons/twitterIcon';
 
 interface IFooter {
-  smallPage: boolean;
+  smallPage?: boolean;
 }
 
 const Footer = ({ smallPage }: IFooter) => {
+  const [width, height] = useDeviceSize();
+
+  const footerPositionCSS = `bg-tertiary block w-full ${
+    height > 820 ? 'fixed bottom-0 mt-5' : 'absolute mt-36'
+  }`;
+
   return (
-    <footer
-      className={` bg-tertiary block ${
-        smallPage ? 'w-full absolute mt-20' : 'w-full relative bottom-0 mt-5'
-      }`}
-    >
+    <footer className={footerPositionCSS}>
       <div className="container p-6 m-auto bg-tertiary max-w-none">
         <div className="grid lg:grid-cols-4 md:grid-cols-2">
           <div className="mx-auto pb-5">
