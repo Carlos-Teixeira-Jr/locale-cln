@@ -99,7 +99,7 @@ export function AuthProvider({ children }: any) {
           email: data.email,
         });
 
-        router.push('/admin');
+        router.push('/admin?page=1');
       } else {
         console.error('Erro ao fazer login');
         const data = await response.json();
@@ -159,7 +159,7 @@ export function AuthProvider({ children }: any) {
           email: data.email,
         });
 
-        router.push('/admin');
+        router.push('/admin?page=1');
       } else {
         console.error('Erro ao fazer o cadastro');
         const data = await response.json();

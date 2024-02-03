@@ -1,20 +1,24 @@
 import clipboardy from 'clipboardy';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import React, { MouseEvent, useState } from 'react';
-import { toast } from 'react-toastify';
+import React, { MouseEvent, useEffect, useState } from 'react';
 import 'react-tooltip/dist/react-tooltip.css';
 import {
   IData,
   IMetadata,
 } from '../../../common/interfaces/property/propertyData';
 import { capitalizeFirstLetter } from '../../../common/utils/strings/capitalizeFirstLetter';
+import {
+  ErrorToastNames,
+  SuccessToastNames,
+  showErrorToast,
+  showSuccessToast,
+} from '../../../common/utils/toasts';
 import FavouritedIcon from '../../atoms/icons/favouritedIcon';
 import UnfavouritedIcon from '../../atoms/icons/unfavouritedIcon';
 import CalculatorModal from '../../atoms/modals/calculatorModal';
 import LinkCopiedTooltip from '../../atoms/tooltip/Tooltip';
 import FavouritePropertyTooltip from '../../atoms/tooltip/favouritePropertyTooltip';
-import { ErrorToastNames, showErrorToast, showSuccessToast, SuccessToastNames } from '../../../common/utils/toasts';
 
 export interface ITooltip {
   globalEventOff: string;
@@ -34,6 +38,7 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({ property, isFavourite }) => {
   const [favPropTooltipIsVisible, setFavPropTooltipIsVisible] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [favourited, setFavourited] = useState(isFavourite);
+  const [haveTags, setHaveTags] = useState<boolean>(false);
   const router = useRouter();
 
   const handleCopy = async () => {
@@ -101,10 +106,10 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({ property, isFavourite }) => {
             showErrorToast(ErrorToastNames.FavouriteProperty);
           }
         } else {
-          showErrorToast(ErrorToastNames.FavouriteProperty)
+          showErrorToast(ErrorToastNames.FavouriteProperty);
         }
       } catch (error) {
-        showErrorToast(ErrorToastNames.ServerConnection)
+        showErrorToast(ErrorToastNames.ServerConnection);
       }
     }
   };
@@ -115,6 +120,12 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({ property, isFavourite }) => {
     )?.amount;
     return value;
   };
+
+  useEffect(() => {
+    if (property.tags) {
+      setHaveTags(true);
+    }
+  }, [property.tags]);
 
   return (
     <>
@@ -142,6 +153,22 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({ property, isFavourite }) => {
               </div>
             </div>
           </div>
+          {haveTags && (
+            <h3 className="font-extrabold text-quaternary text-3xl pt-6 pb-2">
+              Outras características
+            </h3>
+          )}
+          {haveTags &&
+            property?.tags.map((tag) => (
+              <div key={tag} className="flex flex-col items-start">
+                <div className="flex flex-col">
+                  <div className="font-normal text-xl text-quaternary flex flex-row lg:justify-between gap-2">
+                    <span>•</span>
+                    <span>{tag}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
           <div className="pt-6">
             <h3 className="font-extrabold text-quaternary text-3xl pb-2 md:pb-4">
               Descrição
@@ -190,10 +217,11 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({ property, isFavourite }) => {
             onClick={handleFavouriteBtnClick}
           >
             <p className="my-auto pr-4">Favoritar</p>
-            {favourited 
-              ? <FavouritedIcon className='pb-4 md:pb-0'/> 
-              : <UnfavouritedIcon className='pb-4 md:pb-0'/>
-            }
+            {favourited ? (
+              <FavouritedIcon className="pb-4 md:pb-0" />
+            ) : (
+              <UnfavouritedIcon className="pb-4 md:pb-0" />
+            )}
           </button>
         </div>
 

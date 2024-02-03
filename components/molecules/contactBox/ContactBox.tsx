@@ -1,29 +1,31 @@
-import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import React, { useState } from 'react';
 import Modal from 'react-modal';
-import { IData } from '../../../common/interfaces/property/propertyData';
+import {
+  IData,
+  IOwnerInfo,
+} from '../../../common/interfaces/property/propertyData';
 import { capitalizeFirstLetter } from '../../../common/utils/strings/capitalizeFirstLetter';
 import UserIcon from '../../atoms/icons/userIcon';
 import MessageModal from '../../atoms/modals/messageModal';
 Modal.setAppElement('#__next');
 
 export interface IContactBox {
-  propertyID: IData;
+  ownerInfo: IOwnerInfo;
+  property: IData;
 }
 
-const ContactBox: React.FC<IContactBox> = ({ propertyID }: any) => {
-  const session = useSession() as any;
-  const profilePicture = propertyID.ownerInfo.profilePicture;
+const ContactBox: React.FC<IContactBox> = ({ ownerInfo, property }: any) => {
+  const profilePicture = ownerInfo?.profilePicture;
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const owner = propertyID.ownerInfo.name;
-  const ownerPropertyWpp = propertyID.ownerInfo.phones[1];
+  const owner = ownerInfo?.name;
+  const ownerPropertyWpp = ownerInfo?.phones[1];
   const ownerWhatsapp = ownerPropertyWpp?.replace(/[^0-9]+/g, '');
 
   const handleWhatsappBtnClick = () => {
-    const propertyStreet = propertyID.address.streetName;
-    const propertyNumber = propertyID.address.streetNumber;
-    const propertyCity = capitalizeFirstLetter(propertyID.address.city);
+    const propertyStreet = property?.address?.streetName;
+    const propertyNumber = property?.address?.streetNumber;
+    const propertyCity = capitalizeFirstLetter(property?.address?.city);
     const whatsappMessage = `Olá, gostaria de obter mais informações sobre o imóvel localizado em ${propertyStreet}, número ${propertyNumber}, na cidade de ${propertyCity}. 🏡✨`;
 
     const whatsappLink = `https://api.whatsapp.com/send/?phone=${ownerWhatsapp}&text=${encodeURIComponent(
@@ -50,6 +52,8 @@ const ContactBox: React.FC<IContactBox> = ({ propertyID }: any) => {
     setModalIsOpen(false);
   };
 
+  console.log('propertyID:', property);
+  console.log('ownerInfo:', ownerInfo);
   return (
     <>
       <div className="lg:w-fit md:h-10 md:pt-0 flex flex-col md:flex-row md:grid items-center justify-items-center align-middle justify lg:ml-2 m-5 lg:m-0">
@@ -58,9 +62,9 @@ const ContactBox: React.FC<IContactBox> = ({ propertyID }: any) => {
             <Image
               src={profilePicture}
               alt={'A image of the property owner'}
-              width={93}
-              height={93}
-              className="rounded-full border-4 border-quaternary drop-shadow-lg"
+              width={90}
+              height={90}
+              className="rounded-full border-4 w-[90px] max-w-[90px] h-[90px] max-h-[90px]"
             />
           ) : (
             <UserIcon
@@ -69,7 +73,11 @@ const ContactBox: React.FC<IContactBox> = ({ propertyID }: any) => {
             />
           )}
 
-          <p className="w-48 md:w-full h-fit text-quaternary font-extrabold text-2xl md:text-3xl text-center pt-3 md:pt-0 drop-shadow-lg">
+          <p
+            className={`${
+              owner?.length > 25 ? 'text-xl' : 'text-2xl'
+            } w-48 md:w-full h-fit text-quaternary font-extrabold text-center pt-3 md:pt-0 drop-shadow-lg`}
+          >
             {owner}
           </p>
         </div>
@@ -93,7 +101,7 @@ const ContactBox: React.FC<IContactBox> = ({ propertyID }: any) => {
           <MessageModal
             isOpen={modalIsOpen}
             setModalIsOpen={handleModalClose}
-            propertyInfo={propertyID}
+            propertyInfo={property}
           />
         </div>
       )}
