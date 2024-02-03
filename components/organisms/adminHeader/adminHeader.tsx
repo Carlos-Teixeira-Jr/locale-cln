@@ -29,29 +29,31 @@ const AdminHeader: React.FC<IAdminHeader> = ({ isOwnerProp }) => {
       </Link>
       <div className="flex flex-row items-center lg:px-10">
         <div className="flex items-center mr-2 md:mr-10">
-          <Link href={''} className="font-medium text-base text-secondary">
+          {/* <Link href={''} className="font-medium text-base text-secondary">
             Precisa de Ajuda?
-          </Link>
+          </Link> */}
         </div>
-        <div
-          className="flex items-center justify-center max-w-[50px] max-h-[50px] cursor-pointer shrink-0"
-          onClick={() => setOpen(!isMobile ? !open : false)}
-        >
-          {session?.user?.image ? (
-            <Image
-              src={session?.user?.image}
-              alt={'User profile picture'}
-              width={50}
-              height={50}
-              className="border border-primary rounded-full w-12 h-12"
-            />
-          ) : (
-            <UserIcon
-              className="border border-secondary rounded-full w-12 h-12 p-1 bg-white hover:bg-black hover:opacity-25 transition duration-300 ease-in-out"
-              fill="#F75D5F"
-            />
-          )}
-        </div>
+        <Link href={'/admin?page=1'}>
+          <div
+            className="flex items-center justify-center max-w-[50px] max-h-[50px] cursor-pointer shrink-0"
+            onClick={() => setOpen(!isMobile ? !open : false)}
+          >
+            {session?.user?.image ? (
+              <Image
+                src={session?.user?.image}
+                alt={'User profile picture'}
+                width={50}
+                height={50}
+                className="border border-primary rounded-full w-12 h-12"
+              />
+            ) : (
+              <UserIcon
+                className="border border-secondary rounded-full w-12 h-12 p-1 bg-white hover:bg-black hover:opacity-25 transition duration-300 ease-in-out"
+                fill="#F75D5F"
+              />
+            )}
+          </div>
+        </Link>
         <div ref={ref} onClick={() => setOpen(!open)}>
           <button className="visible lg:hidden cursor-pointer decoration-transparent mx-5">
             <MenuIcon width={isMobile ? 24 : 50} height={isMobile ? 24 : 50} />

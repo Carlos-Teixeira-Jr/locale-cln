@@ -19,7 +19,6 @@ import ContactBox from '../../components/molecules/contactBox/ContactBox';
 import Gallery from '../../components/molecules/gallery/gallery';
 import PropertyInfoTop from '../../components/molecules/property/propertyInfoTop';
 import Footer from '../../components/organisms/footer/footer';
-import Header from '../../components/organisms/header/header';
 import PropertyInfo from '../../components/organisms/propertyInfo/PropertyInfo';
 import { NextPageWithLayout } from '../page';
 
@@ -48,12 +47,14 @@ interface IPropertyPage {
   property: IData;
   isFavourite: boolean;
   relatedProperties: RelatedProperties;
+  ownerData: any;
 }
 
 const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
   property,
   isFavourite,
   relatedProperties,
+  ownerData,
 }: IPropertyPage) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [mapIsActive, setMapIsActive] = useState(false);
@@ -64,12 +65,18 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
     setMapIsActive(false);
   }, [dynamicRoute]);
 
+  console.log('property', property);
+  console.log('ownerData', ownerData);
+
   return (
     <>
-      <Header />
-      <div className="flex flex-col max-w-5xl items-center mx-auto lg:pt-10 pt-[90px]">
+      <div
+        className={
+          'flex flex-col max-w-5xl items-center mx-auto lg:pt-10 pt-[90px]'
+        }
+      >
         <div
-          className={`lg:mx-auto m-5 mb-36 md:mb-5 md:mt-0 lg:mt-5 ${
+          className={`lg:mx-auto m-5 mb-36 md:mb-5 md:mt-0 lg:mt-5  ${
             isModalOpen ? 'z-50' : 'z-30'
           }`}
         >
@@ -79,10 +86,10 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
             onGalleryModalOpen={(isOpen: boolean) => setIsModalOpen(isOpen)}
           />
         </div>
-        <div className="md:flex w-full justify-between">
+        <div className="md:flex w-full justify-between mb-4">
           <PropertyInfoTop propertyID={property} />
 
-          <ContactBox propertyID={property} />
+          <ContactBox property={property} ownerInfo={property.ownerInfo} />
         </div>
 
         <div className="w-full h-fit">
@@ -215,11 +222,24 @@ export async function getServerSideProps(context: NextPageContext) {
   const url = `${process.env.NEXT_PUBLIC_BASE_API_URL}/property/filter/?page=1&limit=4`;
   const relatedProperties = await fetch(url).then((res) => res.json());
 
+  const ownerData = await fetch(`${baseUrl}/user/find-owner-by-user`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      _id: userId,
+    }),
+  })
+    .then((res) => res.json())
+    .catch(() => []);
+
   return {
     props: {
       property,
       isFavourite,
       relatedProperties,
+      ownerData,
     },
   };
 }

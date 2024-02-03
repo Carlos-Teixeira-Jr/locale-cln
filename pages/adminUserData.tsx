@@ -24,7 +24,7 @@ import {
   showSuccessToast,
 } from '../common/utils/toasts';
 import ArrowDownIcon from '../components/atoms/icons/arrowDownIcon';
-import Address from '../components/molecules/address/address';
+import UserAddress from '../components/molecules/address/userAdress';
 import PlansCardsHidden from '../components/molecules/cards/plansCards/plansCardHidden';
 import CreditCard, {
   CreditCardForm,
@@ -269,6 +269,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
         ownername: formData.username,
         phones: [formData.cellPhone, formData.phone],
         userId: userData._id,
+        email: formData.email ? formData.email : '',
         profilePicture: picture
           ? picture
           : 'https://static.vecteezy.com/system/resources/previews/019/879/186/non_2x/user-icon-on-transparent-background-free-png.png',
@@ -313,7 +314,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
           toast.dismiss();
           showSuccessToast(SuccessToastNames.UserDataUpdate);
 
-          router.push('/admin');
+          router.push('/admin?page=1');
         } else {
           toast.dismiss();
           showErrorToast(ErrorToastNames.UserDataUpdate);
@@ -326,6 +327,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       showErrorToast(ErrorToastNames.EmptyFields);
     }
   };
+
   return (
     <div className="max-w-[1232px] mx-auto justify-center items-center">
       <div className="fixed z-50 top-0 w-full inset-x-0">
@@ -338,7 +340,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
           </div>
         )}
 
-        <div className="flex flex-col mt-16 lg:ml-80 max-w-[1232px] justify-center mx-5">
+        <div className="flex flex-col mt-16 lg:ml-80 max-w-[1232px] justify-center md:mx-5">
           <div className="my-5 lg:mx-10 md:mx-2 max-w-[1232px]">
             <div className="my-5">
               <UserDataInputs
@@ -347,13 +349,12 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                 onUserDataUpdate={(updatedUserData: IUserDataComponent) => {
                   setFormData(updatedUserData);
                 }}
+                firstProperty={properties?.docs[0]}
                 error={formDataErrors}
                 userDataInputRefs={userDataInputRefs}
                 profilePicPropertyData={
-                  properties?.docs[properties?.docs?.length - 1]?.ownerInfo
-                    ?.profilePicture &&
-                  properties?.docs[properties?.docs?.length - 1]?.ownerInfo
-                    .profilePicture
+                  properties?.docs[0]?.ownerInfo?.profilePicture &&
+                  properties?.docs[0]?.ownerInfo.profilePicture
                 }
               />
 
@@ -370,10 +371,10 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                 />
               </div>
 
-              <h2 className="md:text-3xl text-2xl leading-10 text-quaternary font-bold mb-5 lg:mb-10 lg:mx-5">
+              <h2 className="md:text-3xl text-2xl leading-10 text-quaternary font-bold mb-5 lg:mb-10 mx-5">
                 Dados de Cobrança
               </h2>
-              <div className="grid sm:grid-cols-1 grid-cols-1 md:grid-cols-3 xl:grid-cols-3 gap-6">
+              <div className="grid sm:grid-cols-1 grid-cols-1 md:grid-cols-3 xl:grid-cols-3 md:gap-6">
                 {reversedCards.map(
                   ({
                     _id,
@@ -406,10 +407,11 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                   )
                 )}
               </div>
+              {/** Endereço do imóvel */}
               <div className="flex mt-1 md:mt-1">
-                <Address
+                <UserAddress
                   isEdit={isEdit}
-                  address={ownerData?.user?.address}
+                  address={userData.address}
                   onAddressUpdate={(updateAddres: IAddress) =>
                     setAddress(updateAddres)
                   }
@@ -417,6 +419,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                   addressInputRefs={addressInputRefs}
                 />
               </div>
+              {/** Endereço do imóvel */}
             </div>
             <div className="lg:float-right flex md:justify-end justify-center md:w-[90%] lg:w-full mb-10 md:mr-16 lg:mr-5">
               <button
@@ -618,7 +621,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         fetchJson(`${baseUrl}/plan`),
         fetchJson(`${baseUrl}/property/owner-properties`),
       ]);
-    console.log('adminUserData:', userId);
 
     return {
       props: {

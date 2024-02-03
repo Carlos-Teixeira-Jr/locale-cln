@@ -35,17 +35,17 @@ const LinearStepper = ({ isSubmited, sharedActiveStep }: IStep) => {
   const [activeStep, setActiveStep] = useState(0);
   const router = useRouter();
 
-  const handleNext = () => {
-    if (isSubmited) {
-    router.push("/register-step-2")
-    setActiveStep((currentStep) => currentStep + 1);
-    }
-  };
+  // const handleNext = () => {
+  //   if (isSubmited) {
+  //   router.push("/register-step-2")
+  //   setActiveStep((currentStep) => currentStep + 1);
+  //   }
+  // };
 
-  const handleBack = () => {
-    // navigate("/PASSO ANTERIOR")
-    setActiveStep((currentStep) => currentStep - 1);
-  };
+  // const handleBack = () => {
+  //   // navigate("/PASSO ANTERIOR")
+  //   setActiveStep((currentStep) => currentStep - 1);
+  // };
 
   const handleReset = () => {
     setActiveStep(0);

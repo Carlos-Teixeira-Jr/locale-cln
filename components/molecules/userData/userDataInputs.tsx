@@ -35,6 +35,7 @@ interface IUserDataInputs {
   error: UserDataErrorsTypes;
   userDataInputRefs?: any;
   profilePicPropertyData?: string;
+  firstProperty?: any;
 }
 
 const UserDataInputs: React.FC<IUserDataInputs> = ({
@@ -45,6 +46,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
   error,
   userDataInputRefs,
   profilePicPropertyData,
+  firstProperty,
 }) => {
   const userDataErrorScroll = {
     ...userDataInputRefs,
@@ -61,13 +63,17 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
   const phone = userData && userData?.owner ? userData?.owner.phone : '';
 
   const [formData, setFormData] = useState<IUserDataComponent>({
-    username: userData ? userData?.user?.username : '',
-    email: userData ? userData?.user?.email : '',
+    username: firstProperty?.ownerInfo?.name
+      ? firstProperty?.ownerInfo?.name
+      : userData?.user?.username,
+    email: firstProperty?.ownerInfo?.email
+      ? firstProperty?.ownerInfo?.email
+      : userData?.user?.email,
     cpf: userData ? userData?.user?.cpf : '',
     cellPhone: userData && userData.owner ? userData.owner.cellPhone : '',
-    profilePicture: profilePicPropertyData
-      ? profilePicPropertyData
-      : images && images,
+    profilePicture: firstProperty?.ownerInfo?.profilePicture
+      ? firstProperty?.ownerInfo?.profilePicture
+      : images,
     phone: wppNumber ? wppNumber : phone,
   });
 
@@ -418,7 +424,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
           </button>
           <div className="flex flex-row gap-1">
             <h1
-              className={`text-lg leading-10 font-normal cursor-pointer ${
+              className={`text-md md:text-lg leading-10 font-normal cursor-pointer ${
                 !isSameNumber ? 'text-secondary' : 'text-quaternary'
               }`}
             >
@@ -434,7 +440,10 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
         <div className="flex flex-col">
           {!isSameNumber && (
             <div className="flex flex-col">
-              <div className="max-w-[250px]" ref={userDataErrorScroll.whatsapp}>
+              <div
+                className="md:max-w-[250px]"
+                ref={userDataErrorScroll.whatsapp}
+              >
                 <h3 className="text-xl font-normal text-quaternary leading-7">
                   WhatsApp
                 </h3>

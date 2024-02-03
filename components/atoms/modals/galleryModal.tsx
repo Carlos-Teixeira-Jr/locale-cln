@@ -7,12 +7,14 @@ export interface IGalleryModal {
   setModalIsOpen: (isOpen: boolean) => void;
   property: IData;
   selectedImage: number;
+  modalIsOpen: boolean;
 }
 
 const GalleryModal: React.FC<IGalleryModal> = ({
   setModalIsOpen,
   property,
   selectedImage,
+  modalIsOpen,
 }) => {
   const [currentIndex, setCurrentIndex] = useState(selectedImage);
 
@@ -31,20 +33,22 @@ const GalleryModal: React.FC<IGalleryModal> = ({
   };
 
   return (
-    <div className="h-[97%] md:h-full md:max-h-[570px] lg:max-h-[540px] w-full -translate-y-[53.2%]. top-96. top-16. top-24 pt-20 pb-12 bg-black/90 absolute z-50 group inset-x-0">
+    <div className="h-full w-full -translate-y-[53.2%]. top-0 pt-24 pb-12  bg-black/90 absolute z-[214748364] group inset-x-0 overflow-x-hidden overflow-y-hidden overflow-hidden">
       <div>
         <AiOutlineClose
           className="hidden group-hover:block absolute top-[4%] md:top-[5%] -translate-x-0 -translate-y-[50%] right-2 text-2xl rounded-full p-2 bg-black/20 text-white cursor-pointer"
           size={50}
-          onClick={() => setModalIsOpen(false)}
+          onClick={() => {
+            setModalIsOpen(false);
+          }}
         />
       </div>
-      <div className="flex justify-center w-full">
+      <div className="flex justify-center w-full items-center">
         <Image
           src={property.images[currentIndex]}
           alt={''}
-          width={300}
-          height={300}
+          width={900}
+          height={900}
           className=" rounded-3xl"
         />
       </div>

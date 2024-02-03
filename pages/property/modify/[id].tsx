@@ -17,6 +17,12 @@ import {
   PricesType,
 } from '../../../common/interfaces/property/propertyData';
 import { fetchJson } from '../../../common/utils/fetchJson';
+import {
+  ErrorToastNames,
+  SuccessToastNames,
+  showErrorToast,
+  showSuccessToast,
+} from '../../../common/utils/toasts';
 import ArrowDownIconcon from '../../../components/atoms/icons/arrowDownIcon';
 import Address from '../../../components/molecules/address/address';
 import UploadImages from '../../../components/molecules/uploadImages/uploadImages';
@@ -25,7 +31,6 @@ import MainFeatures from '../../../components/organisms/mainFeatures/mainFeature
 import PropertyDifferentials from '../../../components/organisms/register/propertyDifferential';
 import SideMenu from '../../../components/organisms/sideMenu/sideMenu';
 import { NextPageWithLayout } from '../../page';
-import { ErrorToastNames, SuccessToastNames, showErrorToast, showSuccessToast } from '../../../common/utils/toasts';
 
 interface IEditAnnouncement {
   property: IData;
@@ -216,7 +221,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
     if (!address.streetNumber) newAddressErrors.streetNumber = error;
     if (!address.city) newAddressErrors.city = error;
     if (!address.uf) newAddressErrors.uf = error;
-    if (images.length < 3) {
+    if (images.length < 5) {
       const imagesError = 'Você precisa ter pelo menos três fotos.';
       setErrorInfo({
         error: imagesError,
@@ -270,9 +275,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
           {
             type: PricesType.mensal,
             value: parseInt(
-              mainFeatures.propertyValue
-                .replace(/\./g, '')
-                .replace(',', '.')
+              mainFeatures.propertyValue.replace(/\./g, '').replace(',', '.')
             ),
           },
           {
@@ -305,7 +308,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
         if (response.ok) {
           toast.dismiss();
           showSuccessToast(SuccessToastNames.PropertyUpdate);
-          router.push('/admin');
+          router.push('/admin?page=1');
         } else {
           toast.dismiss();
           showErrorToast(ErrorToastNames.PropertyUpdate);
@@ -346,14 +349,14 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
   return (
     <div>
       <AdminHeader isOwnerProp={true} />
-      <div className="flex flex-row justify-center lg:justify-end xl:justify-end 2xl:justify-center">
-        <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:flex">
+      <div className="flex flex-row justify-center w-full">
+        <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:hidden xl:flex">
           <SideMenu
             isOwnerProp={property !== undefined && true}
             notifications={[]}
           />
         </div>
-        <div className="flex flex-col items-center mt-16 max-w-[900px] px-2 md:px-10">
+        <div className="flex flex-col items-center mt-16 max-w-[900px] px-2 md:px-10 sm:ml-0 ml-0 xl:ml-24 2xl:ml-24">
           <h1 className="font-bold text-2xl lg:text-3xl text-quaternary my-10 mx-auto">
             Edição do Anúncio
             <div className="accordion flex flex-col">
@@ -367,7 +370,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
                 />
                 <label
                   htmlFor="painel-1"
-                  className="flex flex-row items-center justify-between sm:min-w-[300px] md:min-w-[620px] lg:min-w-[600px] xl:min-w-[800px] 2xl:min-w-[1000px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 text-xl transition bg-opacity-90 hover:bg-gray-300"
+                  className="flex flex-row items-center justify-between sm:min-w-[300px] md:min-w-[600px] lg:min-w-[600px] xl:min-w-[800px] 2xl:min-w-[1000px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 mx-4 text-xl transition bg-opacity-90 hover:bg-gray-300"
                 >
                   Endereço
                   <span
@@ -405,7 +408,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
                 />
                 <label
                   htmlFor="painel-2"
-                  className="flex flex-row items-center justify-between sm:min-w-[300px] md:min-w-[620px] lg:min-w-[600px] xl:min-w-[800px] 2xl:min-w-[1000px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 text-xl transition bg-opacity-90 hover:bg-gray-300"
+                  className="flex flex-row items-center justify-between sm:min-w-[300px] md:min-w-[620px] lg:min-w-[600px] xl:min-w-[800px] 2xl:min-w-[1000px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 mx-4 text-xl transition bg-opacity-90 hover:bg-gray-300"
                 >
                   Fotos
                   <span
@@ -442,7 +445,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
                 />
                 <label
                   htmlFor="painel-3"
-                  className="flex flex-row items-center justify-between sm:min-w-[300px] md:min-w-[620px] lg:min-w-[600px] xl:min-w-[800px] 2xl:min-w-[1000px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 text-xl transition bg-opacity-90 hover:bg-gray-300"
+                  className="flex flex-row items-center justify-between sm:min-w-[300px] md:min-w-[620px] lg:min-w-[600px] xl:min-w-[800px] 2xl:min-w-[1000px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 mx-4 text-xl transition bg-opacity-90 hover:bg-gray-300"
                 >
                   Características
                   <span
@@ -536,7 +539,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
                 />
                 <label
                   htmlFor="painel-4"
-                  className="flex flex-row items-center justify-between sm:min-w-[300px] md:min-w-[620px] lg:min-w-[600px] xl:min-w-[800px] 2xl:min-w-[1000px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 text-xl transition bg-opacity-90 hover:bg-gray-300"
+                  className="flex flex-row items-center justify-between  sm:min-w-[300px] md:min-w-[620px] lg:min-w-[600px] xl:min-w-[800px] 2xl:min-w-[1000px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 mx-4 text-xl transition bg-opacity-90 hover:bg-gray-300"
                 >
                   Outras Características
                   <span
@@ -551,7 +554,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
                   className="accordion__content hidden bg-grey-lighter dis"
                   id="accordion-4"
                 >
-                  <div className="accordion__body" id="painel4">
+                  <div className="accordion__body mx-2" id="painel4">
                     <PropertyDifferentials
                       shouldRenderCondDiv={
                         property.propertyType === 'apartamento' ||

@@ -5,6 +5,7 @@ import { useIsMobile } from '../../../hooks/useIsMobile';
 import NextGalleryIcon from '../../atoms/icons/nextGalleryIcon';
 import PreviousGalleryIcon from '../../atoms/icons/previousGalleryIcon';
 import GalleryModal from '../../atoms/modals/galleryModal';
+import Header from '../../organisms/header/header';
 
 export interface IGallery {
   propertyID: IData;
@@ -27,18 +28,18 @@ const Gallery: React.FC<IGallery> = ({
     onGalleryModalOpen(modalIsOpen);
   }, [modalIsOpen]);
 
-  useEffect(() => {
-    document.addEventListener('click', handleClick);
-    return () => document.removeEventListener('click', handleClick);
-    function handleClick(event: any) {
-      if (ref && ref.current) {
-        const myRef: any = ref.current;
-        if (!myRef.contains(event.target)) {
-          setModalIsOpen(false);
-        }
-      }
-    }
-  });
+  // useEffect(() => {
+  //   document.addEventListener('click', handleClick);
+  //   return () => document.removeEventListener('click', handleClick);
+  //   function handleClick(event: any) {
+  //     if (ref && ref.current) {
+  //       const myRef: any = ref.current;
+  //       if (!myRef.contains(event.target)) {
+  //         setModalIsOpen(false);
+  //       }
+  //     }
+  //   }
+  // });
 
   const prevImage = () => {
     const isFirstImage = currentIndex === 0;
@@ -54,10 +55,34 @@ const Gallery: React.FC<IGallery> = ({
     setCurrentIndex(newIndex);
   };
 
+  const desabilitarScroll = () => {
+    document.documentElement.style.overflow = 'hidden'; // Desabilita o scroll na tag HTML
+    document.body.style.overflow = 'hidden'; // Desabilita o scroll no corpo da página
+  };
+
+  useEffect(() => {
+    if (!modalIsOpen) {
+      document.documentElement.style.overflowY = 'scroll';
+      document.body.style.overflowY = 'hidden';
+    }
+  }, [modalIsOpen]);
+
   return (
-    <>
+    <div className="overflow-hidden">
+      <div className="z-50">
+        {modalIsOpen && !isMobile && (
+          <GalleryModal
+            setModalIsOpen={setModalIsOpen}
+            property={propertyID}
+            selectedImage={selectedImage}
+            modalIsOpen={modalIsOpen}
+          />
+        )}
+      </div>
+
       {!isMobile ? (
         <div>
+          <Header />
           <div className="hidden max-w-full max-h-[520px] md:flex flex-row items-center gap-1 mt-12">
             {/* Big image */}
             <div
@@ -69,9 +94,13 @@ const Gallery: React.FC<IGallery> = ({
                 alt={'Property image'}
                 width={653}
                 height={620}
+                id="desabilitarScrollBtn"
                 onClick={() => {
                   setModalIsOpen(true);
                   setSelectedImage(0);
+                  document
+                    ?.getElementById('desabilitarScrollBtn')
+                    ?.addEventListener('click', desabilitarScroll);
                 }}
                 className="cursor-pointer rounded-l-3xl md:rounded-l-3xl w-[653px] h-[300px] md:h-[520px] hover:opacity-25 group"
               />
@@ -95,9 +124,13 @@ const Gallery: React.FC<IGallery> = ({
                   width={328}
                   height={260}
                   className="cursor-pointer w-[328px] h-[260px] hover:opacity-25 group"
+                  id="desabilitarScrollBtn6"
                   onClick={() => {
                     setModalIsOpen(true);
                     setSelectedImage(1);
+                    document
+                      ?.getElementById('desabilitarScrollBtn6')
+                      ?.addEventListener('click', desabilitarScroll);
                   }}
                 />
                 <span className="hidden group-hover:relative group-hover:z-50 cursor-pointer relative top-[-150px] left-[80px] font-normal text-3xl text-tertiary">
@@ -115,9 +148,13 @@ const Gallery: React.FC<IGallery> = ({
                   width={328}
                   height={260}
                   className="group cursor-pointer rounded-tr-3xl w-[328px] h-[260px] hover:opacity-25 group"
+                  id="desabilitarScrollBtn7"
                   onClick={() => {
                     setModalIsOpen(true);
                     setSelectedImage(2);
+                    document
+                      ?.getElementById('desabilitarScrollBtn7')
+                      ?.addEventListener('click', desabilitarScroll);
                   }}
                 />
                 <span className="hidden group-hover:relative group-hover:z-50 cursor-pointer relative top-[-150px] left-[80px] font-normal text-3xl text-tertiary">
@@ -137,9 +174,13 @@ const Gallery: React.FC<IGallery> = ({
                     width={328}
                     height={260}
                     className="cursor-pointer w-[328px] h-[260px] hover:opacity-25 group"
+                    id="desabilitarScrollBtn2"
                     onClick={() => {
                       setModalIsOpen(true);
                       setSelectedImage(0);
+                      document
+                        ?.getElementById('desabilitarScrollBtn2')
+                        ?.addEventListener('click', desabilitarScroll);
                     }}
                   />
                 ) : (
@@ -149,9 +190,13 @@ const Gallery: React.FC<IGallery> = ({
                     width={328}
                     height={260}
                     className="cursor-pointer w-[328px] h-[260px] hover:opacity-25 group"
+                    id="desabilitarScrollBtn3"
                     onClick={() => {
                       setModalIsOpen(true);
                       setSelectedImage(3);
+                      document
+                        ?.getElementById('desabilitarScrollBtn3')
+                        ?.addEventListener('click', desabilitarScroll);
                     }}
                   />
                 )}
@@ -172,9 +217,13 @@ const Gallery: React.FC<IGallery> = ({
                     width={328}
                     height={260}
                     className="cursor-pointer w-[328px] h-[260px] hover:opacity-25 group"
+                    id="desabilitarScrollBtn4"
                     onClick={() => {
                       setModalIsOpen(true);
                       setSelectedImage(0);
+                      document
+                        ?.getElementById('desabilitarScrollBtn4')
+                        ?.addEventListener('click', desabilitarScroll);
                     }}
                   />
                 ) : (
@@ -184,9 +233,13 @@ const Gallery: React.FC<IGallery> = ({
                     width={328}
                     height={260}
                     className="cursor-pointer w-[328px] h-[260px] hover:opacity-25 group"
+                    id="desabilitarScrollBtn5"
                     onClick={() => {
                       setModalIsOpen(true);
                       setSelectedImage(4);
+                      document
+                        ?.getElementById('desabilitarScrollBtn5')
+                        ?.addEventListener('click', desabilitarScroll);
                     }}
                   />
                 )}
@@ -196,58 +249,54 @@ const Gallery: React.FC<IGallery> = ({
               </div>
             </div>
           </div>
-          {modalIsOpen && (
-            <GalleryModal
-              setModalIsOpen={setModalIsOpen}
-              property={propertyID}
-              selectedImage={selectedImage}
-            />
-          )}
         </div>
       ) : (
-        <div className="group relative h-[200px]">
-          {/* Images */}
-          <div className="flex flex-row w-full max-w-max overflow-hidden scroll-smooth h-[350px]">
-            <Image
-              src={propertyID.images[currentIndex]}
-              key={currentIndex}
-              alt={'Property Image'}
-              width="405"
-              height="350"
-            />
-          </div>
-          {/* Index */}
-          <div className="flex relative -top-8 left-[300px] w-9 rounded-lg bg-black opacity-50">
-            <span className="text-sm font-normal text-tertiary ml-[7px] z-50">
-              {currentIndex + 1}/{propertyID.images.length}
-            </span>
-          </div>
-          {/* Arrow buttons */}
-          <div className="absolute w-full top-[170px] flex items-center justify-between">
-            <button
-              type="button"
-              onClick={prevImage}
-              className="z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
-            >
-              <span className="hidden group-hover:inline-flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-[#D9D9D9]/80 group-hover:bg-white/50 group-focus:outline-none">
-                <PreviousGalleryIcon />
-                <span className="sr-only">Previous</span>
+        <>
+          <Header />
+          <div className="group relative h-[200px]">
+            {/* Images */}
+            <div className="flex flex-row w-full max-w-max overflow-hidden scroll-smooth h-[350px]">
+              <Image
+                src={propertyID.images[currentIndex]}
+                key={currentIndex}
+                alt={'Property Image'}
+                width="405"
+                height="350"
+              />
+            </div>
+            {/* Index */}
+            <div className="flex relative -top-8 left-[300px] w-9 rounded-lg bg-black opacity-50">
+              <span className="text-sm font-normal text-tertiary ml-[7px] z-50">
+                {currentIndex + 1}/{propertyID.images.length}
               </span>
-            </button>
-            <button
-              type="button"
-              onClick={nextImage}
-              className="z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
-            >
-              <span className="hidden group-hover:inline-flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-[#D9D9D9]/80 group-hover:bg-white/50 group-focus:outline-none">
-                <NextGalleryIcon />
-                <span className="sr-only">Next</span>
-              </span>
-            </button>
+            </div>
+            {/* Arrow buttons */}
+            <div className="absolute w-full top-[170px] flex items-center justify-between">
+              <button
+                type="button"
+                onClick={prevImage}
+                className="z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+              >
+                <span className="hidden group-hover:inline-flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-[#D9D9D9]/80 group-hover:bg-white/50 group-focus:outline-none">
+                  <PreviousGalleryIcon />
+                  <span className="sr-only">Previous</span>
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={nextImage}
+                className="z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+              >
+                <span className="hidden group-hover:inline-flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-[#D9D9D9]/80 group-hover:bg-white/50 group-focus:outline-none">
+                  <NextGalleryIcon />
+                  <span className="sr-only">Next</span>
+                </span>
+              </button>
+            </div>
           </div>
-        </div>
+        </>
       )}
-    </>
+    </div>
   );
 };
 export default Gallery;

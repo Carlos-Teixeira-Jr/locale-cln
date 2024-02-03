@@ -5,9 +5,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import { DndProvider, DropTargetMonitor, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { v4 as uuidv4 } from 'uuid';
+import { addImageToDB, removeImageFromDB } from '../../../common/utils/indexDb';
 import CameraIcon from '../../atoms/icons/cameraIcon';
 import TrashIcon from '../../atoms/icons/trashIcon';
-import { addImageToDB, removeImageFromDB } from '../../../common/utils/indexDb';
 
 interface IImages {
   editarImages?: string[];
@@ -30,7 +30,7 @@ const UploadImages = ({
   const imagesErrorScroll = useRef(imagesInputRef);
 
   const [images, setImages] = useState<any[]>(editarImages || []);
-  
+
   const [error, setError] = useState<OnErrorInfo>({
     prop: '',
     error: '',
@@ -63,12 +63,11 @@ const UploadImages = ({
 
   const handleAddImage = async (event: any) => {
     for (const file of event.target.files) {
-
       const id = uuidv4();
 
       // Adiciona a imagem ao IndexedDB junto com o ID UUID
       await addImageToDB(file, id);
-  
+
       // Atualiza o estado com a imagem usando o ID UUID
       setImages((prevImages) => [
         ...prevImages,
@@ -81,15 +80,15 @@ const UploadImages = ({
     try {
       // Obter o ID numérico correspondente ao ID fornecido
       const foundId = images.find((image) => image.id === id);
-  
+
       if (foundId === undefined) {
         console.error('Imagem não encontrada com o ID:', id);
         return;
       }
-  
+
       // Remover a imagem do IndexedDB usando o ID UUID
       await removeImageFromDB(id);
-  
+
       // Atualizar o estado com as imagens restantes
       setImages((prevImages) => prevImages.filter((image) => image.id !== id));
     } catch (error) {
@@ -130,7 +129,7 @@ const UploadImages = ({
           images.length === 0 ? 'hidden' : ''
         }`}
       >
-        Adicione ao menos 3 fotos para publicar o imóvel{' '}
+        Adicione ao menos 5 fotos para publicar o imóvel{' '}
       </p>
       <div
         className={`flex flex-col justify-center sm:max-w-7xl min-h-max bg-[#F7F7F6] border border-secondary gap-10 p-3 m-1 ${

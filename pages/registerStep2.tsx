@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import { MouseEvent, useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import store from 'store';
+import { clearIndexDB } from '../common/utils/indexDb';
 import Loading from '../components/atoms/loading';
 import LinearStepper from '../components/atoms/stepper/stepper';
 import UploadImages from '../components/molecules/uploadImages/uploadImages';
@@ -10,7 +11,6 @@ import Header from '../components/organisms/header/header';
 import PropertyDifferentials from '../components/organisms/register/propertyDifferential';
 import { useProgress } from '../context/registerProgress';
 import { NextPageWithLayout } from './page';
-import { clearIndexDB } from '../common/utils/indexDb';
 
 const RegisterStep2: NextPageWithLayout = () => {
   const imagesInputRef = useRef<HTMLElement>(null);
@@ -38,7 +38,7 @@ const RegisterStep2: NextPageWithLayout = () => {
   // impao indexDB logo que a página é renderizada;
   useEffect(() => {
     clearIndexDB();
-  }, [])
+  }, []);
 
   // Envia as mensagens de erros para o componente UploadImages;
   const [errorInfo, setErrorInfo] = useState({
@@ -58,8 +58,8 @@ const RegisterStep2: NextPageWithLayout = () => {
     console.log(tags);
 
     const imagesError = `Você precisa adicionar pelo menos mais ${
-      3 - images.length
-    } ${3 - images.length === 1 ? 'foto' : 'fotos'}.`;
+      5 - images.length
+    } ${5 - images.length === 1 ? 'foto' : 'fotos'}.`;
 
     setErrorInfo({
       prop: '',
@@ -71,7 +71,7 @@ const RegisterStep2: NextPageWithLayout = () => {
       error: '',
     };
 
-    if (images.length < 3) {
+    if (images.length < 5) {
       setErrorInfo({ error: imagesError, prop: 'images' });
       errorHandler.current = { error: imagesError, prop: 'images' };
       setLoading(false);
