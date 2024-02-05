@@ -44,12 +44,11 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({ property, isFavourite }) => {
   const handleCopy = async () => {
     setTooltipIsVisible(true);
 
-    const currentUrl = router.asPath;
-    const formattedUrl = `localhost:3000${currentUrl}`;
+    const currentUrl = `${window.location.origin}${router.pathname}${router.asPath}`;
 
     try {
-      await clipboardy.write(formattedUrl);
-      console.log('Valor copiado para a área de transferência:', formattedUrl);
+      await clipboardy.write(currentUrl);
+      console.log('Valor copiado para a área de transferência:', currentUrl);
     } catch (err) {
       console.error(
         'Não foi possível copiar o valor para a área de transferência:',
