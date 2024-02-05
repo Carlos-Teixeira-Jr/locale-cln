@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { IEditPropertyMainFeatures } from '../../../common/interfaces/property/editPropertyData';
 import {
   ISize,
@@ -13,6 +13,7 @@ import propertyTypesData from '../../../data/propertyTypesData.json';
 import ArrowDownIcon from '../../atoms/icons/arrowDownIcon';
 import CheckIcon from '../../atoms/icons/checkIcon';
 import AreaCalculatorModal from '../../molecules/areaModal/areaModal';
+import { useRouter } from 'next/router';
 
 export type MainFeaturesErrors = {
   description: string;
@@ -69,9 +70,12 @@ const MainFeatures: React.FC<IMainFeatures> = ({
   errors,
   mainFeaturesInputRefs,
 }: IMainFeatures) => {
+
   const mainFeaturesErrorScroll = {
     ...mainFeaturesInputRefs,
   };
+
+  const router = useRouter();
 
   const [isBuy, setIsBuy] = useState(
     !isEdit ? true : editarAdType === 'comprar' ? true : false
@@ -344,9 +348,9 @@ const MainFeatures: React.FC<IMainFeatures> = ({
 
   const maskedPrice = (value: string) => {
     let price = value;
-    price = price.replace(/\D/g, '');
-    price = price.replace(/(\d)(\d{2})$/, '$1,$2');
-    price = price.replace(/(?=(\d{3})+(\D))\B/g, '.');
+    price = price.replace(/\D/g, ''); // Remove todos os caracteres não numéricos
+    price = price.replace(/\.\d+$/, ''); // Remove a parte decimal (centavos)
+    price = price.replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Adiciona o separador de milhares
     return price;
   };
 
@@ -427,12 +431,14 @@ const MainFeatures: React.FC<IMainFeatures> = ({
               className="w-96 rounded-t-8 text-quaternary bg-tertiary"
               key={prop.key}
             >
-              <p
-                className="text-center p-1 hover:bg-quaternary hover:text-tertiary font-normal text-lg"
-                onClick={() => handlePropertyTypeSelection('todos', 'todos')}
-              >
-                Todos
-              </p>
+              {router.asPath === "/search" && (
+                <p
+                  className="text-center p-1 hover:bg-quaternary hover:text-tertiary font-normal text-lg"
+                  onClick={() => handlePropertyTypeSelection('todos', 'todos')}
+                >
+                  Todos
+                </p>
+              )}
               <p className="text-quaternary lg:text-2xl p-1 text-center font-bold ">
                 {prop.type}
               </p>
@@ -467,7 +473,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                 className={
                   'border border-quaternary rounded-[10px] h-12 w-full text-quaternary text-2xl font-bold p-2 md:font-bold drop-shadow-lg bg-tertiary mt-5'
                 }
-                maxLength={8}
+                maxLength={10}
                 style={
                   propertyFeaturesErrors.totalArea
                     ? { border: '1px solid red' }
