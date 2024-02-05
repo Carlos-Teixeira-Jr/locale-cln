@@ -348,9 +348,9 @@ const MainFeatures: React.FC<IMainFeatures> = ({
 
   const maskedPrice = (value: string) => {
     let price = value;
-    price = price.replace(/\D/g, '');
-    price = price.replace(/(\d)(\d{2})$/, '$1,$2');
-    price = price.replace(/(?=(\d{3})+(\D))\B/g, '.');
+    price = price.replace(/\D/g, ''); // Remove todos os caracteres não numéricos
+    price = price.replace(/\.\d+$/, ''); // Remove a parte decimal (centavos)
+    price = price.replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Adiciona o separador de milhares
     return price;
   };
 
@@ -468,7 +468,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                 Área Total
               </label>
               <input
-                value={propertyFeaturesData.size.totalArea === 0 ? "" : propertyFeaturesData.size.totalArea + " m²"}
+                value={propertyFeaturesData.size.totalArea}
                 placeholder="m²"
                 className={
                   'border border-quaternary rounded-[10px] h-12 w-full text-quaternary text-2xl font-bold p-2 md:font-bold drop-shadow-lg bg-tertiary mt-5'
