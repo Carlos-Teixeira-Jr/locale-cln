@@ -20,6 +20,7 @@ const LinkCopiedTooltip: React.FC<ILinkCopiedTooltip> = ({
         color: '#6B7280',
         border: '2px solid #6B7280'
       }}
+      border="2px solid #6B7280"
       anchorId={anchorId}
       events={['click']}
       content="Link copiado!"
