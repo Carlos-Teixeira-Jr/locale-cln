@@ -1,5 +1,4 @@
 import { ReactNode } from "react";
-import { ISize } from "../../../common/interfaces/property/propertyData";
 
 interface IDetails {
   icon: ReactNode;
