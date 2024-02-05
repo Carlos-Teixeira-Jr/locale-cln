@@ -44,7 +44,7 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({ property, isFavourite }) => {
   const handleCopy = async () => {
     setTooltipIsVisible(true);
 
-    const currentUrl = `${window.location.origin}${router.pathname}${router.asPath}`;
+    const currentUrl = `${window.location.origin}${router.asPath}`;
 
     try {
       await clipboardy.write(currentUrl);
