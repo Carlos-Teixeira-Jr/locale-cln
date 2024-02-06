@@ -14,6 +14,7 @@ import ArrowDownIcon from '../../atoms/icons/arrowDownIcon';
 import CheckIcon from '../../atoms/icons/checkIcon';
 import AreaCalculatorModal from '../../molecules/areaModal/areaModal';
 import { useRouter } from 'next/router';
+import MaskedInput from '../../atoms/masks/maskedInput';
 
 export type MainFeaturesErrors = {
   description: string;
@@ -124,10 +125,10 @@ const MainFeatures: React.FC<IMainFeatures> = ({
         totalArea: isEdit ? editarSize!.totalArea : 0,
         useableArea: isEdit ? editarSize!.useableArea : 0,
       },
-      propertyValue: isEdit ? `${editarPropertyValue},00` : '',
+      propertyValue: isEdit ? `${editarPropertyValue}` : '',
       condominium: isEdit ? editarCondominium! : false,
       iptu: isEdit ? editarIptu! : false,
-      condominiumValue: isEdit ? `${editarCondominiumValue},00` : '',
+      condominiumValue: isEdit ? `${editarCondominiumValue}` : '',
       iptuValue: isEdit ? editarIptuValue! : '',
       metadata: [
         {
@@ -467,30 +468,22 @@ const MainFeatures: React.FC<IMainFeatures> = ({
               <label className="text-2xl font-normal text-quaternary leading-7">
                 Área Total
               </label>
-              <input
-                value={propertyFeaturesData.size.totalArea}
-                placeholder="m²"
+              <MaskedInput 
+                mask={'area'} 
                 className={
                   'border border-quaternary rounded-[10px] h-12 w-full text-quaternary text-2xl font-bold p-2 md:font-bold drop-shadow-lg bg-tertiary mt-5'
                 }
-                maxLength={10}
-                style={
-                  propertyFeaturesErrors.totalArea
-                    ? { border: '1px solid red' }
-                    : {}
-                }
-                onChange={(e) => {
-                  const numericValue = parseFloat(e.target.value);
-                  const totalArea = Number.isNaN(numericValue)
-                    ? 0
-                    : numericValue;
-                  setPropertyFeaturesData({
-                    ...propertyFeaturesData,
+                onChange={(e: { target: { value: string; }; }) => {
+                  // Remove a máscara para obter o valor numérico
+                  const numericValue = parseInt(e.target.value.replace(/\D/g, ''));
+                  const totalArea = Number.isNaN(numericValue) ? 0 : numericValue;
+                  setPropertyFeaturesData(prevState => ({
+                    ...prevState,
                     size: {
-                      ...propertyFeaturesData.size,
+                      ...prevState.size,
                       totalArea: totalArea,
                     },
-                  });
+                  }));
                   setPropertyFeaturesErrors({
                     ...propertyFeaturesErrors,
                     totalArea: '',
@@ -519,26 +512,22 @@ const MainFeatures: React.FC<IMainFeatures> = ({
               <label className="text-2xl font-normal text-quaternary leading-7">
                 Área Útil (opcional)
               </label>
-              <input
-                value={propertyFeaturesData.size.useableArea}
-                placeholder="m²"
-                maxLength={8}
+              <MaskedInput 
+                mask={'area'} 
                 className={
                   'border border-quaternary rounded-[10px] h-12 w-full text-quaternary text-2xl font-bold p-2 md:font-bold drop-shadow-lg bg-tertiary mt-5'
                 }
-                onChange={(e) => {
-                  const numericValue = parseFloat(e.target.value);
-                  const useableArea = Number.isNaN(numericValue)
-                    ? 0
-                    : numericValue;
-
-                  setPropertyFeaturesData({
-                    ...propertyFeaturesData,
+                onChange={(e: { target: { value: string; }; }) => {
+                  // Remove a máscara para obter o valor numérico
+                  const numericValue = parseInt(e.target.value.replace(/\D/g, ''));
+                  const totalArea = Number.isNaN(numericValue) ? 0 : numericValue;
+                  setPropertyFeaturesData(prevState => ({
+                    ...prevState,
                     size: {
-                      ...propertyFeaturesData.size,
-                      useableArea: useableArea,
+                      ...prevState.size,
+                      useableArea: totalArea,
                     },
-                  });
+                  }));
                 }}
               />
             </div>

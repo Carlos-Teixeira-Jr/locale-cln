@@ -109,7 +109,7 @@ const PropertyCard: React.FC<IPropertyCard> = ({
   memoizedCardInfos.bathrooms
 
   const price = prices[0].value;
-  const formattedPrice = formatCurrency(price);
+  const formattedPrice = monetaryFormat(price.toString());
 
   const handleFavouriteIcon = async () => {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
