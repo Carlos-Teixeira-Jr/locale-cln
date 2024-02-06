@@ -28,6 +28,7 @@ import Footer from '../components/organisms/footer/footer';
 import Header from '../components/organisms/header/header';
 import { useProgress } from '../context/registerProgress';
 import { NextPageWithLayout } from './page';
+import { ErrorToastNames, showErrorToast } from '../common/utils/toasts';
 
 interface IRegisterStep3Props {
   selectedPlanCard: string;
@@ -404,7 +405,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
           formData.append('propertyId', data.createdProperty._id);
 
           const imagesResponse = await fetch(
-            `${baseUrl}/property/uploadDropImageWithRarity`,
+            `${baseUrl}/property/uploadImages`,
             {
               method: 'POST',
               body: formData,
@@ -425,7 +426,10 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
               });
             }
           } else {
-            console.log('Erro ao enviar as imagens');
+            showErrorToast(ErrorToastNames.ImagesUploadError);
+            setTimeout(() => {
+              router.push('/register');
+            }, 7000);
           }
         } else {
           toast.dismiss();

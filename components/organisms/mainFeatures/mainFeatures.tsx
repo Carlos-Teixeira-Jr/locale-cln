@@ -8,7 +8,7 @@ import {
   propSubtype,
   propType,
 } from '../../../common/interfaces/property/propertyData';
-import { capitalizeFirstLetter } from '../../../common/utils/strings/capitalizeFirstLetter';
+import { lowerLetters } from '../../../common/utils/strings/capitalizeFirstLetter';
 import propertyTypesData from '../../../data/propertyTypesData.json';
 import ArrowDownIcon from '../../atoms/icons/arrowDownIcon';
 import CheckIcon from '../../atoms/icons/checkIcon';
@@ -411,7 +411,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
         >
           <p className="text-quaternary text">
             {propertyFeaturesData.propertyType
-              ? capitalizeFirstLetter(propertyFeaturesData.propertySubtype)
+              ? lowerLetters(propertyFeaturesData.propertySubtype)
               : `Tipo de imóvel`}
           </p>
           <ArrowDownIcon
@@ -441,7 +441,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                 </p>
               )}
               <p className="text-quaternary lg:text-2xl p-1 text-center font-bold ">
-                {prop.type}
+                {lowerLetters(prop.type)}
               </p>
               {propertyTypesData[index].subTypes.map((type) => (
                 <div
@@ -449,7 +449,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                   onClick={() => handlePropertyTypeSelection(prop.type, type)}
                   key={type}
                 >
-                  {type}
+                  {lowerLetters(type)}
                 </div>
               ))}
             </div>

@@ -33,7 +33,8 @@ export enum ErrorToastNames {
   DeleteUser = 'deleteUser',
   EmailAlreadyInUse = 'emailAlreadyInUse',
   AdActivation = 'adActivation',
-  EmailNotFound = 'emailNotFound'
+  EmailNotFound = 'emailNotFound',
+  ImagesUploadError = 'imagesUpload'
 }
 
 const successToastMessages: Record<SuccessToastNames, ToastMessage> = {
@@ -178,6 +179,12 @@ const errorToastMessages: Record<ErrorToastNames, ToastMessage> = {
       autoClose: 7000,
     },
   },
+  [ErrorToastNames.ImagesUploadError]: {
+    message: 'Houve um erro ao fazer o upload das imagens. Por favor, tente novamente.',
+    options: {
+      autoClose: 7000,
+    },
+  }
 };
 
 export const showSuccessToast = (name: SuccessToastNames, customOptions?: ToastOptions) => {
