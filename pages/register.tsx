@@ -201,6 +201,9 @@ const Register = () => {
           },
         ],
         condominium: registration.condominium,
+        tags: registration.metadata.some(item => item.amount > 0)
+          ? ['garagem']
+          : []
       };
 
       toast.loading('Enviando...');

@@ -22,10 +22,10 @@ const RegisterStep2: NextPageWithLayout = () => {
   const urlEmail = query.email;
   const { progress, updateProgress } = useProgress();
   const [images, setImages] = useState<string[]>([]);
-  const [tags, setTags] = useState<string[]>([]);
   const [condominiumTags, setCondominiumTags] = useState<string[]>([]);
   const [youtubeLink, setYoutubeLink] = useState<string>('');
   const storedData = store.get('propertyData');
+  const [tags, setTags] = useState<string[]>([]);
   const isCondominium = storedData?.condominium ? true : false;
 
   // Verifica se o estado progress que determina em qual step o usuário está corresponde ao step atual;
@@ -55,7 +55,6 @@ const RegisterStep2: NextPageWithLayout = () => {
   const handleSubmit = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     setLoading(true);
-    console.log(tags);
 
     const imagesError = `Você precisa adicionar pelo menos mais ${
       5 - images.length

@@ -366,11 +366,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
 
         if (response.ok) {
           const data = await response.json();
-          console.log(
-            'propertyData.ownerInfo.profilePicture',
-            propertyData.ownerInfo.profilePicture
-          );
-          console.log('userData.profilePicture', userData.profilePicture);
           const paymentData = {
             cardBrand: data.creditCardBrand ? data.creditCardBrand : 'Free',
             value: data.paymentValue ? data.paymentValue : '00',
@@ -404,7 +399,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
           formData.append('propertyId', data.createdProperty._id);
 
           const imagesResponse = await fetch(
-            `${baseUrl}/property/uploadDropImageWithRarity`,
+            `${baseUrl}/property/uploadImages`,
             {
               method: 'POST',
               body: formData,
