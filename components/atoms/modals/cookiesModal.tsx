@@ -1,0 +1,86 @@
+import { useRouter } from 'next/router';
+import Modal from 'react-modal';
+
+Modal.setAppElement('#__next');
+
+export interface ICookiesModal {
+  isOpen: boolean;
+  setModalIsOpen: any;
+  onClose: any;
+}
+
+const CookiesModal: React.FC<ICookiesModal> = ({
+  isOpen,
+  setModalIsOpen,
+  onClose,
+}) => {
+  const router = useRouter();
+
+  return (
+    <Modal
+      isOpen={isOpen}
+      onRequestClose={() => setModalIsOpen(false)}
+      contentLabel="Calculator modal"
+      style={{
+        overlay: {
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(255, 255, 255, 0.75)',
+        },
+        content: {
+          top: '50%',
+          left: '50%',
+          right: 'auto',
+          bottom: 'auto',
+          border: '1px solid #ccc',
+          background: '#F7F7F6',
+          overflow: 'auto',
+          WebkitOverflowScrolling: 'touch',
+          borderRadius: '30px',
+          outline: 'none',
+          padding: '20px',
+          marginRight: '-50%',
+          transform: 'translate(-50%, -50%)',
+          height: 'auto',
+          width: 'auto',
+          margin: '0 auto 0 auto',
+          boxShadow: '0px 4px 4px 0px rgba(0, 0, 0, 0.25)',
+        },
+      }}
+    >
+      <div className="bg-tertiary flex flex-col justify-between items-center px-2 gap-1">
+        <div className="flex flex-col">
+          <h1 className="text-quaternary text-center font-semibold text-xl mb-1">
+            Aviso de cookies
+          </h1>
+          <hr className="mb-2" />
+          <h1 className="text-justify">
+            Com o seu consentimento, nós usamos cookies ou tecnologias
+            semelhantes para armazenar e processar dados pessoais como a sua
+            visita a esta página web, endereços IP e identificadores de cookies.
+            Para saber mais, veja nossas políticas de uso.
+          </h1>
+        </div>
+        <div className="flex flex-row items-center justify-between px-2 mt-2 gap-2 w-full">
+          <button
+            className="bg-transparent text-quaternary text-sm underline cursor-pointer"
+            onClick={() => router.push('/userTerms')}
+          >
+            Política de Privacidade e Termos de Uso
+          </button>
+          <button
+            className="w-20 h-8 rounded bg-primary text-tertiary cursor-pointer px-1"
+            onClick={onClose}
+          >
+            Entendi
+          </button>
+        </div>
+      </div>
+    </Modal>
+  );
+};
+
+export default CookiesModal;
