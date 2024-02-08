@@ -367,11 +367,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
 
         if (response.ok) {
           const data = await response.json();
-          console.log(
-            'propertyData.ownerInfo.profilePicture',
-            propertyData.ownerInfo.profilePicture
-          );
-          console.log('userData.profilePicture', userData.profilePicture);
           const paymentData = {
             cardBrand: data.creditCardBrand ? data.creditCardBrand : 'Free',
             value: data.paymentValue ? data.paymentValue : '00',

@@ -35,6 +35,7 @@ export interface IRegisterPropertyData_Step1 {
   size: ISize;
   prices: IPrices[];
   condominium: boolean;
+  tags: string[]
 }
 
 export interface IRegisterPropertyData_Step2 {

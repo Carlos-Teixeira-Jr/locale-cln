@@ -1000,13 +1000,13 @@ const FilterList: React.FC<IFilterListProps> = ({
                 <div
                   id={name}
                   className={`w-[20px] h-[20px] border border-quaternary rounded-[3px] bg-tertiary ${
-                    query.tags?.includes(name)
-                      ? 'border-yellow-500' // estilo de clique
-                      : '' // estilo normal
+                    query.tags?.toLowerCase().includes(name.toLowerCase())
+                        ? 'border-yellow-500' // estilo de clique
+                        : '' // estilo normal
                   }`}
                   onClick={() => toggleSelection(name)}
                 >
-                  {query.tags?.includes(name) && (
+                  {query.tags?.toLowerCase().includes(name.toLowerCase()) && (
                     <CheckIcon
                       width="20"
                       height="20"
