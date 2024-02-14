@@ -21,6 +21,8 @@ const CookiesModal: React.FC<ICookiesModal> = ({
       isOpen={isOpen}
       onRequestClose={() => setModalIsOpen(false)}
       contentLabel="Calculator modal"
+      shouldCloseOnOverlayClick={false}
+      shouldCloseOnEsc={false}
       style={{
         overlay: {
           position: 'fixed',
