@@ -65,10 +65,8 @@ const UploadImages = ({
     for (const file of event.target.files) {
       const id = uuidv4();
 
-      // Adiciona a imagem ao IndexedDB junto com o ID UUID
       await addImageToDB(file, id);
 
-      // Atualiza o estado com a imagem usando o ID UUID
       setImages((prevImages) => [
         ...prevImages,
         { src: URL.createObjectURL(file), id },
@@ -78,7 +76,6 @@ const UploadImages = ({
 
   const handleRemoveImage = async (id: string) => {
     try {
-      // Obter o ID numérico correspondente ao ID fornecido
       const foundId = images.find((image) => image.id === id);
 
       if (foundId === undefined) {
@@ -86,10 +83,8 @@ const UploadImages = ({
         return;
       }
 
-      // Remover a imagem do IndexedDB usando o ID UUID
       await removeImageFromDB(id);
 
-      // Atualizar o estado com as imagens restantes
       setImages((prevImages) => prevImages.filter((image) => image.id !== id));
     } catch (error) {
       console.error('Erro ao remover a imagem:', error);
@@ -98,9 +93,13 @@ const UploadImages = ({
 
   const moveImage = (dragIndex: number, hoverIndex: number) => {
     const dragImage = images[dragIndex];
+
     const newImages = [...images];
+
     newImages.splice(dragIndex, 1);
+
     newImages.splice(hoverIndex, 0, dragImage);
+
     setImages(newImages);
   };
 
@@ -110,11 +109,13 @@ const UploadImages = ({
       ref={imagesErrorScroll}
     >
       <label
-        className="flex flex-row items-center px-6 w-64 h-12 border rounded-[50px] bg-secondary cursor-pointer mt-4 mx-auto"
+        className="flex flex-row justify-center items-center px-5 w-64 h-12 border rounded-[50px] bg-secondary cursor-pointer mt-4 mx-auto"
         htmlFor="uploadImages"
       >
         <CameraIcon />
-        <span className="font-bold text-quinary text-2xl">Adicionar Fotos</span>
+        <span className="font-bold text-quinary text-lg text-center">
+          Adicionar Fotos
+        </span>
       </label>
       <input
         type="file"
@@ -221,12 +222,10 @@ const Image: React.FC<ImageProps> = ({
       const clientOffset: any = monitor.getClientOffset();
       const hoverClientY = clientOffset.y - hoverBoundingRect.top;
 
-      // Arrastando para baixo
       if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
         return;
       }
 
-      // Arrastando para cima
       if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
         return;
       }
@@ -266,7 +265,7 @@ const Image: React.FC<ImageProps> = ({
       >
         <TrashIcon />
       </div>
-      <span className="absolute bottom-0 left-0 p-1 px-3 text-white bg-black bg-opacity-50 rounded-3xl">
+      <span className="absolute bottom-0 left-0 p-1 px-3 text-sm text-white bg-black bg-opacity-50 rounded-3xl">
         {index === 0 ? 'Capa do anúncio' : index + 1}
       </span>
     </div>

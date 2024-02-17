@@ -1,21 +1,15 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import useDeviceSize from '../../../hooks/deviceSize';
-import { useIsMobile } from '../../../hooks/useIsMobile';
 import EmailIcon from '../../atoms/icons/emailIcon';
 import InstragramIcon from '../../atoms/icons/instagramIcon';
 import TwitterIcon from '../../atoms/icons/twitterIcon';
 
-interface IFooter {
-  smallPage?: boolean;
-}
-
-const Footer = ({ smallPage }: IFooter) => {
+const Footer = () => {
   const [width, height] = useDeviceSize();
   const [mobile, setMobile] = useState(false);
   const [notebook, setNotebook] = useState(false);
   const [desktop, setDesktop] = useState(false);
-  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (height > 900) {
@@ -39,58 +33,68 @@ const Footer = ({ smallPage }: IFooter) => {
 
   return (
     <footer className={footerPositionCSS}>
-      <div className="container p-6 m-auto bg-tertiary max-w-none">
+      <div className="container pt-3 m-auto bg-tertiary max-w-none">
         <div className="grid lg:grid-cols-4 md:grid-cols-2">
-          <div className="mx-auto pb-5">
-            <h5 className="font-bold mb-2.5 text-gray-800">ENCONTRE IMÓVEIS</h5>
+          <div className="mx-auto pb-2">
+            <h5 className="font-bold mb-1 text-gray-800 text-md">
+              ENCONTRE IMÓVEIS
+            </h5>
 
             <ul className="list-none mb-0 text-center">
               <li className="transition duration-300 ease-in-out transform hover:scale-125">
                 <Link
                   href="/search?adType=comprar"
-                  className="text-gray-800"
+                  className="text-gray-800 text-md"
                   tabIndex={0}
                 >
                   Venda
                 </Link>
               </li>
               <li className="transition duration-300 ease-in-out transform hover:scale-125">
-                <Link href="/search?adType=alugar" className="text-gray-800">
+                <Link
+                  href="/search?adType=alugar"
+                  className="text-gray-800 text-md"
+                >
                   Aluguel
                 </Link>
               </li>
               <li className="transition duration-300 ease-in-out transform hover:scale-125">
-                <Link href="/search?adType=alugar" className="text-gray-800">
+                <Link
+                  href="/search?adType=alugar"
+                  className="text-gray-800 text-md"
+                >
                   Encontre imóveis
                 </Link>
               </li>
             </ul>
           </div>
 
-          <div className="mx-auto pb-5">
-            <h5 className="font-bold mb-2.5 text-gray-800">ANUNCIE IMÓVEIS</h5>
+          <div className="mx-auto pb-2">
+            <h5 className="font-bold mb-1 text-gray-800 text-md">
+              ANUNCIE IMÓVEIS
+            </h5>
 
             <ul className="list-none mb-0 text-center">
               <li className="transition duration-300 ease-in-out transform hover:scale-125">
-                <Link href="/announcement" className="text-gray-800">
+                <Link href="/announcement" className="text-gray-800 text-md">
                   Locale PRO
                 </Link>
               </li>
               <li className="transition duration-300 ease-in-out transform hover:scale-125">
-                <Link href="/announcement" className="text-gray-800">
+                <Link href="/announcement" className="text-gray-800 text-md">
                   Planos de anúncio
                 </Link>
               </li>
               <li className="transition duration-300 ease-in-out transform hover:scale-125">
-                <Link href="/announcement" className="text-gray-800">
+                <Link href="/announcement" className="text-gray-800 text-md">
                   Venda seu imóvel
                 </Link>
               </li>
             </ul>
           </div>
 
-          <div className="mx-auto pb-5">
-            <h5 className="uppercase font-bold mb-2.5 text-gray-800">
+          <div className="mx-auto pb-2">
+            <h5 className="uppercase font-bold mb-1 text-gray-800 text-md">
               INSTITUCIONAL
             </h5>
 
@@ -98,7 +102,7 @@ const Footer = ({ smallPage }: IFooter) => {
               <li className="transition duration-300 ease-in-out transform hover:scale-125">
                 <a
                   href="https://www.linkedin.com/company/locale-im%C3%B3veis/"
-                  className="text-gray-800"
+                  className="text-gray-800 text-md"
                   target="_blank"
                   rel="noreferrer"
                 >

@@ -27,8 +27,11 @@ const MessageNotifications = ({
   notificationsAdmin,
 }: IMessageNotifications) => {
   const isMobile = useIsMobile();
+
   const [isOwner, setIsOwner] = useState<boolean>(false);
+
   const [showPagination, setShowPagination] = useState<boolean>(true);
+
   const [notifications, setNotifications] = useState(notificationsAdmin);
 
   useEffect(() => {
@@ -48,7 +51,7 @@ const MessageNotifications = ({
     <main>
       <AdminHeader />
       <div className="flex flex-row items-center justify-center lg:ml-72 xl:ml-72">
-        <div className="fixed sm:hidden hidden md:hidden lg:flex xl:flex left-0 top-20">
+        <div className="fixed sm:hidden hidden md:hidden lg:flex xl:flex left-0 top-7 ">
           {!isMobile ? (
             <SideMenu
               isOwnerProp={isOwner}

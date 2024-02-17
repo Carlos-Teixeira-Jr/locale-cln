@@ -40,26 +40,31 @@ const Search: NextPageWithLayout<ISearch> = ({
   tagsData,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
-  const router = useRouter();
-  const query = router.query as any;
-  const [currentPage, setCurrentPage] = useState(1);
-  const isCodeSearch = query.code ? true : false;
 
-  // mobile
+  const router = useRouter();
+
+  const [currentPage, setCurrentPage] = useState(1);
+
   const [open, setOpen] = useState(false);
+
   const isMobile = useIsMobile();
+
   const [mobileFilterIsOpen, setMobileFilterIsOpen] = useState<boolean>(false);
+
   const [isSearchBtnClicked, setIsSearchBtnClicked] = useState(false);
 
-  // grid or list
   const [grid, setGrid] = useState(false);
+
   const [list, setList] = useState(true);
 
-  // location
+  const query = router.query as any;
+
   const queryParsed = query.location ? JSON.parse(query.location) : [];
+
   const [location, setLocation] = useState<any>(queryParsed);
 
-  // Insere ou remove as location no url query params;
+  const isCodeSearch = query.code ? true : false;
+
   useEffect(() => {
     if (location.length > 0) {
       const queryParams = {
@@ -72,8 +77,6 @@ const Search: NextPageWithLayout<ISearch> = ({
     }
   }, [location]);
 
-  //// PAGE ////
-
   useEffect(() => {
     if (router.query.page !== undefined && typeof query.page === 'string') {
       const parsedPage = parseInt(query.page);
@@ -82,13 +85,11 @@ const Search: NextPageWithLayout<ISearch> = ({
   });
 
   useEffect(() => {
-    // Check if the page parameter in the URL matches the current page
     const pageQueryParam =
       router.query.page !== undefined && typeof query.page === 'string'
         ? parseInt(query.page)
         : 1;
 
-    // Only update the URL if the page parameter is different from the current page
     if (pageQueryParam !== currentPage) {
       const queryParams = {
         ...query,
@@ -98,8 +99,6 @@ const Search: NextPageWithLayout<ISearch> = ({
     }
   }, [currentPage]);
 
-  //// FILTER ON MOBILE ////
-
   useEffect(() => {
     if (isSearchBtnClicked) {
       setMobileFilterIsOpen(false);
@@ -107,16 +106,11 @@ const Search: NextPageWithLayout<ISearch> = ({
     }
   }, [isSearchBtnClicked]);
 
-  //// DROPDOWN ////
-
-  // Lida com o comportamento de fechamento do dropdown de endereço quando há um clique fora do elemento;
   useEffect(() => {
     const clickHandler = handleClickOutside(ref, setOpen);
     document.addEventListener('click', clickHandler);
     return () => document.removeEventListener('click', clickHandler);
   }, [ref, setOpen]);
-
-  //// CARDS VISUALIZATION MODE ////
 
   const handleGrid = () => {
     setList(false);
@@ -160,12 +154,11 @@ const Search: NextPageWithLayout<ISearch> = ({
                 />
               </div>
               <div className="flex flex-row items-center justify-around mt-2 md:my-3 mr-0 ">
-                <h3 className="text-quaternary text-sm md:text-base leading-5 font-bold text-justify ml-2">
+                <h3 className="text-quaternary text-sm lg:text-md leading-5 font-bold text-justify ml-2">
                   {propertyInfo.totalCount} imóveis encontrados com base na
                   pesquisa
                 </h3>
                 <div className="flex flex-row items-center justify-between gap-7 ml-0 xl:ml-20">
-                  {/* SearchView - start*/}
                   {!isMobile && (
                     <div className="flex flex-row items-center gap-1 mr-[-30px] w-fit">
                       <button
@@ -187,11 +180,10 @@ const Search: NextPageWithLayout<ISearch> = ({
                     </div>
                   )}
 
-                  {/* SearchView - end*/}
                   {!isMobile && (
                     <div ref={ref} onClick={() => setOpen(!open)}>
-                      <div className="flex flex-row items-center justify-around cursor-pointer md:my-auto bg-tertiary sm:max-w-[188px] md:w-[188px] h-[44px] font-bold text-sm md:text-lg text-quaternary leading-5 shadow-lg p-[10px] border border-quaternary rounded-[30px] mt-7 md:mr-4 ml-2">
-                        <span>Ordenar Por</span>
+                      <div className="flex flex-row items-center justify-around cursor-pointer md:my-auto bg-tertiary sm:max-w-[188px] md:w-[180px] h-[44px] font-bold text-sm md:text-md text-quaternary leading-5 shadow-lg p-[10px] border border-quaternary rounded-[30px] mt-7 md:mr-4 ml-2">
+                        <span>Ordenar por</span>
                         <span>
                           <ArrowDropdownIcon open={false} />
                         </span>
@@ -201,7 +193,6 @@ const Search: NextPageWithLayout<ISearch> = ({
                   )}
                 </div>
               </div>
-              {/* </div> */}
 
               {!mobileFilterIsOpen &&
                 propertyInfo.docs &&
@@ -217,7 +208,7 @@ const Search: NextPageWithLayout<ISearch> = ({
 
               {propertyInfo?.docs?.length === 0 && (
                 <div className="flex flex-col mt-5">
-                  <h2 className="text-quaternary text-sm md:text-base lg:text-2xl leading-5 font-bold md:ml-4 text-justify px-5">
+                  <h2 className="text-quaternary text-sm md:text-base lg:text-lg leading-5 font-bold md:ml-4 text-justify px-5">
                     Oops! Não encontramos nenhum resultado para essa busca.
                   </h2>
                   <div className="flex flex-col mx-auto justify-center my-5">
@@ -228,7 +219,7 @@ const Search: NextPageWithLayout<ISearch> = ({
                       alt={'Property not found'}
                     />
                   </div>
-                  <h2 className="text-quaternary text-sm md:text-base lg:text-2xl leading-5 font-bold md:ml-4 text-justify px-5">
+                  <h2 className="text-quaternary text-sm md:text-base lg:text-lg leading-5 font-bold md:ml-4 text-justify px-5">
                     Você pode tentar remover alguns filtros para tentar
                     encontrar algum resultado.
                   </h2>
@@ -237,7 +228,7 @@ const Search: NextPageWithLayout<ISearch> = ({
 
               {!propertyInfo.docs && isCodeSearch && (
                 <div className="flex flex-col mt-5">
-                  <h2 className="text-quaternary text-sm md:text-base lg:text-2xl leading-5 font-bold md:ml-4 text-justify px-5">
+                  <h2 className="text-quaternary text-sm md:text-base lg:text-lg leading-5 font-bold md:ml-4 text-justify px-5">
                     Oops! Não encontramos nenhum imóvel referente ao código
                     informado.
                   </h2>
@@ -249,7 +240,7 @@ const Search: NextPageWithLayout<ISearch> = ({
                       alt={'Property not found'}
                     />
                   </div>
-                  <h2 className="text-quaternary text-sm md:text-base lg:text-2xl leading-5 font-bold md:ml-4 text-justify px-5">
+                  <h2 className="text-quaternary text-sm md:text-base lg:text-lg leading-5 font-bold md:ml-4 text-justify px-5">
                     Verifique se o código está correto e tente novamente.
                   </h2>
                 </div>
@@ -342,7 +333,7 @@ const Search: NextPageWithLayout<ISearch> = ({
           </div>
         </div>
       </div>
-      <Footer smallPage={false} />
+      <Footer />
     </div>
   );
 };

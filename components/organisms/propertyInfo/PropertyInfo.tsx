@@ -32,14 +32,20 @@ export interface IPropertyInfo {
 const PropertyInfo: React.FC<IPropertyInfo> = ({ property, isFavourite }) => {
   const session = useSession() as any;
   const status = session.status;
+  const router = useRouter();
+
   const userIsLogged = status === 'authenticated' ? true : false;
   const userId = session?.data?.user?.data?._id;
+
   const [tooltipIsVisible, setTooltipIsVisible] = useState(false);
+
   const [favPropTooltipIsVisible, setFavPropTooltipIsVisible] = useState(false);
+
   const [modalIsOpen, setModalIsOpen] = useState(false);
+
   const [favourited, setFavourited] = useState(isFavourite);
+
   const [haveTags, setHaveTags] = useState<boolean>(false);
-  const router = useRouter();
 
   const handleCopy = async () => {
     setTooltipIsVisible(true);
@@ -128,32 +134,33 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({ property, isFavourite }) => {
 
   return (
     <>
-      <div className="md:grid md:grid-cols-3 py-2 md:py-10 px-5 lg:w-full bg-tertiary drop-shadow-lg">
-        <div className="col-span-2">
-          <h1 className="font-extrabold text-quaternary md:text-4xl text-2xl">
+      <div className="flex flex-row py-1 md:py-5 px-4 lg:w-full bg-tertiary drop-shadow-lg">
+        <div className="flex flex-col">
+          <h1 className="font-extrabold text-quaternary md:text-2xl text-lg">
             Características do imóvel
           </h1>
-          <h3 className="font-extrabold text-quaternary text-3xl pt-6 pb-2">
+          <h3 className="font-extrabold text-quaternary text-lg pt-6 pb-2">
             Dependências
           </h3>
-          <div className="lg:grid md:grid-cols-6 md:gap-4 flex">
-            <div className="flex flex-col">
-              <div className="font-normal text-xl text-quaternary flex lg:justify-between gap-2">
-                {getMetadataValue('bedroom')}
-                <span>quarto(s)</span>
-              </div>
-              <div className="font-normal text-xl text-quaternary flex justify-between gap-2">
-                {getMetadataValue('bathroom')}
-                <span>banheiro(s)</span>
-              </div>
-              <div className="font-normal text-xl text-quaternary flex justify-between gap-2">
-                {getMetadataValue('garage')}
-                <span>garagem(s)</span>
-              </div>
+          <div className="flex flex-row items-center justify-start gap-1 text-left">
+            <div className="flex flex-col text-quaternary text-md">
+              <span>•</span>
+              <span>•</span>
+              <span>•</span>
+            </div>
+            <div className="flex flex-col text-quaternary text-md">
+              <h3>{getMetadataValue('bedroom')}</h3>
+              <h3>{getMetadataValue('bathroom')}</h3>
+              <h3>{getMetadataValue('garage')}</h3>
+            </div>
+            <div className="flex flex-col text-quaternary text-md">
+              <h3>quarto(s)</h3>
+              <h3>banheiro(s)</h3>
+              <h3>garagem(s)</h3>
             </div>
           </div>
           {haveTags && (
-            <h3 className="font-extrabold text-quaternary text-3xl pt-6 pb-2">
+            <h3 className="font-extrabold text-quaternary text-2xl pt-6 pb-2">
               Outras características
             </h3>
           )}
@@ -161,7 +168,7 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({ property, isFavourite }) => {
             property?.tags.map((tag) => (
               <div key={tag} className="flex flex-col items-start">
                 <div className="flex flex-col">
-                  <div className="font-normal text-xl text-quaternary flex flex-row lg:justify-between gap-2">
+                  <div className="font-normal text-md text-quaternary flex flex-row lg:justify-between gap-1">
                     <span>•</span>
                     <span>{tag}</span>
                   </div>
@@ -169,15 +176,15 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({ property, isFavourite }) => {
               </div>
             ))}
           <div className="pt-6">
-            <h3 className="font-extrabold text-quaternary text-3xl pb-2 md:pb-4">
+            <h3 className="font-extrabold text-quaternary text-2xl pb-2 md:pb-4">
               Descrição
             </h3>
-            <p className="font-normal text-xl text-quaternary text-justify pr-5">
+            <p className="font-normal text-md text-quaternary text-justify pr-5">
               {capitalizeFirstLetter(property.description)}
             </p>
           </div>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-1 mt-10 md:my-auto lg:mx-14 justify-items-center gap-5 md:gap-0">
+        <div className="flex flex-col mt-10 md:my-auto lg:mx-2 justify-items-center gap-5 md:gap-0">
           <LinkCopiedTooltip
             open={tooltipIsVisible}
             onRequestClose={hideTooltip}
@@ -185,7 +192,7 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({ property, isFavourite }) => {
           />
           <button
             id="tooltip"
-            className="lg:w-[320px] w-40 h-12 md:h-[67px] md:w-full bg-primary p-2.5 rounded-[10px] text-tertiary text-xl font-extrabold mb-6"
+            className="lg:w-[320px] w-40 h-12 md:h-[67px] md:w-full bg-primary p-2.5 rounded-[10px] text-tertiary text-lg font-extrabold mb-6"
             onClick={handleCopy}
           >
             Compartilhar
@@ -193,7 +200,7 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({ property, isFavourite }) => {
 
           {property.acceptFunding && (
             <button
-              className="lg:w-80 md:w-full md:h-16 h-12 bg-primary p-2.5 rounded-[10px] text-tertiary text-xl font-extrabold mb-6 md:flex md:items-center md:justify-center"
+              className="lg:w-80 md:w-full md:h-16 h-12 bg-primary p-2.5 rounded-[10px] text-tertiary text-lg font-extrabold mb-6 md:flex md:items-center md:justify-center"
               onClick={handleCalculatorBtnClick}
             >
               Simular Financiamento
@@ -210,16 +217,20 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({ property, isFavourite }) => {
 
           <button
             id="fav-property-tooltip"
-            className={`lg:w-80 w-40 md:w-full h-12 md:h-16 bg-primary p-2.5 rounded-[10px] text-tertiary text-xl font-extrabold flex justify-center mb-5 ${
+            className={`lg:w-80 w-40 md:w-full h-12 md:h-16 bg-primary p-2.5 rounded-[10px] text-tertiary text-lg font-extrabold flex justify-center items-center mb-5 ${
               userIsLogged ? 'opacity opacity-100 cursor-pointer' : 'opacity-50'
             }`}
             onClick={handleFavouriteBtnClick}
           >
             <p className="my-auto pr-4">Favoritar</p>
             {favourited ? (
-              <FavouritedIcon className="pb-4 md:pb-0" />
+              <FavouritedIcon width="34" height="34" className="pb-4 md:pb-0" />
             ) : (
-              <UnfavouritedIcon className="pb-4 md:pb-0" />
+              <UnfavouritedIcon
+                width="34"
+                height="34"
+                className="pb-4 md:pb-0"
+              />
             )}
           </button>
         </div>

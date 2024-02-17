@@ -57,20 +57,31 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   ownerData,
 }) => {
   const router = useRouter();
+
   const isOwner = properties?.docs?.length > 0 ? true : false;
+
   const [selectedPlan, setSelectedPlan] = useState(
     ownerData?.owner ? ownerData?.owner?.plan : ''
   );
+
   const [creditCardIsOpen, setCreditCardIsOpen] = useState(false);
+
   const [deleteAccountIsOpen, setDeleteAccountIsOpen] = useState(false);
+
   const [isEditPassword, setIsEditPassword] = useState(false);
+
   const [isAdminPage, setIsAdminPage] = useState(false);
+
   const isEdit = true;
+
   const isMobile = useIsMobile();
+
   const reversedCards = [...plans].reverse();
+
   const creditCardInfo = ownerData?.owner?.isNewCreditCard
     ? ownerData?.owner?.newCreditCardData.creditCard.number
     : ownerData?.owner?.creditCardInfo;
+
   const planObj = plans.find((plan) => plan._id === selectedPlan);
 
   const [formData, setFormData] = useState<IUserDataComponent>({
@@ -81,6 +92,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     phone: '',
     profilePicture: '',
   });
+
   const [formDataErrors, setFormDataErrors] = useState({
     username: '',
     email: '',
@@ -98,17 +110,18 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     passwordConfirmattion: '',
   });
 
-  // Lida com o autoscroll das validações de erro dos inputs;
   const userDataInputRefs = {
     username: useRef<HTMLElement>(null),
     email: useRef<HTMLElement>(null),
     cpf: useRef<HTMLElement>(null),
     cellPhone: useRef<HTMLElement>(null),
   };
+
   const passwordInputRefs = {
     password: useRef<HTMLElement>(null),
     passwordConfimattion: useRef<HTMLElement>(null),
   };
+
   const [address, setAddress] = useState<IAddress>({
     zipCode: '',
     city: '',
@@ -118,6 +131,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     neighborhood: '',
     uf: '',
   });
+
   const [addressErrors, setAddressErrors] = useState({
     zipCode: '',
     city: '',
@@ -125,7 +139,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     streetNumber: '',
     uf: '',
   });
-  // Lida com o auto-scroll para os inputs de Address que mostrarem erro;
+
   const addressInputRefs = {
     zipCode: useRef<HTMLInputElement>(null),
     city: useRef<HTMLInputElement>(null),
@@ -133,25 +147,28 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     streetNumber: useRef<HTMLInputElement>(null),
     uf: useRef<HTMLInputElement>(null),
   };
+
   const creditCardErrors: CreditCardForm = {
     cardName: '',
     cardNumber: '',
     ccv: '',
     expiry: '',
   };
-  // Lida com o auto-scroll para os inputs de creditCard que mostrarem erro;
+
   const creditCardInputRefs = {
     cardName: useRef<HTMLInputElement>(null),
     cardNumber: useRef<HTMLInputElement>(null),
     expiry: useRef<HTMLInputElement>(null),
     cvc: useRef<HTMLInputElement>(null),
   };
+
   useEffect(() => {
     const url = router.pathname;
     if (url === '/adminUserData') {
       setIsAdminPage(true);
     }
   }, [router.pathname]);
+
   const handleUpdateBtn = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const error = 'Este campo é obrigatório';
@@ -167,6 +184,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       cpf: '',
       cellPhone: '',
     });
+
     setAddressErrors({
       zipCode: '',
       city: '',
@@ -186,6 +204,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       cpf: '',
       cellPhone: '',
     };
+
     const newAddressErrors = {
       zipCode: '',
       city: '',
@@ -227,8 +246,9 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     setFormDataErrors(newFormDataErrors);
     setAddressErrors(newAddressErrors);
     setPasswordErrors(newPasswordErrors);
+
     let combinedErrors;
-    // Combina os erros de registro e endereço em um único objeto de erros
+
     if (isEditPassword) {
       combinedErrors = {
         ...newAddressErrors,
@@ -244,7 +264,6 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
 
     if (isEditPassword) combinedErrors;
 
-    // Verifica se algum dos valores do objeto de erros combinados não é uma string vazia
     const hasErrors = Object.values(combinedErrors).some(
       (error) => error !== ''
     );
@@ -284,6 +303,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       };
 
       let body;
+
       if (isEditPassword) {
         body = {
           user: userFormData,
@@ -310,6 +330,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
             body: JSON.stringify(body),
           }
         );
+
         if (response.ok) {
           toast.dismiss();
           showSuccessToast(SuccessToastNames.UserDataUpdate);
@@ -335,7 +356,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       </div>
       <div className="flex flex-row items-center max-w-[1232px] justify-center">
         {!isMobile && (
-          <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:flex">
+          <div className="fixed left-0 top-7  sm:hidden hidden md:hidden lg:flex">
             <SideMenu isOwnerProp={isOwner} notifications={notifications} />
           </div>
         )}

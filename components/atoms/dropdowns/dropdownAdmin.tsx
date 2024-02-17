@@ -58,13 +58,13 @@ export default function DropdownAdmin({ isOwnerProp }: IDropdownAdmin) {
       title: 'Sair',
       ref: '/index',
       className:
-        'translate-x-[1px] w-[150px] h-[50px] text-primary hover:bg-quaternary hover:text-tertiary py-3',
+        'translate-x-[1px] w-[150px] h-[50px] text-primary text-sm hover:bg-quaternary hover:text-tertiary py-3',
     },
   ];
 
   return (
     <div className="flex absolute z-50 top-[82px] right-1 max-w-[150px] max-w h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md">
-      <div className="flex flex-col text-center font-medium text-base text-quaternary leading-5">
+      <div className="flex flex-col text-center font-medium text-md text-quaternary leading-5">
         {!isOwner
           ? option.map((option, index) => {
               if (!option.ownerOption) {

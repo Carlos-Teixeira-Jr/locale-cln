@@ -17,12 +17,18 @@ interface IRegisterStep35 {
 
 const RegisterStep35: NextPageWithLayout<IRegisterStep35> = ({ plans }) => {
   const router = useRouter();
-  const query = router.query;
-  const urlEmail = query.email as string;
-  const { progress, updateProgress } = useProgress();
-  const storedData = store.get('propertyData');
+
   const [cardBrand, setCardBrand] = useState('');
+
   const [loading, setLoading] = useState(false);
+
+  const { progress, updateProgress } = useProgress();
+
+  const query = router.query;
+
+  const urlEmail = query.email as string;
+
+  const storedData = store.get('propertyData');
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -34,7 +40,6 @@ const RegisterStep35: NextPageWithLayout<IRegisterStep35> = ({ plans }) => {
     }
   }, [storedData]);
 
-  // Verifica se o estado progress que determina em qual step o usuário está corresponde ao step atual;
   useEffect(() => {
     if (progress < 4) {
       router.push('/register');
@@ -65,7 +70,6 @@ const RegisterStep35: NextPageWithLayout<IRegisterStep35> = ({ plans }) => {
             <LinearStepper isSubmited={false} sharedActiveStep={3} />
           </div>
 
-          {/**Confirmed payment */}
           <div className="bg-[#F7F7F6] border-4 border-[#4BB543] flex flex-row justify-between items-center p-7 md:p-14 min-h-[198px] my-8">
             <div className="flex flex-col p-4">
               <h1 className="text-[#4BB543] text-4xl font-bold mb-6">
@@ -86,7 +90,6 @@ const RegisterStep35: NextPageWithLayout<IRegisterStep35> = ({ plans }) => {
 
           <PaymentBoard_Step3_5 storedData={storedData} plans={plans} />
 
-          {/**Button */}
           <div className="flex md:justify-end justify-center lg:justify-end xl:justify-end my-4 max-w-[1215px]">
             <button
               className="active:bg-gray-500 cursor-pointer flex items-center flex-row justify-around bg-primary w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold text-2xl lg:text-3xl hover:bg-red-600 hover:text-white"
@@ -115,7 +118,7 @@ const RegisterStep35: NextPageWithLayout<IRegisterStep35> = ({ plans }) => {
         </div>
       </div>
 
-      <Footer smallPage={true} />
+      <Footer />
     </>
   );
 };

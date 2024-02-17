@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { MouseEvent, useEffect, useRef, useState } from 'react';
+import { MouseEvent, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import store from 'store';
 import {
@@ -20,31 +20,15 @@ import MainFeatures from '../components/organisms/mainFeatures/mainFeatures';
 import { useProgress } from '../context/registerProgress';
 
 const Register = () => {
-  // loading
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
-  const query = router.query;
-  const urlEmail = query.email;
+
   const { updateProgress } = useProgress();
 
-  // Lida com o auto-scroll para os inputs de MainFeatures que mostrarem erro;
-  const mainFeaturesInputRefs = {
-    description: useRef<HTMLElement>(null),
-    totalArea: useRef<HTMLInputElement>(null),
-    propertyValue: useRef<HTMLInputElement>(null),
-    condominiumValue: useRef<HTMLInputElement>(null),
-    iptuValue: useRef<HTMLInputElement>(null),
-  };
+  const [open, setOpen] = useState(false);
 
-  // Lida com o auto-scroll para os inputs de Address que mostrarem erro;
-  const addressInputRefs = {
-    zipCode: useRef<HTMLInputElement>(null),
-    city: useRef<HTMLInputElement>(null),
-    streetName: useRef<HTMLInputElement>(null),
-    streetNumber: useRef<HTMLInputElement>(null),
-    uf: useRef<HTMLInputElement>(null),
-  };
+  const handleClose = () => setOpen(false);
 
   const [registration, setRegistration] = useState<IRegisterMainFeatures>({
     adType: 'comprar',
@@ -98,9 +82,25 @@ const Register = () => {
     streetName: '',
   });
 
-  // modal functions
-  const [open, setOpen] = useState(false);
-  const handleClose = () => setOpen(false);
+  const query = router.query;
+
+  const urlEmail = query.email;
+
+  const mainFeaturesInputRefs = {
+    description: useRef<HTMLElement>(null),
+    totalArea: useRef<HTMLInputElement>(null),
+    propertyValue: useRef<HTMLInputElement>(null),
+    condominiumValue: useRef<HTMLInputElement>(null),
+    iptuValue: useRef<HTMLInputElement>(null),
+  };
+
+  const addressInputRefs = {
+    zipCode: useRef<HTMLInputElement>(null),
+    city: useRef<HTMLInputElement>(null),
+    streetName: useRef<HTMLInputElement>(null),
+    streetNumber: useRef<HTMLInputElement>(null),
+    uf: useRef<HTMLInputElement>(null),
+  };
 
   const handleSubmit = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -158,15 +158,14 @@ const Register = () => {
     }
 
     setRegistrationErrors(newRegistrationErrors);
+
     setAddressErrors(newAddressErrors);
 
-    // Combina os erros de registro e endereço em um único objeto de erros
     const combinedErrors = {
       ...newRegistrationErrors,
       ...newAddressErrors,
     };
 
-    // Verifica se algum dos valores do objeto de erros combinados não é uma string vazia
     const hasErrors = Object.values(combinedErrors).some(
       (error) => error !== ''
     );
@@ -189,28 +188,29 @@ const Register = () => {
         prices: [
           {
             type: PricesType.mensal,
-            value: parseInt(
-              registration.propertyValue.replace(/\./g, '')
-            ),
+            value: parseInt(registration.propertyValue.replace(/\./g, '')),
           },
           {
             type: PricesType.condominio,
-            value: parseInt(
-              registration.condominiumValue.replace(/\./g, '')
-            ),
+            value: parseInt(registration.condominiumValue.replace(/\./g, '')),
           },
         ],
         condominium: registration.condominium,
-        tags: registration.metadata.some(item => item.amount > 0)
+        tags: registration.metadata.some((item) => item.amount > 0)
           ? ['garagem']
-          : []
+          : [],
       };
 
       toast.loading('Enviando...');
+
       setLoading(true);
+
       store.set('propertyData', propertyDataStep1);
+
       toast.dismiss();
+
       updateProgress(2);
+
       if (urlEmail !== undefined) {
         router.push({
           pathname: '/registerStep2',
@@ -295,7 +295,7 @@ const Register = () => {
       </div>
 
       <div className="flex flex-col mt-10">
-        <Footer smallPage={false} />
+        <Footer />
       </div>
     </>
   );

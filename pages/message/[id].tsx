@@ -74,7 +74,7 @@ const MessagePage = ({ ownerProperties, message, dataNot }: IMessagePage) => {
       <AdminHeader isOwnerProp={isOwner} />
 
       <div className="flex flex-row items-center justify-evenly mx-2 lg:mx-0">
-        <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:flex">
+        <div className="fixed left-0 top-7  sm:hidden hidden md:hidden lg:flex">
           <SideMenu isOwnerProp={isOwner} notifications={dataNot} />
         </div>
 

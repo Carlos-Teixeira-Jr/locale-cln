@@ -34,23 +34,24 @@ const Home: NextPageWithLayout<IHome> = ({
   locations,
 }) => {
   const { latitude, longitude, location } = useTrackLocation();
+
   const [propertiesByLocation, setPropertiesByLocation] = useState<any>([]);
+
   const [propertiesByLocationError, setPropertiesByLocationError] =
     useState(null);
+
   const [isBuy, setIsBuy] = useState(true);
+
   const [isRent, setIsRent] = useState(false);
 
-  //Altera o valor de isBuy sempre que o valor correspondente é alterado no componente HomeFilter;
   const handleSetBuy = (value: boolean) => {
     setIsBuy(value);
   };
 
-  //Altera o valor de isRent sempre que o valor correspondente é alterado no componente HomeFilter;
   const handleSetRent = (value: boolean) => {
     setIsRent(value);
   };
 
-  //Esse hook realiza a busca no DB a partir da localização do usuário.
   useEffect(() => {
     async function fetchPropertiesByLocation() {
       if (location) {
@@ -108,23 +109,24 @@ const Home: NextPageWithLayout<IHome> = ({
         </div>
 
         <div className="max-w-[1232px] flex sm:items-center md:items-center flex-col m-auto">
-          <h3 className="sm:text-base md:text-2xl font-bold text-quaternary lg:text-left text-center mt-5 md:ml-5">
+          <h3 className="text-base lg:text-xl font-bold text-quaternary lg:text-left text-center mt-5 md:ml-5">
             O que você procura a um clique de distância
           </h3>
           <div className="mb-5 lg:mb-10">
             <AccessCard />
           </div>
 
-          {propertiesByLocation.length > 0 || propertyInfo?.docs?.length > 0 && (
-            <div className="flex max-w-[1232px]  justify-center text-left">
-              <h3 className="sm:text-base md:text-2xl font-bold text-quaternary text-center md:text-left ml-5">
-                {propertiesByLocation.length != 0
-                  ? 'Veja os imóveis mais próximos de você!'
-                  : 'Veja os imóveis em destaque!'}
-              </h3>
-            </div>
-          )}
-          
+          {propertiesByLocation.length > 0 ||
+            (propertyInfo?.docs?.length > 0 && (
+              <div className="flex max-w-[1232px]  justify-center text-left">
+                <h3 className="text-base lg:text-xl font-bold text-quaternary text-center md:text-left ml-5">
+                  {propertiesByLocation.length != 0
+                    ? 'Veja os imóveis mais próximos de você!'
+                    : 'Veja os imóveis em destaque!'}
+                </h3>
+              </div>
+            ))}
+
           <div className="flex sm:flex-col max-w-[1232px] justify-center items-center md:flex-row  mb-3 px-2">
             <div className="flex flex-row px-4">
               <div className="flex flex-col m-auto align-middle mt-2">
@@ -186,7 +188,7 @@ const Home: NextPageWithLayout<IHome> = ({
         </div>
 
         <div className="flex flex-col mt-10">
-          <Footer smallPage={false} />
+          <Footer />
         </div>
       </div>
     </>

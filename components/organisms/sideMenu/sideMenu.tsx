@@ -25,9 +25,13 @@ type SideMenuProps = {
 
 const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications }) => {
   const router = useRouter();
+
   const [activeButton, setActiveButton] = useState('');
+
   const [notReadNots, setNotReadNots] = useState([]);
+
   const isMobile = useIsMobile();
+
   const isOwner = isOwnerProp;
 
   useEffect(() => {
@@ -54,8 +58,6 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications }) => {
       );
       setNotReadNots(notReadNotifications);
     }
-    console.log('NOTIFICAÇÕES NÃO LIDAS:', notReadNots.length);
-    console.log('NOTIFICAÇÕES:', notifications?.length);
   }, [notifications, setNotReadNots]);
 
   const options: Options[] = [
@@ -68,11 +70,11 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications }) => {
             activeButton === 'my-announces-button' ? '#F5BF5D' : '#6B7280'
           }`}
           className="my-auto mr-5"
-          width="35"
-          height="35"
+          width="30"
+          height="30"
         />
       ),
-      title: 'Meus Anúncios',
+      title: 'Meus anúncios',
       link: '/admin?page=1',
     },
     {
@@ -82,11 +84,11 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications }) => {
         <UserIcon
           fill={`${activeButton === 'my-data-button' ? '#F5BF5D' : '#6B7280'}`}
           className="my-auto mr-5"
-          width="35"
-          height="35"
+          width="30"
+          height="30"
         />
       ),
-      title: 'Meus Dados',
+      title: 'Meus dados',
       link: '/adminUserData',
     },
     {
@@ -98,11 +100,11 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications }) => {
             activeButton === 'favourites-button' ? '#F5BF5D' : '#6B7280'
           }`}
           className="my-auto mr-5"
-          width="35"
-          height="35"
+          width="30"
+          height="30"
         />
       ),
-      title: 'Meus Favoritos',
+      title: 'Meus favoritos',
       link: '/adminFavProperties',
     },
     {
@@ -112,11 +114,11 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications }) => {
         <MailIcon
           fill={`${activeButton === 'messages-button' ? '#F5BF5D' : '#6B7280'}`}
           className="my-auto mr-5"
-          width="35"
-          height="35"
+          width="30"
+          height="30"
         />
       ),
-      title: 'Minhas Mensagens',
+      title: 'Minhas mensagens',
       link: '/adminMessages',
     },
     {
@@ -129,8 +131,8 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications }) => {
               activeButton === 'notifications-button' ? '#F5BF5D' : '#6B7280'
             }`}
             className="my-auto"
-            width="35"
-            height="35"
+            width="30"
+            height="30"
           />
           <div className="absolute top-100 mt-4 ml-[0.4rem] left-10">
             <div
@@ -141,7 +143,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications }) => {
           </div>
         </div>
       ),
-      title: 'Minhas Notificações',
+      title: 'Minhas notificações',
       link: '/adminNotifications',
     },
   ];
@@ -149,7 +151,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications }) => {
   return (
     <>
       {!isMobile && (
-        <div className="w-fit min-h-screen bg-tertiary px-2 drop-shadow-xl left-0">
+        <div className="w-fit h-screen bg-tertiary px-2 drop-shadow-xl left-0">
           {options.map(({ key, id, icon, title, link }: Options) => {
             if (
               isOwner ||
@@ -175,7 +177,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications }) => {
                   >
                     {icon}
                     <h2
-                      className={`text-xl font-bold leading-7 my-auto transition-colors duration-300 ${
+                      className={`text-md font-bold leading-7 my-auto transition-colors duration-300 ${
                         activeButton === id
                           ? 'text-secondary hover:text-yellow'
                           : 'text-quaternary hover:text-gray-700'
@@ -192,7 +194,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications }) => {
 
           <div className="flex justify-center mt-10">
             <Link href={'/register'}>
-              <button className="bg-primary rounded-[30px] text-tertiary text-xl font-bold leading-6 px-10 py-5 transition-colors duration-300 hover:bg-red-600 hover:text-white">
+              <button className="bg-primary rounded-[30px] text-tertiary text-lg font-bold leading-6 px-10 py-2.5 transition-colors duration-300 hover:bg-red-600 hover:text-white">
                 {isOwner ? 'Novo Anúncio' : 'Anunciar'}
               </button>
             </Link>

@@ -25,13 +25,15 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
   notifications,
 }) => {
   const { data: session } = useSession() as any;
-  console.log('🚀 ~ file: admin.tsx:29 ~ session:', session);
+
   const [isOwner, setIsOwner] = useState<boolean>(false);
+
   const [currentPage, setCurrentPage] = useState(1);
+
   const router = useRouter();
+
   const query = router.query as any;
 
-  // Determina se o usuário já possui anúncios ou não;
   useEffect(() => {
     setIsOwner(ownerProperties?.docs?.length > 0 ? true : false);
   }, [ownerProperties]);
@@ -44,13 +46,11 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
   });
 
   useEffect(() => {
-    // Check if the page parameter in the URL matches the current page
     const pageQueryParam =
       router.query.page !== undefined && typeof query.page === 'string'
         ? parseInt(query.page)
         : 1;
 
-    // Only update the URL if the page parameter is different from the current page
     if (pageQueryParam !== currentPage) {
       const queryParams = {
         ...query,
@@ -64,13 +64,13 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
     <div>
       <AdminHeader isOwnerProp={isOwner} />
       <div className="flex flex-row items-center justify-evenly">
-        <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:flex">
+        <div className="fixed left-0 top-7  sm:hidden hidden md:hidden lg:flex">
           <SideMenu isOwnerProp={isOwner} notifications={notifications} />
         </div>
         <div className="flex flex-col items-center mt-24 lg:ml-[305px]">
           <div className="flex flex-col items-center">
-            <h1 className="font-extrabold text-2xl md:text-4xl text-quaternary md:mb-5 md:mr-20. text-center">
-              Bem vindo{' '}
+            <h1 className="font-extrabold text-xl md:text-3xl text-quaternary md:mb-5 md:mr-20. text-center">
+              Bem vindo
               {session?.username !== undefined ? session?.username : ''}!
             </h1>
             {isOwner && ownerProperties?.docs && (
@@ -282,7 +282,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         },
       };
     }
-    
+
     return {
       props: {
         notifications,

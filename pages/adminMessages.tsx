@@ -34,14 +34,18 @@ const AdminMessages = ({
   notifications,
 }: IAdminMessagesPage) => {
   const router = useRouter();
-  const query = router.query as any;
-  const [isOwner, setIsOwner] = useState<boolean>(false);
-  const properties = messages?.properties;
-  const messagesCount = messages?.docs?.length;
-  const totalPages = messages?.totalPages;
-  const [currentPage, setCurrentPage] = useState(1);
 
-  //// PAGE ////
+  const query = router.query as any;
+
+  const [isOwner, setIsOwner] = useState<boolean>(false);
+
+  const properties = messages?.properties;
+
+  const messagesCount = messages?.docs?.length;
+
+  const totalPages = messages?.totalPages;
+
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     if (router.query.page !== undefined && typeof query.page === 'string') {
@@ -51,13 +55,11 @@ const AdminMessages = ({
   }, [router.query.page, query.pag]);
 
   useEffect(() => {
-    // Check if the page parameter in the URL matches the current page
     const pageQueryParam =
       router.query.page !== undefined && typeof query.page === 'string'
         ? parseInt(query.page)
         : 1;
 
-    // Only update the URL if the page parameter is different from the current page
     if (pageQueryParam !== currentPage) {
       const queryParams = {
         ...query,
@@ -67,7 +69,6 @@ const AdminMessages = ({
     }
   }, [currentPage]);
 
-  // Determina se o usuário já possui anúncios ou não;
   useEffect(() => {
     setIsOwner(ownerProperties?.docs?.length > 0 ? true : false);
   }, [ownerProperties]);
@@ -78,7 +79,7 @@ const AdminMessages = ({
       <AdminHeader isOwnerProp={isOwner} />
 
       <div className="flex flex-row items-center justify-center lg:ml-72 xl:ml-72">
-        <div className="fixed sm:hidden hidden md:hidden lg:flex xl:flex left-0 top-20">
+        <div className="fixed sm:hidden hidden md:hidden lg:flex xl:flex left-0 top-7 ">
           {!isMobile ? (
             <SideMenu isOwnerProp={isOwner} notifications={notifications} />
           ) : (

@@ -6,6 +6,7 @@ import {
   ILocationProp,
 } from '../../../common/interfaces/locationDropdown';
 import { IPropertyTypes } from '../../../common/interfaces/property/propertyTypes';
+import { lowerLetters } from '../../../common/utils/strings/capitalizeFirstLetter';
 import {
   categoryMappings,
   categoryTranslations,
@@ -14,8 +15,6 @@ import {
 import propertyTypesData from '../../../data/propertyTypesData.json';
 import ArrowDownIcon from '../icons/arrowDownIcon';
 import CheckIcon from '../icons/checkIcon';
-import { showSuccessToast } from '../../../common/utils/toasts';
-import { lowerLetters } from '../../../common/utils/strings/capitalizeFirstLetter';
 
 export interface IHomeFilter extends React.ComponentPropsWithoutRef<'div'> {
   isBuyProp: boolean;
@@ -74,13 +73,13 @@ const HomeFilter: React.FC<IHomeFilter> = ({
   };
 
   // Estilos do switch button de aluguel/compra;
-  const buyBtnClassName = `w-full h-[34px] md:h-fit lg:h-[33px] rounded-full border-black text-quaternary font-bold lg:text-lg transition-all ${
+  const buyBtnClassName = `w-full h-[34px] md:h-fit lg:h-[33px] rounded-full border-black text-quaternary font-bold lg:text-md transition-all ${
     isBuy
       ? 'bg-secondary text-quinary border border-secondary'
       : 'bg-tertiary  text-quaternary'
   }`;
 
-  const rentBtnClassName = `w-full h-[34px] md:h-fit lg:h-[33px] rounded-full border-black text-quaternary font-bold lg:text-lg transition-all ${
+  const rentBtnClassName = `w-full h-[34px] md:h-fit lg:h-[33px] rounded-full border-black text-quaternary font-bold lg:text-md transition-all ${
     isRent
       ? 'bg-secondary text-quinary border border-secondary'
       : 'bg-tertiary text-quaternary'
@@ -249,7 +248,7 @@ const HomeFilter: React.FC<IHomeFilter> = ({
                 <label>Qual o tipo do imóvel?</label>
 
                 <div
-                  className="drop-shadow-lg lg:h-9 lg:w-64 lg:text-lg text-quaternary rounded-lg p-2 mb-1 border border-quaternary flex justify-between"
+                  className="drop-shadow-lg lg:h-9 lg:w-64 lg:text-sm text-gray-500 rounded-lg p-2 mb-1 border border-quaternary flex justify-between"
                   onClick={() =>
                     setPropTypeDropdownIsOpen(!propTypeDropdownIsOpen)
                   }
@@ -274,13 +273,13 @@ const HomeFilter: React.FC<IHomeFilter> = ({
                 >
                   {propertyTypesData.map((prop, index) => (
                     <div className="w-full rounded-t-8 bg-tertiary" key={index}>
-                      <p className="text-quaternary lg:text-2xl p-1 text-center font-bold ">
+                      <p className="text-quaternary lg:text-lg text-left px-6 font-bold ">
                         {lowerLetters(prop.type)}
                       </p>
                       {propertyTypesData[index].subTypes.map((type) => (
                         <div
                           key={type}
-                          className="text-center p-1 hover:bg-quaternary hover:text-tertiary"
+                          className="items-start text-sm text-left px-6 hover:bg-quaternary hover:text-tertiary last:mb-1"
                           onClick={() => {
                             setPropertyType({
                               ...propertyType,
@@ -302,7 +301,7 @@ const HomeFilter: React.FC<IHomeFilter> = ({
             <div className="flex flex-col-reverse md:flex-col gap-5">
               <div className="w-full">
                 <button
-                  className="bg-primary rounded-full w-full h-12 md:h-fit lg:h-[34px] md:mt-9 lg:mt-8 float-right text-tertiary text-xl shadow-md hover:bg-red-600 hover:text-tertiary hover:shadow-lg transition-all duration-200 active:bg-primary-dark active:text-tertiary active:shadow-none focus:outline-none"
+                  className="bg-primary rounded-full w-full h-12 md:h-fit lg:h-[34px] md:mt-9 lg:mt-8 float-right text-tertiary text-lg shadow-md hover:bg-red-600 hover:text-tertiary hover:shadow-lg transition-all duration-200 active:bg-primary-dark active:text-tertiary active:shadow-none focus:outline-none"
                   onClick={handleFindBtnClick}
                 >
                   Buscar
@@ -313,7 +312,7 @@ const HomeFilter: React.FC<IHomeFilter> = ({
                 <label className="text-base">Onde?</label>
                 <input
                   className="lg:h-9 lg:text-lg border bg-transparent border-quaternary rounded-lg p-2 mt-[0.1rem] placeholder:text-sm"
-                  placeholder="Digite um bairro, cidade, rua..."
+                  placeholder="digite um bairro, cidade, rua..."
                   maxLength={30}
                   onChange={(event: ChangeEvent<HTMLInputElement>) => {
                     const newName = event.target.value;

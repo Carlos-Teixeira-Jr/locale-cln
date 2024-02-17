@@ -55,7 +55,7 @@ const AnnouncementPage: NextPageWithLayout = ({ plans }: any) => {
         </div>
       </div>
 
-      <Footer smallPage={false} />
+      <Footer />
     </>
   );
 };

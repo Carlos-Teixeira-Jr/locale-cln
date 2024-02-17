@@ -40,11 +40,15 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
   property,
 }) => {
   const [rotate1, setRotate1] = useState(false);
+
   const [rotate2, setRotate2] = useState(false);
+
   const [rotate3, setRotate3] = useState(false);
+
   const [rotate4, setRotate4] = useState(false);
 
   const router = useRouter();
+
   const isEdit = router.pathname == '/property/modify/[id]';
 
   const [address, setAddress] = useState<IAddress>({
@@ -65,7 +69,6 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
     streetName: '',
   });
 
-  // Lida com o auto-scroll para os inputs de Address que mostrarem erro;
   const addressInputRefs = {
     zipCode: useRef<HTMLInputElement>(null),
     city: useRef<HTMLInputElement>(null),
@@ -103,7 +106,6 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
     iptuValue: '',
   });
 
-  // Lida com o auto-scroll para os inputs de MainFeatures que mostrarem erro;
   const mainFeaturesInputRefs = {
     description: useRef<HTMLElement>(null),
     totalArea: useRef<HTMLInputElement>(null),
@@ -113,17 +115,19 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
   };
 
   const [tags, setTags] = useState<string[]>(isEdit ? property.tags : []);
+
   const [condominiumTags, setCondominiumTags] = useState<string[]>(
     isEdit ? property.condominiumTags : []
   );
+
   const [videoLink, setVideoLink] = useState<string>(
     isEdit ? property.youtubeLink : ''
   );
+
   const [images, setImages] = useState<string[]>(isEdit ? property.images : []);
 
   const imagesInputRef = useRef<HTMLElement>(null);
 
-  // Envia as mensagens de erros para os componetes;
   const [errorInfo, setErrorInfo] = useState({
     error: '',
     prop: '',
@@ -135,6 +139,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
 
   const showHide = (element: string) => {
     const classList = document.getElementById(element)?.classList;
+
     classList?.contains('hidden')
       ? classList?.remove('hidden')
       : classList?.add('hidden');
@@ -142,18 +147,20 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
     document.getElementById('accordion-1')?.classList?.contains('hidden')
       ? setRotate1(true)
       : setRotate1(false);
+
     document.getElementById('accordion-2')?.classList?.contains('hidden')
       ? setRotate2(true)
       : setRotate2(false);
+
     document.getElementById('accordion-3')?.classList?.contains('hidden')
       ? setRotate3(true)
       : setRotate3(false);
+
     document.getElementById('accordion-4')?.classList?.contains('hidden')
       ? setRotate4(true)
       : setRotate4(false);
   };
 
-  // Lida com a verificação de erros do handleSubmit (necessário para acessar o valor atualizado de erros ainda antes do final da execução do handleSubmit)
   const errorHandler = useRef<{ error: string; prop: string }>({
     error: '',
     prop: '',
@@ -241,7 +248,6 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
       ...newMainFeaturesErrors,
     };
 
-    // Verifica se algum dos valores do objeto de erros combinados não é uma string vazia
     const hasErrors = Object.values(combinedErrors).some(
       (error) => error !== ''
     );
@@ -323,6 +329,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
       const addressErrorSection = Object.values(newAddressErrors).some(
         (error) => error !== ''
       );
+
       const mainFeaturesErrorSection = Object.values(
         newMainFeaturesErrors
       ).some((error) => error !== '');
@@ -333,11 +340,13 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
         document.getElementById('accordion-1')?.classList?.contains('hidden')
       )
         showHide('accordion-1');
+
       if (
         imagesErrorSection &&
         document.getElementById('accordion-2')?.classList?.contains('hidden')
       )
         showHide('accordion-2');
+
       if (
         mainFeaturesErrorSection &&
         document.getElementById('accordion-3')?.classList?.contains('hidden')
@@ -346,18 +355,24 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
     }
   };
 
+  const classes = {
+    labelAccordion:
+      'flex flex-row items-center justify-between sm:min-w-[300px] md:min-w-[620px] lg:min-w-[600px] xl:min-w-[800px] 2xl:min-w-[1000px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 mx-4 text-lg transition bg-opacity-90 hover:bg-gray-300',
+    accordionContainer: 'accordion__content hidden bg-grey-lighter dis',
+  };
+
   return (
     <div>
       <AdminHeader isOwnerProp={true} />
       <div className="flex flex-row justify-center w-full">
-        <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:hidden xl:flex">
+        <div className="fixed left-0 top-7 sm:hidden hidden md:hidden lg:hidden xl:flex">
           <SideMenu
             isOwnerProp={property !== undefined && true}
             notifications={[]}
           />
         </div>
         <div className="flex flex-col items-center mt-16 max-w-[900px] px-2 md:px-10 sm:ml-0 ml-0 xl:ml-24 2xl:ml-24">
-          <h1 className="font-bold text-2xl lg:text-3xl text-quaternary my-10 mx-auto">
+          <h1 className="font-bold text-xl lg:text-2xl text-quaternary my-10 mx-auto">
             Edição do Anúncio
             <div className="accordion flex flex-col">
               <div>
@@ -368,10 +383,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
                   className="hidden"
                   onClick={() => showHide('accordion-1')}
                 />
-                <label
-                  htmlFor="painel-1"
-                  className="flex flex-row items-center justify-between sm:min-w-[300px] md:min-w-[600px] lg:min-w-[600px] xl:min-w-[800px] 2xl:min-w-[1000px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 mx-4 text-xl transition bg-opacity-90 hover:bg-gray-300"
-                >
+                <label htmlFor="painel-1" className={classes.labelAccordion}>
                   Endereço
                   <span
                     className={`transition-transform transform ${
@@ -381,10 +393,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
                     <ArrowDownIconcon width="13" className="cursor-pointer" />
                   </span>
                 </label>
-                <div
-                  className="accordion__content hidden bg-grey-lighter dis"
-                  id="accordion-1"
-                >
+                <div className={classes.accordionContainer} id="accordion-1">
                   <div className="accordion__body" id="painel1">
                     <Address
                       isEdit={isEdit}
@@ -406,10 +415,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
                   className="hidden"
                   onClick={() => showHide('accordion-2')}
                 />
-                <label
-                  htmlFor="painel-2"
-                  className="flex flex-row items-center justify-between sm:min-w-[300px] md:min-w-[620px] lg:min-w-[600px] xl:min-w-[800px] 2xl:min-w-[1000px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 mx-4 text-xl transition bg-opacity-90 hover:bg-gray-300"
-                >
+                <label htmlFor="painel-2" className={classes.labelAccordion}>
                   Fotos
                   <span
                     className={`transition-transform transform ${
@@ -419,10 +425,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
                     <ArrowDownIconcon width="13" className="cursor-pointer" />
                   </span>
                 </label>
-                <div
-                  className="accordion__content hidden bg-grey-lighter dis"
-                  id="accordion-2"
-                >
+                <div className={classes.accordionContainer} id="accordion-2">
                   <div className="accordion__body" id="painel2">
                     <UploadImages
                       editarImages={property.images}
@@ -443,10 +446,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
                   className="hidden"
                   onClick={() => showHide('accordion-3')}
                 />
-                <label
-                  htmlFor="painel-3"
-                  className="flex flex-row items-center justify-between sm:min-w-[300px] md:min-w-[620px] lg:min-w-[600px] xl:min-w-[800px] 2xl:min-w-[1000px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 mx-4 text-xl transition bg-opacity-90 hover:bg-gray-300"
-                >
+                <label htmlFor="painel-3" className={classes.labelAccordion}>
                   Características
                   <span
                     className={`transition-transform transform ${
@@ -456,10 +456,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
                     <ArrowDownIconcon width="13" className="cursor-pointer" />
                   </span>
                 </label>
-                <div
-                  className="accordion__content hidden bg-grey-lighter dis"
-                  id="accordion-3"
-                >
+                <div className={classes.accordionContainer} id="accordion-3">
                   <div className="accordion__body" id="painel3">
                     <MainFeatures
                       propertyId={property._id}
@@ -537,11 +534,8 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
                   className="hidden"
                   onClick={() => showHide('accordion-4')}
                 />
-                <label
-                  htmlFor="painel-4"
-                  className="flex flex-row items-center justify-between  sm:min-w-[300px] md:min-w-[620px] lg:min-w-[600px] xl:min-w-[800px] 2xl:min-w-[1000px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 mx-4 text-xl transition bg-opacity-90 hover:bg-gray-300"
-                >
-                  Outras Características
+                <label htmlFor="painel-4" className={classes.labelAccordion}>
+                  Outras características
                   <span
                     className={`transition-transform transform ${
                       rotate4 ? 'rotate-180' : ''
@@ -550,10 +544,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
                     <ArrowDownIconcon width="13" className="cursor-pointer" />
                   </span>
                 </label>
-                <div
-                  className="accordion__content hidden bg-grey-lighter dis"
-                  id="accordion-4"
-                >
+                <div className={classes.accordionContainer} id="accordion-4">
                   <div className="accordion__body mx-2" id="painel4">
                     <PropertyDifferentials
                       shouldRenderCondDiv={
@@ -578,7 +569,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
             </div>
             <div className="flex self-end md:justify-end justify-center mb-32 mt-16">
               <button
-                className="bg-primary w-80 h-16 text-tertiary rounded transition-colors duration-300 hover:bg-red-600 hover:text-white"
+                className="bg-primary w-56 h-12 text-lg text-tertiary rounded transition-colors duration-300 hover:bg-red-600 hover:text-white"
                 onClick={handleSubmit}
               >
                 Atualizar Dados

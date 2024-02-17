@@ -18,35 +18,40 @@ const RegisterStep2: NextPageWithLayout = () => {
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
+
   const query = router.query;
+
   const urlEmail = query.email;
+
   const { progress, updateProgress } = useProgress();
+
   const [images, setImages] = useState<string[]>([]);
+
   const [condominiumTags, setCondominiumTags] = useState<string[]>([]);
+
   const [youtubeLink, setYoutubeLink] = useState<string>('');
+
   const storedData = store.get('propertyData');
+
   const [tags, setTags] = useState<string[]>([]);
+
   const isCondominium = storedData?.condominium ? true : false;
 
-  // Verifica se o estado progress que determina em qual step o usuário está corresponde ao step atual;
   useEffect(() => {
     if (progress < 2) {
       router.push('/register');
     }
   });
 
-  // impao indexDB logo que a página é renderizada;
   useEffect(() => {
     clearIndexDB();
   }, []);
 
-  // Envia as mensagens de erros para o componente UploadImages;
   const [errorInfo, setErrorInfo] = useState({
     error: '',
     prop: '',
   });
 
-  // Lida com a verificação de erros do handleSubmit (necessário para acessar o valor atualizado de erros ainda antes do final da execução do handleSubmit)
   const errorHandler = useRef<{ error: string; prop: string }>({
     error: '',
     prop: '',
@@ -162,7 +167,7 @@ const RegisterStep2: NextPageWithLayout = () => {
         </div>
       </div>
 
-      <Footer smallPage={false} />
+      <Footer />
     </>
   );
 };

@@ -28,19 +28,20 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
   ownerProperties,
   notifications,
 }) => {
-  console.log("🚀 ~ favouriteProperties:", favouriteProperties)
   const [isOwner, setIsOwner] = useState<boolean>(false);
+
   const [properties, _setProperties] = useState<IPropertyInfo>(ownerProperties);
+
   const [currentPage, setCurrentPage] = useState(1);
+
   const router = useRouter();
+
   const query = router.query as any;
 
-  // Determina se o usuário já possui anúncios ou não;
   useEffect(() => {
     setIsOwner(properties?.docs?.length > 0 ? true : false);
   }, [properties]);
 
-  // Determina se o usuário já possui anúncios ou não;
   useEffect(() => {
     setIsOwner(ownerProperties.docs?.length > 0 ? true : false);
   }, [ownerProperties]);
@@ -53,13 +54,11 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
   });
 
   useEffect(() => {
-    // Check if the page parameter in the URL matches the current page
     const pageQueryParam =
       router.query.page !== undefined && typeof query.page === 'string'
         ? parseInt(query.page)
         : 1;
 
-    // Only update the URL if the page parameter is different from the current page
     if (pageQueryParam !== currentPage) {
       const queryParams = {
         ...query,
@@ -73,7 +72,7 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
     <>
       <AdminHeader isOwnerProp={isOwner} />
       <div className="flex flex-row items-center justify-center  lg:ml-96 xl:ml-96">
-        <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:flex">
+        <div className="fixed left-0 top-7  sm:hidden hidden md:hidden lg:flex">
           <SideMenu isOwnerProp={isOwner} notifications={notifications} />
         </div>
         <div className="flex flex-col items-center mt-24 w-full ">

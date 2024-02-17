@@ -54,19 +54,16 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
   property,
   isFavourite,
   relatedProperties,
-  ownerData,
 }: IPropertyPage) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   const [mapIsActive, setMapIsActive] = useState(false);
+
   const dynamicRoute = useRouter().asPath;
 
-  // Atualiza o valor de mapIsActive quando o usuário clica em um novo card apresentado nesta página;
   useEffect(() => {
     setMapIsActive(false);
   }, [dynamicRoute]);
-
-  console.log('property', property);
-  console.log('ownerData', ownerData);
 
   return (
     <>
@@ -143,7 +140,7 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
         </div>
       </div>
 
-      <Footer smallPage={false} />
+      <Footer />
     </>
   );
 };

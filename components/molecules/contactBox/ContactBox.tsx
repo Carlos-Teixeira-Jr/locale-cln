@@ -64,18 +64,18 @@ const ContactBox: React.FC<IContactBox> = ({ ownerInfo, property }: any) => {
               alt={'A image of the property owner'}
               width={90}
               height={90}
-              className="rounded-full border-4 w-[90px] max-w-[90px] h-[90px] max-h-[90px]"
+              className="rounded-full w-[90px] max-w-[90px] h-[90px] max-h-[90px]"
             />
           ) : (
             <UserIcon
-              className="rounded-full border-4 border-quaternary drop-shadow-lg w-20 h-20 p-2 mx-2 shrink-0"
+              className="rounded-full drop-shadow-lg w-20 h-20 p-2 mx-2 shrink-0"
               fill="#F75D5F"
             />
           )}
 
           <p
             className={`${
-              owner?.length > 25 ? 'text-xl' : 'text-2xl'
+              owner?.length > 25 ? 'text-lg' : 'text-xl'
             } w-48 md:w-full h-fit text-quaternary font-extrabold text-center pt-3 md:pt-0 drop-shadow-lg`}
           >
             {owner}
@@ -85,7 +85,7 @@ const ContactBox: React.FC<IContactBox> = ({ ownerInfo, property }: any) => {
           {buttons.map((btn) => (
             <div
               onClick={() => btn.onClick()}
-              className={`md:w-full w-36 h-12 md:h-14 text-tertiary font-extrabold text-xl rounded-[10px] p-2.5 top-[861px] left-[999px] gap-y-2.5 md:grid flex drop-shadow-lg md:m-2 align-middle my-auto justify-center mr-2 cursor-pointer ${
+              className={`md:w-full w-36 h-12 text-tertiary font-extrabold text-lg rounded-[10px] p-2.5 top-[861px] left-[999px] gap-y-1.5 md:grid flex drop-shadow-lg md:m-2 align-middle my-auto justify-center mr-2 cursor-pointer ${
                 btn.key === 'contact' ? 'bg-secondary' : 'bg-[#25D366]'
               }`}
               key={btn.key}

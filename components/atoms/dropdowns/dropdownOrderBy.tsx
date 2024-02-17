@@ -23,29 +23,29 @@ const DropdownOrderBy: React.FC = () => {
   const dropdownOptions = [
     {
       key: 'relevance',
-      name: 'Maior Relevância',
+      name: 'maior relevância',
     },
     {
       key: 'biggestPrice',
-      name: 'Maior Preço',
+      name: 'maior preço',
     },
     {
       key: 'lowestPrice',
-      name: 'Menor Preço',
+      name: 'menor preço',
     },
     {
       key: 'mostRecent',
-      name: 'Mais Recentes',
+      name: 'mais recentes',
     },
   ];
 
   return (
-    <div className="hidden md:flex absolute z-50 max-w-[210px] h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md pb-5">
-      <div className="flex flex-col text-center font-normal text-base text-quaternary">
+    <div className="hidden md:flex absolute z-50 max-w-[180px] h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md ml-2">
+      <div className="flex flex-col text-left font-normal text-sm text-quaternary">
         {dropdownOptions.map((option) => (
-          <span
+          <h3
             key={option.key}
-            className={`translate-x-[1px] w-[201px] md:h-9 lg:h-11 hover:bg-quaternary hover:text-tertiary py-3 ${
+            className={`translate-x-[1px] w-[201px] h-fit hover:bg-quaternary hover:text-tertiary py-1 ${
               option.key === 'relevance'
                 ? 'rounded-t-xl'
                 : option.key === 'mostRecent'
@@ -54,8 +54,8 @@ const DropdownOrderBy: React.FC = () => {
             }`}
             onClick={() => handleSortTypeChange(option.key)}
           >
-            {option.name}
-          </span>
+            <span className="px-3">{option.name}</span>
+          </h3>
         ))}
       </div>
     </div>

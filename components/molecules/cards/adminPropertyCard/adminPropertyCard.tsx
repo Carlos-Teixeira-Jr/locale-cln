@@ -4,6 +4,7 @@ import Link from 'next/link';
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import { IMessage } from '../../../../common/interfaces/message/messages';
+import { monetaryFormat } from '../../../../common/utils/masks/monetaryFormat';
 import {
   ErrorToastNames,
   showErrorToast,
@@ -13,9 +14,7 @@ import {
 import MessageIcon from '../../../atoms/icons/messageIcon';
 import StarIcon from '../../../atoms/icons/starIcon';
 import ViewIcon from '../../../atoms/icons/viewIcon';
-import formatCurrency from '../../../atoms/masks/currencyFormat';
 import ConfirmActivationModal from '../../../atoms/modals/confirmActivationModal';
-import { monetaryFormat } from '../../../../common/utils/masks/monetaryFormat';
 
 interface IAdminPropertyCard {
   _id: string;
@@ -48,9 +47,13 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
 }: IAdminPropertyCard) => {
   const priceString = price.toString();
   const formattedPrice = monetaryFormat(priceString);
+
   const [isActive, setIsActive] = useState<boolean>(isActiveProp);
+
   const { data: session } = useSession() as any;
+
   const user = session?.user?.data._id;
+
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
   const handleHighlight = async () => {
@@ -88,13 +91,13 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
       title: 'Editar',
       link: '/property/modify/',
       className:
-        'bg-secondary w-full h-12 px-10 rounded-md font-bold text-tertiary text-2xl transition-colors duration-300 hover:bg-yellow-500 hover:text-white',
+        'bg-secondary w-full h-12 px-10 rounded-md font-bold text-tertiary text-xl transition-colors duration-300 hover:bg-yellow-500 hover:text-white',
     },
     {
       key: 'deactivate',
       title: 'Inativar',
       link: '',
-      className: `bg-quaternary w-full h-12 px-10 rounded-md font-bold text-tertiary text-2xl shadow-sm transition-colors duration-300 hover:bg-gray-600 hover:text-white`,
+      className: `bg-quaternary w-full h-12 px-10 rounded-md font-bold text-tertiary text-xl shadow-sm transition-colors duration-300 hover:bg-gray-600 hover:text-white`,
       onClick: () => {
         setModalIsOpen(true);
       },
@@ -104,14 +107,14 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
       title: 'Visualizar',
       link: '',
       className:
-        'bg-[#5BC0DE] w-full h-12 px-10 rounded-md font-bold text-tertiary text-2xl shadow-sm transition-colors duration-300 hover:bg-blue-500 hover:text-white',
+        'bg-[#5BC0DE] w-full h-12 px-10 rounded-md font-bold text-tertiary text-xl shadow-sm transition-colors duration-300 hover:bg-blue-500 hover:text-white',
     },
     {
       key: 'highlight',
       title: 'Destacar',
       link: '',
       className:
-        'flex flex-row items-center justify-center bg-primary w-full h-12 px-10 rounded-md font-bold text-secondary text-2xl shadow-sm mb-6 md:mb-0 md:mr-6 transition-colors duration-300 hover:bg-red-500 hover:text-yellow-300',
+        'flex flex-row items-center justify-center bg-primary w-full h-12 px-10 rounded-md font-bold text-secondary text-xl shadow-sm mb-6 md:mb-0 md:mr-6 transition-colors duration-300 hover:bg-red-500 hover:text-yellow-300',
       onClick: handleHighlight,
     },
   ];
@@ -150,21 +153,28 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
             }`}
             style={{ overflow: 'hidden' }}
           >
-            <h1 className="font-bold text-4xl text-black mb-5" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            <h1
+              className="font-bold text-3xl text-black mb-5"
+              style={{
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}
+            >
               {' '}
               {formattedPrice}
             </h1>
-            <div className="flex flex-row space-x-2 items-center text-quaternary font-bold text-xl mb-3">
+            <div className="flex flex-row space-x-2 items-center text-quaternary font-bold text-lg mb-3">
               <ViewIcon />
               <span>{views}</span>
               <h2>{views === 1 ? 'visualização' : 'visualizações'}</h2>
             </div>
-            <div className="flex flex-row space-x-2 items-center text-quaternary font-bold text-xl mb-5">
+            <div className="flex flex-row space-x-2 items-center text-quaternary font-bold text-lg mb-5">
               <MessageIcon />
               <span>{messages.length}</span>
               <h2>{messages.length === 1 ? 'mensagem' : 'mensagens'}</h2>
             </div>
-            <h3 className="max-w-[200px] text-quaternary font-bold text-sm">
+            <h3 className="w-fit text-quaternary font-bold text-sm">
               {location}
             </h3>
           </div>

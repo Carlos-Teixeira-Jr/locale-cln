@@ -12,7 +12,6 @@ const RegisterStep4: NextPageWithLayout = () => {
   const { progress, updateProgress } = useProgress();
   const [loading, setLoading] = useState(false);
 
-  // Verifica se o estado progress que determina em qual step o usuário está corresponde ao step atual;
   useEffect(() => {
     if (progress < 4) {
       router.push('/register');
@@ -55,7 +54,7 @@ const RegisterStep4: NextPageWithLayout = () => {
           </div>
         </div>
       </div>
-      <Footer smallPage={true} />
+      <Footer />
     </>
   );
 };
