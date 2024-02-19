@@ -86,7 +86,6 @@ const UploadImages = ({
     }
     
     for (const file of files) {
-      console.log("🚀 ~ handleAddImage ~ file:", file)
       const id = uuidv4();
       const src = URL.createObjectURL(file);
 

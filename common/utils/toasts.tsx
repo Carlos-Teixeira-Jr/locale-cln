@@ -17,6 +17,8 @@ export enum SuccessToastNames {
   UserDataUpdate = 'userDataUpdate',
   PropertyUpdate = 'propertyUpdate',
   DeleteUser = 'deleteUser',
+  UploadedImage = 'uploadedImage',
+  RemoveImage = 'removeImage'
 }
 
 export enum ErrorToastNames {
@@ -35,7 +37,9 @@ export enum ErrorToastNames {
   AdActivation = 'adActivation',
   EmailNotFound = 'emailNotFound',
   ImagesMaxLimit = 'imagesMaxLimit',
-  LoadImages = 'loadImages'
+  LoadImages = 'loadImages',
+  ImageUploadError = 'imageUploadError',
+  SendImages = 'sendImages'
 }
 
 const successToastMessages: Record<SuccessToastNames, ToastMessage> = {
@@ -89,6 +93,18 @@ const successToastMessages: Record<SuccessToastNames, ToastMessage> = {
   },
   [SuccessToastNames.DeleteUser]: {
     message: 'Usuário excluído com sucesso.',
+    options: {
+      autoClose: 7000,
+    },
+  },
+  [SuccessToastNames.UploadedImage]: {
+    message: 'Imagem adicionada com sucesso ao IndexedDB.',
+    options: {
+      autoClose: 7000,
+    },
+  },
+  [SuccessToastNames.RemoveImage]: {
+    message: 'Imagem removida com sucesso do IndexedDB.',
     options: {
       autoClose: 7000,
     },
@@ -188,6 +204,18 @@ const errorToastMessages: Record<ErrorToastNames, ToastMessage> = {
   },
   [ErrorToastNames.LoadImages]: {
     message: 'Erro ao carregar as fotos do imóvel.',
+    options: {
+      autoClose: 7000,
+    },
+  },
+  [ErrorToastNames.ImageUploadError]: {
+    message: 'Erro ao adicionar a imagem ao IndexedDB.',
+    options: {
+      autoClose: 7000,
+    },
+  },
+  [ErrorToastNames.SendImages]: {
+    message: 'Erro ao enviar as fotos.',
     options: {
       autoClose: 7000,
     },

@@ -1,3 +1,4 @@
+import { ErrorToastNames, SuccessToastNames, showErrorToast, showSuccessToast } from "./toasts";
 
 export const openDatabase = () => {
   return new Promise<IDBDatabase>((resolve, reject) => {
@@ -40,11 +41,12 @@ export const addImageToDB = (file: File, src: any, id: string) => {
     });
 
     request.onsuccess = () => {
-      console.log('Imagem adicionada com sucesso ao IndexedDB.');
+      showSuccessToast(SuccessToastNames.UploadedImage)
     };
 
     request.onerror = (event) => {
       console.error(`Erro ao adicionar a imagem ao IndexedDB: ${(event.target as IDBRequest).error}`);
+      showErrorToast(ErrorToastNames.ImageUploadError);
     };
   });
 };
@@ -81,6 +83,7 @@ export const removeImageFromDB = (id: string) => {
 
       deleteRequest.onsuccess = () => {
         console.log('Imagem removida com sucesso do IndexedDB.');
+        showSuccessToast(SuccessToastNames.RemoveImage)
         resolve();
       };
 

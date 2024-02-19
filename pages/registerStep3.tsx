@@ -28,6 +28,7 @@ import Footer from '../components/organisms/footer/footer';
 import Header from '../components/organisms/header/header';
 import { useProgress } from '../context/registerProgress';
 import { NextPageWithLayout } from './page';
+import { ErrorToastNames, showErrorToast } from '../common/utils/toasts';
 
 interface IRegisterStep3Props {
   selectedPlanCard: string;
@@ -366,11 +367,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
 
         if (response.ok) {
           const data = await response.json();
-          console.log(
-            'propertyData.ownerInfo.profilePicture',
-            propertyData.ownerInfo.profilePicture
-          );
-          console.log('userData.profilePicture', userData.profilePicture);
           const paymentData = {
             cardBrand: data.creditCardBrand ? data.creditCardBrand : 'Free',
             value: data.paymentValue ? data.paymentValue : '00',
@@ -425,7 +421,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
               });
             }
           } else {
-            console.log('Erro ao enviar as imagens');
+            showErrorToast(ErrorToastNames.SendImages)
           }
         } else {
           toast.dismiss();
