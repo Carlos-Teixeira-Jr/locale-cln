@@ -67,21 +67,15 @@ const UploadImages = ({
       try {
         // Consulta o IndexedDB para recuperar as imagens salvas
         const imagesFromDB = await getAllImagesFromDB();
-        console.log("🚀 ~ loadImagesFromDB ~ imagesFromDB:", imagesFromDB)
         // Define o estado `images` com as imagens recuperadas
         setImages(imagesFromDB as any[]);
       } catch (error) {
-        console.error('Erro ao carregar imagens do IndexedDB:', error);
+        showErrorToast(ErrorToastNames.LoadImages)
       }
     };
-  
     // Chama a função para carregar imagens do IndexedDB quando o componente é montado
     loadImagesFromDB();
   }, []);
-
-  useEffect(() => {
-    console.log("🚀 ~ comp - images:", images)
-  }, images)
 
   const handleAddImage = async (event: any) => {
     const files = event.target.files;
