@@ -26,7 +26,7 @@ export const openDatabase = () => {
   });
 };
 
-export const addImageToDB = (file: File, id: string) => {
+export const addImageToDB = (file: File, src: any, id: string) => {
   openDatabase().then((db) => {
     const transaction = db.transaction(['imagens'], 'readwrite');
     const objectStore = transaction.objectStore('imagens');
@@ -36,6 +36,7 @@ export const addImageToDB = (file: File, id: string) => {
       data: file,
       name: file.name,
       mimeType: file.type,
+      src: src
     });
 
     request.onsuccess = () => {
@@ -69,7 +70,6 @@ export const getAllImagesFromDB = () => {
 };
 
 export const removeImageFromDB = (id: string) => {
-  console.log("🚀 ~ file: indexDb.ts:66 ~ removeImageFromDB ~ id:", id);
 
   return new Promise<void>((resolve, reject) => {
     openDatabase().then(db => {

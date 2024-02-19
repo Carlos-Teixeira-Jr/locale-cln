@@ -33,7 +33,9 @@ export enum ErrorToastNames {
   DeleteUser = 'deleteUser',
   EmailAlreadyInUse = 'emailAlreadyInUse',
   AdActivation = 'adActivation',
-  EmailNotFound = 'emailNotFound'
+  EmailNotFound = 'emailNotFound',
+  ImagesMaxLimit = 'imagesMaxLimit',
+  LoadImages = 'loadImages'
 }
 
 const successToastMessages: Record<SuccessToastNames, ToastMessage> = {
@@ -174,6 +176,18 @@ const errorToastMessages: Record<ErrorToastNames, ToastMessage> = {
   },
   [ErrorToastNames.EmailNotFound]: {
     message: 'Não há nenhuma conta vinculada a esse e-mail.',
+    options: {
+      autoClose: 7000,
+    },
+  },
+  [ErrorToastNames.ImagesMaxLimit]: {
+    message: 'Você já alcançou o limite máximo de 30 fotos.',
+    options: {
+      autoClose: 7000,
+    },
+  },
+  [ErrorToastNames.LoadImages]: {
+    message: 'Erro ao carregar as fotos do imóvel.',
     options: {
       autoClose: 7000,
     },

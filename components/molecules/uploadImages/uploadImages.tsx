@@ -5,9 +5,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import { DndProvider, DropTargetMonitor, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { v4 as uuidv4 } from 'uuid';
-import { addImageToDB, removeImageFromDB } from '../../../common/utils/indexDb';
+import { addImageToDB, getAllImagesFromDB, removeImageFromDB } from '../../../common/utils/indexDb';
 import CameraIcon from '../../atoms/icons/cameraIcon';
 import TrashIcon from '../../atoms/icons/trashIcon';
+import { ErrorToastNames, showErrorToast } from '../../../common/utils/toasts';
 
 interface IImages {
   editarImages?: string[];
@@ -61,17 +62,47 @@ const UploadImages = ({
     }
   }, [editarImages]);
 
+  useEffect(() => {
+    const loadImagesFromDB = async () => {
+      try {
+        // Consulta o IndexedDB para recuperar as imagens salvas
+        const imagesFromDB = await getAllImagesFromDB();
+        console.log("🚀 ~ loadImagesFromDB ~ imagesFromDB:", imagesFromDB)
+        // Define o estado `images` com as imagens recuperadas
+        setImages(imagesFromDB as any[]);
+      } catch (error) {
+        console.error('Erro ao carregar imagens do IndexedDB:', error);
+      }
+    };
+  
+    // Chama a função para carregar imagens do IndexedDB quando o componente é montado
+    loadImagesFromDB();
+  }, []);
+
+  useEffect(() => {
+    console.log("🚀 ~ comp - images:", images)
+  }, images)
+
   const handleAddImage = async (event: any) => {
-    for (const file of event.target.files) {
+    const files = event.target.files;
+
+    if (files.length + images.length > 7) {
+      showErrorToast(ErrorToastNames.ImagesMaxLimit);
+      return;
+    }
+    
+    for (const file of files) {
+      console.log("🚀 ~ handleAddImage ~ file:", file)
       const id = uuidv4();
+      const src = URL.createObjectURL(file);
 
       // Adiciona a imagem ao IndexedDB junto com o ID UUID
-      await addImageToDB(file, id);
+      await addImageToDB(file, src, id);
 
       // Atualiza o estado com a imagem usando o ID UUID
       setImages((prevImages) => [
         ...prevImages,
-        { src: URL.createObjectURL(file), id },
+        { src, id },
       ]);
     }
   };
@@ -123,6 +154,7 @@ const UploadImages = ({
         onChange={handleAddImage}
         className="hidden mb-4"
         id="uploadImages"
+        max={7}
       />
       <p
         className={`text-quaternary font-medium text-xs mt-1 mb-2 flex ${
@@ -150,7 +182,7 @@ const UploadImages = ({
               <Image
                 key={image.id ? image.id : `${image}-${index}`}
                 id={image.id}
-                src={image.src}
+                src={image.src ? image.src : images[index].src}
                 index={index}
                 onRemove={() => handleRemoveImage(image.id)}
                 moveImage={moveImage}
