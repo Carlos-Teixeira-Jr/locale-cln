@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { MouseEvent, useRef, useState } from 'react';
+import { MouseEvent, useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import store from 'store';
 import {
@@ -189,18 +189,21 @@ const Register = () => {
         prices: [
           {
             type: PricesType.mensal,
-            value: parseFloat(
-              registration.propertyValue.replace(/\./g, '').replace(',', '.')
+            value: parseInt(
+              registration.propertyValue.replace(/\./g, '')
             ),
           },
           {
             type: PricesType.condominio,
-            value: parseFloat(
-              registration.condominiumValue.replace(/\./g, '').replace(',', '.')
+            value: parseInt(
+              registration.condominiumValue.replace(/\./g, '')
             ),
           },
         ],
         condominium: registration.condominium,
+        tags: registration.metadata.some(item => item.amount > 0)
+          ? ['garagem']
+          : []
       };
 
       toast.loading('Enviando...');

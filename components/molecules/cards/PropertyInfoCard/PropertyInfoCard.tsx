@@ -11,6 +11,7 @@ import ParkingIcon from '../../../atoms/icons/parkingIcon';
 import PreviousCardIcon from '../../../atoms/icons/previousCardIcon';
 import formatCurrency from '../../../atoms/masks/currencyFormat';
 import MessageModal from '../../../atoms/modals/messageModal';
+import { monetaryFormat } from '../../../../common/utils/masks/monetaryFormat';
 Modal.setAppElement('#__next');
 
 export interface IPropertyInfoCard {
@@ -51,7 +52,7 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
   const [expanded, setExpanded] = useState(false);
   const descriptionRef = useRef<HTMLParagraphElement>(null);
   const [isExpandable, setIsExpandable] = useState(false);
-  const formattedPrice = formatCurrency(Number(prices));
+  const formattedPrice = monetaryFormat(prices);
   // Expande o tamanho do corpo do card para mostrar todo o texto;
   const toggleExpanded = (e: React.MouseEvent) => {
     e.preventDefault();

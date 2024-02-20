@@ -9,6 +9,7 @@ import {
 import CheckIcon from '../../atoms/icons/checkIcon';
 import CloseIcon from '../../atoms/icons/closeIcon';
 import YoutubeAddIcon from '../../atoms/icons/youtubeAddIcon';
+import store from 'store';
 
 type Props = {
   shouldRenderCondDiv?: boolean;
@@ -29,9 +30,19 @@ const PropertyDifferentials = ({
 }: Props) => {
   const [firstInputValue, setFirstInputValue] = useState('');
   const [secondInputValue, setSecondInputValue] = useState('');
-  const [updatedTags, setUpdatedTags] = useState<string[]>(
-    property ? property.tags : []
-  );
+  const storedData = store.get('propertyData');
+  // const [updatedTags, setUpdatedTags] = useState<string[]>(
+  //   property ? property.tags : []
+  // );
+  const [updatedTags, setUpdatedTags] = useState<string[]>(() => {
+    if (property && property.tags) {
+      return property.tags;
+    } else if (storedData && storedData.tags.length > 0) {
+      return ['garagem'];
+    } else {
+      return [];
+    }
+  });
   const [updatedCondominiumTags, setUpdatedCondominiumTags] = useState<
     string[]
   >(property ? property.condominiumTags : []);

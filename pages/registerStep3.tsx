@@ -422,6 +422,10 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
             }
           } else {
             showErrorToast(ErrorToastNames.SendImages)
+            showErrorToast(ErrorToastNames.ImagesUploadError);
+            setTimeout(() => {
+              router.push('/register');
+            }, 7000);
           }
         } else {
           toast.dismiss();
