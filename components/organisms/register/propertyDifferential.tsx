@@ -80,6 +80,11 @@ const PropertyDifferentials = ({
       'text-quaternary md:text-xl text-lg font-semibold leading-9 mt-4 mx-3',
     handleTag:
       'w-5 h-5 flex items-center justify-center my-auto mx-1 mr-2 bg-quaternary rounded-full cursor-pointer',
+    h3Title:
+      'text-lg my-5 font-bold leading-7 text-quaternary drop-shadow-sm ml-3',
+    tagSpan:
+      'bg-tertiary text-quaternary text-sm font-semibold rounded-full drop-shadow-lg grid grid-flow-col border border-quaternary mb-2 ml-3',
+    checkBox: 'flex my-5 w-[150px] max-w-[30%] ml-3',
   };
 
   return (
@@ -146,11 +151,8 @@ const PropertyDifferentials = ({
       </div>
       <div className="flex flex-wrap mt-4">
         {updatedTags.map((tag) => (
-          <span
-            className="bg-tertiary text-quaternary text-sm font-semibold rounded-full drop-shadow-lg grid grid-flow-col border border-quaternary ml-2 mb-2"
-            key={tag}
-          >
-            <p className="m-1">{tag}</p>
+          <span className={classes.tagSpan} key={tag}>
+            <p className="m-1 mb-2">{tag}</p>
             <div
               className={classes.handleTag}
               onClick={() => {
@@ -168,13 +170,11 @@ const PropertyDifferentials = ({
         <div>
           <h2 className={classes.h2Title}>Características do condomínio</h2>
 
-          <h3 className="text-lg my-5 font-bold leading-7 text-quaternary drop-shadow-sm">
-            Lazer:
-          </h3>
+          <h3 className={classes.h3Title}>Lazer:</h3>
 
           <div className="flex flex-wrap">
             {condominiumTagsDefault.map((tag, i) => (
-              <div className="flex my-5 w-[150px] max-w-[30%]" key={i}>
+              <div className={classes.checkBox} key={i}>
                 <div
                   className={classes.checkContainer}
                   onClick={() => {
@@ -206,13 +206,11 @@ const PropertyDifferentials = ({
             ))}
           </div>
 
-          <h3 className="text-lg my-5 font-bold leading-7 text-quaternary drop-shadow-sm">
-            Acessibilidade e Serviços:
-          </h3>
+          <h3 className={classes.h3Title}>Acessibilidade e Serviços:</h3>
 
           <div className="flex flex-wrap">
             {accessibilityTags.map((tag, i) => (
-              <div className="flex my-5 w-[150px] max-w-[30%]" key={i}>
+              <div className={classes.checkBox} key={i}>
                 <div
                   className={classes.checkContainer}
                   onClick={() => {
@@ -244,13 +242,11 @@ const PropertyDifferentials = ({
             ))}
           </div>
 
-          <h3 className="text-lg my-5 font-bold leading-7 text-quaternary drop-shadow-sm">
-            Segurança:
-          </h3>
+          <h3 className={classes.h3Title}>Segurança:</h3>
 
           <div className="flex flex-wrap">
             {securityTags.map((tag, i) => (
-              <div className="flex my-5 w-[150px] max-w-[30%]" key={i}>
+              <div className={classes.checkBox} key={i}>
                 <div
                   className={classes.checkContainer}
                   onClick={() => {
@@ -283,10 +279,10 @@ const PropertyDifferentials = ({
           </div>
 
           <div>
-            <h2 className="text-quaternary text-lg font-semibold leading-9 my-2">
+            <h2 className="text-quaternary text-lg font-semibold leading-9 ml-3 my-2">
               Outras Características do Condomínio
             </h2>
-            <div className="flex flex-col md:block  mx-3">
+            <div className="flex flex-col md:block mx-3">
               <input
                 className={classes.mediumInput}
                 id="second-input"
@@ -310,10 +306,7 @@ const PropertyDifferentials = ({
           </div>
           <div className="flex flex-wrap my-5 gap-2">
             {updatedCondominiumTags.map((tag) => (
-              <span
-                className="bg-tertiary text-quaternary text-sm font-semibold rounded-full drop-shadow-lg grid grid-flow-col border border-quaternary ml-2"
-                key={tag}
-              >
+              <span className={classes.tagSpan} key={tag}>
                 <p className={classes.tagLabel}>{tag}</p>
                 <div
                   className={classes.handleTag}
@@ -333,7 +326,7 @@ const PropertyDifferentials = ({
       )}
 
       <div className="mx-3">
-        <div className="flex flex-row items-center mt-10 sm:mt-5">
+        <div className="flex flex-row items-center -ml-2 mb-2 mt-10 sm:mt-5">
           <h2 className={classes.h2Title}>Adicione o Link de um Vídeo</h2>
           <div className="mt-1">
             <YoutubeAddIcon fill="#6B7280" />

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
+import ArrowDownIcon from '../../../atoms/icons/arrowDownIcon';
 import LocationIcon from '../../../atoms/icons/location';
 import PlusIcon from '../../../atoms/icons/plusIcon';
 import LocaleLogo from '../../../atoms/logos/locale';
-import ArrowDownIcon from '../../../atoms/icons/arrowDownIcon';
 
 interface IPlansCardHidden {
   selectedPlanCard: string;
@@ -14,8 +14,8 @@ interface IPlansCardHidden {
   highlightAd: number;
   smartAd: boolean;
   id: string;
-  isEdit:boolean;
-  userPlan?: string
+  isEdit: boolean;
+  userPlan?: string;
 }
 
 const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
@@ -28,12 +28,10 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
   highlightAd,
   smartAd,
   id,
-  userPlan
+  userPlan,
 }) => {
-  
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
 
-  // Essa função identifica qual card foi clicado para lidar com as condicionais de estilo do dropdown;
   const handleDropdown = (cardId: string) => {
     if (selectedCards.includes(cardId)) {
       setSelectedCards(selectedCards.filter((id) => id !== cardId));
@@ -43,8 +41,8 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
   };
 
   useEffect(() => {
-    if (userPlan) setSelectedPlanCard(userPlan)
-  }, [userPlan])
+    if (userPlan) setSelectedPlanCard(userPlan);
+  }, [userPlan]);
 
   return (
     <div
@@ -61,9 +59,7 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
       >
         <div
           className={`flex bg-primary rounded-t-[30px] ${
-            isAdminPage
-              ? 'md:w-[230px] md:h-[66px]'
-              : 'md:w-60 md:h-fit py-2'
+            isAdminPage ? 'md:w-[230px] md:h-[66px]' : 'md:w-60 md:h-fit py-2'
           }`}
         >
           <div className="flex items-center m-auto">
@@ -71,7 +67,7 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
               className={`${
                 isAdminPage
                   ? 'font-bold text-[35px] text-tertiary mr-2'
-                  : 'font-bold text-3xl md:text-2xl text-tertiary mr-3'
+                  : 'font-bold text-xl md:text-2xl text-tertiary mr-3'
               }`}
             >
               Plano
@@ -80,7 +76,7 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
               className={`${
                 isAdminPage
                   ? 'font-bold text-[35px] text-secondary'
-                  : 'font-bold text-3xl md:text-2xl text-secondary'
+                  : 'font-bold text-lg md:text-xl text-secondary'
               }`}
             >
               {name === 'Locale Plus' ? (
@@ -107,12 +103,8 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
         <div
           className={`bg-tertiary rounded-b-[30px] drop-shadow-lg ${
             isAdminPage
-              ? `md:w-[230px] ${
-                  selectedCards.includes(id) ? 'h-fit' : 'h-fit'
-                }`
-              : `md:w-60 ${
-                  selectedCards.includes(id) ? 'h-fit' : 'h-fit'
-                }`
+              ? `md:w-[230px] ${selectedCards.includes(id) ? 'h-fit' : 'h-fit'}`
+              : `md:w-60 ${selectedCards.includes(id) ? 'h-fit' : 'h-fit'}`
           }`}
         >
           <div
@@ -126,7 +118,7 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
                 : `${selectedCards.includes(id) ? 'h-fit pb-5' : 'h-fit pb-5'}`
             }`}
           >
-            <h1 className="text-4xl font-normal leading-[60px] py-3 text-center">
+            <h1 className="text-3xl font-normal leading-[60px] py-3 text-center">
               {price === 0 ? 'GRÁTIS' : `R$ ${price},00`}
             </h1>
             <div className="flex w-full">
@@ -153,7 +145,7 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
                   : `${selectedCards.includes(id) ? '' : 'hidden'}`
               }`}
             >
-              <p className="text-center my-2 text-lg font-medium text-quaternary mx-8">
+              <p className="text-center my-2 text-base font-medium text-quaternary mx-8">
                 Com o plano {name.toUpperCase()} você tem direito a:
               </p>
               <div
@@ -167,7 +159,7 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
                 <p
                   className={`text-quaternary leading-7 ${
                     isAdminPage
-                      ? 'font-medium text-[16px]'
+                      ? 'font-medium text-base'
                       : 'font-medium text-xl'
                   }`}
                 >
@@ -189,7 +181,7 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
                   <p
                     className={`text-quaternary leading-7 ${
                       isAdminPage
-                        ? 'font-medium text-[16px]'
+                        ? 'font-medium text-base'
                         : 'font-medium text-xl'
                     }`}
                   >
@@ -207,7 +199,7 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
                 <p
                   className={`text-quaternary leading-7 ${
                     isAdminPage
-                      ? 'font-medium text-[16px]'
+                      ? 'font-medium text-base'
                       : 'font-medium text-xl'
                   }`}
                 >
@@ -229,7 +221,7 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
                   <p
                     className={`text-quaternary leading-7 ${
                       isAdminPage
-                        ? 'font-medium text-[16px]'
+                        ? 'font-medium text-base'
                         : 'font-medium text-xl'
                     }`}
                   >
@@ -252,16 +244,12 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
                   ? `${
                       selectedPlanCard === id
                         ? `bg-secondary w-[180px] h-[44px] text-base ${
-                          selectedCards.includes(id) ?
-                          'mt-5' :
-                          ''
-                        }`
+                            selectedCards.includes(id) ? 'mt-5' : ''
+                          }`
                         : 'bg-primary w-[180px] h-[44px] text-base'
                     }`
-                  : `w-full h-[66px] mt-5 mx-5 text-2xl ${
-                      selectedPlanCard === id
-                        ? 'bg-secondary'
-                        : 'bg-primary'
+                  : `w-full h-[66px] mt-5 mx-5 text-xl ${
+                      selectedPlanCard === id ? 'bg-secondary' : 'bg-primary'
                     }`
               }`}
               onClick={() => {

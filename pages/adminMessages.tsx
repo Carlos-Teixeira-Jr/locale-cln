@@ -87,48 +87,45 @@ const AdminMessages = ({
           )}
         </div>
 
-        <div className="flex flex-col max-w-[1232px] items-center mt-28">
-          <h1 className="font-extrabold text-2xl md:text-4xl text-quaternary md:mb-5 text-center">
+        <div className="flex flex-col items-center justify-center mb-5 max-w-[1215px]">
+          <h1 className="font-extrabold text-lg md:text-2xl text-quaternary md:mb-5 text-center md:mr-16">
             Mensagens
           </h1>
-          <div className="flex flex-col items-center justify-center ">
-            <div className="flex justify-center mt-8">
-              {!messagesCount ? (
-                ''
-              ) : (
-                <Pagination
-                  totalPages={totalPages}
-                  setCurrentPage={setCurrentPage}
-                  currentPage={currentPage}
-                />
-              )}
-            </div>
+          {!messagesCount ? (
+            ''
+          ) : (
+            <Pagination
+              totalPages={totalPages}
+              setCurrentPage={setCurrentPage}
+              currentPage={currentPage}
+            />
+          )}
 
-            {
-              <div className="mx-10 mb-5 mt-[-1rem] ">
-                {!messagesCount ? (
-                  <div className="flex flex-col items-center align-middle mt-36">
-                    <SentimentIcon />
-                    <h1 className="text-2xl text-quaternary">
-                      Não tem nenhuma mensagem.
-                    </h1>
-                  </div>
-                ) : (
-                  properties.map(({ _id, images, address }: IData) => (
-                    <MessagesCard
-                      key={_id}
-                      image={images[0]}
-                      address={address}
-                      messages={messages?.docs.filter(
-                        (message) => message.propertyId === _id
-                      )}
-                      propertyId={_id}
-                    />
-                  ))
-                )}
+          {!messagesCount && (
+            <div className="flex flex-col items-center align-middle mt-36 justify-center mr-0 lg:mr-20">
+              <SentimentIcon />
+              <h1 className="text-2xl text-quaternary mt-2">
+                Não tem nenhuma mensagem.
+              </h1>
+            </div>
+          )}
+          {messagesCount &&
+            properties.map(({ _id, images, address }: IData) => (
+              <div
+                key={_id}
+                className="grid sm:grid-cols-1 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 my-5 gap-10 lg:justify-start"
+              >
+                <MessagesCard
+                  key={_id}
+                  image={images[0]}
+                  address={address}
+                  messages={messages?.docs.filter(
+                    (message) => message.propertyId === _id
+                  )}
+                  propertyId={_id}
+                />
               </div>
-            }
-          </div>
+            ))}
 
           <div className="flex justify-center mb-10">
             {messagesCount ? (

@@ -349,6 +349,11 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     }
   };
 
+  const classes = {
+    accordion:
+      'flex flex-row items-center justify-between max-w-[1232px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 text-lg text-quaternary rounded-xl font-bold transition bg-opacity-90 hover:bg-gray-300',
+  };
+
   return (
     <div className="max-w-[1232px] mx-auto justify-center items-center">
       <div className="fixed z-50 top-0 w-full inset-x-0">
@@ -356,7 +361,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       </div>
       <div className="flex flex-row items-center max-w-[1232px] justify-center">
         {!isMobile && (
-          <div className="fixed left-0 top-7  sm:hidden hidden md:hidden lg:flex">
+          <div className="fixed left-0 top-7 sm:hidden hidden md:hidden lg:flex">
             <SideMenu isOwnerProp={isOwner} notifications={notifications} />
           </div>
         )}
@@ -392,7 +397,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                 />
               </div>
 
-              <h2 className="md:text-3xl text-2xl leading-10 text-quaternary font-bold mb-5 lg:mb-10 mx-5">
+              <h2 className="md:text-2xl text-lg leading-10 text-quaternary font-bold mb-5 lg:mb-10 mx-5">
                 Dados de Cobrança
               </h2>
               <div className="grid sm:grid-cols-1 grid-cols-1 md:grid-cols-3 xl:grid-cols-3 md:gap-6">
@@ -428,7 +433,6 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                   )
                 )}
               </div>
-              {/** Endereço do imóvel */}
               <div className="flex mt-1 md:mt-1">
                 <UserAddress
                   isEdit={isEdit}
@@ -440,18 +444,17 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                   addressInputRefs={addressInputRefs}
                 />
               </div>
-              {/** Endereço do imóvel */}
             </div>
             <div className="lg:float-right flex md:justify-end justify-center md:w-[90%] lg:w-full mb-10 md:mr-16 lg:mr-5">
               <button
-                className="bg-primary w-fit h-16 flex items-center text-quinary rounded-[10px] py-5 px-20 text-xl md:text-2xl font-extrabold transition-colors duration-300 hover:bg-red-600 hover:text-white"
+                className="bg-primary w-fit h-16 flex items-center text-quinary rounded-[10px] py-3 px-10 text-lg font-extrabold transition-colors duration-300 hover:bg-red-600 hover:text-white"
                 onClick={handleUpdateBtn}
               >
                 Atualizar Dados
               </button>
             </div>
             <div className="lg:pt-20 pt-0.5 mx-4">
-              <label className="flex flex-row items-center justify-between max-w-[1232px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 md:text-3xl text-md text-quaternary rounded-xl font-bold transition bg-opacity-90 hover:bg-gray-300">
+              <label className={classes.accordion}>
                 Dados do Cartão de Crédito
                 <span
                   className={`transition-transform transform`}
@@ -482,7 +485,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
               </div>
             </div>
             <div className="lg:pt-5 pt-0.5 mb-20 mx-4">
-              <label className="flex flex-row items-center justify-between max-w-[1232px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 md:text-3xl text-md text-quaternary rounded-xl font-bold transition bg-opacity-90 hover:bg-gray-300">
+              <label className={classes.accordion}>
                 Excluir conta
                 <span
                   className={`transition-transform transform`}

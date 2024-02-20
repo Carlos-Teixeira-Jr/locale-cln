@@ -61,58 +61,63 @@ const MessageNotifications = ({
             ''
           )}
         </div>
-        <div className="flex flex-col max-w-[1232px] items-center mt-28">
-          <h1 className="font-extrabold text-2xl md:text-4xl text-quaternary md:mb-5 text-center">
+        <div className="flex flex-col items-center justify-center mb-5 max-w-[1215px]">
+          <h1 className="font-extrabold text-lg md:text-2xl text-quaternary md:mb-5 text-center md:mr-16">
             Notificações
           </h1>
-          <div className="flex flex-col items-center justify-center ">
-            <div className="flex justify-center mt-8">
-              {showPagination && <Pagination totalPages={0} />}
+
+          {!showPagination ? (
+            ''
+          ) : (
+            <div className=" md:mr-16">
+              <Pagination totalPages={0} />
             </div>
+          )}
 
-            {
-              <div className="mx-10 mb-5 mt-[-1rem] ">
-                {notifications?.length == 0 ? (
-                  <div className="flex flex-col items-center align-middle mt-36">
-                    <SentimentIcon />
-                    <h1 className="text-2xl text-quaternary">
-                      Não tem nenhuma notificação.
-                    </h1>
-                  </div>
-                ) : (
-                  notifications?.length > 0 &&
-                  notifications?.map(
-                    ({
-                      description,
-                      _id,
-                      title,
-                      isRead,
-                      notifications,
-                      setShowPagination,
-                      showPagination,
-                    }: INotification) => (
-                      <NotificationCard
-                        key={_id}
-                        description={description}
-                        title={title}
-                        _id={_id}
-                        isRead={isRead}
-                        notifications={notifications}
-                        setNotifications={setNotifications}
-                        showPagination={showPagination}
-                        setShowPagination={setShowPagination}
-                      />
-                    )
-                  )
-                )}
-              </div>
-            }
-          </div>
+          {notifications?.length == 0 && (
+            <div className="flex flex-col items-center align-middle mt-36 justify-center mr-0 lg:mr-20">
+              <SentimentIcon />
+              <h1 className="text-2xl text-quaternary mt-2">
+                Não tem nenhuma notificação.
+              </h1>
+            </div>
+          )}
 
-          <div className="flex justify-center mt-8">
-            {showPagination && <Pagination totalPages={0} />}
-          </div>
+          {notifications?.length > 0 &&
+            notifications?.map(
+              ({
+                description,
+                _id,
+                title,
+                isRead,
+                notifications,
+                setShowPagination,
+                showPagination,
+              }: INotification) => (
+                <div key={_id} className="flex flex-col items-center">
+                  <NotificationCard
+                    key={_id}
+                    description={description}
+                    title={title}
+                    _id={_id}
+                    isRead={isRead}
+                    notifications={notifications}
+                    setNotifications={setNotifications}
+                    showPagination={showPagination}
+                    setShowPagination={setShowPagination}
+                  />
+                </div>
+              )
+            )}
         </div>
+
+        {!showPagination ? (
+          ''
+        ) : (
+          <div className=" md:mr-16">
+            <Pagination totalPages={0} />
+          </div>
+        )}
       </div>
     </main>
   );
