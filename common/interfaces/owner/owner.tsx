@@ -13,6 +13,7 @@ type Owner = {
   cellPhone: string;
   email: string;
   phone: string;
+  wppNumber: string;
   plan: string;
   creditCardInfo: ICreditCardInfo;
   customerId: string;

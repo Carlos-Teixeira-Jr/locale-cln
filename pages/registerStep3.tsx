@@ -111,6 +111,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     cellPhone: '',
     phone: '',
     profilePicture: '',
+    wppNumber: ''
   });
 
   const [userDataErrors, setUserDataErrors] = useState({
@@ -285,6 +286,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
           ? userDataForm.profilePicture
           : 'https://static.vecteezy.com/system/resources/previews/019/879/186/non_2x/user-icon-on-transparent-background-free-png.png',
         phone: userDataForm.phone,
+        wppNumber: userDataForm.wppNumber ? userDataForm.wppNumber : '',
         zipCode: addressData.zipCode,
         city: addressData.city,
         uf: addressData.uf,
@@ -319,7 +321,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
             : addressData,
         description: storedData.description,
         metadata: storedData.metadata,
-        //images: storedData.images,
         size: storedData.size,
         ownerInfo: {
           profilePicture: userDataForm.profilePicture

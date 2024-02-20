@@ -52,8 +52,6 @@ const ContactBox: React.FC<IContactBox> = ({ ownerInfo, property }: any) => {
     setModalIsOpen(false);
   };
 
-  console.log('propertyID:', property);
-  console.log('ownerInfo:', ownerInfo);
   return (
     <>
       <div className="lg:w-fit md:h-10 md:pt-0 flex flex-col md:flex-row md:grid items-center justify-items-center align-middle justify lg:ml-2 m-5 lg:m-0">

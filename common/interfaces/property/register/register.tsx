@@ -52,6 +52,7 @@ export interface IRegisterPropertyData_Step3 {
   cpf: string;
   cellPhone: string;
   phone: string;
+  wppNumber: string;
   zipCode: string;
   city: string;
   uf: string;

@@ -75,21 +75,8 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
       ? firstProperty?.ownerInfo?.profilePicture
       : images,
     phone: wppNumber ? wppNumber : phone,
+    wppNumber: userData ? userData?.owner?.wppNumber : '',
   });
-
-  useEffect(() => {
-    console.log('profilePicture:', formData.profilePicture);
-  }, [formData.profilePicture]);
-
-  // useEffect(() => {
-  //   console.log('images (foto adicionada no input:', images);
-  //   console.log(
-  //     'profilePicture (foto que vai para o formulario do step3):',
-  //     formData.profilePicture
-  //   );
-  //   setImages(images);
-  //   setFormData({ ...formData, profilePicture: images });
-  // }, [images]);
 
   // Pega o email da url caso o usuário tenha passado o mesmo no início do cadastro na pagina announcement;
   useEffect(() => {
