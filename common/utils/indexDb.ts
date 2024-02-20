@@ -27,10 +27,24 @@ export const openDatabase = () => {
   });
 };
 
-export const addImageToDB = (file: File, src: any, id: string) => {
+export const addImageToDB = (file: File, src: string, id: string) => {
   openDatabase().then((db) => {
     const transaction = db.transaction(['imagens'], 'readwrite');
     const objectStore = transaction.objectStore('imagens');
+    const storedImages = objectStore.getAll();
+    storedImages.onsuccess = () => {
+      const result = storedImages.result;
+      const sumOfSizes = result.reduce((accumulator, currentValue) => {
+        return accumulator + currentValue.data.size;
+      }, 0);
+
+      const totalSize = sumOfSizes + file.size;
+
+      if (totalSize >= 800 * 1024 * 1024) {
+        showErrorToast(ErrorToastNames.ImagesTotalSizeLimit);
+        return;
+      }
+    }
 
     const request = objectStore.add({
       id,
@@ -82,7 +96,6 @@ export const removeImageFromDB = (id: string) => {
       const deleteRequest = objectStore.delete(id);
 
       deleteRequest.onsuccess = () => {
-        console.log('Imagem removida com sucesso do IndexedDB.');
         showSuccessToast(SuccessToastNames.RemoveImage)
         resolve();
       };
@@ -104,7 +117,6 @@ export const clearIndexDB = () => {
       const request = objectStore.clear();
 
       request.onsuccess = () => {
-        console.log('Conteúdo do IndexedDB removido com sucesso.');
         resolve();
       };
 

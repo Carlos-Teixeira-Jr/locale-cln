@@ -39,7 +39,8 @@ export enum ErrorToastNames {
   ImagesMaxLimit = 'imagesMaxLimit',
   LoadImages = 'loadImages',
   ImageUploadError = 'imageUploadError',
-  SendImages = 'sendImages'
+  SendImages = 'sendImages',
+  ImagesTotalSizeLimit = 'imagesTotalSizeLimit'
 }
 
 const successToastMessages: Record<SuccessToastNames, ToastMessage> = {
@@ -216,6 +217,12 @@ const errorToastMessages: Record<ErrorToastNames, ToastMessage> = {
   },
   [ErrorToastNames.SendImages]: {
     message: 'Erro ao enviar as fotos.',
+    options: {
+      autoClose: 7000,
+    },
+  },
+  [ErrorToastNames.ImagesTotalSizeLimit]: {
+    message: 'O tamanho total dos arquivos excede 800 MB. Tente enviar fotos menores ou insira elas depois no menu de edição de anúncio.',
     options: {
       autoClose: 7000,
     },

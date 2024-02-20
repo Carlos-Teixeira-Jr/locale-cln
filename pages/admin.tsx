@@ -273,8 +273,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         fetchJson(`${baseUrl}/property/owner-properties`),
       ]);
 
-      console.log('admin:', userId);
-      console.log('ADMIN:', notifications);
       return {
         props: {
           ownerProperties,

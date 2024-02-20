@@ -80,7 +80,7 @@ const UploadImages = ({
   const handleAddImage = async (event: any) => {
     const files = event.target.files;
 
-    if (files.length + images.length > 7) {
+    if (files.length + images.length > 50) {
       showErrorToast(ErrorToastNames.ImagesMaxLimit);
       return;
     }
@@ -130,7 +130,7 @@ const UploadImages = ({
 
   return (
     <div
-      className="max-w-screen-md block mx-5 flex-column items-center justify-center lg:mx-auto"
+      className="max-w-full block mx-5 flex-column items-center justify-center lg:mx-auto"
       ref={imagesErrorScroll}
     >
       <label
@@ -166,7 +166,7 @@ const UploadImages = ({
       >
         <DndProvider backend={HTML5Backend}>
           <div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+            className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
             style={
               onErrorsInfo?.prop === 'images' ? { border: '1px solid red' } : {}
             }
@@ -283,7 +283,7 @@ const Image: React.FC<ImageProps> = ({
         }}
         src={src}
         alt=""
-        className="w-full h-48 object-cover rounded"
+        className="w-24 h-16 md:w-full md:h-36 lg:h-52 object-cover rounded"
       />
       <div
         className="absolute top-0 right-0 p-2 cursor-pointer"
