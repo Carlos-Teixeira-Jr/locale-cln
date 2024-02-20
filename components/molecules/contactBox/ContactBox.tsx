@@ -15,12 +15,14 @@ export interface IContactBox {
   property: IData;
 }
 
-const ContactBox: React.FC<IContactBox> = ({ ownerInfo, property }: any) => {
+const ContactBox: React.FC<IContactBox> = ({ ownerInfo, property }: IContactBox) => {
+  console.log("🚀 ~ ownerInfo:", ownerInfo)
   const profilePicture = ownerInfo?.profilePicture;
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const owner = ownerInfo?.name;
-  const ownerPropertyWpp = ownerInfo?.phones[1];
+  const ownerPropertyWpp = ownerInfo?.wppNumber;
   const ownerWhatsapp = ownerPropertyWpp?.replace(/[^0-9]+/g, '');
+  console.log("🚀 ~ ownerWhatsapp:", ownerWhatsapp)
 
   const handleWhatsappBtnClick = () => {
     const propertyStreet = property?.address?.streetName;

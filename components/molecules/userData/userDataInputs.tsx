@@ -55,8 +55,6 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
 
   // Whatsapp
   const [isSameNumber, setIsSameNumber] = useState(true);
-  const [wppNumber, setWappNumber] = useState('');
-
   const [errorModalIsOpen, setErrorModalIsOpen] = useState(false);
   const [succesModalIsOpen, setSuccesModalIsOpen] = useState(false);
 
@@ -74,7 +72,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
     profilePicture: firstProperty?.ownerInfo?.profilePicture
       ? firstProperty?.ownerInfo?.profilePicture
       : images,
-    phone: wppNumber ? wppNumber : phone,
+    phone: userData && userData.owner ? userData.owner.phone : '',
     wppNumber: userData ? userData?.owner?.wppNumber : '',
   });
 
@@ -83,8 +81,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
     if (urlEmail) {
       setFormData({ ...formData, email: urlEmail });
     }
-    console.log('numero do wpp:', wppNumber);
-  }, [urlEmail, wppNumber]);
+  }, [urlEmail]);
 
   const [userDataErrors, setUserDataErrors] =
     useState<IUserDataComponentErrors>({
@@ -439,7 +436,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
                     userDataErrors.whatsapp ? { border: '1px solid red' } : {}
                   }
                   className="border w-full p-5 h-12 border-quaternary rounded-[10px] bg-tertiary font-bold text-xl md:text-2xl text-quaternary leading-7 drop-shadow-xl"
-                  value={wppNumber}
+                  value={formData.wppNumber}
                   maxLength={200}
                   required={isSameNumber ? false : true}
                   onChange={(event) => {
@@ -461,7 +458,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
                       input.value = previousValue;
                       input.setSelectionRange(selectionStart, selectionEnd);
                     }
-                    setWappNumber(maskedValue);
+                    setFormData({...formData, wppNumber: maskedValue});
                   }}
                 />
                 {userDataErrors.whatsapp && (

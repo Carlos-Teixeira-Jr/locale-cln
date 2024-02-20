@@ -76,6 +76,7 @@ export interface ICreateProperty_propertyData {
     name: string;
     phones: string[];
     profilePicture: string;
+    wppNumber: string;
   };
   size: ISize;
   tags: string[];
