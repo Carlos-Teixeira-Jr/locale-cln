@@ -41,7 +41,6 @@ const MessageNotifications = ({
     if (notifications.length == 0) {
       setShowPagination(!showPagination);
     }
-    console.log(adminNots);
   }, [notifications]);
 
   return (
@@ -200,7 +199,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ _id: userId }),
+          body: JSON.stringify({ userId }),
         }
       );
 
@@ -208,7 +207,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         const ownerData = await ownerIdResponse.json();
         ownerId = ownerData?.owner?._id;
       } else {
-        console.log('erro', ownerIdResponse);
+        console.log('erro - find-owner-by-user:', ownerIdResponse);
       }
     } catch (error) {
       console.error(error);
@@ -240,11 +239,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           },
         }
       )
-        .then((res) => res.json())
-        .catch(() => []);
-
-      console.log('adminNotifications:', userId);
-      console.log('ADMINNOTIFICATIONS (admin):', notificationsAdmin);
+      .then((res) => res.json())
+      .catch(() => []);
 
       return {
         props: {
@@ -264,7 +260,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       )
         .then((res) => res.json())
         .catch(() => []);
-      console.log('ADMINNOTIFICATIONS (not admin):', notificationsNotAdmin);
       return {
         props: {
           notificationsNotAdmin,

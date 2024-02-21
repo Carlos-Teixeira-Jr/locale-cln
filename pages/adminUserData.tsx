@@ -80,6 +80,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     cellPhone: '',
     phone: '',
     profilePicture: '',
+    wppNumber: ''
   });
   const [formDataErrors, setFormDataErrors] = useState({
     username: '',
@@ -565,7 +566,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ _id: userId }),
+          body: JSON.stringify({ userId }),
         }
       );
       if (ownerIdResponse.ok) {
@@ -594,9 +595,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            _id: userId,
-          }),
+          body: JSON.stringify({ userId }),
         })
           .then((res) => res.json())
           .catch(() => []),

@@ -16,13 +16,13 @@ export interface IContactBox {
 }
 
 const ContactBox: React.FC<IContactBox> = ({ ownerInfo, property }: IContactBox) => {
-  console.log("🚀 ~ ownerInfo:", ownerInfo)
+
   const profilePicture = ownerInfo?.profilePicture;
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const owner = ownerInfo?.name;
   const ownerPropertyWpp = ownerInfo?.wppNumber;
   const ownerWhatsapp = ownerPropertyWpp?.replace(/[^0-9]+/g, '');
-  console.log("🚀 ~ ownerWhatsapp:", ownerWhatsapp)
+  const ownerContact = ownerWhatsapp ? ownerWhatsapp : ownerInfo?.phones[1];
 
   const handleWhatsappBtnClick = () => {
     const propertyStreet = property?.address?.streetName;
@@ -30,7 +30,7 @@ const ContactBox: React.FC<IContactBox> = ({ ownerInfo, property }: IContactBox)
     const propertyCity = capitalizeFirstLetter(property?.address?.city);
     const whatsappMessage = `Olá, gostaria de obter mais informações sobre o imóvel localizado em ${propertyStreet}, número ${propertyNumber}, na cidade de ${propertyCity}. 🏡✨`;
 
-    const whatsappLink = `https://api.whatsapp.com/send/?phone=${ownerWhatsapp}&text=${encodeURIComponent(
+    const whatsappLink = `https://api.whatsapp.com/send/?phone=${ownerContact}&text=${encodeURIComponent(
       whatsappMessage
     )}&type=phone_number&app_absent=0`;
 

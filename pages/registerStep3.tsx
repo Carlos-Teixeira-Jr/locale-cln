@@ -327,7 +327,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
             ? userDataForm.profilePicture
             : 'https://static.vecteezy.com/system/resources/previews/019/879/186/non_2x/user-icon-on-transparent-background-free-png.png',
           name: userDataForm.username,
-          phones: [userDataForm.cellPhone, userDataForm.phone],
+          phones: [`55 ${userDataForm.cellPhone}`, userDataForm.phone],
           wppNumber: userDataForm.wppNumber ? `55 ${userDataForm.wppNumber}` : ''
         },
         tags: storedData.tags,
@@ -350,7 +350,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
           plan: propertyDataStep3.plan,
           isPlanFree,
           phone: userDataForm.phone,
-          cellPhone: userDataForm.cellPhone,
+          cellPhone: `55 ${userDataForm.cellPhone}`,
         };
 
         if (!isPlanFree) {
