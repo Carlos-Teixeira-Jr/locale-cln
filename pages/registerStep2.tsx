@@ -35,11 +35,6 @@ const RegisterStep2: NextPageWithLayout = () => {
     }
   });
 
-  // impao indexDB logo que a página é renderizada;
-  useEffect(() => {
-    clearIndexDB();
-  }, []);
-
   // Envia as mensagens de erros para o componente UploadImages;
   const [errorInfo, setErrorInfo] = useState({
     error: '',

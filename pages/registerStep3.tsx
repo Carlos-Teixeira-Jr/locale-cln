@@ -400,7 +400,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
           formData.append('propertyId', data.createdProperty._id);
 
           const imagesResponse = await fetch(
-            `${baseUrl}/property/uploadImages`,
+            `${baseUrl}/property/upload-images`,
             {
               method: 'POST',
               body: formData,
@@ -421,6 +421,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
               });
             }
           } else {
+            showErrorToast(ErrorToastNames.SendImages)
             showErrorToast(ErrorToastNames.ImagesUploadError);
             setTimeout(() => {
               router.push('/register');
