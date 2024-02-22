@@ -13,6 +13,7 @@ import {
 import { IUserDataComponent } from '../common/interfaces/user/user';
 import { geocodeAddress } from '../common/utils/geocodeAddress';
 import { clearIndexDB, getAllImagesFromDB } from '../common/utils/indexDb';
+import { ErrorToastNames, showErrorToast } from '../common/utils/toasts';
 import Loading from '../components/atoms/loading';
 import PaymentFailModal from '../components/atoms/modals/paymentFailModal';
 import LinearStepper from '../components/atoms/stepper/stepper';
@@ -28,7 +29,6 @@ import Footer from '../components/organisms/footer/footer';
 import Header from '../components/organisms/header/header';
 import { useProgress } from '../context/registerProgress';
 import { NextPageWithLayout } from './page';
-import { ErrorToastNames, showErrorToast } from '../common/utils/toasts';
 
 interface IRegisterStep3Props {
   selectedPlanCard: string;
@@ -144,6 +144,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     cardNumber: '',
     ccv: '',
     expiry: '',
+    cpfCnpj: ''
   });
 
   const [creditCardErrors, setCreditCardErrors] = useState<CreditCardForm>({
@@ -151,6 +152,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     cardNumber: '',
     ccv: '',
     expiry: '',
+    cpfCnpj: ''
   });
 
   // Verifica se o estado progress que determina em qual step o usuário está corresponde ao step atual;
@@ -223,7 +225,9 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
       cardNumber: '',
       ccv: '',
       expiry: '',
+      cpfCnpj: ''
     };
+
     if (!userDataForm.username) newUserDataErrors.username = error;
     if (!userDataForm.email) newUserDataErrors.email = error;
     if (!userDataForm.cpf) newUserDataErrors.cpf = error;
@@ -241,6 +245,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         if (!creditCard.cardNumber) newCreditCardErrors.cardNumber = error;
         if (!creditCard.expiry) newCreditCardErrors.expiry = error;
         if (!creditCard.ccv) newCreditCardErrors.ccv = error;
+        if (!creditCard.cpfCnpj) newCreditCardErrors.cpfCnpj = error;
       }
     }
 

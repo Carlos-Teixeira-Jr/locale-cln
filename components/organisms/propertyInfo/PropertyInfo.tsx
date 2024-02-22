@@ -36,7 +36,6 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
   isFavourite,
   owner 
 }) => {
-  console.log("🚀 ~ owner:", owner)
 
   const session = useSession() as any;
   const status = session.status;

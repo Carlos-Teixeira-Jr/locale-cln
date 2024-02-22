@@ -17,6 +17,7 @@ export type CreditCardForm = {
   cardNumber: string;
   ccv: string;
   expiry: string;
+  cpfCnpj: string;
   [key: string]: string;
 };
 
@@ -60,6 +61,7 @@ const CreditCard = ({
     cardNumber: creditCardInfo ? actualCreditCardNumber : '',
     ccv: '',
     expiry: '',
+    cpfCnpj: ''
   });
 
   const [errors, setErrors] = useState<CreditCardForm>({
@@ -67,6 +69,7 @@ const CreditCard = ({
     cardNumber: '',
     ccv: '',
     expiry: '',
+    cpfCnpj: ''
   });
 
   // Envia os dados do usuário para o componente pai;
@@ -95,6 +98,7 @@ const CreditCard = ({
     scrollToError('cardNumber');
     scrollToError('expiry');
     scrollToError('ccv');
+    scrollToError('cpfCnpj');
   }, [errors]);
 
   const handleInputChange = (
@@ -116,6 +120,28 @@ const CreditCard = ({
       });
     } else if (fieldName === 'ccv') {
       const maskedValue = value.replace(/\s/g, '').toUpperCase().slice(0, 4);
+      setCreditCardFormData({
+        ...creditCardFormData,
+        [fieldName]: maskedValue,
+      });
+    } else if (fieldName === 'cpfCnpj') {
+      const input = e.target;
+      const value = input.value;
+      const maskedValue = applyNumericMask(value, '999.999.999-99');
+      const selectionStart = input.selectionStart || 0;
+      const selectionEnd = input.selectionEnd || 0;
+      const previousValue = input.value;
+      // Verifica se o cursor está no final da string ou se um caractere foi removido
+      if (
+        selectionStart === previousValue.length ||
+        previousValue.length > maskedValue.length
+      ) {
+        input.value = maskedValue;
+      } else {
+        // Caso contrário, restaura o valor anterior e move o cursor para a posição correta
+        input.value = previousValue;
+        input.setSelectionRange(selectionStart, selectionEnd);
+      }
       setCreditCardFormData({
         ...creditCardFormData,
         [fieldName]: maskedValue,
@@ -158,6 +184,14 @@ const CreditCard = ({
       label: 'CCV',
       value: creditCardFormData.ccv,
     },
+    {
+      key: 'cpfCnpj',
+      ref: creditCardErrorScroll.cpfCnpj,
+      name: 'cpfCnpj',
+      type: 'text',
+      label: 'CPF/CNPJ',
+      value: creditCardFormData.cpfCnpj,
+    },
   ];
 
   const handleSubmit = async () => {
@@ -166,6 +200,7 @@ const CreditCard = ({
       cardName: '',
       expiry: '',
       ccv: '',
+      cpfCnpj: ''
     });
 
     const newErrors = {
@@ -173,6 +208,7 @@ const CreditCard = ({
       cardName: '',
       expiry: '',
       ccv: '',
+      cpfCnpj: ''
     };
 
     const emptyFieldError = 'Este campo é obrigatório';
@@ -184,6 +220,7 @@ const CreditCard = ({
       newErrors.cardNumber = invalidCardNumberError;
     if (!creditCardFormData.expiry) newErrors.expiry = emptyFieldError;
     if (!creditCardFormData.ccv) newErrors.ccv = emptyFieldError;
+    if (!creditCardFormData.cpfCnpj) newErrors.cpfCnpj = emptyFieldError;
 
     setErrors(newErrors);
 
