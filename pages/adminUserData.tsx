@@ -139,6 +139,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     cardNumber: '',
     ccv: '',
     expiry: '',
+    cpfCnpj: ''
   };
   // Lida com o auto-scroll para os inputs de creditCard que mostrarem erro;
   const creditCardInputRefs = {
