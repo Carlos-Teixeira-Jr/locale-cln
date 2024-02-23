@@ -53,11 +53,9 @@ const CookiesModal: React.FC<ICookiesModal> = ({
         },
       }}
     >
-      <div className="bg-tertiary flex flex-col justify-between items-center px-2 gap-1">
+      <div className={classes.content}>
         <div className="flex flex-col">
-          <h1 className="text-quaternary text-center font-semibold text-xl mb-1">
-            Aviso de cookies
-          </h1>
+          <h1 className={classes.title}>Aviso de cookies</h1>
           <hr className="mb-2" />
           <h1 className="text-justify">
             Com o seu consentimento, nós usamos cookies ou tecnologias
@@ -66,17 +64,14 @@ const CookiesModal: React.FC<ICookiesModal> = ({
             Para saber mais, veja nossas políticas de uso.
           </h1>
         </div>
-        <div className="flex flex-row items-center justify-between px-2 mt-2 gap-2 w-full">
+        <div className={classes.buttonContainer}>
           <button
-            className="bg-transparent text-quaternary text-sm underline cursor-pointer"
+            className={classes.anchorButton}
             onClick={() => router.push('/userTerms')}
           >
             Política de Privacidade e Termos de Uso
           </button>
-          <button
-            className="w-20 h-8 rounded bg-primary text-tertiary cursor-pointer px-1"
-            onClick={onClose}
-          >
+          <button className={classes.buttonOk} onClick={onClose}>
             Entendi
           </button>
         </div>
@@ -86,3 +81,13 @@ const CookiesModal: React.FC<ICookiesModal> = ({
 };
 
 export default CookiesModal;
+
+const classes = {
+  content: 'bg-tertiary flex flex-col justify-between items-center px-2 gap-1',
+  title: 'text-quaternary text-center font-semibold text-xl mb-1',
+  buttonContainer:
+    'flex flex-row items-center justify-between px-2 mt-2 gap-2 w-full',
+  anchorButton:
+    'bg-transparent text-quaternary text-sm underline cursor-pointer',
+  buttonOk: 'w-20 h-8 rounded bg-primary text-tertiary cursor-pointer px-1',
+};
