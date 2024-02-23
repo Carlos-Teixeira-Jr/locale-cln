@@ -153,7 +153,6 @@ const MainFeatures: React.FC<IMainFeatures> = ({
       ],
     });
 
-  // Atualiza o objeto que é enviado ao componente pai;
   useEffect(() => {
     onMainFeaturesUpdate!(propertyFeaturesData);
   }, [propertyFeaturesData]);

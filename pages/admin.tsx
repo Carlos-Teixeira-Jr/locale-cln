@@ -13,6 +13,7 @@ import Pagination from '../components/atoms/pagination/pagination';
 import AdminPropertyCard from '../components/molecules/cards/adminPropertyCard/adminPropertyCard';
 import AdminHeader from '../components/organisms/adminHeader/adminHeader';
 import SideMenu from '../components/organisms/sideMenu/sideMenu';
+import useDeviceSize from '../hooks/deviceSize';
 import { NextPageWithLayout } from './page';
 
 interface AdminPageProps {
@@ -25,14 +26,11 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
   notifications,
 }) => {
   const { data: session } = useSession() as any;
-
   const [isOwner, setIsOwner] = useState<boolean>(false);
-
   const [currentPage, setCurrentPage] = useState(1);
-
   const router = useRouter();
-
   const query = router.query as any;
+  const [width, height] = useDeviceSize();
 
   useEffect(() => {
     setIsOwner(ownerProperties?.docs?.length > 0 ? true : false);
@@ -60,11 +58,17 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
     }
   }, [currentPage]);
 
+  const classes = {
+    sideMenu: `${
+      width < 1080 ? 'hidden' : 'flex'
+    } fixed left-0 top-7 md:hidden lg:flex xl:flex`,
+  };
+
   return (
     <div>
       <AdminHeader isOwnerProp={isOwner} />
       <div className="flex flex-row items-center justify-evenly">
-        <div className="fixed left-0 top-7  sm:hidden hidden md:hidden lg:flex">
+        <div className={classes.sideMenu}>
           <SideMenu isOwnerProp={isOwner} notifications={notifications} />
         </div>
         <div className="flex flex-col items-center mt-24 lg:ml-[305px]">

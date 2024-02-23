@@ -49,18 +49,16 @@ type BodyReq = {
 
 const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
   const router = useRouter();
+  const { progress, updateProgress } = useProgress();
   const query = router.query;
   const urlEmail = query.email as string;
-  const { progress, updateProgress } = useProgress();
   const storedData = store.get('propertyData');
   const storedPlan = store.get('plans');
   const choosedPlan = storedPlan ? storedPlan : '';
   const propertyAddress = storedData?.address ? storedData.address : {};
   const [paymentError, setPaymentError] = useState('');
-
   const [loading, setLoading] = useState(false);
 
-  // Lida com o autoscroll das validações de erro dos inputs;
   const userDataInputRefs = {
     username: useRef<HTMLElement>(null),
     email: useRef<HTMLElement>(null),
@@ -68,7 +66,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     cellPhone: useRef<HTMLElement>(null),
   };
 
-  // Lida com o auto-scroll para os inputs de Address que mostrarem erro;
   const addressInputRefs = {
     zipCode: useRef<HTMLInputElement>(null),
     city: useRef<HTMLInputElement>(null),
@@ -77,7 +74,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     uf: useRef<HTMLInputElement>(null),
   };
 
-  // Lida com o auto-scroll para os inputs de creditCard que mostrarem erro;
   const creditCardInputRefs = {
     cardName: useRef<HTMLInputElement>(null),
     cardNumber: useRef<HTMLInputElement>(null),
@@ -152,14 +148,12 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     expiry: '',
   });
 
-  // Verifica se o estado progress que determina em qual step o usuário está corresponde ao step atual;
   useEffect(() => {
     if (progress < 3) {
       router.push('/register');
     }
   });
 
-  // // Busca o endereço do imóvel armazenado no local storage e atualiza o valor de addressData sempre que há o componente de endereço é aberto ou fechado - isso é necessário para que o componente ChangeAddressCheckbox recupere o endereço do localStorage quando a opção é alterada;
   useEffect(() => {
     setAddressData(property ? property.address : '');
   }, []);
@@ -247,14 +241,12 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     setAddressErrors(newAddressErrors);
     setCreditCardErrors(newCreditCardErrors);
 
-    // Combina os erros de registro e endereço em um único objeto de erros
     const combinedErrors = {
       ...newAddressErrors,
       ...newUserDataErrors,
       ...newCreditCardErrors,
     };
 
-    // Verifica se algum dos valores do objeto de erros combinados não é uma string vazia
     const hasErrors = Object.values(combinedErrors).some(
       (error) => error !== ''
     );
@@ -319,7 +311,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
             : addressData,
         description: storedData.description,
         metadata: storedData.metadata,
-        //images: storedData.images,
         size: storedData.size,
         ownerInfo: {
           profilePicture: userDataForm.profilePicture
@@ -378,8 +369,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
             storedData,
             paymentData,
           });
-
-          // Salvar imagens
 
           const indexDbImages = (await getAllImagesFromDB()) as {
             id: string;
@@ -447,10 +436,10 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
 
   return (
     <>
-      <div className="max-w-[1215px] mx-auto">
+      <div className={classes.body}>
         <Header />
         <div className="justify-center">
-          <div className="md:mt-26 mt-28 sm:mt-32 md:mb-8 lg:mb-2 mx-auto">
+          <div className={classes.stepLabel}>
             <LinearStepper isSubmited={false} sharedActiveStep={2} />
           </div>
 
@@ -485,7 +474,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
           </div>
 
           <div className="lg:mx-0">
-            <div className="flex justify-center flex-col">
+            <div className={classes.userData}>
               <UserDataInputs
                 isEdit={false}
                 onUserDataUpdate={(updatedUserData: IUserDataComponent) =>
@@ -541,20 +530,16 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
               termsError={termsError}
             />
 
-            <div className="flex flex-col md:flex-row lg:flex-row xl:flex-row gap-4 md:gap-0 lg:gap-0 xl:gap-0 items-center justify-between my-4 max-w-[1215px]">
-              <button
-                className="active:bg-gray-500 cursor-pointer flex items-center flex-row justify-around bg-primary w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold text-2xl lg:text-3xl hover:bg-red-600 hover:text-white"
-                onClick={handlePreviousStep}
-              >
+            <div className={classes.containerButton}>
+              <button className={classes.button} onClick={handlePreviousStep}>
                 Voltar
               </button>
-
               <button
-                className="active:bg-gray-500 cursor-pointer flex items-center flex-row justify-around bg-primary w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold text-2xl lg:text-3xl hover:bg-red-600 hover:text-white"
+                className={classes.button}
                 onClick={handleSubmit}
                 disabled={loading}
               >
-                <span className={`${loading ? 'ml-16' : ''}`}>Continuar</span>
+                <span className={`${loading ? 'ml-5' : ''}`}>Continuar</span>
                 {loading && <Loading />}
               </button>
             </div>
@@ -587,3 +572,13 @@ export async function getStaticProps() {
     revalidate: 60,
   };
 }
+
+const classes = {
+  body: 'max-w-[1215px] mx-auto',
+  stepLabel: 'md:mt-26 mt-28 sm:mt-32 md:mb-8 lg:mb-2 mx-auto',
+  userData: 'flex justify-center flex-col',
+  containerButton:
+    'flex flex-col md:flex-row lg:flex-row xl:flex-row gap-4 md:gap-0 lg:gap-0 xl:gap-0 items-center justify-between my-4 max-w-[1215px]',
+  button:
+    'active:bg-gray-500 cursor-pointer flex items-center flex-row justify-around bg-primary w-44 h-14 text-tertiary rounded transition-colors duration-300 font-bold text-lg md:text-xl hover:bg-red-600 hover:text-white',
+};

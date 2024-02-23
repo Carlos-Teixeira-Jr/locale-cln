@@ -9,9 +9,13 @@ interface IDetails {
 const PropertyDetails = ({ icon, value, description }: IDetails) => {
   return (
     <div className="flex flex-row items-end text-quaternary font-semibold lg:pt-3 justify-between">
-      <div className="flex flex-col md:flex-row md:mr-2 md:items-end items-center">
+      <div className="flex flex-col lg:flex-row md:mr-2 lg:items-end items-center">
         <span className="text-[#6B7280] mr-1">{icon}</span>
-        <p className="md:mr-2 flex text-sm md:text-lg">
+        <p
+          className={`md:mr-2 flex   {${
+            value.length > 3 ? 'text-xs' : 'text-sm'
+          }`}
+        >
           {value}{' '}
           {value > 1 && description !== 'm² area'
             ? `${description}s`

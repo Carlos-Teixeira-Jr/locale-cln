@@ -30,14 +30,11 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
   notifications,
 }) => {
   const [isOwner, setIsOwner] = useState<boolean>(false);
-
   const [properties, _setProperties] = useState<IPropertyInfo>(ownerProperties);
-
   const [currentPage, setCurrentPage] = useState(1);
-
   const router = useRouter();
-
   const query = router.query as any;
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     setIsOwner(properties?.docs?.length > 0 ? true : false);
@@ -69,23 +66,19 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
     }
   }, [currentPage]);
 
-  const isMobile = useIsMobile();
-
   return (
     <>
       <AdminHeader isOwnerProp={isOwner} />
-      <div className="flex flex-row items-center justify-center lg:ml-96 xl:ml-96">
-        <div className="fixed left-0 top-7  sm:hidden hidden md:hidden lg:flex">
+      <div className={classes.content}>
+        <div className={classes.sideMenu}>
           {!isMobile ? (
             <SideMenu isOwnerProp={isOwner} notifications={notifications} />
           ) : (
             ''
           )}
         </div>
-        <div className="flex flex-col items-center justify-center mb-5 max-w-[1215px]">
-          <h1 className="font-extrabold text-lg md:text-2xl text-quaternary md:mb-5 text-center md:mr-16">
-            Imóveis Favoritos
-          </h1>
+        <div className={classes.favPropertiesContainer}>
+          <h1 className={classes.title}>Imóveis Favoritos</h1>
           {favouriteProperties?.docs?.length === 0 ? (
             ''
           ) : (
@@ -94,14 +87,14 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
             </div>
           )}
           {favouriteProperties?.docs?.length == 0 && (
-            <div className="flex flex-col items-center align-middle mt-36 justify-center mr-0 lg:mr-40">
+            <div className={classes.notFound}>
               <SentimentIcon />
-              <h1 className="text-2xl text-quaternary mt-2">
+              <h1 className={classes.h1}>
                 Você ainda não favoritou nenhum imóvel.
               </h1>
             </div>
           )}
-          <div className="grid sm:grid-cols-1 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 my-5 gap-10 lg:justify-start">
+          <div className={classes.favProperties}>
             {favouriteProperties?.docs?.length > 0 &&
               favouriteProperties?.docs.map(
                 ({
@@ -127,9 +120,6 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
                 )
               )}
           </div>
-          {/* <Pagination 
-              totalPages={0} 
-            /> */}
         </div>
       </div>
     </>
@@ -284,3 +274,17 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     };
   }
 }
+
+const classes = {
+  content: 'flex flex-row items-center justify-center lg:ml-96 xl:ml-96',
+  sideMenu: 'fixed left-0 top-7 sm:hidden hidden md:hidden lg:flex',
+  title:
+    'font-extrabold text-lg md:text-2xl text-quaternary md:mb-5 text-center md:mr-16',
+  h1: 'text-2xl text-quaternary mt-2',
+  favPropertiesContainer:
+    'flex flex-col items-center justify-center mb-5 max-w-[1215px]',
+  notFound:
+    'flex flex-col items-center align-middle mt-36 justify-center mr-0 lg:mr-40',
+  favProperties:
+    'grid sm:grid-cols-1 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 my-5 gap-10 lg:justify-start',
+};

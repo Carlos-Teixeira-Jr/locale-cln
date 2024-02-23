@@ -34,18 +34,13 @@ const AdminMessages = ({
   notifications,
 }: IAdminMessagesPage) => {
   const router = useRouter();
-
   const query = router.query as any;
-
   const [isOwner, setIsOwner] = useState<boolean>(false);
-
   const properties = messages?.properties;
-
   const messagesCount = messages?.docs?.length;
-
   const totalPages = messages?.totalPages;
-
   const [currentPage, setCurrentPage] = useState(1);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (router.query.page !== undefined && typeof query.page === 'string') {
@@ -72,25 +67,20 @@ const AdminMessages = ({
   useEffect(() => {
     setIsOwner(ownerProperties?.docs?.length > 0 ? true : false);
   }, [ownerProperties]);
-  const isMobile = useIsMobile();
 
   return (
     <main>
       <AdminHeader isOwnerProp={isOwner} />
-
-      <div className="flex flex-row items-center justify-center lg:ml-72 xl:ml-72">
-        <div className="fixed sm:hidden hidden md:hidden lg:flex xl:flex left-0 top-7 ">
+      <div className={classes.body}>
+        <div className={classes.sideMenu}>
           {!isMobile ? (
             <SideMenu isOwnerProp={isOwner} notifications={notifications} />
           ) : (
             ''
           )}
         </div>
-
-        <div className="flex flex-col items-center justify-center mb-5 max-w-[1215px]">
-          <h1 className="font-extrabold text-lg md:text-2xl text-quaternary md:mb-5 text-center md:mr-16">
-            Mensagens
-          </h1>
+        <div className={classes.content}>
+          <h1 className={classes.title}>Mensagens</h1>
           {!messagesCount ? (
             ''
           ) : (
@@ -100,9 +90,8 @@ const AdminMessages = ({
               currentPage={currentPage}
             />
           )}
-
           {!messagesCount && (
-            <div className="flex flex-col items-center align-middle mt-36 justify-center mr-0 lg:mr-20">
+            <div className={classes.notFound}>
               <SentimentIcon />
               <h1 className="text-2xl text-quaternary mt-2">
                 Não tem nenhuma mensagem.
@@ -111,10 +100,7 @@ const AdminMessages = ({
           )}
           {messagesCount &&
             properties.map(({ _id, images, address }: IData) => (
-              <div
-                key={_id}
-                className="grid sm:grid-cols-1 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 my-5 gap-10 lg:justify-start"
-              >
+              <div key={_id} className={classes.cardContainer}>
                 <MessagesCard
                   key={_id}
                   image={images[0]}
@@ -126,7 +112,6 @@ const AdminMessages = ({
                 />
               </div>
             ))}
-
           <div className="flex justify-center mb-10">
             {messagesCount ? (
               <Pagination
@@ -296,3 +281,15 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     };
   }
 }
+
+const classes = {
+  body: 'flex flex-row items-center justify-center lg:ml-72 xl:ml-72',
+  sideMenu: 'fixed sm:hidden hidden md:hidden lg:flex xl:flex left-0 top-7',
+  content: 'flex flex-col items-center justify-center mb-5 max-w-[1215px]',
+  title:
+    'font-extrabold text-lg md:text-2xl text-quaternary md:mb-5 text-center md:mr-16',
+  notFound:
+    'flex flex-col items-center align-middle mt-36 justify-center mr-0 lg:mr-20',
+  cardContainer:
+    'grid sm:grid-cols-1 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 my-5 gap-10 lg:justify-start',
+};

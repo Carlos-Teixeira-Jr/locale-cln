@@ -63,7 +63,7 @@ export default function DropdownAdmin({ isOwnerProp }: IDropdownAdmin) {
   ];
 
   return (
-    <div className="flex absolute z-50 top-[82px] right-1 max-w-[150px] max-w h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md">
+    <div className="flex absolute z-50 top-[66px] right-1 max-w-[150px] max-w h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md">
       <div className="flex flex-col text-center font-medium text-md text-quaternary leading-5">
         {!isOwner
           ? option.map((option, index) => {

@@ -38,8 +38,6 @@ const MessagePage = ({ ownerProperties, message, dataNot }: IMessagePage) => {
   const totalPages = message?.messages.totalPages;
   const [currentPage, setCurrentPage] = useState(1);
 
-  //// PAGE ////
-
   useEffect(() => {
     if (router.query.page !== undefined && typeof query.page === 'string') {
       const parsedPage = parseInt(query.page);
@@ -48,13 +46,11 @@ const MessagePage = ({ ownerProperties, message, dataNot }: IMessagePage) => {
   });
 
   useEffect(() => {
-    // Check if the page parameter in the URL matches the current page
     const pageQueryParam =
       router.query.page !== undefined && typeof query.page === 'string'
         ? parseInt(query.page)
         : 1;
 
-    // Only update the URL if the page parameter is different from the current page
     if (pageQueryParam !== currentPage) {
       const queryParams = {
         ...query,
@@ -64,7 +60,6 @@ const MessagePage = ({ ownerProperties, message, dataNot }: IMessagePage) => {
     }
   }, [currentPage]);
 
-  // Determina se o usuário já possui anúncios ou não;
   useEffect(() => {
     setIsOwner(ownerProperties?.docs?.length > 0 ? true : false);
   }, [ownerProperties]);
@@ -73,16 +68,14 @@ const MessagePage = ({ ownerProperties, message, dataNot }: IMessagePage) => {
     <main>
       <AdminHeader isOwnerProp={isOwner} />
 
-      <div className="flex flex-row items-center justify-evenly mx-2 lg:mx-0">
-        <div className="fixed left-0 top-7  sm:hidden hidden md:hidden lg:flex">
+      <div className={classes.body}>
+        <div className={classes.sideMenu}>
           <SideMenu isOwnerProp={isOwner} notifications={dataNot} />
         </div>
 
-        <div className="flex flex-col mt-24 lg:ml-[330px] w-full lg:mr-10">
-          <div className="flex flex-col items-start xl:items-center">
-            <h1 className="font-extrabold text-2xl md:text-4xl text-quaternary mb-2 md:mb-10 text-center md:text-start">
-              Mensagens
-            </h1>
+        <div className={classes.contentContainer}>
+          <div className={classes.content}>
+            <h1 className={classes.title}>Mensagens</h1>
 
             <div className="flex gap-2 mb-3">
               <div>
@@ -94,11 +87,11 @@ const MessagePage = ({ ownerProperties, message, dataNot }: IMessagePage) => {
                 />
               </div>
               <div className="my-auto">
-                <h2 className="text-quaternary font-bold text-lg md:text-2xl mb-5">
+                <h2 className={classes.address1}>
                   {propertyData?.address.streetName},{' '}
                   {propertyData?.address.streetNumber}
                 </h2>
-                <div className="text-quaternary font-medium text-md md:text-xl">
+                <div className={classes.address2}>
                   <p>{propertyData?.address.neighborhood}</p>
                   <p>
                     {propertyData?.address.city} - {propertyData?.address.uf}
@@ -282,3 +275,14 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     };
   }
 }
+
+const classes = {
+  body: 'flex flex-row items-center justify-evenly mx-2 lg:mx-0',
+  sideMenu: 'fixed left-0 top-7  sm:hidden hidden md:hidden lg:flex',
+  contentContainer: 'flex flex-col mt-24 lg:ml-[330px] w-full lg:mr-10',
+  content: 'flex flex-col items-start xl:items-center',
+  address1: 'text-quaternary font-bold text-lg md:text-2xl mb-5',
+  address2: 'text-quaternary font-medium text-md md:text-xl',
+  title:
+    'font-extrabold text-2xl md:text-4xl text-quaternary mb-2 md:mb-10 text-center md:text-start',
+};

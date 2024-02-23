@@ -57,27 +57,18 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   ownerData,
 }) => {
   const router = useRouter();
-
-  const isOwner = properties?.docs?.length > 0 ? true : false;
-
-  const [selectedPlan, setSelectedPlan] = useState(
-    ownerData?.owner ? ownerData?.owner?.plan : ''
-  );
-
-  const [creditCardIsOpen, setCreditCardIsOpen] = useState(false);
-
-  const [deleteAccountIsOpen, setDeleteAccountIsOpen] = useState(false);
-
-  const [isEditPassword, setIsEditPassword] = useState(false);
-
-  const [isAdminPage, setIsAdminPage] = useState(false);
-
-  const isEdit = true;
-
   const isMobile = useIsMobile();
 
   const reversedCards = [...plans].reverse();
-
+  const isOwner = properties?.docs?.length > 0 ? true : false;
+  const [selectedPlan, setSelectedPlan] = useState(
+    ownerData?.owner ? ownerData?.owner?.plan : ''
+  );
+  const [creditCardIsOpen, setCreditCardIsOpen] = useState(false);
+  const [deleteAccountIsOpen, setDeleteAccountIsOpen] = useState(false);
+  const [isEditPassword, setIsEditPassword] = useState(false);
+  const [isAdminPage, setIsAdminPage] = useState(false);
+  const isEdit = true;
   const creditCardInfo = ownerData?.owner?.isNewCreditCard
     ? ownerData?.owner?.newCreditCardData.creditCard.number
     : ownerData?.owner?.creditCardInfo;
@@ -349,25 +340,21 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     }
   };
 
-  const classes = {
-    accordion:
-      'flex flex-row items-center justify-between max-w-[1232px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 text-lg text-quaternary rounded-xl font-bold transition bg-opacity-90 hover:bg-gray-300',
-  };
-
   return (
-    <div className="max-w-[1232px] mx-auto justify-center items-center">
+    <div className={classes.root}>
       <div className="fixed z-50 top-0 w-full inset-x-0">
         <AdminHeader isOwnerProp={isOwner} />
       </div>
-      <div className="flex flex-row items-center max-w-[1232px] justify-center">
+
+      <div className={classes.sideMenuContainer}>
         {!isMobile && (
-          <div className="fixed left-0 top-7 sm:hidden hidden md:hidden lg:flex">
+          <div className={classes.sideMenu}>
             <SideMenu isOwnerProp={isOwner} notifications={notifications} />
           </div>
         )}
 
-        <div className="flex flex-col mt-16 lg:ml-80 max-w-[1232px] justify-center md:mx-5">
-          <div className="my-5 lg:mx-10 md:mx-2 max-w-[1232px]">
+        <div className={classes.content}>
+          <div className={classes.userData}>
             <div className="my-5">
               <UserDataInputs
                 isEdit={isEdit}
@@ -383,7 +370,6 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                   properties?.docs[0]?.ownerInfo.profilePicture
                 }
               />
-
               <div className="mx-5 my-10">
                 <EditPassword
                   onPasswordUpdate={(passwordData: IPasswordData) =>
@@ -397,10 +383,8 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                 />
               </div>
 
-              <h2 className="md:text-2xl text-lg leading-10 text-quaternary font-bold mb-5 lg:mb-10 mx-5">
-                Dados de Cobrança
-              </h2>
-              <div className="grid sm:grid-cols-1 grid-cols-1 md:grid-cols-3 xl:grid-cols-3 md:gap-6">
+              <h2 className={classes.h2}>Dados de Cobrança</h2>
+              <div className={classes.plans}>
                 {reversedCards.map(
                   ({
                     _id,
@@ -433,6 +417,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                   )
                 )}
               </div>
+
               <div className="flex mt-1 md:mt-1">
                 <UserAddress
                   isEdit={isEdit}
@@ -445,14 +430,13 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                 />
               </div>
             </div>
-            <div className="lg:float-right flex md:justify-end justify-center md:w-[90%] lg:w-full mb-10 md:mr-16 lg:mr-5">
-              <button
-                className="bg-primary w-fit h-16 flex items-center text-quinary rounded-[10px] py-3 px-10 text-lg font-extrabold transition-colors duration-300 hover:bg-red-600 hover:text-white"
-                onClick={handleUpdateBtn}
-              >
+
+            <div className={classes.buttonContainer}>
+              <button className={classes.button} onClick={handleUpdateBtn}>
                 Atualizar Dados
               </button>
             </div>
+
             <div className="lg:pt-20 pt-0.5 mx-4">
               <label className={classes.accordion}>
                 Dados do Cartão de Crédito
@@ -468,6 +452,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                   />
                 </span>
               </label>
+
               <div className="bg-grey-lighter">
                 {creditCardIsOpen && (
                   <CreditCard
@@ -484,6 +469,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                 )}
               </div>
             </div>
+
             <div className="lg:pt-5 pt-0.5 mb-20 mx-4">
               <label className={classes.accordion}>
                 Excluir conta
@@ -499,6 +485,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                   />
                 </span>
               </label>
+
               <div className="bg-grey-lighter">
                 {deleteAccountIsOpen && <DeleteAccount />}
               </div>
@@ -657,3 +644,20 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     };
   }
 }
+
+const classes = {
+  root: 'max-w-[1232px] mx-auto justify-center items-center',
+  sideMenuContainer: 'flex flex-row items-center max-w-[1232px] justify-center',
+  sideMenu: 'fixed left-0 top-7 sm:hidden hidden md:hidden lg:flex',
+  buttonContainer:
+    'lg:float-right flex md:justify-end justify-center md:w-[90%] lg:w-full mb-10 md:mr-16 lg:mr-5',
+  button:
+    'bg-primary w-fit h-16 flex items-center text-quinary rounded-[10px] py-3 px-10 text-lg font-extrabold transition-colors duration-300 hover:bg-red-600 hover:text-white',
+  accordion:
+    'flex flex-row items-center justify-between max-w-[1232px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 text-lg text-quaternary rounded-xl font-bold transition bg-opacity-90 hover:bg-gray-300',
+  plans:
+    'grid sm:grid-cols-1 grid-cols-1 md:grid-cols-3 xl:grid-cols-3 md:gap-6',
+  h2: 'md:text-2xl text-lg leading-10 text-quaternary font-bold mb-5 lg:mb-10 mx-5',
+  userData: 'my-5 lg:mx-10 md:mx-2 max-w-[1232px]',
+  content: 'flex flex-col mt-16 lg:ml-80 max-w-[1232px] justify-center md:mx-5',
+};

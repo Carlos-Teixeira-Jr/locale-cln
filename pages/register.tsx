@@ -20,15 +20,11 @@ import MainFeatures from '../components/organisms/mainFeatures/mainFeatures';
 import { useProgress } from '../context/registerProgress';
 
 const Register = () => {
-  const [loading, setLoading] = useState(false);
-
   const router = useRouter();
-
   const { updateProgress } = useProgress();
-
-  const [open, setOpen] = useState(false);
-
   const handleClose = () => setOpen(false);
+  const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const [registration, setRegistration] = useState<IRegisterMainFeatures>({
     adType: 'comprar',
@@ -242,7 +238,7 @@ const Register = () => {
         }}
       />
       <div className="max-w-[1215px] mx-auto">
-        <div className="md:mt-[150px] mt-[120px] md:mb-10 lg:mb-2 w-full mx-auto lg:mx-24  xl:mx-auto">
+        <div className={classes.stepLabel}>
           <LinearStepper isSubmited={false} sharedActiveStep={0} />
         </div>
 
@@ -282,9 +278,9 @@ const Register = () => {
           addressInputRefs={addressInputRefs}
         />
 
-        <div className="flex md:justify-end justify-center lg:justify-end xl:justify-end px-5 max-w-[1215px]">
+        <div className={classes.buttonContainer}>
           <button
-            className="active:bg-gray-500 cursor-pointer flex items-center flex-row justify-around bg-primary w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold text-2xl lg:text-3xl hover:bg-red-600 hover:text-white"
+            className={classes.button}
             onClick={handleSubmit}
             disabled={loading}
           >
@@ -302,3 +298,12 @@ const Register = () => {
 };
 
 export default Register;
+
+const classes = {
+  stepLabel:
+    'md:mt-[150px] mt-[120px] md:mb-10 lg:mb-2 w-full mx-auto lg:mx-24 xl:mx-auto',
+  buttonContainer:
+    'flex md:justify-end justify-center lg:justify-end xl:justify-end px-5 max-w-[1215px]',
+  button:
+    'active:bg-gray-500 cursor-pointer flex items-center flex-row justify-around bg-primary w-44 h-14 text-tertiary rounded transition-colors duration-300 font-bold text-lg md:text-xl hover:bg-red-600 hover:text-white',
+};

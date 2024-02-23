@@ -40,29 +40,17 @@ const Search: NextPageWithLayout<ISearch> = ({
   tagsData,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
-
   const router = useRouter();
-
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const [open, setOpen] = useState(false);
-
   const isMobile = useIsMobile();
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const [open, setOpen] = useState(false);
   const [mobileFilterIsOpen, setMobileFilterIsOpen] = useState<boolean>(false);
-
   const [isSearchBtnClicked, setIsSearchBtnClicked] = useState(false);
-
   const [grid, setGrid] = useState(false);
-
   const [list, setList] = useState(true);
-
   const query = router.query as any;
-
   const queryParsed = query.location ? JSON.parse(query.location) : [];
-
   const [location, setLocation] = useState<any>(queryParsed);
-
   const isCodeSearch = query.code ? true : false;
 
   useEffect(() => {
@@ -122,13 +110,40 @@ const Search: NextPageWithLayout<ISearch> = ({
     setGrid(false);
   };
 
+  const classes = {
+    root: 'flex items-center justify-center mt-20',
+    bodyContainer: 'lg:flex justify-center lg:max-w-[1232px]',
+    body: 'flex flex-col lg:flex-row md:mt-0',
+    content: 'flex flex-row items-center justify-between gap-7 ml-0 xl:ml-20',
+    filterList: 'mx-auto md:w-fit lg:w-[25%] hidden lg:flex',
+    searchShortcut: `justify-center ${
+      mobileFilterIsOpen ? 'hidden' : ''
+    } flex w-screen px-2 md:w-full itens-center md:px-0`,
+    propertiesGridListOrderBy:
+      'flex flex-row items-center justify-around mt-2 md:my-3 mr-0',
+    listGridContainer: 'flex flex-row items-center gap-1 mr-[-30px] w-fit',
+    list: `w-[47px] h-[44px] border border-[#6B7280] rounded-[10px] ${
+      list && 'border-[#F5BF5D] shadow-inner'
+    }`,
+    grid: `w-[47px] h-[44px] border border-[#6B7280] rounded-[10px] ${
+      grid && 'border-[#F5BF5D] shadow-inner'
+    }`,
+    propertyNotFound: 'flex flex-col mx-auto justify-center my-5',
+    orderBy:
+      'flex flex-row items-center justify-around cursor-pointer md:my-auto bg-tertiary sm:max-w-[188px] md:w-[180px] h-[44px] font-bold text-sm md:text-md text-quaternary leading-5 shadow-lg p-[10px] border border-quaternary rounded-[30px] mt-7 md:mr-4 ml-2',
+    h2: 'text-quaternary text-sm md:text-base lg:text-lg leading-5 font-bold md:ml-4 text-justify px-5',
+    h3: 'text-quaternary text-sm lg:text-md leading-5 font-bold text-justify ml-2',
+    gridContainer:
+      'sm:grid sm:grid-cols-1 md:grid. md:grid-cols-2. md:flex flex-wrap justify-between gap-2 lg:gap-5 mx-2 lg:mx-10',
+  };
+
   return (
     <div>
       <Header />
-      <div className="flex items-center justify-center mt-20">
-        <div className="lg:flex justify-center lg:max-w-[1232px]">
-          <div className="flex flex-col lg:flex-row md:mt-0">
-            <div className="mx-auto md:w-fit lg:w-[25%]">
+      <div className={classes.root}>
+        <div className={classes.bodyContainer}>
+          <div className={classes.body}>
+            <div className={classes.filterList}>
               <FilterList
                 locationProp={locations}
                 tagsProp={tagsData}
@@ -141,40 +156,27 @@ const Search: NextPageWithLayout<ISearch> = ({
                 locationChangeProp={(loc) => setLocation(loc)}
               />
             </div>
+
             <div className="flex flex-col lg:w-[75%] lg:ml-5">
-              <div
-                className={`justify-center ${
-                  mobileFilterIsOpen ? 'hidden' : ''
-                } flex w-screen px-2 md:w-full itens-center md:px-0`}
-              >
+              <div className={classes.searchShortcut}>
                 <SearchShortcut
                   onMobileFilterIsOpenChange={(isOpen) =>
                     setMobileFilterIsOpen(isOpen)
                   }
                 />
               </div>
-              <div className="flex flex-row items-center justify-around mt-2 md:my-3 mr-0 ">
-                <h3 className="text-quaternary text-sm lg:text-md leading-5 font-bold text-justify ml-2">
+              <div className={classes.propertiesGridListOrderBy}>
+                <h3 className={classes.h3}>
                   {propertyInfo.totalCount} imóveis encontrados com base na
                   pesquisa
                 </h3>
-                <div className="flex flex-row items-center justify-between gap-7 ml-0 xl:ml-20">
+                <div className={classes.content}>
                   {!isMobile && (
-                    <div className="flex flex-row items-center gap-1 mr-[-30px] w-fit">
-                      <button
-                        onClick={handleList}
-                        className={`w-[47px] h-[44px] border border-[#6B7280] rounded-[10px] ${
-                          list && 'border-[#F5BF5D] shadow-inner'
-                        }`}
-                      >
+                    <div className={classes.listGridContainer}>
+                      <button onClick={handleList} className={classes.list}>
                         <ListIcon list={list} />
                       </button>
-                      <button
-                        onClick={handleGrid}
-                        className={`w-[47px] h-[44px] border border-[#6B7280] rounded-[10px] ${
-                          grid && 'border-[#F5BF5D] shadow-inner'
-                        }`}
-                      >
+                      <button onClick={handleGrid} className={classes.grid}>
                         <GridIcon grid={grid} />
                       </button>
                     </div>
@@ -182,7 +184,7 @@ const Search: NextPageWithLayout<ISearch> = ({
 
                   {!isMobile && (
                     <div ref={ref} onClick={() => setOpen(!open)}>
-                      <div className="flex flex-row items-center justify-around cursor-pointer md:my-auto bg-tertiary sm:max-w-[188px] md:w-[180px] h-[44px] font-bold text-sm md:text-md text-quaternary leading-5 shadow-lg p-[10px] border border-quaternary rounded-[30px] mt-7 md:mr-4 ml-2">
+                      <div className={classes.orderBy}>
                         <span>Ordenar por</span>
                         <span>
                           <ArrowDropdownIcon open={false} />
@@ -208,10 +210,10 @@ const Search: NextPageWithLayout<ISearch> = ({
 
               {propertyInfo?.docs?.length === 0 && (
                 <div className="flex flex-col mt-5">
-                  <h2 className="text-quaternary text-sm md:text-base lg:text-lg leading-5 font-bold md:ml-4 text-justify px-5">
+                  <h2 className={classes.h2}>
                     Oops! Não encontramos nenhum resultado para essa busca.
                   </h2>
-                  <div className="flex flex-col mx-auto justify-center my-5">
+                  <div className={classes.propertyNotFound}>
                     <Image
                       src={'/images/property-not-found.png'}
                       width={300}
@@ -219,7 +221,7 @@ const Search: NextPageWithLayout<ISearch> = ({
                       alt={'Property not found'}
                     />
                   </div>
-                  <h2 className="text-quaternary text-sm md:text-base lg:text-lg leading-5 font-bold md:ml-4 text-justify px-5">
+                  <h2 className={classes.h2}>
                     Você pode tentar remover alguns filtros para tentar
                     encontrar algum resultado.
                   </h2>
@@ -228,11 +230,11 @@ const Search: NextPageWithLayout<ISearch> = ({
 
               {!propertyInfo.docs && isCodeSearch && (
                 <div className="flex flex-col mt-5">
-                  <h2 className="text-quaternary text-sm md:text-base lg:text-lg leading-5 font-bold md:ml-4 text-justify px-5">
+                  <h2 className={classes.h2}>
                     Oops! Não encontramos nenhum imóvel referente ao código
                     informado.
                   </h2>
-                  <div className="flex flex-col mx-auto justify-center my-5">
+                  <div className={classes.propertyNotFound}>
                     <Image
                       src={'/images/property-not-found.png'}
                       width={300}
@@ -240,7 +242,7 @@ const Search: NextPageWithLayout<ISearch> = ({
                       alt={'Property not found'}
                     />
                   </div>
-                  <h2 className="text-quaternary text-sm md:text-base lg:text-lg leading-5 font-bold md:ml-4 text-justify px-5">
+                  <h2 className={classes.h2}>
                     Verifique se o código está correto e tente novamente.
                   </h2>
                 </div>
@@ -248,9 +250,9 @@ const Search: NextPageWithLayout<ISearch> = ({
 
               {grid ? (
                 <div
-                  className={`sm:grid sm:grid-cols-1 md:grid. md:grid-cols-2. md:flex flex-wrap justify-between gap-2 lg:gap-5 mx-2 lg:mx-10 ${
-                    mobileFilterIsOpen ? 'hidden' : ''
-                  }`}
+                  className={
+                    (classes.gridContainer, mobileFilterIsOpen ? 'hidden' : '')
+                  }
                 >
                   {propertyInfo.docs &&
                     propertyInfo?.docs.map(
@@ -381,7 +383,6 @@ export async function getServerSideProps(context: NextPageContext) {
 
   const encodedFilter = decodeURIComponent(JSON.stringify(filter));
 
-  //// SORT ////
   let encodedSort;
   if (query.sort !== '') {
     if (query.sort === 'mostRecent')
@@ -395,8 +396,6 @@ export async function getServerSideProps(context: NextPageContext) {
         JSON.stringify([{ 'prices.0.value': -1 }])
       );
   }
-
-  //// OTHER FETCHES ////
 
   const locations = await fetch(`${baseUrl}/location`)
     .then((res) => res.json())

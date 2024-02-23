@@ -355,24 +355,18 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
     }
   };
 
-  const classes = {
-    labelAccordion:
-      'flex flex-row items-center justify-between sm:min-w-[300px] md:min-w-[620px] lg:min-w-[600px] xl:min-w-[800px] 2xl:min-w-[1000px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 mx-4 text-lg transition bg-opacity-90 hover:bg-gray-300',
-    accordionContainer: 'accordion__content hidden bg-grey-lighter dis',
-  };
-
   return (
     <div>
       <AdminHeader isOwnerProp={true} />
-      <div className="flex flex-row justify-center w-full">
-        <div className="fixed left-0 top-7 sm:hidden hidden md:hidden lg:hidden xl:flex">
+      <div className={classes.body}>
+        <div className={classes.sideMenu}>
           <SideMenu
             isOwnerProp={property !== undefined && true}
             notifications={[]}
           />
         </div>
-        <div className="flex flex-col items-center mt-16 max-w-[900px] px-2 md:px-10 sm:ml-0 ml-0 xl:ml-24 2xl:ml-24">
-          <h1 className="font-bold text-xl lg:text-2xl text-quaternary my-10 mx-auto">
+        <div className={classes.content}>
+          <h1 className={classes.title}>
             Edição do Anúncio
             <div className="accordion flex flex-col">
               <div>
@@ -567,11 +561,8 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
                 </div>
               </div>
             </div>
-            <div className="flex self-end md:justify-end justify-center mb-32 mt-16">
-              <button
-                className="bg-primary w-56 h-12 text-lg text-tertiary rounded transition-colors duration-300 hover:bg-red-600 hover:text-white"
-                onClick={handleSubmit}
-              >
+            <div className={classes.buttonContainer}>
+              <button className={classes.button} onClick={handleSubmit}>
                 Atualizar Dados
               </button>
             </div>
@@ -672,3 +663,17 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     };
   }
 }
+
+const classes = {
+  body: 'flex flex-row justify-center w-full',
+  sideMenu: 'fixed left-0 top-7 sm:hidden hidden md:hidden lg:hidden xl:flex',
+  content:
+    'flex flex-col items-center mt-16 max-w-[900px] px-2 md:px-10 sm:ml-0 ml-0 xl:ml-24 2xl:ml-24',
+  labelAccordion:
+    'flex flex-row items-center justify-between sm:min-w-[300px] md:min-w-[620px] lg:min-w-[600px] xl:min-w-[800px] 2xl:min-w-[1000px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 mx-4 text-lg transition bg-opacity-90 hover:bg-gray-300',
+  accordionContainer: 'accordion__content hidden bg-grey-lighter dis',
+  title: 'font-bold text-xl lg:text-2xl text-quaternary my-10 mx-auto',
+  buttonContainer: 'flex self-end md:justify-end justify-center mb-32 mt-16',
+  button:
+    'bg-primary w-56 h-12 text-lg text-tertiary rounded transition-colors duration-300 hover:bg-red-600 hover:text-white',
+};

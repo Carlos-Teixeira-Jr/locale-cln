@@ -27,7 +27,7 @@ const Footer = () => {
       : mobile
       ? 'absolute mt-36'
       : notebook
-      ? 'absolute mt-36'
+      ? 'fixed mt-36'
       : 'absolute mt-36'
   }`;
 

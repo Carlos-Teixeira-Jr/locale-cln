@@ -27,18 +27,14 @@ const MessageNotifications = ({
   notificationsAdmin,
 }: IMessageNotifications) => {
   const isMobile = useIsMobile();
-
   const [isOwner, setIsOwner] = useState<boolean>(false);
-
   const [showPagination, setShowPagination] = useState<boolean>(true);
-
   const [notifications, setNotifications] = useState(notificationsAdmin);
+  const adminNots = notificationsAdmin as [];
 
   useEffect(() => {
     setIsOwner(ownerProperties?.docs?.length > 0 ? true : false);
   }, [ownerProperties]);
-
-  const adminNots = notificationsAdmin as [];
 
   useEffect(() => {
     if (notifications.length == 0) {
@@ -50,8 +46,8 @@ const MessageNotifications = ({
   return (
     <main>
       <AdminHeader />
-      <div className="flex flex-row items-center justify-center lg:ml-72 xl:ml-72">
-        <div className="fixed sm:hidden hidden md:hidden lg:flex xl:flex left-0 top-7 ">
+      <div className={classes.body}>
+        <div className={classes.sideMenu}>
           {!isMobile ? (
             <SideMenu
               isOwnerProp={isOwner}
@@ -61,10 +57,8 @@ const MessageNotifications = ({
             ''
           )}
         </div>
-        <div className="flex flex-col items-center justify-center mb-5 max-w-[1215px]">
-          <h1 className="font-extrabold text-lg md:text-2xl text-quaternary md:mb-5 text-center md:mr-16">
-            Notificações
-          </h1>
+        <div className={classes.content}>
+          <h1 className={classes.title}>Notificações</h1>
 
           {!showPagination ? (
             ''
@@ -75,7 +69,7 @@ const MessageNotifications = ({
           )}
 
           {notifications?.length == 0 && (
-            <div className="flex flex-col items-center align-middle mt-36 justify-center mr-0 lg:mr-20">
+            <div className={classes.notFound}>
               <SentimentIcon />
               <h1 className="text-2xl text-quaternary mt-2">
                 Não tem nenhuma notificação.
@@ -281,3 +275,13 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     }
   }
 }
+
+const classes = {
+  sideMenu: 'fixed sm:hidden hidden md:hidden lg:flex xl:flex left-0 top-7',
+  body: 'flex flex-row items-center justify-center lg:ml-72 xl:ml-72',
+  content: 'flex flex-col items-center justify-center mb-5 max-w-[1215px]',
+  title:
+    'font-extrabold text-lg md:text-2xl text-quaternary md:mb-5 text-center md:mr-16',
+  notFound:
+    'flex flex-col items-center align-middle mt-36 justify-center mr-0 lg:mr-20',
+};

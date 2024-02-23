@@ -130,7 +130,14 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({ property, isFavourite }) => {
     if (property.tags) {
       setHaveTags(true);
     }
+    console.log(property.prices[1].type);
   }, [property.tags]);
+
+  const classes = {
+    tagContainer:
+      'font-normal text-md text-quaternary flex flex-row lg:justify-between gap-1',
+    infoContainer: 'flex flex-col text-quaternary text-md',
+  };
 
   return (
     <>
@@ -143,17 +150,17 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({ property, isFavourite }) => {
             Dependências
           </h3>
           <div className="flex flex-row items-center justify-start gap-1 text-left">
-            <div className="flex flex-col text-quaternary text-md">
+            <div className={classes.infoContainer}>
               <span>•</span>
               <span>•</span>
               <span>•</span>
             </div>
-            <div className="flex flex-col text-quaternary text-md">
+            <div className={classes.infoContainer}>
               <h3>{getMetadataValue('bedroom')}</h3>
               <h3>{getMetadataValue('bathroom')}</h3>
               <h3>{getMetadataValue('garage')}</h3>
             </div>
-            <div className="flex flex-col text-quaternary text-md">
+            <div className={classes.infoContainer}>
               <h3>quarto(s)</h3>
               <h3>banheiro(s)</h3>
               <h3>garagem(s)</h3>
@@ -168,13 +175,39 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({ property, isFavourite }) => {
             property?.tags.map((tag) => (
               <div key={tag} className="flex flex-col items-start">
                 <div className="flex flex-col">
-                  <div className="font-normal text-md text-quaternary flex flex-row lg:justify-between gap-1">
+                  <div className={classes.tagContainer}>
                     <span>•</span>
                     <span>{tag}</span>
                   </div>
                 </div>
               </div>
             ))}
+          {property.prices[1].type == 'IPTU' &&
+          property.prices[1].value !== null ? (
+            <div className="flex flex-col items-start">
+              <div className="flex flex-col">
+                <div className={classes.tagContainer}>
+                  <span>•</span>
+                  <span>IPTU: R$ {property.prices[2].value}</span>
+                </div>
+              </div>
+            </div>
+          ) : (
+            ''
+          )}
+
+          {property.prices[1].value !== null ? (
+            <div className="flex flex-col items-start">
+              <div className="flex flex-col">
+                <div className={classes.tagContainer}>
+                  <span>•</span>
+                  <span>Condomínio: R$ {property.prices[1].value}</span>
+                </div>
+              </div>
+            </div>
+          ) : (
+            ''
+          )}
           <div className="pt-6">
             <h3 className="font-extrabold text-quaternary text-2xl pb-2 md:pb-4">
               Descrição

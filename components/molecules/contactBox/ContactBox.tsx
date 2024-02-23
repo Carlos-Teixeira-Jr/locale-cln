@@ -70,6 +70,8 @@ const ContactBox: React.FC<IContactBox> = ({ ownerInfo, property }: any) => {
             <UserIcon
               className="rounded-full drop-shadow-lg w-20 h-20 p-2 mx-2 shrink-0"
               fill="#F75D5F"
+              width="90"
+              height="90"
             />
           )}
 

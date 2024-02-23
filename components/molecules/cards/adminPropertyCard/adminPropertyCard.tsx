@@ -123,15 +123,17 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
     <div className="flex flex-col items-center mb-10 justify-between">
       <Link href={`/property/${_id}?isEdit=true`}>
         <div
-          className={`flex flex-col md:flex-row bg-tertiary max-w-5xl. w-full h-fit md:h-64 shadow-lg lg:w-[850px] ${
+          className={`flex flex-col md:flex-row bg-tertiary h-fit md:h-64 w-[777px] shadow-lg ${
             isActive ? '' : 'opacity-100'
           }`}
         >
           <Image
             src={image}
             alt={'Admin property image'}
-            className={`lg:w-1/3 ${!isActive ? 'opacity-30' : ''}`}
-            width={310}
+            className={`max-w-xs min-w-[250px] ${
+              !isActive ? 'opacity-30' : ''
+            } overflow-x-visible`}
+            width={250}
             height={265}
           />
           {highlighted && (

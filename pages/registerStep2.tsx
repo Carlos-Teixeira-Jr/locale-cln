@@ -14,27 +14,16 @@ import { NextPageWithLayout } from './page';
 
 const RegisterStep2: NextPageWithLayout = () => {
   const imagesInputRef = useRef<HTMLElement>(null);
-
-  const [loading, setLoading] = useState(false);
-
   const router = useRouter();
-
-  const query = router.query;
-
-  const urlEmail = query.email;
-
   const { progress, updateProgress } = useProgress();
-
+  const [loading, setLoading] = useState(false);
+  const query = router.query;
+  const urlEmail = query.email;
   const [images, setImages] = useState<string[]>([]);
-
   const [condominiumTags, setCondominiumTags] = useState<string[]>([]);
-
   const [youtubeLink, setYoutubeLink] = useState<string>('');
-
   const storedData = store.get('propertyData');
-
   const [tags, setTags] = useState<string[]>([]);
-
   const isCondominium = storedData?.condominium ? true : false;
 
   useEffect(() => {
@@ -121,8 +110,8 @@ const RegisterStep2: NextPageWithLayout = () => {
   return (
     <>
       <Header />
-      <div className="flex flex-col mx-auto max-w-[1215px]">
-        <div className="md:mt-26 mt-28 sm:mt-32 md:mb-8 lg:mb-2 w-full mx-auto xl:mx-auto">
+      <div className={classes.body}>
+        <div className={classes.stepLabel}>
           <LinearStepper isSubmited={false} sharedActiveStep={1} />
         </div>
         <div className="max-w-[1232px]" id="upload-images">
@@ -135,7 +124,7 @@ const RegisterStep2: NextPageWithLayout = () => {
           />
         </div>
 
-        <div className="mb-10 mx-2 max-w-[1232px] justify-center">
+        <div className={classes.propertyDifferentials}>
           <PropertyDifferentials
             shouldRenderCondDiv={isCondominium}
             isEdit={false}
@@ -149,19 +138,16 @@ const RegisterStep2: NextPageWithLayout = () => {
           />
         </div>
 
-        <div className="flex flex-col md:flex-row lg:flex-row xl:flex-row gap-4 md:gap-0 lg:gap-0 xl:gap-0 items-center justify-between my-4 max-w-[1215px]">
-          <button
-            className="active:bg-gray-500 cursor-pointer flex items-center flex-row justify-around bg-primary w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold text-2xl lg:text-3xl hover:bg-red-600 hover:text-white"
-            onClick={handlePreviousStep}
-          >
+        <div className={classes.buttonContainer}>
+          <button className={classes.button} onClick={handlePreviousStep}>
             Voltar
           </button>
           <button
-            className="active:bg-gray-500 cursor-pointer flex items-center flex-row justify-around bg-primary w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold text-2xl lg:text-3xl hover:bg-red-600 hover:text-white"
+            className={classes.button}
             onClick={handleSubmit}
             disabled={loading}
           >
-            <span className={`${loading ? 'ml-16' : ''}`}>Continuar</span>
+            <span className={`${loading ? 'ml-5' : ''}`}>Continuar</span>
             {loading && <Loading />}
           </button>
         </div>
@@ -173,3 +159,14 @@ const RegisterStep2: NextPageWithLayout = () => {
 };
 
 export default RegisterStep2;
+
+const classes = {
+  body: 'flex flex-col mx-auto max-w-[1215px]',
+  propertyDifferentials: 'mb-10 mx-2 max-w-[1232px] justify-center',
+  buttonContainer:
+    'flex flex-col md:flex-row lg:flex-row xl:flex-row gap-4 md:gap-0 lg:gap-0 xl:gap-0 items-center justify-between my-4 max-w-[1215px]',
+  button:
+    'active:bg-gray-500 cursor-pointer flex items-center flex-row justify-around bg-primary w-44 h-14 text-tertiary rounded transition-colors duration-300 font-bold text-lg md:text-xl hover:bg-red-600 hover:text-white',
+  stepLabel:
+    'md:mt-26 mt-28 sm:mt-32 md:mb-8 lg:mb-2 w-full mx-auto xl:mx-auto',
+};

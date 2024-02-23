@@ -10,10 +10,8 @@ const LoginPage: NextPageWithLayout = () => {
   return (
     <>
       <Header />
-      <div>
-        <div className="flex justify-center items-center mt-40">
-          <LoginCard />
-        </div>
+      <div className="flex justify-center items-center mt-40">
+        <LoginCard />
       </div>
       <Footer />
     </>
