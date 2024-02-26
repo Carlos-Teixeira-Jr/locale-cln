@@ -32,6 +32,7 @@ interface ICreditCard {
   selectedPlan?: IPlan;
   userAddress?: IAddress;
   ownerData?: IOwnerData;
+  handleEmptyAddressError?: ((error: string) => void)
 }
 
 const CreditCard = ({
@@ -45,7 +46,9 @@ const CreditCard = ({
   selectedPlan,
   userAddress,
   ownerData,
+  handleEmptyAddressError
 }: ICreditCard) => {
+
   const creditCardErrorScroll = {
     ...creditCardInputRefs,
   };
@@ -64,6 +67,8 @@ const CreditCard = ({
     cpfCnpj: ''
   });
 
+  const [emptyAddressError, setEmptyAddressError] = useState('');
+
   const [errors, setErrors] = useState<CreditCardForm>({
     cardName: '',
     cardNumber: '',
@@ -72,11 +77,13 @@ const CreditCard = ({
     cpfCnpj: ''
   });
 
+  useEffect(() => {
+    if (handleEmptyAddressError) handleEmptyAddressError(emptyAddressError)
+  }, [emptyAddressError]);
+
   // Envia os dados do usuário para o componente pai;
   useEffect(() => {
-    if (onCreditCardUpdate) {
-      onCreditCardUpdate(creditCardFormData);
-    }
+    if (onCreditCardUpdate) onCreditCardUpdate(creditCardFormData);
   }, [creditCardFormData]);
 
   useEffect(() => {
@@ -195,6 +202,7 @@ const CreditCard = ({
   ];
 
   const handleSubmit = async () => {
+
     setErrors({
       cardNumber: '',
       cardName: '',
@@ -214,7 +222,9 @@ const CreditCard = ({
     const emptyFieldError = 'Este campo é obrigatório';
     const invalidCardNumberError = 'Insira o número completo do cartão';
     const regex = /^----/;
+    const emptyAddress = 'Os dados de endereço precisam ser preenchidos para atualizar o cartão'
 
+    if (!userAddress?.zipCode || !userAddress?.streetNumber) setEmptyAddressError(emptyAddress);
     if (!creditCardFormData.cardName) newErrors.cardName = emptyFieldError;
     if (regex.test(creditCardFormData.cardNumber))
       newErrors.cardNumber = invalidCardNumberError;
@@ -237,15 +247,13 @@ const CreditCard = ({
         });
         toast.loading('Enviando...');
 
-        const formattedCpf = userInfo?.cpf.replace(/[.-]/g, '');
-
         const body = {
           ...creditCardFormData,
-          cpf: formattedCpf,
           email: userInfo?.email,
           phone: userInfo?.cellPhone,
           plan: selectedPlan,
-          address: userAddress,
+          zipCode: userAddress?.zipCode,
+          streetNumber: userAddress?.streetNumber,
           owner: ownerData?.owner,
           customerId,
         };

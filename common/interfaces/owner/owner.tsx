@@ -6,6 +6,19 @@ export interface ICreditCardInfo {
   creditCardToken: string;
 }
 
+export type CreditCardInfo = {
+  creditCardBrand: string;
+  creditCardNumber: string;
+  creditCardToken: string
+}
+
+export type OwnerPaymentData = {
+  cpfCnpj: string;
+  customerId: string;
+  subscriptionId: string;
+  creditCardInfo: CreditCardInfo
+}
+
 type Owner = {
   _id: string;
   name: string;
@@ -20,6 +33,7 @@ type Owner = {
   isNewCreditCard: boolean;
   newCreditCardData: any;
   profilePicture: string;
+  paymentData: OwnerPaymentData
 };
 
 export interface IOwnerData {

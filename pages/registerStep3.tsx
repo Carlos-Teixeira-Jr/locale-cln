@@ -144,7 +144,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     cardNumber: '',
     ccv: '',
     expiry: '',
-    cpfCnpj: ''
+    cpfCnpj: '',
+    cardBrand: ''
   });
 
   const [creditCardErrors, setCreditCardErrors] = useState<CreditCardForm>({
@@ -152,7 +153,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     cardNumber: '',
     ccv: '',
     expiry: '',
-    cpfCnpj: ''
+    cpfCnpj: '',
+    cardBrand: ''
   });
 
   // Verifica se o estado progress que determina em qual step o usuário está corresponde ao step atual;
@@ -225,7 +227,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
       cardNumber: '',
       ccv: '',
       expiry: '',
-      cpfCnpj: ''
+      cpfCnpj: '',
+      cardBrand: ''
     };
 
     if (!userDataForm.username) newUserDataErrors.username = error;
