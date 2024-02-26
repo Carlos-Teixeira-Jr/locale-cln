@@ -158,11 +158,11 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
   });
 
   // Verifica se o estado progress que determina em qual step o usuário está corresponde ao step atual;
-  // useEffect(() => {
-  //   if (progress < 3) {
-  //     router.push('/register');
-  //   }
-  // });
+  useEffect(() => {
+    if (progress < 3) {
+      router.push('/register');
+    }
+  });
 
   // // Busca o endereço do imóvel armazenado no local storage e atualiza o valor de addressData sempre que há o componente de endereço é aberto ou fechado - isso é necessário para que o componente ChangeAddressCheckbox recupere o endereço do localStorage quando a opção é alterada;
   useEffect(() => {
@@ -563,7 +563,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
               <button
                 className="active:bg-gray-500 cursor-pointer flex items-center flex-row justify-around bg-primary w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold text-2xl lg:text-3xl hover:bg-red-600 hover:text-white"
                 onClick={handleSubmit}
-                // disabled={loading}
+                disabled={loading}
               >
                 <span className={`${loading ? 'ml-16' : ''}`}>Continuar</span>
                 {loading && <Loading />}
