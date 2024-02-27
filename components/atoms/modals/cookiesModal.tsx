@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router';
 import Modal from 'react-modal';
 
 Modal.setAppElement('#__next');
@@ -14,8 +13,6 @@ const CookiesModal: React.FC<ICookiesModal> = ({
   setModalIsOpen,
   onClose,
 }) => {
-  const router = useRouter();
-
   return (
     <Modal
       isOpen={isOpen}
@@ -65,12 +62,9 @@ const CookiesModal: React.FC<ICookiesModal> = ({
           </h1>
         </div>
         <div className={classes.buttonContainer}>
-          <button
-            className={classes.anchorButton}
-            onClick={() => router.push('/userTerms')}
-          >
+          <a className={classes.anchorButton} href="/userTerms" target="_blank">
             Política de Privacidade e Termos de Uso
-          </button>
+          </a>
           <button className={classes.buttonOk} onClick={onClose}>
             Entendi
           </button>

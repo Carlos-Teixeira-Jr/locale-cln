@@ -319,8 +319,9 @@ const FilterList: React.FC<IFilterListProps> = ({
   const maskedPrice = (value: string) => {
     let price = value;
     price = price.replace(/\D/g, '');
-    price = price.replace(/(\d)(\d{2})$/, '$1,$2');
+    price = price.replace(/(\d)(\d{0})$/, '$1,$2');
     price = price.replace(/(?=(\d{3})+(\D))\B/g, '.');
+    price = price.substring(0, price.length - 1);
     return price;
   };
 

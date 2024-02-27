@@ -1,11 +1,11 @@
 import Image from 'next/image';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import {
   IData,
   IOwnerInfo,
 } from '../../../common/interfaces/property/propertyData';
-import { capitalizeFirstLetter } from '../../../common/utils/strings/capitalizeFirstLetter';
+import { monetaryFormat } from '../../../common/utils/masks/monetaryFormat';
 import UserIcon from '../../atoms/icons/userIcon';
 import MessageModal from '../../atoms/modals/messageModal';
 Modal.setAppElement('#__next');
@@ -18,21 +18,56 @@ export interface IContactBox {
 const ContactBox: React.FC<IContactBox> = ({ ownerInfo, property }: any) => {
   const profilePicture = ownerInfo?.profilePicture;
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [fullMessage, setFullMessage] = useState(false);
+  const [message, setMessage] = useState('');
   const owner = ownerInfo?.name;
   const ownerPropertyWpp = ownerInfo?.phones[1];
   const ownerWhatsapp = ownerPropertyWpp?.replace(/[^0-9]+/g, '');
+  const formattedPrice = monetaryFormat(String(property?.prices[0].value));
+  const uf = property?.address.uf;
+  const city = property?.address.city;
+  const propertyType = property?.propertyType;
+  const announcementCode = property?.announcementCode;
+
+  useEffect(() => {
+    if (
+      uf !== undefined &&
+      city !== undefined &&
+      propertyType !== undefined &&
+      announcementCode !== undefined
+    ) {
+      setFullMessage(true);
+    } else {
+      console.log('uf', uf);
+      console.log('city', city);
+      console.log('propertyType', propertyType);
+      console.log('announcementCode', announcementCode);
+    }
+  }, []);
 
   const handleWhatsappBtnClick = () => {
-    const propertyStreet = property?.address?.streetName;
-    const propertyNumber = property?.address?.streetNumber;
-    const propertyCity = capitalizeFirstLetter(property?.address?.city);
-    const whatsappMessage = `Olá, gostaria de obter mais informações sobre o imóvel localizado em ${propertyStreet}, número ${propertyNumber}, na cidade de ${propertyCity}. 🏡✨`;
+    if (fullMessage) {
+      const fullMsg = `https://api.whatsapp.com/send/?pFhone=${ownerWhatsapp}&text=${encodeURIComponent(`
+      🏡📱 Olá! Encontrei o seu imóvel na Locale Imóveis e me interessei! 📱🏡
+        
+      ${propertyType !== 'todos' ? `🏠Imóvel: ${propertyType}` : '🏠Imóvel'} ${
+        city && `na cidade de ${city}`
+      }${uf && `, ${uf}`}.
+      ${formattedPrice && `💰 Valor: ${formattedPrice}`}
+      ${announcementCode && `🔗 Código do imóvel: ${announcementCode}`}
+            
+      Gostaria de mais informações e talvez agendar uma visita. 
+      Quando você estiver disponível, podemos conversar?`)}&type=phone_number&app_absent=0`;
 
-    const whatsappLink = `https://api.whatsapp.com/send/?phone=${ownerWhatsapp}&text=${encodeURIComponent(
-      whatsappMessage
-    )}&type=phone_number&app_absent=0`;
+      window.open(fullMsg, '_blank');
+    } else {
+      const basicMsg = `https://api.whatsapp.com/send/?pFhone=${ownerWhatsapp}&text=${encodeURIComponent(`
+      🏡📱 Olá! Encontrei o seu imóvel na Locale Imóveis e me interessei! 
+      Gostaria de mais informações e talvez agendar uma visita. 📱🏡
+      Quando você estiver disponível, podemos conversar?`)}&type=phone_number&app_absent=0`;
 
-    window.open(whatsappLink, '_blank');
+      window.open(basicMsg, '_blank');
+    }
   };
 
   const buttons = [
