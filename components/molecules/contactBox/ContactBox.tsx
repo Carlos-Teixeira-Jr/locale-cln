@@ -15,12 +15,14 @@ export interface IContactBox {
   property: IData;
 }
 
-const ContactBox: React.FC<IContactBox> = ({ ownerInfo, property }: any) => {
+const ContactBox: React.FC<IContactBox> = ({ ownerInfo, property }: IContactBox) => {
+
   const profilePicture = ownerInfo?.profilePicture;
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const owner = ownerInfo?.name;
-  const ownerPropertyWpp = ownerInfo?.phones[1];
+  const ownerPropertyWpp = ownerInfo?.wppNumber;
   const ownerWhatsapp = ownerPropertyWpp?.replace(/[^0-9]+/g, '');
+  const ownerContact = ownerWhatsapp ? ownerWhatsapp : ownerInfo?.phones[1];
 
   const handleWhatsappBtnClick = () => {
     const propertyStreet = property?.address?.streetName;
@@ -28,7 +30,7 @@ const ContactBox: React.FC<IContactBox> = ({ ownerInfo, property }: any) => {
     const propertyCity = capitalizeFirstLetter(property?.address?.city);
     const whatsappMessage = `Olá, gostaria de obter mais informações sobre o imóvel localizado em ${propertyStreet}, número ${propertyNumber}, na cidade de ${propertyCity}. 🏡✨`;
 
-    const whatsappLink = `https://api.whatsapp.com/send/?phone=${ownerWhatsapp}&text=${encodeURIComponent(
+    const whatsappLink = `https://api.whatsapp.com/send/?phone=${ownerContact}&text=${encodeURIComponent(
       whatsappMessage
     )}&type=phone_number&app_absent=0`;
 
@@ -52,8 +54,6 @@ const ContactBox: React.FC<IContactBox> = ({ ownerInfo, property }: any) => {
     setModalIsOpen(false);
   };
 
-  console.log('propertyID:', property);
-  console.log('ownerInfo:', ownerInfo);
   return (
     <>
       <div className="lg:w-fit md:h-10 md:pt-0 flex flex-col md:flex-row md:grid items-center justify-items-center align-middle justify lg:ml-2 m-5 lg:m-0">

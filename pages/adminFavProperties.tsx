@@ -28,7 +28,6 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
   ownerProperties,
   notifications,
 }) => {
-  console.log("🚀 ~ favouriteProperties:", favouriteProperties)
   const [isOwner, setIsOwner] = useState<boolean>(false);
   const [properties, _setProperties] = useState<IPropertyInfo>(ownerProperties);
   const [currentPage, setCurrentPage] = useState(1);
@@ -220,14 +219,13 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ _id: userId }),
+          body: JSON.stringify({ userId }),
         }
       );
 
       if (ownerIdResponse.ok) {
         const ownerData = await ownerIdResponse.json();
         ownerId = ownerData?.owner?._id;
-        console.log('adminFavProperties:', userId);
       }
     } catch (error) {
       console.error(error);
