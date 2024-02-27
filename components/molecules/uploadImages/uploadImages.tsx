@@ -93,7 +93,6 @@ const UploadImages = ({
       const id = uuidv4();
       const src = URL.createObjectURL(file);
 
-      // Adiciona a imagem ao IndexedDB junto com o ID UUID
       await addImageToDB(file, src, id);
 
       setImages((prevImages) => [...prevImages, { src, id }]);
