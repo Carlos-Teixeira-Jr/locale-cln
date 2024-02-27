@@ -8,10 +8,8 @@ import {
 import { IPropertyTypes } from '../common/interfaces/property/propertyTypes';
 import { fetchJson } from '../common/utils/fetchJson';
 import HomeFilter from '../components/atoms/filterSections/HomeFilter';
-import AccessCard from '../components/molecules/cards/accessCards/AccessCard';
-import PropertyCard from '../components/molecules/cards/propertyCard/PropertyCard';
-import Footer from '../components/organisms/footer/footer';
-import Header from '../components/organisms/header/header';
+import { AccessCard, PropertyCard } from '../components/molecules/cards';
+import { Footer, Header } from '../components/organisms';
 import useTrackLocation from '../hooks/trackLocation';
 import { NextPageWithLayout } from './page';
 

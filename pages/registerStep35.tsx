@@ -6,8 +6,7 @@ import CheckIcon from '../components/atoms/icons/checkIcon';
 import Loading from '../components/atoms/loading';
 import LinearStepper from '../components/atoms/stepper/stepper';
 import PaymentBoard_Step3_5 from '../components/molecules/payment/paymentBoardStep3_5';
-import Footer from '../components/organisms/footer/footer';
-import Header from '../components/organisms/header/header';
+import { Footer, Header } from '../components/organisms';
 import { useProgress } from '../context/registerProgress';
 import { NextPageWithLayout } from './page';
 

@@ -25,8 +25,7 @@ import CreditCard, {
   CreditCardForm,
 } from '../components/molecules/userData/creditCard';
 import UserDataInputs from '../components/molecules/userData/userDataInputs';
-import Footer from '../components/organisms/footer/footer';
-import Header from '../components/organisms/header/header';
+import { Footer, Header } from '../components/organisms';
 import { useProgress } from '../context/registerProgress';
 import { NextPageWithLayout } from './page';
 
@@ -410,7 +409,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
               });
             }
           } else {
-            showErrorToast(ErrorToastNames.SendImages)
+            showErrorToast(ErrorToastNames.SendImages);
             showErrorToast(ErrorToastNames.ImagesUploadError);
             setTimeout(() => {
               router.push('/register');

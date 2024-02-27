@@ -105,7 +105,7 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
     {
       key: 'visualize',
       title: 'Visualizar',
-      link: '',
+      link: `/property/${_id}`,
       className:
         'bg-[#5BC0DE] w-full h-12 px-10 rounded-md font-bold text-tertiary text-xl shadow-sm transition-colors duration-300 hover:bg-blue-500 hover:text-white',
     },

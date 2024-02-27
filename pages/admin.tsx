@@ -10,9 +10,8 @@ import { IOwnerProperties } from '../common/interfaces/properties/propertiesList
 import { IData } from '../common/interfaces/property/propertyData';
 import { fetchJson } from '../common/utils/fetchJson';
 import Pagination from '../components/atoms/pagination/pagination';
-import AdminPropertyCard from '../components/molecules/cards/adminPropertyCard/adminPropertyCard';
-import AdminHeader from '../components/organisms/adminHeader/adminHeader';
-import SideMenu from '../components/organisms/sideMenu/sideMenu';
+import { AdminPropertyCard } from '../components/molecules';
+import { AdminHeader, SideMenu } from '../components/organisms';
 import useDeviceSize from '../hooks/deviceSize';
 import { NextPageWithLayout } from './page';
 

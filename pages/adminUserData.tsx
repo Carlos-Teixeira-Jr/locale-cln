@@ -25,7 +25,7 @@ import {
 } from '../common/utils/toasts';
 import ArrowDownIcon from '../components/atoms/icons/arrowDownIcon';
 import UserAddress from '../components/molecules/address/userAdress';
-import PlansCardsHidden from '../components/molecules/cards/plansCards/plansCardHidden';
+import { PlansCardsHidden } from '../components/molecules/cards';
 import CreditCard, {
   CreditCardForm,
 } from '../components/molecules/userData/creditCard';

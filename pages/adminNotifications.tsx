@@ -11,8 +11,7 @@ import Pagination from '../components/atoms/pagination/pagination';
 import NotificationCard, {
   INotification,
 } from '../components/molecules/cards/notificationCard/notificationCard';
-import AdminHeader from '../components/organisms/adminHeader/adminHeader';
-import SideMenu from '../components/organisms/sideMenu/sideMenu';
+import { AdminHeader, SideMenu } from '../components/organisms';
 import { useIsMobile } from '../hooks/useIsMobile';
 
 interface IMessageNotifications {

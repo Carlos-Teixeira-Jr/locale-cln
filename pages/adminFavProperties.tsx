@@ -12,9 +12,8 @@ import {
 import { fetchJson } from '../common/utils/fetchJson';
 import SentimentIcon from '../components/atoms/icons/sentimentIcon';
 import Pagination from '../components/atoms/pagination/pagination';
-import PropertyCard from '../components/molecules/cards/propertyCard/PropertyCard';
-import AdminHeader from '../components/organisms/adminHeader/adminHeader';
-import SideMenu from '../components/organisms/sideMenu/sideMenu';
+import { PropertyCard } from '../components/molecules';
+import { AdminHeader, SideMenu } from '../components/organisms';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { NextPageWithLayout } from './page';
 

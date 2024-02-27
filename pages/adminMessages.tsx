@@ -10,9 +10,8 @@ import { IData } from '../common/interfaces/property/propertyData';
 import { fetchJson } from '../common/utils/fetchJson';
 import SentimentIcon from '../components/atoms/icons/sentimentIcon';
 import Pagination from '../components/atoms/pagination/pagination';
-import MessagesCard from '../components/molecules/cards/messagesCard.tsx/messagesCard';
-import AdminHeader from '../components/organisms/adminHeader/adminHeader';
-import SideMenu from '../components/organisms/sideMenu/sideMenu';
+import { MessagesCard } from '../components/molecules';
+import { AdminHeader, SideMenu } from '../components/organisms';
 import { useIsMobile } from '../hooks/useIsMobile';
 
 interface IMessages {

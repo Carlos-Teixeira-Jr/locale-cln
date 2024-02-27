@@ -2,8 +2,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Loading from '../components/atoms/loading';
 import LinearStepper from '../components/atoms/stepper/stepper';
-import Footer from '../components/organisms/footer/footer';
-import Header from '../components/organisms/header/header';
+import { Footer, Header } from '../components/organisms';
 import { useProgress } from '../context/registerProgress';
 import { NextPageWithLayout } from './page';
 
