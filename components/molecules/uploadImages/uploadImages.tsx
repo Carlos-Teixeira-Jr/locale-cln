@@ -5,7 +5,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import { DndProvider, DropTargetMonitor, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { v4 as uuidv4 } from 'uuid';
-import { addImageToDB, removeImageFromDB } from '../../../common/utils/indexDb';
+import {
+  addImageToDB,
+  getAllImagesFromDB,
+  removeImageFromDB,
+} from '../../../common/utils/indexDb';
+import { ErrorToastNames, showErrorToast } from '../../../common/utils/toasts';
 import CameraIcon from '../../atoms/icons/cameraIcon';
 import TrashIcon from '../../atoms/icons/trashIcon';
 
@@ -61,16 +66,37 @@ const UploadImages = ({
     }
   }, [editarImages]);
 
+  useEffect(() => {
+    const loadImagesFromDB = async () => {
+      try {
+        // Consulta o IndexedDB para recuperar as imagens salvas
+        const imagesFromDB = await getAllImagesFromDB();
+        // Define o estado `images` com as imagens recuperadas
+        setImages(imagesFromDB as any[]);
+      } catch (error) {
+        showErrorToast(ErrorToastNames.LoadImages);
+      }
+    };
+    // Chama a função para carregar imagens do IndexedDB quando o componente é montado
+    loadImagesFromDB();
+  }, []);
+
   const handleAddImage = async (event: any) => {
-    for (const file of event.target.files) {
+    const files = event.target.files;
+
+    if (files.length + images.length > 50) {
+      showErrorToast(ErrorToastNames.ImagesMaxLimit);
+      return;
+    }
+
+    for (const file of files) {
       const id = uuidv4();
+      const src = URL.createObjectURL(file);
 
-      await addImageToDB(file, id);
+      // Adiciona a imagem ao IndexedDB junto com o ID UUID
+      await addImageToDB(file, src, id);
 
-      setImages((prevImages) => [
-        ...prevImages,
-        { src: URL.createObjectURL(file), id },
-      ]);
+      setImages((prevImages) => [...prevImages, { src, id }]);
     }
   };
 
@@ -105,7 +131,7 @@ const UploadImages = ({
 
   return (
     <div
-      className="max-w-screen-md block mx-5 flex-column items-center justify-center lg:mx-auto"
+      className="max-w-full block mx-5 flex-column items-center justify-center lg:mx-auto"
       ref={imagesErrorScroll}
     >
       <label
@@ -124,6 +150,7 @@ const UploadImages = ({
         onChange={handleAddImage}
         className="hidden mb-4"
         id="uploadImages"
+        max={7}
       />
       <p
         className={`text-quaternary font-medium text-xs mt-1 mb-2 flex ${
@@ -142,7 +169,7 @@ const UploadImages = ({
       >
         <DndProvider backend={HTML5Backend}>
           <div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+            className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
             style={
               onErrorsInfo?.prop === 'images' ? { border: '1px solid red' } : {}
             }
@@ -151,7 +178,7 @@ const UploadImages = ({
               <Image
                 key={image.id ? image.id : `${image}-${index}`}
                 id={image.id}
-                src={image.src}
+                src={image.src ? image.src : images[index].src}
                 index={index}
                 onRemove={() => handleRemoveImage(image.id)}
                 moveImage={moveImage}
@@ -257,7 +284,7 @@ const Image: React.FC<ImageProps> = ({
         }}
         src={src}
         alt=""
-        className="w-full h-48 object-cover rounded"
+        className="w-24 h-16 md:w-full md:h-36 lg:h-52 object-cover rounded"
       />
       <div
         className="absolute top-0 right-0 p-2 cursor-pointer"

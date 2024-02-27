@@ -17,6 +17,8 @@ export enum SuccessToastNames {
   UserDataUpdate = 'userDataUpdate',
   PropertyUpdate = 'propertyUpdate',
   DeleteUser = 'deleteUser',
+  UploadedImage = 'uploadedImage',
+  RemoveImage = 'removeImage'
 }
 
 export enum ErrorToastNames {
@@ -34,6 +36,11 @@ export enum ErrorToastNames {
   EmailAlreadyInUse = 'emailAlreadyInUse',
   AdActivation = 'adActivation',
   EmailNotFound = 'emailNotFound',
+  ImagesMaxLimit = 'imagesMaxLimit',
+  LoadImages = 'loadImages',
+  ImageUploadError = 'imageUploadError',
+  SendImages = 'sendImages',
+  ImagesTotalSizeLimit = 'imagesTotalSizeLimit',
   ImagesUploadError = 'imagesUpload'
 }
 
@@ -88,6 +95,18 @@ const successToastMessages: Record<SuccessToastNames, ToastMessage> = {
   },
   [SuccessToastNames.DeleteUser]: {
     message: 'Usuário excluído com sucesso.',
+    options: {
+      autoClose: 7000,
+    },
+  },
+  [SuccessToastNames.UploadedImage]: {
+    message: 'Imagem adicionada com sucesso ao IndexedDB.',
+    options: {
+      autoClose: 7000,
+    },
+  },
+  [SuccessToastNames.RemoveImage]: {
+    message: 'Imagem removida com sucesso do IndexedDB.',
     options: {
       autoClose: 7000,
     },
@@ -175,6 +194,36 @@ const errorToastMessages: Record<ErrorToastNames, ToastMessage> = {
   },
   [ErrorToastNames.EmailNotFound]: {
     message: 'Não há nenhuma conta vinculada a esse e-mail.',
+    options: {
+      autoClose: 7000,
+    },
+  },
+  [ErrorToastNames.ImagesMaxLimit]: {
+    message: 'Você já alcançou o limite máximo de 30 fotos.',
+    options: {
+      autoClose: 7000,
+    },
+  },
+  [ErrorToastNames.LoadImages]: {
+    message: 'Erro ao carregar as fotos do imóvel.',
+    options: {
+      autoClose: 7000,
+    },
+  },
+  [ErrorToastNames.ImageUploadError]: {
+    message: 'Erro ao adicionar a imagem ao IndexedDB.',
+    options: {
+      autoClose: 7000,
+    },
+  },
+  [ErrorToastNames.SendImages]: {
+    message: 'Erro ao enviar as fotos.',
+    options: {
+      autoClose: 7000,
+    },
+  },
+  [ErrorToastNames.ImagesTotalSizeLimit]: {
+    message: 'O tamanho total dos arquivos excede 800 MB. Tente enviar fotos menores ou insira elas depois no menu de edição de anúncio.',
     options: {
       autoClose: 7000,
     },
