@@ -65,7 +65,7 @@ export interface IOwnerInfo {
   email: string;
   profilePicture: string;
   cpf?: string;
-  whatsapp?: string;
+  wppNumber?: string;
 }
 
 export interface ISize {

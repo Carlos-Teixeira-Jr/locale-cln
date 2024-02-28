@@ -54,8 +54,6 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications }) => {
       );
       setNotReadNots(notReadNotifications);
     }
-    console.log('NOTIFICAÇÕES NÃO LIDAS:', notReadNots.length);
-    console.log('NOTIFICAÇÕES:', notifications?.length);
   }, [notifications, setNotReadNots]);
 
   const options: Options[] = [

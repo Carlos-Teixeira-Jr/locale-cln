@@ -15,6 +15,7 @@ import propertyTypesData from '../../../data/propertyTypesData.json';
 import ArrowDownIcon from '../icons/arrowDownIcon';
 import CheckIcon from '../icons/checkIcon';
 import { showSuccessToast } from '../../../common/utils/toasts';
+import { lowerLetters } from '../../../common/utils/strings/capitalizeFirstLetter';
 
 export interface IHomeFilter extends React.ComponentPropsWithoutRef<'div'> {
   isBuyProp: boolean;
@@ -274,7 +275,7 @@ const HomeFilter: React.FC<IHomeFilter> = ({
                   {propertyTypesData.map((prop, index) => (
                     <div className="w-full rounded-t-8 bg-tertiary" key={index}>
                       <p className="text-quaternary lg:text-2xl p-1 text-center font-bold ">
-                        {prop.type}
+                        {lowerLetters(prop.type)}
                       </p>
                       {propertyTypesData[index].subTypes.map((type) => (
                         <div
@@ -289,7 +290,7 @@ const HomeFilter: React.FC<IHomeFilter> = ({
                             setPropTypeDropdownIsOpen(false);
                           }}
                         >
-                          {type}
+                          {lowerLetters(type)}
                         </div>
                       ))}
                     </div>
