@@ -18,6 +18,7 @@ import FilterList from '../components/molecules/filterList/FilterList';
 import SearchShortcut from '../components/molecules/searchShortcut/searchShortcut';
 import Footer from '../components/organisms/footer/footer';
 import Header from '../components/organisms/header/header';
+import useTrackLocation from '../hooks/trackLocation';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { NextPageWithLayout } from './page';
 
@@ -44,6 +45,8 @@ const Search: NextPageWithLayout<ISearch> = ({
   const query = router.query as any;
   const [currentPage, setCurrentPage] = useState(1);
   const isCodeSearch = query.code ? true : false;
+  const { latitude, longitude, location: geolocation } = useTrackLocation();
+
 
   // mobile
   const [open, setOpen] = useState(false);
@@ -97,6 +100,20 @@ const Search: NextPageWithLayout<ISearch> = ({
       router.push({ query: queryParams }, undefined, { scroll: false });
     }
   }, [currentPage]);
+
+  //// GEOLOCATION SEARCH ////
+
+  // Inserer as coordenadas geográficas do usuário na url para buscar os imóveis mais próximos
+  useEffect(() => {
+    if (geolocation) {
+      const queryParams = {
+        ...query,
+        longitude: longitude,
+        latitude: latitude
+      }
+      router.push({ query: queryParams }, undefined, { scroll: false })
+    }
+  }, [geolocation])
 
   //// FILTER ON MOBILE ////
 
@@ -387,6 +404,15 @@ export async function getServerSideProps(context: NextPageContext) {
       filter.push({ locationFilter: parsedLocation });
     }
   }
+  if (query.longitude && query.latitude) {
+    const geoQuery = {
+      geolocation: {
+        longitude: query.longitude,
+        latitude: query.latitude
+      }
+    }
+    filter.push(geoQuery)
+  } 
 
   const encodedFilter = decodeURIComponent(JSON.stringify(filter));
 
