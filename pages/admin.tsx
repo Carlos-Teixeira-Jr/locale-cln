@@ -24,6 +24,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
   ownerProperties,
   notifications,
 }) => {
+
   const { data: session } = useSession() as any;
   const [isOwner, setIsOwner] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -208,7 +209,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ _id: userId }),
+          body: JSON.stringify({ userId }),
         }
       );
 
@@ -225,7 +226,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           };
         }
       } else {
-        console.log('erro', ownerIdResponse);
+        console.log('erro - find-owner-by-user:', ownerIdResponse);
       }
     } catch (error) {
       console.error(error);
@@ -258,6 +259,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     )
       .then((res) => res.json())
       .catch(() => []);
+
 
     if (ownerId) {
       const [ownerProperties] = await Promise.all([

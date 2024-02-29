@@ -19,6 +19,7 @@ import UnfavouritedIcon from '../../atoms/icons/unfavouritedIcon';
 import CalculatorModal from '../../atoms/modals/calculatorModal';
 import LinkCopiedTooltip from '../../atoms/tooltip/Tooltip';
 import FavouritePropertyTooltip from '../../atoms/tooltip/favouritePropertyTooltip';
+import { IOwnerData } from '../../../common/interfaces/owner/owner';
 
 export interface ITooltip {
   globalEventOff: string;
@@ -27,24 +28,26 @@ export interface ITooltip {
 export interface IPropertyInfo {
   property: IData;
   isFavourite: boolean;
+  owner: IOwnerData
 }
 
-const PropertyInfo: React.FC<IPropertyInfo> = ({ property, isFavourite }) => {
+const PropertyInfo: React.FC<IPropertyInfo> = ({ 
+  property, 
+  isFavourite,
+  owner 
+}) => {
+
   const session = useSession() as any;
   const status = session.status;
   const router = useRouter();
-
   const userIsLogged = status === 'authenticated' ? true : false;
   const userId = session?.data?.user?.data?._id;
-
+  const ownerId = owner?.owner?._id;
+  const isOwnProperty = property.owner === ownerId ? true : false;
   const [tooltipIsVisible, setTooltipIsVisible] = useState(false);
-
   const [favPropTooltipIsVisible, setFavPropTooltipIsVisible] = useState(false);
-
   const [modalIsOpen, setModalIsOpen] = useState(false);
-
   const [favourited, setFavourited] = useState(isFavourite);
-
   const [haveTags, setHaveTags] = useState<boolean>(false);
 
   const handleCopy = async () => {
@@ -248,24 +251,27 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({ property, isFavourite }) => {
             />
           )}
 
-          <button
-            id="fav-property-tooltip"
-            className={`lg:w-80 w-40 md:w-full h-12 md:h-16 bg-primary p-2.5 rounded-[10px] text-tertiary text-lg font-extrabold flex justify-center items-center mb-5 ${
-              userIsLogged ? 'opacity opacity-100 cursor-pointer' : 'opacity-50'
-            }`}
-            onClick={handleFavouriteBtnClick}
-          >
-            <p className="my-auto pr-4">Favoritar</p>
-            {favourited ? (
-              <FavouritedIcon width="34" height="34" className="pb-4 md:pb-0" />
-            ) : (
-              <UnfavouritedIcon
-                width="34"
-                height="34"
-                className="pb-4 md:pb-0"
-              />
-            )}
-          </button>
+          {!isOwnProperty && (
+            <button
+              id="fav-property-tooltip"
+              className={`lg:w-80 w-40 md:w-full h-12 md:h-16 bg-primary p-2.5 rounded-[10px] text-tertiary text-lg font-extrabold flex justify-center items-center mb-5 ${
+                userIsLogged ? 'opacity opacity-100 cursor-pointer' : 'opacity-50'
+              }`}
+              onClick={handleFavouriteBtnClick}
+            >
+              <p className="my-auto pr-4">Favoritar</p>
+              {favourited ? (
+                <FavouritedIcon width="34" height="34" className="pb-4 md:pb-0" />
+              ) : (
+                <UnfavouritedIcon
+                  width="34"
+                  height="34"
+                  className="pb-4 md:pb-0"
+                />
+              )}
+            </button>
+          )}
+            
         </div>
 
         {modalIsOpen && (

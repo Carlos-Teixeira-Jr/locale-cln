@@ -106,6 +106,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     cellPhone: '',
     phone: '',
     profilePicture: '',
+    wppNumber: ''
   });
 
   const [userDataErrors, setUserDataErrors] = useState({
@@ -138,6 +139,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     cardNumber: '',
     ccv: '',
     expiry: '',
+    cpfCnpj: '',
+    cardBrand: ''
   });
 
   const [creditCardErrors, setCreditCardErrors] = useState<CreditCardForm>({
@@ -145,6 +148,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     cardNumber: '',
     ccv: '',
     expiry: '',
+    cpfCnpj: '',
+    cardBrand: ''
   });
 
   useEffect(() => {
@@ -215,7 +220,10 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
       cardNumber: '',
       ccv: '',
       expiry: '',
+      cpfCnpj: '',
+      cardBrand: ''
     };
+
     if (!userDataForm.username) newUserDataErrors.username = error;
     if (!userDataForm.email) newUserDataErrors.email = error;
     if (!userDataForm.cpf) newUserDataErrors.cpf = error;
@@ -233,6 +241,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         if (!creditCard.cardNumber) newCreditCardErrors.cardNumber = error;
         if (!creditCard.expiry) newCreditCardErrors.expiry = error;
         if (!creditCard.ccv) newCreditCardErrors.ccv = error;
+        if (!creditCard.cpfCnpj) newCreditCardErrors.cpfCnpj = error;
       }
     }
 
@@ -276,6 +285,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
           ? userDataForm.profilePicture
           : 'https://static.vecteezy.com/system/resources/previews/019/879/186/non_2x/user-icon-on-transparent-background-free-png.png',
         phone: userDataForm.phone,
+        wppNumber: userDataForm.wppNumber ? userDataForm.wppNumber : '',
         zipCode: addressData.zipCode,
         city: addressData.city,
         uf: addressData.uf,
@@ -316,7 +326,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
             ? userDataForm.profilePicture
             : 'https://static.vecteezy.com/system/resources/previews/019/879/186/non_2x/user-icon-on-transparent-background-free-png.png',
           name: userDataForm.username,
-          phones: [userDataForm.cellPhone, userDataForm.phone],
+          phones: [`55 ${userDataForm.cellPhone}`, userDataForm.phone],
+          wppNumber: userDataForm.wppNumber ? `55 ${userDataForm.wppNumber}` : ''
         },
         tags: storedData.tags,
         condominiumTags: storedData.condominiumTags,
@@ -338,7 +349,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
           plan: propertyDataStep3.plan,
           isPlanFree,
           phone: userDataForm.phone,
-          cellPhone: userDataForm.cellPhone,
+          cellPhone: `55 ${userDataForm.cellPhone}`,
         };
 
         if (!isPlanFree) {

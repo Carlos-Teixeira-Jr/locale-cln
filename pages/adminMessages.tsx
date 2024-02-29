@@ -140,8 +140,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   let refreshToken;
   const page = Number(context.query.page);
 
-  console.log('adminMessages:', userId);
-
   if (!session) {
     return {
       redirect: {
@@ -217,7 +215,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ _id: userId }),
+          body: JSON.stringify({ userId }),
         }
       );
 

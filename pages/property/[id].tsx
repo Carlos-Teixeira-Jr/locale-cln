@@ -55,6 +55,7 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
   isFavourite,
   relatedProperties,
 }: IPropertyPage) => {
+  
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [mapIsActive, setMapIsActive] = useState(false);
@@ -87,7 +88,11 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
         </div>
 
         <div className="w-full h-fit">
-          <PropertyInfo property={property} isFavourite={isFavourite} />
+          <PropertyInfo 
+            property={property} 
+            isFavourite={isFavourite} 
+            owner={ownerData}
+          />
         </div>
 
         <div className={classes.relatedProperties}>
@@ -144,10 +149,11 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
 export default PropertyPage;
 
 export async function getServerSideProps(context: NextPageContext) {
+
   const session = (await getSession(context)) as any;
   const userId =
-    session?.user.data.id !== undefined
-      ? session?.user.data.id
+    session?.user?.data?._id
+      ? session?.user?.data?._id
       : session?.user.id;
   const propertyId = context.query.id;
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
@@ -220,9 +226,7 @@ export async function getServerSideProps(context: NextPageContext) {
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      _id: userId,
-    }),
+    body: JSON.stringify({ userId }),
   })
     .then((res) => res.json())
     .catch(() => []);

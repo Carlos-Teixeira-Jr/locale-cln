@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { MouseEvent, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { ErrorToastNames, showErrorToast } from '../../../../common/utils/toasts';
 import { sendRequest } from '../../../../hooks/sendRequest';
 import { useIsMobile } from '../../../../hooks/useIsMobile';
 import EyeIcon from '../../../atoms/icons/eyeIcon';
@@ -11,7 +12,6 @@ import TurnedOffEyeIcon from '../../../atoms/icons/turnedOffEyeIcon';
 import ForgotPasswordModal from '../../../atoms/modals/forgotPasswordModal';
 import VerifyEmailModal from '../../../atoms/modals/verifyEmailModal';
 import { SocialAuthButton } from '../../buttons/socialAuthButtons';
-import { ErrorToastNames, showErrorToast } from '../../../../common/utils/toasts';
 
 const LoginCard: React.FC = () => {
 
@@ -244,7 +244,7 @@ const LoginCard: React.FC = () => {
           }`}
           type="email"
           value={email}
-          maxLength={30}
+          maxLength={80}
           onChange={(e) => setEmail(e.target.value)}
         />
 

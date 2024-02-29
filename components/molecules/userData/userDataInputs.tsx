@@ -54,8 +54,6 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
   const [images, setImages] = useState<any>('');
 
   const [isSameNumber, setIsSameNumber] = useState(true);
-  const [wppNumber, setWappNumber] = useState('');
-
   const [errorModalIsOpen, setErrorModalIsOpen] = useState(false);
   const [succesModalIsOpen, setSuccesModalIsOpen] = useState(false);
 
@@ -73,19 +71,15 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
     profilePicture: firstProperty?.ownerInfo?.profilePicture
       ? firstProperty?.ownerInfo?.profilePicture
       : images,
-    phone: wppNumber ? wppNumber : phone,
+    phone: userData && userData.owner ? userData.owner.phone : '',
+    wppNumber: userData ? userData?.owner?.wppNumber : '',
   });
-
-  useEffect(() => {
-    console.log('profilePicture:', formData.profilePicture);
-  }, [formData.profilePicture]);
 
   useEffect(() => {
     if (urlEmail) {
       setFormData({ ...formData, email: urlEmail });
     }
-    console.log('numero do wpp:', wppNumber);
-  }, [urlEmail, wppNumber]);
+  }, [urlEmail]);
 
   const [userDataErrors, setUserDataErrors] =
     useState<IUserDataComponentErrors>({
@@ -422,7 +416,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
                     userDataErrors.whatsapp ? { border: '1px solid red' } : {}
                   }
                   className={classes.input}
-                  value={wppNumber}
+                  value={formData.wppNumber}
                   maxLength={200}
                   required={isSameNumber ? false : true}
                   onChange={(event) => {
@@ -444,7 +438,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
                       input.value = previousValue;
                       input.setSelectionRange(selectionStart, selectionEnd);
                     }
-                    setWappNumber(maskedValue);
+                    setFormData({...formData, wppNumber: maskedValue});
                   }}
                 />
                 {userDataErrors.whatsapp && (

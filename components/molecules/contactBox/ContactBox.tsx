@@ -15,13 +15,14 @@ export interface IContactBox {
   property: IData;
 }
 
-const ContactBox: React.FC<IContactBox> = ({ ownerInfo, property }: any) => {
+const ContactBox: React.FC<IContactBox> = ({ ownerInfo, property }: IContactBox) => {
+
   const profilePicture = ownerInfo?.profilePicture;
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [fullMessage, setFullMessage] = useState(false);
   const [message, setMessage] = useState('');
   const owner = ownerInfo?.name;
-  const ownerPropertyWpp = ownerInfo?.phones[1];
+  const ownerPropertyWpp = ownerInfo?.wppNumber;
   const ownerWhatsapp = ownerPropertyWpp?.replace(/[^0-9]+/g, '');
   const formattedPrice = monetaryFormat(String(property?.prices[0].value));
   const uf = property?.address.uf;
@@ -44,7 +45,7 @@ const ContactBox: React.FC<IContactBox> = ({ ownerInfo, property }: any) => {
       console.log('announcementCode', announcementCode);
     }
   }, []);
-
+  
   const handleWhatsappBtnClick = () => {
     if (fullMessage) {
       const fullMsg = `https://api.whatsapp.com/send/?pFhone=${ownerWhatsapp}&text=${encodeURIComponent(`
@@ -65,7 +66,7 @@ const ContactBox: React.FC<IContactBox> = ({ ownerInfo, property }: any) => {
       🏡📱 Olá! Encontrei o seu imóvel na Locale Imóveis e me interessei! 
       Gostaria de mais informações e talvez agendar uma visita. 📱🏡
       Quando você estiver disponível, podemos conversar?`)}&type=phone_number&app_absent=0`;
-
+      
       window.open(basicMsg, '_blank');
     }
   };
@@ -87,8 +88,6 @@ const ContactBox: React.FC<IContactBox> = ({ ownerInfo, property }: any) => {
     setModalIsOpen(false);
   };
 
-  console.log('propertyID:', property);
-  console.log('ownerInfo:', ownerInfo);
   return (
     <>
       <div className="lg:w-fit md:h-10 md:pt-0 flex flex-col md:flex-row md:grid items-center justify-items-center align-middle justify lg:ml-2 m-5 lg:m-0">

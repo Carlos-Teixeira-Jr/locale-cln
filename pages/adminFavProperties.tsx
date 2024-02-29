@@ -212,14 +212,13 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ _id: userId }),
+          body: JSON.stringify({ userId }),
         }
       );
 
       if (ownerIdResponse.ok) {
         const ownerData = await ownerIdResponse.json();
         ownerId = ownerData?.owner?._id;
-        console.log('adminFavProperties:', userId);
       }
     } catch (error) {
       console.error(error);

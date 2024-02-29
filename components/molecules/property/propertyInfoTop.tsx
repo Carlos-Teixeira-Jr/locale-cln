@@ -1,5 +1,4 @@
 import {
-  IData,
   IMetadata,
 } from '../../../common/interfaces/property/propertyData';
 import { monetaryFormat } from '../../../common/utils/masks/monetaryFormat';
@@ -9,10 +8,6 @@ import BathroomIcon from '../../atoms/icons/bathroomIcon';
 import BedroomIcon from '../../atoms/icons/bedroomIcon';
 import ParkingIcon from '../../atoms/icons/parkingIcon';
 import PropertyDetails from '../../atoms/propertyDetails/propertyDetails';
-
-interface IInfoTop {
-  propertyID: IData;
-}
 
 const PropertyInfoTop = ({ propertyID }: any) => {
   const formattedPrice = monetaryFormat(propertyID.prices[0].value);
@@ -43,7 +38,8 @@ const PropertyInfoTop = ({ propertyID }: any) => {
       description: 'garagem',
     },
   ];
-  console.log('totalArea', propertyID?.size?.totalArea);
+
+  const iptuValue: [] = propertyID.prices[2].value;
 
   return (
     <div className="m-5 lg:mx-auto md:w-2/3">
@@ -71,6 +67,12 @@ const PropertyInfoTop = ({ propertyID }: any) => {
           <h1 className="lg:text-4xl mt-2 md:mt-7 text-3xl font-extrabold text-quaternary">
             {formattedPrice}
           </h1>
+          {iptuValue && (
+            <div className="flex lg:text-xl mt-2 md:mt-5 text-4xl font-extrabold text-quaternary">
+              <h5>IPTU: </h5>
+              <p className='lg:text-xl mx-5 text-4xl font-normal text-quaternary'>R${iptuValue}</p>
+            </div>
+          )}
         </div>
       </div>
       <div className="flex flex-row items-end text-quaternary font-semibold text-sm md:text-lg justify-between mt-2 md:mt-0">

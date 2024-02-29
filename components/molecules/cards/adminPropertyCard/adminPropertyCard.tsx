@@ -4,7 +4,6 @@ import Link from 'next/link';
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import { IMessage } from '../../../../common/interfaces/message/messages';
-import { monetaryFormat } from '../../../../common/utils/masks/monetaryFormat';
 import {
   ErrorToastNames,
   showErrorToast,
@@ -15,6 +14,8 @@ import MessageIcon from '../../../atoms/icons/messageIcon';
 import StarIcon from '../../../atoms/icons/starIcon';
 import ViewIcon from '../../../atoms/icons/viewIcon';
 import ConfirmActivationModal from '../../../atoms/modals/confirmActivationModal';
+import { monetaryFormat } from '../../../../common/utils/masks/monetaryFormat';
+import LocaleLogo from '../../../atoms/logos/locale';
 
 interface IAdminPropertyCard {
   _id: string;
@@ -45,6 +46,7 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
   isActiveProp,
   highlighted,
 }: IAdminPropertyCard) => {
+  
   const priceString = price.toString();
   const formattedPrice = monetaryFormat(priceString);
 
