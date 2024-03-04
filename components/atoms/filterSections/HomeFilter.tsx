@@ -6,16 +6,16 @@ import {
   ILocationProp,
 } from '../../../common/interfaces/locationDropdown';
 import { IPropertyTypes } from '../../../common/interfaces/property/propertyTypes';
+import { lowerLetters } from '../../../common/utils/strings/capitalizeFirstLetter';
 import {
   categoryMappings,
   categoryTranslations,
   translateLocations,
 } from '../../../common/utils/translateLocations';
 import propertyTypesData from '../../../data/propertyTypesData.json';
+import useTrackLocation from '../../../hooks/trackLocation';
 import ArrowDownIcon from '../icons/arrowDownIcon';
 import CheckIcon from '../icons/checkIcon';
-import { showSuccessToast } from '../../../common/utils/toasts';
-import { lowerLetters } from '../../../common/utils/strings/capitalizeFirstLetter';
 
 export interface IHomeFilter extends React.ComponentPropsWithoutRef<'div'> {
   isBuyProp: boolean;
@@ -31,6 +31,16 @@ export interface Iquery extends ParsedUrlQueryInput {
   propertyType?: string;
   location?: string;
   category?: string;
+}
+
+type HomeQuery = {
+  adType: string | undefined,
+  page: number,
+  location?: any,
+  propertyType?: any,
+  propertySubtype?: any,
+  longitude?: string,
+  latitude?: string
 }
 
 const HomeFilter: React.FC<IHomeFilter> = ({
@@ -56,6 +66,7 @@ const HomeFilter: React.FC<IHomeFilter> = ({
   const [filteredLocations, setFilteredLocations] = useState<ILocation[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [allLocations, setAllLocations] = useState(false);
+  const { longitude, latitude, location: geolocation } = useTrackLocation();
 
   //// AD TYPE ////
 
@@ -174,7 +185,7 @@ const HomeFilter: React.FC<IHomeFilter> = ({
   const handleFindBtnClick = () => {
     const adType = isBuy ? 'comprar' : isRent ? 'alugar' : undefined;
 
-    const query = {
+    const query: HomeQuery = {
       adType,
       page: 1,
       location: translateLocations(location, allLocations, categoryMappings),
@@ -187,6 +198,11 @@ const HomeFilter: React.FC<IHomeFilter> = ({
           ? JSON.stringify(propertyType.propertySubtype)
           : JSON.stringify('todos'),
     };
+
+    if (geolocation) {
+      query.longitude = longitude,
+      query.latitude = latitude
+    }
 
     router.push(
       {

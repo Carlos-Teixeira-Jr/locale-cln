@@ -46,7 +46,11 @@ const Search: NextPageWithLayout<ISearch> = ({
   const [currentPage, setCurrentPage] = useState(1);
   const isCodeSearch = query.code ? true : false;
   const { latitude, longitude, location: geolocation } = useTrackLocation();
+  const defaultPropertyPhoto = "/images/property-not-found.png";
 
+  useEffect(() => {
+    console.log("🚀 ~ geolocation:", geolocation)
+  }, [geolocation])
 
   // mobile
   const [open, setOpen] = useState(false);
@@ -103,7 +107,7 @@ const Search: NextPageWithLayout<ISearch> = ({
 
   //// GEOLOCATION SEARCH ////
 
-  // Inserer as coordenadas geográficas do usuário na url para buscar os imóveis mais próximos
+  // Insere as coordenadas geográficas do usuário na url para buscar os imóveis mais próximos
   useEffect(() => {
     if (geolocation) {
       console.log("aqui", geolocation)
@@ -114,16 +118,18 @@ const Search: NextPageWithLayout<ISearch> = ({
       }
       router.push({ query: queryParams }, undefined, { scroll: false })
     } else {
-      console.log("else", geolocation)
+      console.log("else")
 
-      const { longitude, latitude, ...rest } = query;
+      // const { longitude, latitude, ...rest } = query;
 
-      const queryParams = {
-        ...rest,
-      }
-      router.push({ query: queryParams }, undefined, { scroll: false })
+      // const queryParams = {
+      //   ...rest,
+      // }
+      // console.log("🚀 ~ useEffect ~ queryParams:", queryParams)
+
+      // router.push({ query: queryParams }, undefined, { scroll: false })
     }
-  }, []);
+  }, [geolocation]);
 
   // useEffect(() => {
   //   console.log("🚀 ~ useEffect ~ geolocation:", geolocation)
@@ -308,7 +314,7 @@ const Search: NextPageWithLayout<ISearch> = ({
                             key={_id}
                             prices={prices}
                             description={description}
-                            images={images}
+                            images={images.length > 0 ? images : [defaultPropertyPhoto]}
                             location={address.streetName}
                             bedrooms={metadata[0].amount}
                             bathrooms={metadata[1].amount}
@@ -345,7 +351,7 @@ const Search: NextPageWithLayout<ISearch> = ({
                         href={`/property/${_id}`}
                         prices={prices[0].value.toString()}
                         description={description}
-                        images={images}
+                        images={images?.length > 0 ? images : [defaultPropertyPhoto]}
                         location={address.streetName}
                         bedrooms={metadata[0].amount}
                         bathrooms={metadata[1].amount}

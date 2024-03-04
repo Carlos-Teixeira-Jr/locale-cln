@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { IPrices } from '../../../../common/interfaces/property/propertyData';
+import { monetaryFormat } from '../../../../common/utils/masks/monetaryFormat';
 import BathroomIcon from '../../../atoms/icons/bathroomIcon';
 import BedroomIcon from '../../../atoms/icons/bedroomIcon';
 import DotIcon from '../../../atoms/icons/dotIcon';
@@ -11,8 +12,6 @@ import HeartIcon from '../../../atoms/icons/heartIcon';
 import NextIcon from '../../../atoms/icons/nextIcon';
 import ParkingIcon from '../../../atoms/icons/parkingIcon';
 import PreviousIcon from '../../../atoms/icons/previousIcon';
-import formatCurrency from '../../../atoms/masks/currencyFormat';
-import { monetaryFormat } from '../../../../common/utils/masks/monetaryFormat';
 
 export interface IPropertyCard {
   id: string;
@@ -158,7 +157,7 @@ const PropertyCard: React.FC<IPropertyCard> = ({
               alt={'Property Image'}
               width={350}
               height={350}
-              //className='w-full'
+              className='w-auto h-auto'
             />
             {highlighted && (
               <div className="bg-black absolute m-5 rounded-lg bg-opacity-50">

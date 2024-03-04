@@ -70,7 +70,7 @@ const AccessCard = () => {
                     src={src}
                     width={width}
                     height={height}
-                    className="mx-auto lg:mx-0"
+                    className="mx-auto lg:mx-0 w-auto h-auto"
                     priority
                   />
                   <div>

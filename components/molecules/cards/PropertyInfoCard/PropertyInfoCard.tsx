@@ -3,15 +3,14 @@ import Link from 'next/link';
 import { MouseEvent, useEffect, useRef, useState } from 'react';
 import Modal from 'react-modal';
 import { IData } from '../../../../common/interfaces/property/propertyData';
+import { monetaryFormat } from '../../../../common/utils/masks/monetaryFormat';
 import BathroomIcon from '../../../atoms/icons/bathroomIcon';
 import BedroomIcon from '../../../atoms/icons/bedroomIcon';
 import DotIcon from '../../../atoms/icons/dotIcon';
 import NextCardIcon from '../../../atoms/icons/nextCardIcon';
 import ParkingIcon from '../../../atoms/icons/parkingIcon';
 import PreviousCardIcon from '../../../atoms/icons/previousCardIcon';
-import formatCurrency from '../../../atoms/masks/currencyFormat';
 import MessageModal from '../../../atoms/modals/messageModal';
-import { monetaryFormat } from '../../../../common/utils/masks/monetaryFormat';
 Modal.setAppElement('#__next');
 
 export interface IPropertyInfoCard {
