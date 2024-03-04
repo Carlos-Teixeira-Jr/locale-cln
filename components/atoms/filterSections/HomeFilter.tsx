@@ -12,7 +12,7 @@ import {
   categoryTranslations,
   translateLocations,
 } from '../../../common/utils/translateLocations';
-import propertyTypeSubtype from '../../../data/propertyTypeSubtype.json';
+import propertyTypeSubtype from '../../../data/propertyTypeSubType.json';
 import ArrowDownIcon from '../icons/arrowDownIcon';
 import CheckIcon from '../icons/checkIcon';
 
