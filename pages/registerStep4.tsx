@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import useProgressRedirect from '../common/utils/stepProgressHandler';
 import Loading from '../components/atoms/loading';
 import LinearStepper from '../components/atoms/stepper/stepper';
 import Footer from '../components/organisms/footer/footer';
@@ -13,11 +14,7 @@ const RegisterStep4: NextPageWithLayout = () => {
   const [loading, setLoading] = useState(false);
 
   // Verifica se o estado progress que determina em qual step o usuário está corresponde ao step atual;
-  useEffect(() => {
-    if (progress < 4) {
-      router.push('/register');
-    }
-  });
+  useProgressRedirect(progress, 4, '/register');
 
   const handleSubmit = () => {
     router.push('/login');

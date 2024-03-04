@@ -28,52 +28,47 @@ type Input = {
 };
 
 interface IUserDataInputs {
-  userData?: IOwnerData;
   isEdit: boolean;
   onUserDataUpdate: (updatedUserData: IUserDataComponent) => void;
   urlEmail?: string | undefined;
   error: UserDataErrorsTypes;
   userDataInputRefs?: any;
   profilePicPropertyData?: string;
-  firstProperty?: any;
+  ownerData?: IOwnerData;
 }
 
 const UserDataInputs: React.FC<IUserDataInputs> = ({
-  userData,
   isEdit,
   onUserDataUpdate,
   urlEmail,
   error,
   userDataInputRefs,
-  profilePicPropertyData,
-  firstProperty,
+  ownerData,
 }) => {
   const userDataErrorScroll = {
     ...userDataInputRefs,
   };
-  const [images, setImages] = useState<any>('');
+
+  const images = '';
 
   // Whatsapp
   const [isSameNumber, setIsSameNumber] = useState(true);
   const [errorModalIsOpen, setErrorModalIsOpen] = useState(false);
   const [succesModalIsOpen, setSuccesModalIsOpen] = useState(false);
-
-  const phone = userData && userData?.owner ? userData?.owner.phone : '';
-
   const [formData, setFormData] = useState<IUserDataComponent>({
-    username: firstProperty?.ownerInfo?.name
-      ? firstProperty?.ownerInfo?.name
-      : userData?.user?.username,
-    email: firstProperty?.ownerInfo?.email
-      ? firstProperty?.ownerInfo?.email
-      : userData?.user?.email,
-    cpf: userData ? userData?.user?.cpf : '',
-    cellPhone: userData && userData.owner ? userData.owner.cellPhone : '',
-    profilePicture: firstProperty?.ownerInfo?.profilePicture
-      ? firstProperty?.ownerInfo?.profilePicture
+    username: ownerData?.user?.username
+      ? ownerData?.user?.username
+      : '',
+    email: ownerData
+      ? ownerData?.user?.email
+      : '',
+    cpf: ownerData?.user?.cpf ? ownerData?.user?.cpf : '',
+    cellPhone: ownerData && ownerData.owner ? ownerData.owner.cellPhone : '',
+    profilePicture: ownerData?.owner?.profilePicture
+      ? ownerData?.owner?.profilePicture
       : images,
-    phone: userData && userData.owner ? userData.owner.phone : '',
-    wppNumber: userData ? userData?.owner?.wppNumber : '',
+    phone: ownerData && ownerData.owner ? ownerData.owner.phone : '',
+    wppNumber: ownerData?.owner?.wppNumber ? ownerData?.owner?.wppNumber : '',
   });
 
   // Pega o email da url caso o usuário tenha passado o mesmo no início do cadastro na pagina announcement;

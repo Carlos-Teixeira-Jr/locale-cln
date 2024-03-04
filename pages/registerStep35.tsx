@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import store from 'store';
 import { IPlan } from '../common/interfaces/plans/plans';
+import useProgressRedirect from '../common/utils/stepProgressHandler';
 import CheckIcon from '../components/atoms/icons/checkIcon';
 import Loading from '../components/atoms/loading';
 import LinearStepper from '../components/atoms/stepper/stepper';
@@ -22,7 +23,7 @@ const RegisterStep35: NextPageWithLayout<IRegisterStep35> = ({ plans }) => {
   const { progress, updateProgress } = useProgress();
   const storedData = store.get('propertyData');
   const [cardBrand, setCardBrand] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -35,11 +36,7 @@ const RegisterStep35: NextPageWithLayout<IRegisterStep35> = ({ plans }) => {
   }, [storedData]);
 
   // Verifica se o estado progress que determina em qual step o usuário está corresponde ao step atual;
-  useEffect(() => {
-    if (progress < 4) {
-      router.push('/register');
-    }
-  });
+  useProgressRedirect(progress, 4, '/register');
 
   const handleSubmit = () => {
     updateProgress(5);
@@ -91,22 +88,7 @@ const RegisterStep35: NextPageWithLayout<IRegisterStep35> = ({ plans }) => {
             <button
               className="active:bg-gray-500 cursor-pointer flex items-center flex-row justify-around bg-primary w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold text-2xl lg:text-3xl hover:bg-red-600 hover:text-white"
               disabled={loading}
-              onClick={() => {
-                updateProgress(5);
-                store.clearAll();
-                if (!urlEmail) {
-                  router.push('/registerStep4');
-                  setLoading(true);
-                } else {
-                  setLoading(true);
-                  router.push({
-                    pathname: '/registerStep4',
-                    query: {
-                      email: urlEmail,
-                    },
-                  });
-                }
-              }}
+              onClick={handleSubmit}
             >
               <span className={`${loading ? 'ml-16' : ''}`}>Continuar</span>
               {loading && <Loading />}

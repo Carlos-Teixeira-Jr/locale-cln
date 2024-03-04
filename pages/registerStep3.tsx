@@ -1,8 +1,10 @@
-import { useSession } from 'next-auth/react';
+import { GetServerSidePropsContext } from 'next';
+import { getSession, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { MouseEvent, useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import store from 'store';
+import { IOwnerData } from '../common/interfaces/owner/owner';
 import { IPlan } from '../common/interfaces/plans/plans';
 import { IAddress } from '../common/interfaces/property/propertyData';
 import {
@@ -11,6 +13,7 @@ import {
   IRegisterPropertyData_Step3,
 } from '../common/interfaces/property/register/register';
 import { IUserDataComponent } from '../common/interfaces/user/user';
+import { fetchJson } from '../common/utils/fetchJson';
 import { geocodeAddress } from '../common/utils/geocodeAddress';
 import { clearIndexDB, getAllImagesFromDB } from '../common/utils/indexDb';
 import { ErrorToastNames, showErrorToast } from '../common/utils/toasts';
@@ -34,6 +37,7 @@ interface IRegisterStep3Props {
   selectedPlanCard: string;
   setSelectedPlanCard: (_selectedCard: string) => void;
   plans: IPlan[];
+  ownerData: IOwnerData;
 }
 
 type BodyReq = {
@@ -47,7 +51,7 @@ type BodyReq = {
   profilePicture?: string;
 };
 
-const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
+const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerData }) => {
   const router = useRouter();
   const query = router.query;
   const urlEmail = query.email as string;
@@ -163,6 +167,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
   //     router.push('/register');
   //   }
   // });
+
+  //useProgressRedirect(progress, 3, '/register')
 
   // // Busca o endereço do imóvel armazenado no local storage e atualiza o valor de addressData sempre que há o componente de endereço é aberto ou fechado - isso é necessário para que o componente ChangeAddressCheckbox recupere o endereço do localStorage quando a opção é alterada;
   useEffect(() => {
@@ -505,6 +511,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
                 urlEmail={urlEmail ? urlEmail : undefined}
                 error={userDataErrors}
                 userDataInputRefs={userDataInputRefs}
+                ownerData={ownerData}
               />
             </div>
 
@@ -586,15 +593,40 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
 
 export default RegisterStep3;
 
-export async function getStaticProps() {
-  const plans = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/plan`)
-    .then((res) => res.json())
-    .catch(() => ({}));
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+
+  const session = (await getSession(context) as any);
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+
+  const userId = 
+    session?.user.data._id !== undefined
+      ? session?.user.data._id
+      : session?.user.id;
+
+
+  const [plans, ownerData] = await Promise.all([
+    fetch(`${baseUrl}/plan`)
+      .then((res) => res.json())
+      .catch(() => []),
+    fetch(`${baseUrl}/user/find-owner-by-user`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId }),
+      }
+    )
+      .then((res) => res.json())
+      .catch(() => []),
+    fetchJson(`${baseUrl}/plan`),
+    fetchJson(`${baseUrl}/user/find-owner-by-user`)
+  ]);
 
   return {
     props: {
       plans,
+      ownerData
     },
-    revalidate: 60,
   };
 }

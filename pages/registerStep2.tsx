@@ -1,8 +1,8 @@
 import { useRouter } from 'next/router';
-import { MouseEvent, useEffect, useRef, useState } from 'react';
+import { MouseEvent, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import store from 'store';
-import { clearIndexDB } from '../common/utils/indexDb';
+import useProgressRedirect from '../common/utils/stepProgressHandler';
 import Loading from '../components/atoms/loading';
 import LinearStepper from '../components/atoms/stepper/stepper';
 import UploadImages from '../components/molecules/uploadImages/uploadImages';
@@ -29,11 +29,7 @@ const RegisterStep2: NextPageWithLayout = () => {
   const isCondominium = storedData?.condominium ? true : false;
 
   // Verifica se o estado progress que determina em qual step o usuário está corresponde ao step atual;
-  useEffect(() => {
-    if (progress < 2) {
-      router.push('/register');
-    }
-  });
+  useProgressRedirect(progress, 2, '/register');
 
   // Envia as mensagens de erros para o componente UploadImages;
   const [errorInfo, setErrorInfo] = useState({
