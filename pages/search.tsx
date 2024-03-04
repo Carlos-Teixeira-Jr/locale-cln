@@ -106,14 +106,28 @@ const Search: NextPageWithLayout<ISearch> = ({
   // Inserer as coordenadas geográficas do usuário na url para buscar os imóveis mais próximos
   useEffect(() => {
     if (geolocation) {
+      console.log("aqui", geolocation)
       const queryParams = {
         ...query,
         longitude: longitude,
         latitude: latitude
       }
       router.push({ query: queryParams }, undefined, { scroll: false })
+    } else {
+      console.log("else", geolocation)
+
+      const { longitude, latitude, ...rest } = query;
+
+      const queryParams = {
+        ...rest,
+      }
+      router.push({ query: queryParams }, undefined, { scroll: false })
     }
-  }, [geolocation])
+  }, []);
+
+  // useEffect(() => {
+  //   console.log("🚀 ~ useEffect ~ geolocation:", geolocation)
+  // })
 
   //// FILTER ON MOBILE ////
 
