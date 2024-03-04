@@ -188,19 +188,28 @@ const Register = () => {
         },
         prices: [
           {
-            type: PricesType.mensal,
-            value: parseFloat(
-              registration.propertyValue.replace(/\./g, '').replace(',', '.')
+            type: registration.adType === 'alugar' ? PricesType.mensal : PricesType.mensal,
+            value: parseInt(
+              registration.propertyValue.replace(/\./g, '')
             ),
           },
           {
             type: PricesType.condominio,
-            value: parseFloat(
-              registration.condominiumValue.replace(/\./g, '').replace(',', '.')
+            value: parseInt(
+              registration.condominiumValue.replace(/\./g, '')
             ),
           },
+          {
+            type: PricesType.IPTU,
+            value: parseInt(
+              registration.iptuValue.replace(/\./g, '')
+            )
+          }
         ],
         condominium: registration.condominium,
+        tags: registration.metadata.some(item => item.amount > 0)
+          ? ['garagem']
+          : []
       };
 
       toast.loading('Enviando...');

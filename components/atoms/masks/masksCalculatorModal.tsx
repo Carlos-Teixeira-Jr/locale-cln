@@ -30,10 +30,26 @@ export const cpfMask = (event: React.FormEvent<HTMLInputElement>) => {
 };
 
 export const areaMask = (event: React.FormEvent<HTMLInputElement>) => {
-  let value = event.currentTarget.value;
-  value = value.replace(/\D/g, '');
-  value += 'm²';
-  event.currentTarget.value = value;
+  const inputElement = event.currentTarget;
+  const selectionStart = inputElement.selectionStart;
+  const selectionEnd = inputElement.selectionEnd;
+  let value = inputElement.value;
+  // Verifica se a tecla pressionada é o "Backspace"
+  const isBackspace = event.nativeEvent instanceof KeyboardEvent && event.nativeEvent.key === 'Backspace';
+  if (isBackspace) {
+    // Remove o último caractere se o cursor estiver no final do valor
+    if (selectionStart === selectionEnd && selectionStart === value.length) {
+      value = value.slice(0, -1);
+    }
+  } else {
+    // Remove todos os caracteres não numéricos
+    value = value.replace(/\D/g, '');
+  }
+  value += ' m²';
+  // Atualiza o valor do input
+  inputElement.value = value;
+  // Restaura a posição do cursor
+  inputElement.setSelectionRange(selectionStart, selectionEnd);
   return event;
 };
 

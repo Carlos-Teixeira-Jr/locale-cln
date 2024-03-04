@@ -49,6 +49,16 @@ interface IAdminUserDataPageProps {
   ownerData: IOwnerData;
   notifications: [];
 }
+
+type AddressErrors =  {
+  [key: string]: string;
+  zipCode: string;
+  city: string;
+  streetName: string;
+  streetNumber: string;
+  uf: string;
+}
+
 const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   notifications,
   plans,
@@ -56,6 +66,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   properties,
   ownerData,
 }) => {
+
   const router = useRouter();
   const isOwner = properties?.docs?.length > 0 ? true : false;
   const [selectedPlan, setSelectedPlan] = useState(
@@ -68,9 +79,13 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const isEdit = true;
   const isMobile = useIsMobile();
   const reversedCards = [...plans].reverse();
-  const creditCardInfo = ownerData?.owner?.isNewCreditCard
-    ? ownerData?.owner?.newCreditCardData.creditCard.number
-    : ownerData?.owner?.creditCardInfo;
+  const creditCardInfo = ownerData?.owner?.paymentData?.creditCardInfo
+    ? ownerData?.owner?.paymentData?.creditCardInfo
+    : {
+      creditCardBrand: '',
+      creditCardNumber: '',
+      creditCardToken: ''
+    };
   const planObj = plans.find((plan) => plan._id === selectedPlan);
 
   const [formData, setFormData] = useState<IUserDataComponent>({
@@ -80,6 +95,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     cellPhone: '',
     phone: '',
     profilePicture: '',
+    wppNumber: ''
   });
   const [formDataErrors, setFormDataErrors] = useState({
     username: '',
@@ -105,26 +121,30 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     cpf: useRef<HTMLElement>(null),
     cellPhone: useRef<HTMLElement>(null),
   };
+
   const passwordInputRefs = {
     password: useRef<HTMLElement>(null),
     passwordConfimattion: useRef<HTMLElement>(null),
   };
+
   const [address, setAddress] = useState<IAddress>({
+    zipCode: userData ? userData.address.zipCode : '',
+    city: userData ? userData.address.city : '',
+    streetName: userData ? userData.address.streetNuame : '',
+    streetNumber: userData ? userData.address.streetNumber : '',
+    complement: userData ? userData.address.complement : '',
+    neighborhood: userData ? userData.address.neighborhood : '',
+    uf: userData ? userData.address.uf : '',
+  });
+
+  const [addressErrors, setAddressErrors] = useState<AddressErrors>({
     zipCode: '',
     city: '',
     streetName: '',
     streetNumber: '',
-    complement: '',
-    neighborhood: '',
     uf: '',
   });
-  const [addressErrors, setAddressErrors] = useState({
-    zipCode: '',
-    city: '',
-    streetName: '',
-    streetNumber: '',
-    uf: '',
-  });
+  
   // Lida com o auto-scroll para os inputs de Address que mostrarem erro;
   const addressInputRefs = {
     zipCode: useRef<HTMLInputElement>(null),
@@ -138,6 +158,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     cardNumber: '',
     ccv: '',
     expiry: '',
+    cpfCnpj: ''
   };
   // Lida com o auto-scroll para os inputs de creditCard que mostrarem erro;
   const creditCardInputRefs = {
@@ -452,10 +473,30 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                     creditCardInputRefs={creditCardInputRefs}
                     creditCardInfo={creditCardInfo}
                     userInfo={formData}
-                    customerId={ownerData?.owner?.customerId}
+                    customerId={ownerData?.owner?.paymentData.customerId}
                     selectedPlan={planObj}
                     userAddress={address}
                     ownerData={ownerData}
+                    handleEmptyAddressError={(error: string) => {
+                      const updatedErrors: AddressErrors = {
+                        zipCode: '',
+                        city: '',
+                        streetName: '',
+                        streetNumber: '',
+                        uf: ''
+                      };
+                      for (const key in addressErrors) {
+                        if (Object.prototype.hasOwnProperty.call(addressErrors, key)) {
+                          if (addressErrors[key] === '') {
+                            updatedErrors[key] = error;
+                          } else {
+                            updatedErrors[key] = addressErrors[key];
+                          }
+                        }
+                      }
+                      // Atualiza o estado com o objeto de erros atualizado
+                      setAddressErrors(updatedErrors);
+                    }}
                   />
                 )}
               </div>
@@ -565,7 +606,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ _id: userId }),
+          body: JSON.stringify({ userId }),
         }
       );
       if (ownerIdResponse.ok) {
@@ -594,9 +635,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            _id: userId,
-          }),
+          body: JSON.stringify({ userId }),
         })
           .then((res) => res.json())
           .catch(() => []),

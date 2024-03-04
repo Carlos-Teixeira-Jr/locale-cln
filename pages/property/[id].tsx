@@ -56,6 +56,7 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
   relatedProperties,
   ownerData,
 }: IPropertyPage) => {
+  
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [mapIsActive, setMapIsActive] = useState(false);
   const dynamicRoute = useRouter().asPath;
@@ -64,9 +65,6 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
   useEffect(() => {
     setMapIsActive(false);
   }, [dynamicRoute]);
-
-  console.log('property', property);
-  console.log('ownerData', ownerData);
 
   return (
     <>
@@ -93,7 +91,11 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
         </div>
 
         <div className="w-full h-fit">
-          <PropertyInfo property={property} isFavourite={isFavourite} />
+          <PropertyInfo 
+            property={property} 
+            isFavourite={isFavourite} 
+            owner={ownerData}
+          />
         </div>
         <div className="flex flex-col md:flex-row gap-5 justify-center m-5 lg:my-5 lg:mx-0">
           {relatedProperties.docs.length > 0 &&
@@ -151,10 +153,11 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
 export default PropertyPage;
 
 export async function getServerSideProps(context: NextPageContext) {
+
   const session = (await getSession(context)) as any;
   const userId =
-    session?.user.data.id !== undefined
-      ? session?.user.data.id
+    session?.user?.data?._id
+      ? session?.user?.data?._id
       : session?.user.id;
   const propertyId = context.query.id;
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
@@ -227,9 +230,7 @@ export async function getServerSideProps(context: NextPageContext) {
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      _id: userId,
-    }),
+    body: JSON.stringify({ userId }),
   })
     .then((res) => res.json())
     .catch(() => []);
