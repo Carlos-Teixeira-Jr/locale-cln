@@ -366,11 +366,10 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
             <div className="my-5">
               <UserDataInputs
                 isEdit={isEdit}
-                userData={ownerData}
+                ownerData={ownerData}
                 onUserDataUpdate={(updatedUserData: IUserDataComponent) => {
                   setFormData(updatedUserData);
                 }}
-                firstProperty={properties?.docs[0]}
                 error={formDataErrors}
                 userDataInputRefs={userDataInputRefs}
                 profilePicPropertyData={
