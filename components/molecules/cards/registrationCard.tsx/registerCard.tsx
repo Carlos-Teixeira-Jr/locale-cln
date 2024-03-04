@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import UnverifiedEmailModal from '../../../atoms/modals/unverifiedEmailModal';
-import { SocialAuthButton } from '../../buttons/socialAuthButtons';
+import SocialAuthButton from '../../buttons/socialAuthButtons';
 
 const RegisterCard: React.FC = () => {
   const router = useRouter();
