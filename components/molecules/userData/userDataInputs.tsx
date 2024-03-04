@@ -34,7 +34,7 @@ interface IUserDataInputs {
   urlEmail?: string | undefined;
   error: UserDataErrorsTypes;
   userDataInputRefs?: any;
-  profilePicPropertyData?: string;
+  picture?: string;
   firstProperty?: any;
 }
 
@@ -45,7 +45,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
   urlEmail,
   error,
   userDataInputRefs,
-  profilePicPropertyData,
+  picture,
   firstProperty,
 }) => {
   const userDataErrorScroll = {
@@ -68,9 +68,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
       : userData?.user?.email,
     cpf: userData ? userData?.user?.cpf : '',
     cellPhone: userData && userData.owner ? userData.owner.cellPhone : '',
-    profilePicture: firstProperty?.ownerInfo?.profilePicture
-      ? firstProperty?.ownerInfo?.profilePicture
-      : images,
+    picture: picture ? picture : '',
     phone: userData && userData.owner ? userData.owner.phone : '',
     wppNumber: userData ? userData?.owner?.wppNumber : '',
   });
@@ -229,14 +227,14 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
 
     const reader = new FileReader();
     reader.onloadend = () => {
-      setFormData({ ...formData, profilePicture: String(reader.result) });
+      setFormData({ ...formData, picture: String(reader.result) });
     };
 
     reader.readAsDataURL(file);
   };
 
   const handleRemoveImage = () => {
-    setFormData({ ...formData, profilePicture: '' });
+    setFormData({ ...formData, picture: '' });
 
     const fileInput = document.getElementById(
       'uploadImages'
@@ -262,15 +260,15 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
         <div className="flex flex-col justify-center items-center">
           <h1 className={classes.title}>Adicionar foto de perfil (Opcional)</h1>
           <div className="flex items-center">
-            {formData.profilePicture && (
+            {formData.picture && (
               <Image
                 key={
-                  formData.profilePicture
-                    ? formData.profilePicture
-                    : `${formData.profilePicture}`
+                  formData.picture
+                    ? formData.picture
+                    : `${formData.picture}`
                 }
-                id={formData.profilePicture}
-                src={formData.profilePicture}
+                id={formData.picture}
+                src={formData.picture}
                 index={0}
                 onRemove={handleRemoveImage}
                 alt={'Foto de perfil'}

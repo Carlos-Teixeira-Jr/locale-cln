@@ -27,6 +27,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
 
   const { data: session } = useSession() as any;
   const [isOwner, setIsOwner] = useState<boolean>(false);
+  console.log("🚀 ~ isOwner:", isOwner)
   const [currentPage, setCurrentPage] = useState(1);
   const router = useRouter();
   const query = router.query as any;
@@ -209,7 +210,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ userId }),
+          body: JSON.stringify({ _id: userId }),
         }
       );
 
@@ -277,6 +278,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           .catch(() => []),
         fetchJson(`${baseUrl}/property/owner-properties`),
       ]);
+      console.log("🚀 ~ getServerSideProps ~ ownerProperties:", ownerProperties)
 
       return {
         props: {

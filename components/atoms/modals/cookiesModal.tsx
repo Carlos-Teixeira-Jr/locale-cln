@@ -13,6 +13,7 @@ const CookiesModal: React.FC<ICookiesModal> = ({
   setModalIsOpen,
   onClose,
 }) => {
+
   return (
     <Modal
       isOpen={isOpen}

@@ -47,7 +47,7 @@ export interface IRegisterPropertyData_Step2 {
 
 export interface IRegisterPropertyData_Step3 {
   username: string;
-  profilePicture: string;
+  picture: string;
   email: string;
   cpf: string;
   cellPhone: string;
@@ -75,7 +75,7 @@ export interface ICreateProperty_propertyData {
   ownerInfo: {
     name: string;
     phones: string[];
-    profilePicture: string;
+    picture: string;
     wppNumber: string;
   };
   size: ISize;
@@ -92,5 +92,5 @@ export interface ICreateProperty_userData {
   email: string;
   address: IAddress;
   cpf: string;
-  profilePicture: string;
+  picture: string;
 }

@@ -48,7 +48,7 @@ const RegisterFormStep3: React.FC<IProps> = ({ selectedPlanCard }) => {
     cellPhone: '',
     phone: '',
     plan: '',
-    profilePicture: '',
+    picture: '',
   });
 
   const [errors, setErrors] = useState({
@@ -265,8 +265,8 @@ const RegisterFormStep3: React.FC<IProps> = ({ selectedPlanCard }) => {
       email: formData.email,
       cpf: formData.cpf,
       cellPhone: formData.cellPhone,
-      profilePicture: formData.profilePicture
-        ? formData.profilePicture
+      picture: formData.picture
+        ? formData.picture
         : 'https://static.vecteezy.com/system/resources/previews/019/879/186/non_2x/user-icon-on-transparent-background-free-png.png',
       phone: formData.phone,
       plan: formData.plan,
@@ -494,7 +494,7 @@ const RegisterFormStep3: React.FC<IProps> = ({ selectedPlanCard }) => {
     reader.onloadend = () => {
       //setImages(reader.result);
 
-      setFormData({ ...formData, profilePicture: String(reader.result) });
+      setFormData({ ...formData, picture: String(reader.result) });
     };
 
     reader.readAsDataURL(file);
@@ -502,7 +502,7 @@ const RegisterFormStep3: React.FC<IProps> = ({ selectedPlanCard }) => {
 
   const handleRemoveImage = () => {
     //setImages(null);
-    setFormData({ ...formData, profilePicture: '' });
+    setFormData({ ...formData, picture: '' });
 
     const fileInput = document.getElementById(
       'uploadImages'
@@ -524,11 +524,11 @@ const RegisterFormStep3: React.FC<IProps> = ({ selectedPlanCard }) => {
             Adicionar foto de perfil (Opcional)
           </h1>
           <div className="flex items-center">
-            {formData.profilePicture && (
+            {formData.picture && (
               <Image
-                key={formData.profilePicture}
-                id={formData.profilePicture}
-                src={formData.profilePicture}
+                key={formData.picture}
+                id={formData.picture}
+                src={formData.picture}
                 index={0}
                 onRemove={handleRemoveImage}
                 alt={'Foto de perfil'}

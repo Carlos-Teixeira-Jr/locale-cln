@@ -32,9 +32,10 @@ const AdminMessages = ({
   messages,
   notifications,
 }: IAdminMessagesPage) => {
+
   const router = useRouter();
   const query = router.query as any;
-  const [isOwner, setIsOwner] = useState<boolean>(false);
+  const [isOwner, setIsOwner] = useState<boolean>(ownerProperties?.docs?.length > 0 ? true : false);
   const properties = messages?.properties;
   const messagesCount = messages?.docs?.length;
   const totalPages = messages?.totalPages;
@@ -62,10 +63,6 @@ const AdminMessages = ({
       router.push({ query: queryParams }, undefined, { scroll: false });
     }
   }, [currentPage]);
-
-  useEffect(() => {
-    setIsOwner(ownerProperties?.docs?.length > 0 ? true : false);
-  }, [ownerProperties]);
 
   return (
     <main>
@@ -97,7 +94,7 @@ const AdminMessages = ({
               </h1>
             </div>
           )}
-          {messagesCount &&
+          {messagesCount > 0 &&
             properties.map(({ _id, images, address }: IData) => (
               <div key={_id} className={classes.cardContainer}>
                 <MessagesCard
@@ -110,7 +107,8 @@ const AdminMessages = ({
                   propertyId={_id}
                 />
               </div>
-            ))}
+            ))
+          }
           <div className="flex justify-center mb-10">
             {messagesCount ? (
               <Pagination
@@ -215,7 +213,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ userId }),
+          body: JSON.stringify({ _id: userId  }),
         }
       );
 

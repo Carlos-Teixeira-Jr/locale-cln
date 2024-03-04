@@ -43,7 +43,7 @@ type BodyReq = {
   phone: string;
   cellPhone: string;
   creditCardData?: CreditCardForm;
-  profilePicture?: string;
+  picture?: string;
 };
 
 const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
@@ -105,7 +105,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     cpf: '',
     cellPhone: '',
     phone: '',
-    profilePicture: '',
+    picture: '',
     wppNumber: ''
   });
 
@@ -281,8 +281,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         email: userDataForm.email,
         cpf: userDataForm.cpf,
         cellPhone: userDataForm.cellPhone,
-        profilePicture: userDataForm.profilePicture
-          ? userDataForm.profilePicture
+        picture: userDataForm.picture
+          ? userDataForm.picture
           : 'https://static.vecteezy.com/system/resources/previews/019/879/186/non_2x/user-icon-on-transparent-background-free-png.png',
         phone: userDataForm.phone,
         wppNumber: userDataForm.wppNumber ? userDataForm.wppNumber : '',
@@ -304,8 +304,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         email: userDataForm.email,
         address: isSameAddress ? storedData.address : addressData,
         cpf: userDataForm.cpf.replace(/\D/g, ''),
-        profilePicture: userDataForm.profilePicture
-          ? userDataForm.profilePicture
+        picture: userDataForm.picture
+          ? userDataForm.picture
           : 'https://static.vecteezy.com/system/resources/previews/019/879/186/non_2x/user-icon-on-transparent-background-free-png.png',
       };
 
@@ -322,8 +322,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         metadata: storedData.metadata,
         size: storedData.size,
         ownerInfo: {
-          profilePicture: userDataForm.profilePicture
-            ? userDataForm.profilePicture
+          picture: userDataForm.picture
+            ? userDataForm.picture
             : 'https://static.vecteezy.com/system/resources/previews/019/879/186/non_2x/user-icon-on-transparent-background-free-png.png',
           name: userDataForm.username,
           phones: [`55 ${userDataForm.cellPhone}`, userDataForm.phone],

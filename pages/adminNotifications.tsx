@@ -16,30 +16,30 @@ import { useIsMobile } from '../hooks/useIsMobile';
 
 interface IMessageNotifications {
   properties?: IPropertyInfo;
-  notificationsAdmin?: [] | any;
-  notificationsNotAdmin?: [] | any;
+  notifications: INotification[];
   ownerProperties?: IOwnerProperties | any;
 }
 
 const MessageNotifications = ({
   ownerProperties,
-  notificationsAdmin,
+  notifications,
 }: IMessageNotifications) => {
+
   const isMobile = useIsMobile();
   const [isOwner, setIsOwner] = useState<boolean>(false);
   const [showPagination, setShowPagination] = useState<boolean>(true);
-  const [notifications, setNotifications] = useState(notificationsAdmin);
-  const adminNots = notificationsAdmin as [];
+  const [userNotifications, setUserNotifications] = useState<INotification[]>(notifications);
+  const adminNots = notifications as [];
 
   useEffect(() => {
     setIsOwner(ownerProperties?.docs?.length > 0 ? true : false);
   }, [ownerProperties]);
 
   useEffect(() => {
-    if (notifications.length == 0) {
+    if (userNotifications?.length === 0) {
       setShowPagination(!showPagination);
     }
-  }, [notifications]);
+  }, [userNotifications]);
 
   return (
     <main>
@@ -84,6 +84,7 @@ const MessageNotifications = ({
                 isRead,
                 notifications,
                 setShowPagination,
+                setNotifications,
                 showPagination,
               }: INotification) => (
                 <div key={_id} className="flex flex-col items-center">
@@ -118,6 +119,7 @@ export default MessageNotifications;
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = (await getSession(context)) as any;
+  let notifications;
   const userId =
     session?.user.data._id !== undefined
       ? session?.user.data._id
@@ -200,7 +202,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ userId }),
+          body: JSON.stringify({ _id: userId }),
         }
       );
 
@@ -231,8 +233,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         fetchJson(`${baseUrl}/property/owner-properties`),
       ]);
 
-      const notificationsAdmin = await fetch(
-        `${baseUrl}/notification/user/${id}?isRead=true`,
+      notifications = await fetch(
+        `${baseUrl}/notification/${id}`,
         {
           method: 'GET',
           headers: {
@@ -246,12 +248,12 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       return {
         props: {
           ownerProperties,
-          notificationsAdmin,
+          notifications,
         },
       };
     } else {
-      const notificationsNotAdmin = await fetch(
-        `${baseUrl}/notification/user/${id}`,
+      const response = await fetch(
+        `${baseUrl}/notification/${id}`,
         {
           method: 'GET',
           headers: {
@@ -259,11 +261,14 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           },
         }
       )
-        .then((res) => res.json())
-        .catch(() => []);
+      
+      if (response.ok) {
+        notifications = await response.json();
+      }
+      
       return {
         props: {
-          notificationsNotAdmin,
+          notifications,
         },
       };
     }

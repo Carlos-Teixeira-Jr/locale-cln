@@ -78,10 +78,9 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const [creditCardIsOpen, setCreditCardIsOpen] = useState(false);
   const [deleteAccountIsOpen, setDeleteAccountIsOpen] = useState(false);
   const [isEditPassword, setIsEditPassword] = useState(false);
+  const defaultProfilePicture = 'https://static.vecteezy.com/system/resources/previews/019/879/186/non_2x/user-icon-on-transparent-background-free-png.png';
   const [isAdminPage, setIsAdminPage] = useState(false);
   const isEdit = true;
-  const isMobile = useIsMobile();
-  const reversedCards = [...plans].reverse();
   
   const creditCardInfo = ownerData?.owner?.paymentData?.creditCardInfo
     ? ownerData?.owner?.paymentData?.creditCardInfo
@@ -99,7 +98,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     cpf: '',
     cellPhone: '',
     phone: '',
-    profilePicture: '',
+    picture: '',
     wppNumber: ''
   });
 
@@ -285,24 +284,24 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
         username: formData.username,
         email: formData.email,
         cpf: formData.cpf,
-        profilePicture: formData.profilePicture
-          ? formData.profilePicture
-          : 'https://static.vecteezy.com/system/resources/previews/019/879/186/non_2x/user-icon-on-transparent-background-free-png.png',
+        picture: formData.picture
+          ? formData.picture
+          : defaultProfilePicture,
       };
 
-      const picture = formData.profilePicture
-        ? formData.profilePicture
-        : ownerData.owner?.profilePicture;
+      const picture = formData.picture
+        ? formData.picture
+        : ownerData.owner?.picture;
 
       const ownerFormData: IOwner = {
-        id: ownerData.owner ? ownerData.owner._id : '',
+        id: ownerData?.owner ? ownerData.owner._id : '',
         ownername: formData.username,
         phones: [formData.cellPhone, formData.phone],
         userId: userData._id,
         email: formData.email ? formData.email : '',
-        profilePicture: picture
+        picture: picture
           ? picture
-          : 'https://static.vecteezy.com/system/resources/previews/019/879/186/non_2x/user-icon-on-transparent-background-free-png.png',
+          : defaultProfilePicture,
         adCredits: ownerData.owner?.adCredits ? ownerData.owner?.adCredits : 0,
       };
 
@@ -385,10 +384,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                 firstProperty={properties?.docs[0]}
                 error={formDataErrors}
                 userDataInputRefs={userDataInputRefs}
-                profilePicPropertyData={
-                  properties?.docs[0]?.ownerInfo?.profilePicture &&
-                  properties?.docs[0]?.ownerInfo.profilePicture
-                }
+                picture={ownerData.user.picture ? ownerData.user.picture : defaultProfilePicture}
               />
               <div className="mx-5 my-10">
                 <EditPassword
@@ -616,7 +612,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ userId }),
+          body: JSON.stringify({ _id: userId  }),
         }
       );
       if (ownerIdResponse.ok) {
@@ -645,7 +641,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ userId }),
+          body: JSON.stringify({ _id: userId }),
         })
           .then((res) => res.json())
           .catch(() => []),

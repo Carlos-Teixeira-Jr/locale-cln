@@ -54,6 +54,7 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
   property,
   isFavourite,
   relatedProperties,
+  ownerData
 }: IPropertyPage) => {
   
   const [isModalOpen, setIsModalOpen] = useState(false);

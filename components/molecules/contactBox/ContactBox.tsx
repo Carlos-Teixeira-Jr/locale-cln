@@ -2,8 +2,8 @@ import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import {
-  IData,
-  IOwnerInfo,
+    IData,
+    IOwnerInfo,
 } from '../../../common/interfaces/property/propertyData';
 import { monetaryFormat } from '../../../common/utils/masks/monetaryFormat';
 import UserIcon from '../../atoms/icons/userIcon';
@@ -17,7 +17,7 @@ export interface IContactBox {
 
 const ContactBox: React.FC<IContactBox> = ({ ownerInfo, property }: IContactBox) => {
 
-  const profilePicture = ownerInfo?.profilePicture;
+  const picture = ownerInfo?.picture;
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [fullMessage, setFullMessage] = useState(false);
   const [message, setMessage] = useState('');
@@ -92,9 +92,9 @@ const ContactBox: React.FC<IContactBox> = ({ ownerInfo, property }: IContactBox)
     <>
       <div className="lg:w-fit md:h-10 md:pt-0 flex flex-col md:flex-row md:grid items-center justify-items-center align-middle justify lg:ml-2 m-5 lg:m-0">
         <div className="flex flex-col md:flex-row md:w-full lg:w-72 justify-between items-center">
-          {profilePicture ? (
+          {picture ? (
             <Image
-              src={profilePicture}
+              src={picture}
               alt={'A image of the property owner'}
               width={90}
               height={90}
