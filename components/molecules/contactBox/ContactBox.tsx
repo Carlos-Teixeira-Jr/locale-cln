@@ -2,8 +2,8 @@ import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import {
-    IData,
-    IOwnerInfo,
+  IData,
+  IOwnerInfo,
 } from '../../../common/interfaces/property/propertyData';
 import { monetaryFormat } from '../../../common/utils/masks/monetaryFormat';
 import UserIcon from '../../atoms/icons/userIcon';

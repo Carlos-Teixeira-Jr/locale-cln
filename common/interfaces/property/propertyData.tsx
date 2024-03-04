@@ -9,7 +9,8 @@ export type propType =
   | 'fazendaSitioChacara'
   | 'flat'
   | 'loteTerreno'
-  | 'sobrado';
+  | 'sobrado'
+  | 'todos'
 export type propSubtype =
   | 'padrao'
   | 'cobertura'
