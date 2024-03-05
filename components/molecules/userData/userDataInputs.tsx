@@ -1,15 +1,18 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import { IOwnerData } from '../../../common/interfaces/owner/owner';
 import {
   IUserDataComponent,
   IUserDataComponentErrors,
 } from '../../../common/interfaces/user/user';
+import { addImageToDB } from '../../../common/utils/indexDb';
 import { applyNumericMask } from '../../../common/utils/masks/numericMask';
 import CameraIcon from '../../atoms/icons/cameraIcon';
 import WhatsAppIcon from '../../atoms/icons/wppIcon';
 import ErrorOnUpdateModal from '../../atoms/modals/errorOnUpdateModal';
 import SuccessOnUpdateModal from '../../atoms/modals/successOnUpdateModal';
 import Image from '../uploadImages/uploadProfilePic';
+
 
 export type UserDataErrorsTypes = {
   username: string;
@@ -51,7 +54,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
   const userDataErrorScroll = {
     ...userDataInputRefs,
   };
-  const [images, setImages] = useState<any>('');
+  const [images, setImages] = useState<any[]>([]);
 
   // Whatsapp
   const [isSameNumber, setIsSameNumber] = useState(true);
@@ -239,27 +242,16 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
     },
   ];
 
-  const handleAddImage = (event: any) => {
+  const handleAddImage = async (event: any) => {
     const files = event.target.files;
+    const id = uuidv4();
 
-    if (files.length === 0) {
-      return;
-    }
+    await addImageToDB(files, id);
 
-    if (files.length > 1 || images) {
-      alert('Você só pode adicionar uma imagem');
-      return;
-    }
-
-    const file = files[0];
-
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      //setImages(reader.result);
-      setFormData({ ...formData, profilePicture: String(reader.result) });
-    };
-
-    reader.readAsDataURL(file);
+    setImages((prevImages: string[]) => [
+      ...prevImages,
+      { src: URL.createObjectURL(files), id },
+    ]);
   };
 
   const handleRemoveImage = () => {
