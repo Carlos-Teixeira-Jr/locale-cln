@@ -6,7 +6,8 @@ import { ILocation } from '../common/interfaces/locationDropdown';
 import { IData } from '../common/interfaces/property/propertyData';
 import { ITagsData } from '../common/interfaces/tagsData';
 import { handleClickOutside } from '../common/utils/clickOutsideDropdownHandler';
-import { removeQueryParam } from '../common/utils/removeQueryParams';
+import updateGeolocationQueryParam from '../common/utils/search/updateGeolocationQueryParam';
+import updateLocationQueryParam from '../common/utils/search/updateLocationQueryParam';
 import DropdownOrderBy from '../components/atoms/dropdowns/dropdownOrderBy';
 import ArrowDropdownIcon from '../components/atoms/icons/arrowDropdownIcon';
 import GridIcon from '../components/atoms/icons/gridIcon';
@@ -65,15 +66,7 @@ const Search: NextPageWithLayout<ISearch> = ({
 
   // Insere ou remove as location no url query params;
   useEffect(() => {
-    if (location.length > 0) {
-      const queryParams = {
-        ...query,
-        location: JSON.stringify(location),
-      };
-      router.push({ query: queryParams }, undefined, { scroll: false });
-    } else {
-      removeQueryParam('location', router, query);
-    }
+    updateLocationQueryParam(location, query, router);
   }, [location]);
 
   //// PAGE ////
@@ -106,23 +99,7 @@ const Search: NextPageWithLayout<ISearch> = ({
 
   // Insere as coordenadas geográficas do usuário na url para buscar os imóveis mais próximos
   useEffect(() => {
-    if (geolocation) {
-      const queryParams = {
-        ...query,
-        longitude: longitude,
-        latitude: latitude
-      }
-      router.replace({ query: queryParams }, undefined, { scroll: false })
-    } else {
-
-      const { longitude, latitude, ...rest } = query;
-
-      const queryParams = {
-        ...rest,
-      }
-
-      router.replace({ query: queryParams }, undefined, { scroll: false })
-    }
+    updateGeolocationQueryParam(geolocation, router, latitude, longitude);
   }, [geolocation]);
 
   //// FILTER ON MOBILE ////
