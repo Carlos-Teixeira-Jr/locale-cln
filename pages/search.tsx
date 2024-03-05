@@ -391,15 +391,15 @@ export async function getServerSideProps(context: NextPageContext) {
       filter.push({ locationFilter: parsedLocation });
     }
   }
-  // if (query.longitude && query.latitude) {
-  //   const geoQuery = {
-  //     geolocation: {
-  //       longitude: query.longitude,
-  //       latitude: query.latitude
-  //     }
-  //   }
-  //   filter.push(geoQuery)
-  // } 
+  if (query.longitude && query.latitude) {
+    const geoQuery = {
+      geolocation: {
+        longitude: query.longitude,
+        latitude: query.latitude
+      }
+    }
+    filter.push(geoQuery)
+  } 
 
   const encodedFilter = decodeURIComponent(JSON.stringify(filter));
 
