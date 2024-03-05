@@ -40,6 +40,7 @@ const Search: NextPageWithLayout<ISearch> = ({
   locations,
   tagsData,
 }) => {
+
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const query = router.query as any;
@@ -47,10 +48,6 @@ const Search: NextPageWithLayout<ISearch> = ({
   const isCodeSearch = query.code ? true : false;
   const { latitude, longitude, location: geolocation } = useTrackLocation();
   const defaultPropertyPhoto = "/images/property-not-found.png";
-
-  useEffect(() => {
-    console.log("🚀 ~ geolocation:", geolocation)
-  }, [geolocation])
 
   // mobile
   const [open, setOpen] = useState(false);
@@ -110,30 +107,23 @@ const Search: NextPageWithLayout<ISearch> = ({
   // Insere as coordenadas geográficas do usuário na url para buscar os imóveis mais próximos
   useEffect(() => {
     if (geolocation) {
-      console.log("aqui", geolocation)
       const queryParams = {
         ...query,
         longitude: longitude,
         latitude: latitude
       }
-      router.push({ query: queryParams }, undefined, { scroll: false })
+      router.replace({ query: queryParams }, undefined, { scroll: false })
     } else {
-      console.log("else")
 
-      // const { longitude, latitude, ...rest } = query;
+      const { longitude, latitude, ...rest } = query;
 
-      // const queryParams = {
-      //   ...rest,
-      // }
-      // console.log("🚀 ~ useEffect ~ queryParams:", queryParams)
+      const queryParams = {
+        ...rest,
+      }
 
-      // router.push({ query: queryParams }, undefined, { scroll: false })
+      router.replace({ query: queryParams }, undefined, { scroll: false })
     }
   }, [geolocation]);
-
-  // useEffect(() => {
-  //   console.log("🚀 ~ useEffect ~ geolocation:", geolocation)
-  // })
 
   //// FILTER ON MOBILE ////
 
@@ -349,13 +339,13 @@ const Search: NextPageWithLayout<ISearch> = ({
                         _id={_id}
                         key={_id}
                         href={`/property/${_id}`}
-                        prices={prices[0].value.toString()}
+                        prices={prices[0]?.value.toString()}
                         description={description}
                         images={images?.length > 0 ? images : [defaultPropertyPhoto]}
-                        location={address.streetName}
-                        bedrooms={metadata[0].amount}
-                        bathrooms={metadata[1].amount}
-                        parking_spaces={metadata[2].amount}
+                        location={address?.streetName}
+                        bedrooms={metadata[0]?.amount}
+                        bathrooms={metadata[1]?.amount}
+                        parking_spaces={metadata[2]?.amount}
                         highlighted={highlighted}
                         propertyInfo={propertyInfo?.docs[index]}
                       />
@@ -424,15 +414,15 @@ export async function getServerSideProps(context: NextPageContext) {
       filter.push({ locationFilter: parsedLocation });
     }
   }
-  if (query.longitude && query.latitude) {
-    const geoQuery = {
-      geolocation: {
-        longitude: query.longitude,
-        latitude: query.latitude
-      }
-    }
-    filter.push(geoQuery)
-  } 
+  // if (query.longitude && query.latitude) {
+  //   const geoQuery = {
+  //     geolocation: {
+  //       longitude: query.longitude,
+  //       latitude: query.latitude
+  //     }
+  //   }
+  //   filter.push(geoQuery)
+  // } 
 
   const encodedFilter = decodeURIComponent(JSON.stringify(filter));
 

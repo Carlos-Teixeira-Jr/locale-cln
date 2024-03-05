@@ -156,7 +156,7 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
           <div className="md:flex justify-between md:flex-col md:gap-4 md:col-span-2 md:ml-11 my-auto mx-[17px] md:mx-4">
             <div
               className={`${
-                prices.length > 10 ? 'md:w-[270px]' : 'md:w-[240px]'
+                prices?.length > 10 ? 'md:w-[270px]' : 'md:w-[240px]'
               } text-3xl md:w-[240px] h-[44px] top-[17px] left-[336px] font-bold text-[#000000]`}
             >
               {formattedPrice}

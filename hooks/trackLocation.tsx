@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react";
 
 const useTrackLocation = () => {
 
   const [ locationErrorMessage, setLocationErrorMessage ] = useState("");
-  const [ location, setLocation ] = useState(null);
+  const [ location, setLocation ] = useState<any>(null);
   const [ latitude, setLatitude ] = useState("");
   const [ longitude, setLongitude ] = useState("");
 
