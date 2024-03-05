@@ -111,7 +111,7 @@ const PlansCards: React.FC<IPlansCard> = ({
               </div>
             </div>
             <div className="flex mx-auto">
-              <button className="bg-primary rounded-[10px] text-tertiary w-64 h-[66px] mx-auto text-2xl font-semibold">
+              <button className="bg-primary rounded-[10px] text-tertiary w-64 h-[66px] mx-auto text-2xl font-semibold transition-colors duration-300 hover:bg-red-600 hover:text-white">
                 Assinar
               </button>
             </div>

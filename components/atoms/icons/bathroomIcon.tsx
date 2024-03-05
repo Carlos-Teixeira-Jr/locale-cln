@@ -1,11 +1,15 @@
 import { IIcon } from '../../../common/interfaces/icons';
 
-export default function BathroomIcon({ fill = 'currentColor' }: IIcon) {
+export default function BathroomIcon({
+  fill = 'currentColor',
+  width = '38',
+  height = '38',
+}: IIcon) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="38"
-      height="38"
+      width={width}
+      height={height}
       viewBox="0 -960 960 960"
       fill={fill}
     >

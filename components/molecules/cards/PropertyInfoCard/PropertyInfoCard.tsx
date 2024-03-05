@@ -3,13 +3,13 @@ import Link from 'next/link';
 import { MouseEvent, useEffect, useRef, useState } from 'react';
 import Modal from 'react-modal';
 import { IData } from '../../../../common/interfaces/property/propertyData';
+import { monetaryFormat } from '../../../../common/utils/masks/monetaryFormat';
 import BathroomIcon from '../../../atoms/icons/bathroomIcon';
 import BedroomIcon from '../../../atoms/icons/bedroomIcon';
 import DotIcon from '../../../atoms/icons/dotIcon';
 import NextCardIcon from '../../../atoms/icons/nextCardIcon';
 import ParkingIcon from '../../../atoms/icons/parkingIcon';
 import PreviousCardIcon from '../../../atoms/icons/previousCardIcon';
-import formatCurrency from '../../../atoms/masks/currencyFormat';
 import MessageModal from '../../../atoms/modals/messageModal';
 Modal.setAppElement('#__next');
 
@@ -47,26 +47,19 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
   propertyInfo,
 }) => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
+
   const [currentIndex, setCurrentIndex] = useState(0);
+
   const [expanded, setExpanded] = useState(false);
-  const descriptionRef = useRef<HTMLParagraphElement>(null);
   const [isExpandable, setIsExpandable] = useState(false);
-  const formattedPrice = formatCurrency(Number(prices));
-  // Expande o tamanho do corpo do card para mostrar todo o texto;
   const toggleExpanded = (e: React.MouseEvent) => {
     e.preventDefault();
     setExpanded(!expanded);
   };
 
-  // Verifica se o texto excede os limites do corpo do card e atribui esse valor ao estado isExpandable;
-  useEffect(() => {
-    if (descriptionRef.current) {
-      const isOverflowing =
-        descriptionRef.current.scrollHeight >
-        descriptionRef.current.clientHeight;
-      setIsExpandable(isOverflowing);
-    }
-  }, [description]);
+  const descriptionRef = useRef<HTMLParagraphElement>(null);
+
+  const formattedPrice = monetaryFormat(prices);
 
   const prevImage = (event: MouseEvent) => {
     event.preventDefault();
@@ -91,6 +84,15 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
     setModalIsOpen(true);
   };
 
+  useEffect(() => {
+    if (descriptionRef.current) {
+      const isOverflowing =
+        descriptionRef.current.scrollHeight >
+        descriptionRef.current.clientHeight;
+      setIsExpandable(isOverflowing);
+    }
+  }, [description]);
+
   return (
     <>
       <Link href={href}>
@@ -100,7 +102,6 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
           }`}
         >
           <div className="group relative md:h-[200px]">
-            {/* Images */}
             <div className="flex flex-row w-full overflow-hidden scroll-smooth rounded-tl-[30px] md:h-[265px] h-[250px]">
               <Image
                 src={images[currentIndex]}
@@ -116,7 +117,6 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
                 </div>
               )}
             </div>
-            {/* Arrow buttons */}
             <div className="absolute w-full top-[80px] lg:top-[115px] flex items-center justify-between">
               <button
                 type="button"
@@ -139,13 +139,12 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
                 </span>
               </button>
             </div>
-            {/* Dots */}
             <div className="flex top-4 justify-center mt-[-28px]">
               {images.map((images: string, imagesIndex: number) => (
                 <div
                   key={imagesIndex}
                   onClick={() => goToImage(imagesIndex)}
-                  className="text-[#D9D9D9]/70 hover:text-tertiary cursor-pointer"
+                  className="text-[#D9D9D9]/70 hover:text-tertiary cursor-pointer overflow-x-hidden"
                 >
                   <DotIcon />
                 </div>
@@ -157,20 +156,20 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
             <div
               className={`${
                 prices.length > 10 ? 'md:w-[270px]' : 'md:w-[240px]'
-              } text-3xl md:w-[240px] h-[44px] top-[17px] left-[336px] font-bold text-[#000000]`}
+              } text-2xl pt-2 md:w-[240px] h-[44px] top-[17px] left-[336px] font-bold text-[#000000]`}
             >
               {formattedPrice}
             </div>
             <div className="flex flex-col">
               <p
-                className="font-medium text-xs leading-4 text-quaternary md:w-[383px] h-fit"
+                className="font-medium text-xs text-justify leading-4 text-quaternary w-fit h-fit"
                 ref={descriptionRef}
                 style={{
                   overflow: expanded ? 'visible' : 'hidden',
                   textOverflow: 'ellipsis',
                   display: '-webkit-box',
-                  lineClamp: expanded ? 'unset' : 2,
-                  WebkitLineClamp: expanded ? 'unset' : 2,
+                  lineClamp: expanded ? 'unset' : 3,
+                  WebkitLineClamp: expanded ? 'unset' : 3,
                   WebkitBoxOrient: 'vertical',
                 }}
               >
@@ -179,47 +178,50 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
               {descriptionRef.current && isExpandable && (
                 <span
                   onClick={toggleExpanded}
-                  className="font-medium text-sm text-primary max-w-[350px] text-end"
+                  className="font-medium text-xs text-primary w-fit text-end"
                 >
                   {!expanded ? 'Ler mais...' : 'Ler menos...'}
                 </span>
               )}
             </div>
-            <div className="flex items-center md:py-auto py-2">
+            <div className="flex items-center md:py-auto py-1">
               <p className="font-bold text-xs leading-4 text-quaternary md:w-[266px] h-[15px]">
                 {location}
               </p>
             </div>
             <div className="grid grid-auto-cols grid-flow-col gap-3 pb-6 md:pb-5 items-center">
-              <div className="grid grid-auto-cols grid-flow-col gap-1">
-                <div className="md:w-fit h-fit">
-                  <BedroomIcon fill="#6B7280" />
+              <div className="flex flex-row gap-6">
+                <div className="flex flex-row">
+                  <div className="md:w-fit h-fit">
+                    <BedroomIcon fill="#6B7280" width="34" height="34" />
+                  </div>
+                  <div className="font-bold text-xl md:ml-[0.2rem] text-quaternary flex items-center justify-center">
+                    {bedrooms}
+                  </div>
                 </div>
-                <div className="font-bold text-2xl md:ml-[0.2rem] text-quaternary flex items-center justify-center">
-                  {bedrooms}
+                <div className="flex flex-row">
+                  <div className="md:w-fit h-fit">
+                    <ParkingIcon fill="#6B7280" width="34" height="34" />
+                  </div>
+                  <div className="font-bold text-xl md:ml-[0.2rem]  text-quaternary flex items-center justify-center">
+                    {parking_spaces}
+                  </div>
+                </div>
+                <div className="flex flex-row">
+                  <div className="md:w-fit h-fit">
+                    <BathroomIcon fill="#6B7280" width="34" height="34" />
+                  </div>
+                  <div className="font-bold text-xl md:ml-[0.2rem] text-quaternary flex items-center justify-center">
+                    {bathrooms}
+                  </div>
                 </div>
               </div>
-              <div className="grid grid-auto-cols grid-flow-col gap-1">
-                <div className="md:w-fit h-fit">
-                  <ParkingIcon fill="#6B7280" />
-                </div>
-                <div className="font-bold text-2xl md:ml-[0.2rem]  text-quaternary flex items-center justify-center">
-                  {parking_spaces}
-                </div>
-              </div>
-              <div className="grid grid-auto-cols grid-flow-col gap-1">
-                <div className="md:w-fit h-fit">
-                  <BathroomIcon fill="#6B7280" />
-                </div>
-                <div className="font-bold text-2xl md:ml-[0.2rem] text-quaternary flex items-center justify-center">
-                  {bathrooms}
-                </div>
-              </div>
+
               <button
-                className="bg-primary md:w-[200px] h-full md:h-[50px] rounded-full transition-colors duration-300 hover:bg-red-600 hover:text-white"
+                className="bg-primary md:w-[170px] h-10 rounded-full transition-colors duration-300 hover:bg-red-600 hover:text-white"
                 onClick={handleMessageBtnClick}
               >
-                <p className="md:w-[176px] md:h-[24px] font-normal text-sm px-2 md:text-lg lg:text-xl text-tertiary flex mx-auto my-1 lg:my-0 align-middle justify-center py-0 sm:py-1 md:py-0 lg:py-0 xl:py-0 mb-1 md:mb-1 lg:mb-0">
+                <p className="md:w-[176px] md:h-[20px] font-normal sm:text-sm px-2 text-xl text-tertiary flex mx-auto my-1 lg:my-0 align-middle justify-center py-0 sm:py-1 md:py-0 lg:py-0 xl:py-0 mb-1 md:mb-1 lg:mb-0">
                   Enviar Mensagem
                 </p>
               </button>

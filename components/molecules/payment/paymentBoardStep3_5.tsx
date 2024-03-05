@@ -38,26 +38,23 @@ const PaymentBoard_Step3_5 = ({
       : undefined
   );
 
+  const classes = {
+    paymentLabel: 'text-quaternary text-lg md:text-xl font-medium mb-4',
+    planLabel: 'text-quaternary  text-lg md:text-xl font-medium mb-4',
+  };
+
   return (
     <>
       <div className="px-2">
-        <h2 className="md:text-3xl text-2xl leading-10 text-quaternary font-bold md:mb-10 mb-5">
+        <h2 className="md:text-2xl text-lg leading-10 text-quaternary font-bold md:mb-10 mb-5">
           Informações do pagamento
         </h2>
         <div className="flex flex-row justify-between items-center ">
           <div className="flex flex-col">
-            <h2 className="text-quaternary text-xl md:text-2xl font-medium mb-4">
-              PAGAMENTO
-            </h2>
-            <h2 className="text-quaternary text-xl md:text-2xl font-medium mb-4">
-              PLANO
-            </h2>
-            <h2 className="text-quaternary text-xl md:text-2xl font-medium mb-4">
-              VALOR
-            </h2>
-            <h2 className="text-quaternary text-xl md:text-2xl font-medium mb-4">
-              PARCELAS
-            </h2>
+            <h2 className={classes.paymentLabel}>PAGAMENTO</h2>
+            <h2 className={classes.paymentLabel}>PLANO</h2>
+            <h2 className={classes.paymentLabel}>VALOR</h2>
+            <h2 className={classes.paymentLabel}>PARCELAS</h2>
           </div>
           <div className="flex flex-col items-end">
             {cardFlag === '' ? (
@@ -76,12 +73,8 @@ const PaymentBoard_Step3_5 = ({
               </div>
             )}
 
-            <h2 className="text-quaternary text-xl md:text-2xl font-medium mb-4">
-              {plan?.name}
-            </h2>
-            <h2 className="text-quaternary text-xl md:text-2xl font-medium mb-4">
-              R$ {plan?.price},00
-            </h2>
+            <h2 className={classes.planLabel}>{plan?.name}</h2>
+            <h2 className={classes.planLabel}>R$ {plan?.price},00</h2>
             <h2 className="text-quaternary text-3xl font-medium mb-4">
               -{'-'}
             </h2>
@@ -90,10 +83,10 @@ const PaymentBoard_Step3_5 = ({
       </div>
       <div className="w-3/4 max-w-6xl h-[1px] bg-quaternary mb-4 mx-auto" />
       <div className="flex flex-row justify-between px-2">
-        <h2 className="text-quaternary text-xl md:text-2xl font-medium mb-4 md:ml-0">
+        <h2 className="text-quaternary text-lg md:text-xl font-medium mb-4 md:ml-0">
           TOTAL
         </h2>
-        <h2 className="text-quaternary text-xl md:text-2xl w-fit font-medium mb-4 md:px-0">
+        <h2 className="text-quaternary text-lg md:text-xl w-fit font-medium mb-4 md:px-0">
           R$ {plan?.price},00
         </h2>
       </div>

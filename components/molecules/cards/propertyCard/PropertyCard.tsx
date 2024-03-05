@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { IPrices } from '../../../../common/interfaces/property/propertyData';
+import { monetaryFormat } from '../../../../common/utils/masks/monetaryFormat';
 import BathroomIcon from '../../../atoms/icons/bathroomIcon';
 import BedroomIcon from '../../../atoms/icons/bedroomIcon';
 import DotIcon from '../../../atoms/icons/dotIcon';
@@ -11,8 +12,6 @@ import HeartIcon from '../../../atoms/icons/heartIcon';
 import NextIcon from '../../../atoms/icons/nextIcon';
 import ParkingIcon from '../../../atoms/icons/parkingIcon';
 import PreviousIcon from '../../../atoms/icons/previousIcon';
-import formatCurrency from '../../../atoms/masks/currencyFormat';
-import { monetaryFormat } from '../../../../common/utils/masks/monetaryFormat';
 
 export interface IPropertyCard {
   id: string;
@@ -39,21 +38,21 @@ const PropertyCard: React.FC<IPropertyCard> = ({
   favorited,
   highlighted,
 }) => {
-
-  const {data: session} = useSession() as any;
+  const { data: session } = useSession() as any;
   const userId = session?.user.data.id || session?.user?.data._id;
+
   const [currentIndex, setCurrentIndex] = useState(0);
+
   const [expanded, setExpanded] = useState(false);
   const [isExpandable, setIsExpandable] = useState(false);
+
   const descriptionRef = useRef<HTMLParagraphElement>(null);
 
-  // Expande o tamanho do corpo do card para mostrar todo o texto;
   const toggleExpanded = (e: React.MouseEvent) => {
     e.preventDefault();
     setExpanded(!expanded);
   };
 
-  // Verifica se o texto excede os limites do corpo do card e atribui esse valor ao estado isExpandable;
   useEffect(() => {
     if (descriptionRef.current) {
       const isOverflowing =
@@ -79,9 +78,6 @@ const PropertyCard: React.FC<IPropertyCard> = ({
     setCurrentIndex(imageIndex);
   };
 
-  //useMemo - parâmetros:
-  //1º: uma função em que o retorno será o valor que o useMemo irá armazenar e retornar para a sua variável, sendo assim sua variável será sempre igual ao valor de retorno dessa função.
-  //2º: um array de dependências.
   const memoizedCardImage = useMemo(() => {
     return images[currentIndex];
   }, [images, currentIndex]);
@@ -96,34 +92,26 @@ const PropertyCard: React.FC<IPropertyCard> = ({
       parking_spaces,
       location,
     };
-  },[
-    id, 
-    prices, 
-    description, 
-    bedrooms, 
-    bathrooms, 
-    parking_spaces, 
-    location
-  ]);
+  }, [id, prices, description, bedrooms, bathrooms, parking_spaces, location]);
 
-  memoizedCardInfos.bathrooms
+  memoizedCardInfos.bathrooms;
 
   const price = prices[0].value;
-  const formattedPrice = formatCurrency(price);
+  const formattedPrice = monetaryFormat(price.toString());
 
   const handleFavouriteIcon = async () => {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
     try {
-      toast.loading(`Enviando...`)
+      toast.loading(`Enviando...`);
       const response = await fetch(`${baseUrl}/user/edit-favourite`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           userId,
-          propertyId: id
-        })
+          propertyId: id,
+        }),
       });
 
       if (response.ok) {
@@ -146,11 +134,9 @@ const PropertyCard: React.FC<IPropertyCard> = ({
       className={`flex flex-col lg:max-w-[270px] md:max-w-[250px] bg-tertiary shadow-lg rounded-[30px] mt-2 cursor-pointer ${
         expanded ? `min-h-[470px] max-h-fit` : 'max-h-[470px]'
       }`}
-    > 
+    >
       <Link href={`/property/${id}`}>
-        {/* caroussel */}
         <div className="group relative h-[200px]">
-          {/* Images */}
           <div className="flex flex-row w-full overflow-hidden scroll-smooth rounded-t-[30px] h-[200px]">
             <Image
               src={memoizedCardImage}
@@ -158,7 +144,6 @@ const PropertyCard: React.FC<IPropertyCard> = ({
               alt={'Property Image'}
               width={350}
               height={350}
-              //className='w-full'
             />
             {highlighted && (
               <div className="bg-black absolute m-5 rounded-lg bg-opacity-50">
@@ -166,7 +151,6 @@ const PropertyCard: React.FC<IPropertyCard> = ({
               </div>
             )}
           </div>
-          {/* Arrow buttons */}
           <div className="absolute w-full top-[80px] flex items-center justify-between">
             <button
               type="button"
@@ -195,7 +179,6 @@ const PropertyCard: React.FC<IPropertyCard> = ({
               </span>
             </button>
           </div>
-          {/* Dots */}
           <div className="flex top-4 justify-center mt-[-28px]">
             {images.map((images: string, imagesIndex: number) => (
               <div
@@ -212,12 +195,11 @@ const PropertyCard: React.FC<IPropertyCard> = ({
             ))}
           </div>
         </div>
-        {/* Property Info */}
-        <div className={`flex flex-col px-4 mt-2 justify-between ${
-          expanded
-          ? 'h-fit'
-          : 'h-36'
-        }`}>
+        <div
+          className={`flex flex-col px-4 mt-2 justify-between ${
+            expanded ? 'h-fit' : 'h-36'
+          }`}
+        >
           {favorited ? (
             <div className="flex flex-row items-center">
               <h1 className="font-bold text-2xl text-[#000000]">
@@ -239,7 +221,7 @@ const PropertyCard: React.FC<IPropertyCard> = ({
               </span>
             </div>
           ) : (
-            <h1 className="font-bold text-2xl text-[#000000]">
+            <h1 className="font-bold text-xl text-[#000000]">
               {formattedPrice}
             </h1>
           )}
@@ -253,40 +235,39 @@ const PropertyCard: React.FC<IPropertyCard> = ({
               WebkitLineClamp: expanded ? 'unset' : 2,
               WebkitBoxOrient: 'vertical',
             }}
-            className="font-medium text-sm text-quaternary mt-4 max-w-[350px] text-justify"
+            className="font-medium text-xs text-quaternary mt-4 max-w-[350px] text-justify"
           >
             {memoizedCardInfos.description}
           </p>
           {descriptionRef.current && isExpandable && (
             <span
               onClick={toggleExpanded}
-              className="font-medium text-sm text-primary mt-4 max-w-[350px] text-justify"
+              className="font-medium text-xs text-primary mt-1 max-w-[350px] text-justify"
             >
               {!expanded ? 'Ler mais...' : 'Ler menos...'}
             </span>
           )}
 
-          <h3 className="font-bold text-sm text-quaternary mt-4">
+          <h3 className="font-bold text-xs text-quaternary mt-4">
             {memoizedCardInfos.location}
           </h3>
         </div>
-        {/* Property tags */}
         <div className={`flex flex-row items-end justify-around mb-7 mt-4`}>
-          <div className="flex flex-row items-center justify-between">
-            <BedroomIcon fill="#6B7280" />
-            <span className="font-bold text-2xl text-quaternary ml-2">
+          <div className="flex flex-row items-center justify-around">
+            <BedroomIcon fill="#6B7280" width="30" height="30" />
+            <span className="font-bold text-xl text-quaternary ml-2">
               {memoizedCardInfos.bedrooms}
             </span>
           </div>
-          <div className="flex flex-row items-center justify-between">
-            <ParkingIcon fill="#6B7280" />
-            <span className="font-bold text-2xl text-quaternary ml-2">
+          <div className="flex flex-row items-center justify-around">
+            <ParkingIcon fill="#6B7280" width="30" height="30" />
+            <span className="font-bold text-xl text-quaternary ml-2">
               {memoizedCardInfos.parking_spaces}
             </span>
           </div>
-          <div className="flex flex-row items-center justify-between">
-            <BathroomIcon fill="#6B7280" />
-            <span className="font-bold text-2xl text-quaternary ml-2">
+          <div className="flex flex-row items-center justify-around">
+            <BathroomIcon fill="#6B7280" width="30" height="30" />
+            <span className="font-bold text-xl text-quaternary ml-2">
               {memoizedCardInfos.bathrooms}
             </span>
           </div>

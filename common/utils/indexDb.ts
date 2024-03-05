@@ -1,3 +1,4 @@
+import { ErrorToastNames, SuccessToastNames, showErrorToast, showSuccessToast } from "./toasts";
 
 export const openDatabase = () => {
   return new Promise<IDBDatabase>((resolve, reject) => {
@@ -26,24 +27,40 @@ export const openDatabase = () => {
   });
 };
 
-export const addImageToDB = (file: File, id: string) => {
+export const addImageToDB = (file: File, src: string, id: string) => {
   openDatabase().then((db) => {
     const transaction = db.transaction(['imagens'], 'readwrite');
     const objectStore = transaction.objectStore('imagens');
+    const storedImages = objectStore.getAll();
+    storedImages.onsuccess = () => {
+      const result = storedImages.result;
+      const sumOfSizes = result.reduce((accumulator, currentValue) => {
+        return accumulator + currentValue.data.size;
+      }, 0);
+
+      const totalSize = sumOfSizes + file.size;
+
+      if (totalSize >= 800 * 1024 * 1024) {
+        showErrorToast(ErrorToastNames.ImagesTotalSizeLimit);
+        return;
+      }
+    }
 
     const request = objectStore.add({
       id,
       data: file,
       name: file.name,
       mimeType: file.type,
+      src: src
     });
 
     request.onsuccess = () => {
-      console.log('Imagem adicionada com sucesso ao IndexedDB.');
+      showSuccessToast(SuccessToastNames.UploadedImage)
     };
 
     request.onerror = (event) => {
       console.error(`Erro ao adicionar a imagem ao IndexedDB: ${(event.target as IDBRequest).error}`);
+      showErrorToast(ErrorToastNames.ImageUploadError);
     };
   });
 };
@@ -69,7 +86,6 @@ export const getAllImagesFromDB = () => {
 };
 
 export const removeImageFromDB = (id: string) => {
-  console.log("🚀 ~ file: indexDb.ts:66 ~ removeImageFromDB ~ id:", id);
 
   return new Promise<void>((resolve, reject) => {
     openDatabase().then(db => {
@@ -80,7 +96,7 @@ export const removeImageFromDB = (id: string) => {
       const deleteRequest = objectStore.delete(id);
 
       deleteRequest.onsuccess = () => {
-        console.log('Imagem removida com sucesso do IndexedDB.');
+        showSuccessToast(SuccessToastNames.RemoveImage)
         resolve();
       };
 
@@ -101,7 +117,6 @@ export const clearIndexDB = () => {
       const request = objectStore.clear();
 
       request.onsuccess = () => {
-        console.log('Conteúdo do IndexedDB removido com sucesso.');
         resolve();
       };
 
@@ -112,3 +127,29 @@ export const clearIndexDB = () => {
     });
   });
 };
+
+export const getImageFromDBById = (id: string) => {
+  return new Promise((resolve, reject) => {
+    openDatabase().then(db => {
+      const transaction = db.transaction(['imagens'], 'readonly');
+      const objectStore = transaction.objectStore('imagens');
+
+      // Obter a imagem do IndexedDB usando o ID UUID
+      const getRequest = objectStore.get(id);
+
+      getRequest.onsuccess = () => {
+        const imageData = getRequest.result;
+        if (imageData) {
+          resolve(imageData); // Resolvendo com os dados da imagem
+        } else {
+          reject("Imagem não encontrada no IndexedDB."); // Rejeitando se a imagem não for encontrada
+        }
+      };
+
+      getRequest.onerror = (event) => {
+        reject(`Erro ao obter imagem do IndexedDB: ${(event.target as IDBRequest).error}`);
+      };
+    });
+  });
+};
+

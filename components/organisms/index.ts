@@ -1,0 +1,10 @@
+export { default as AdminHeader } from './adminHeader/adminHeader';
+export { default as Footer } from './footer/footer';
+export { default as Header } from './header/header';
+export { default as MainFeatures } from './mainFeatures/mainFeatures';
+export { default as PropertyInfo } from './propertyInfo/PropertyInfo';
+export { default as CreditCard } from './register/creditCard';
+export { default as PasswordForm } from './register/passwordForm';
+export { default as PropertyDifferential } from './register/propertyDifferential';
+export { default as RegisterFormStep3 } from './register/registerFormStep3';
+export { default as SideMenu } from './sideMenu/sideMenu';

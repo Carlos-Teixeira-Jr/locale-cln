@@ -20,7 +20,7 @@ const AccessCard = () => {
       alt: 'Imóveis mobiliados',
       width: 160,
       height: 160,
-      title: 'Mobiliados!',
+      title: 'Mobiliados',
       description:
         'Encontre imóveis mobiliados perto de você e que cabem no seu bolso',
     },
@@ -74,10 +74,10 @@ const AccessCard = () => {
                     priority
                   />
                   <div>
-                    <h3 className="md:w-[162px] md:h-[27px] text-center font-bold text-quaternary">
+                    <h3 className="md:w-[180px] md:h-[27px] text-center font-bold text-quaternary">
                       {title}
                     </h3>
-                    <p className="md:w-[164px] md:h-[76px] m-3 items-center text-quaternary text-base font-medium text-center">
+                    <p className="md:w-[160px] md:h-[76px] m-3 items-center text-quaternary text-sm font-medium text-center">
                       {description}
                     </p>
                   </div>

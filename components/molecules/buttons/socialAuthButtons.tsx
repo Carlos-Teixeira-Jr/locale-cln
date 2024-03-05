@@ -6,8 +6,10 @@ interface SocialAuthButtonProps {
   onClick: () => void;
 }
 
-export const SocialAuthButton: React.FC<SocialAuthButtonProps> = ({ provider, onClick }) => {
-
+const SocialAuthButton: React.FC<SocialAuthButtonProps> = ({
+  provider,
+  onClick,
+}) => {
   const isMobile = useIsMobile();
 
   return (
@@ -16,11 +18,11 @@ export const SocialAuthButton: React.FC<SocialAuthButtonProps> = ({ provider, on
       onClick={onClick}
     >
       <div className="md:pl-0">
-        <Image 
-          src={`/images/${provider}-icon.png`} 
-          alt="" 
-          width={!isMobile ? 32 : 52} 
-          height={!isMobile ? 32 : 52} 
+        <Image
+          src={`/images/${provider}-icon.png`}
+          alt=""
+          width={!isMobile ? 32 : 52}
+          height={!isMobile ? 32 : 52}
         />
       </div>
       {!isMobile && (
@@ -31,5 +33,7 @@ export const SocialAuthButton: React.FC<SocialAuthButtonProps> = ({ provider, on
         </div>
       )}
     </button>
-  )
+  );
 };
+
+export default SocialAuthButton;

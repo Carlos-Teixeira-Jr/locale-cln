@@ -35,6 +35,7 @@ export interface IRegisterPropertyData_Step1 {
   size: ISize;
   prices: IPrices[];
   condominium: boolean;
+  tags: string[]
 }
 
 export interface IRegisterPropertyData_Step2 {
@@ -46,11 +47,12 @@ export interface IRegisterPropertyData_Step2 {
 
 export interface IRegisterPropertyData_Step3 {
   username: string;
-  profilePicture: string;
+  picture: string;
   email: string;
   cpf: string;
   cellPhone: string;
   phone: string;
+  wppNumber: string;
   zipCode: string;
   city: string;
   uf: string;
@@ -73,7 +75,8 @@ export interface ICreateProperty_propertyData {
   ownerInfo: {
     name: string;
     phones: string[];
-    profilePicture: string;
+    picture: string;
+    wppNumber: string;
   };
   size: ISize;
   tags: string[];
@@ -89,5 +92,5 @@ export interface ICreateProperty_userData {
   email: string;
   address: IAddress;
   cpf: string;
-  profilePicture: string;
+  picture: string;
 }
