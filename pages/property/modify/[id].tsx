@@ -17,11 +17,12 @@ import {
   PricesType,
 } from '../../../common/interfaces/property/propertyData';
 import { fetchJson } from '../../../common/utils/fetchJson';
+import { getAllImagesFromDB } from '../../../common/utils/indexDb';
 import {
   ErrorToastNames,
   SuccessToastNames,
   showErrorToast,
-  showSuccessToast,
+  showSuccessToast
 } from '../../../common/utils/toasts';
 import ArrowDownIconcon from '../../../components/atoms/icons/arrowDownIcon';
 import Address from '../../../components/molecules/address/address';
@@ -126,6 +127,10 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
 
   const [images, setImages] = useState<string[]>(isEdit ? property.images : []);
 
+  useEffect(() => {
+    console.log("🚀 ~ images:", images)
+  }, [images])
+
   const imagesInputRef = useRef<HTMLElement>(null);
 
   const [errorInfo, setErrorInfo] = useState({
@@ -212,33 +217,33 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
       uf: '',
     };
 
-    if (!mainFeatures.description) newMainFeaturesErrors.description = error;
-    if (!mainFeatures.size.totalArea) newMainFeaturesErrors.totalArea = error;
-    if (!mainFeatures.propertyValue)
-      newMainFeaturesErrors.propertyValue = error;
-    if (mainFeatures.condominium) {
-      if (!mainFeatures.condominiumValue)
-        newMainFeaturesErrors.condominiumValue = error;
-    }
-    if (mainFeatures.iptu) {
-      if (!mainFeatures.iptuValue) newMainFeaturesErrors.iptuValue = error;
-    }
-    if (!address.zipCode) newAddressErrors.zipCode = error;
-    if (!address.streetName) newAddressErrors.streetName = error;
-    if (!address.streetNumber) newAddressErrors.streetNumber = error;
-    if (!address.city) newAddressErrors.city = error;
-    if (!address.uf) newAddressErrors.uf = error;
-    if (images.length < 5) {
-      const imagesError = 'Você precisa ter pelo menos três fotos.';
-      setErrorInfo({
-        error: imagesError,
-        prop: 'images',
-      });
-      errorHandler.current = {
-        error: error,
-        prop: 'images',
-      };
-    }
+    // if (!mainFeatures.description) newMainFeaturesErrors.description = error;
+    // if (!mainFeatures.size.totalArea) newMainFeaturesErrors.totalArea = error;
+    // if (!mainFeatures.propertyValue)
+    //   newMainFeaturesErrors.propertyValue = error;
+    // if (mainFeatures.condominium) {
+    //   if (!mainFeatures.condominiumValue)
+    //     newMainFeaturesErrors.condominiumValue = error;
+    // }
+    // if (mainFeatures.iptu) {
+    //   if (!mainFeatures.iptuValue) newMainFeaturesErrors.iptuValue = error;
+    // }
+    // if (!address.zipCode) newAddressErrors.zipCode = error;
+    // if (!address.streetName) newAddressErrors.streetName = error;
+    // if (!address.streetNumber) newAddressErrors.streetNumber = error;
+    // if (!address.city) newAddressErrors.city = error;
+    // if (!address.uf) newAddressErrors.uf = error;
+    // if (images.length < 5) {
+    //   const imagesError = 'Você precisa ter pelo menos três fotos.';
+    //   setErrorInfo({
+    //     error: imagesError,
+    //     prop: 'images',
+    //   });
+    //   errorHandler.current = {
+    //     error: error,
+    //     prop: 'images',
+    //   };
+    // }
 
     setMainFeaturesErrors(newMainFeaturesErrors);
     setAddressErrors(newAddressErrors);
@@ -257,6 +262,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
       errorHandler.current.error === '' &&
       !hasErrors
     ) {
+
       const propertyData: IEditPropertyData = {
         id: property._id,
         adType: mainFeatures.adType,
@@ -266,7 +272,6 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
         address: address,
         description: mainFeatures.description,
         metadata: mainFeatures.metadata,
-        images: images,
         size: {
           width: mainFeatures.size.width,
           height: mainFeatures.size.height,
@@ -288,10 +293,10 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
             type: PricesType.condominio,
             value: mainFeatures.condominium
               ? parseInt(
-                  mainFeatures.condominiumValue
-                    .replace(/\./g, '')
-                    .replace(',', '.')
-                )
+                mainFeatures.condominiumValue
+                  .replace(/\./g, '')
+                  .replace(',', '.')
+              )
               : 0,
           },
         ],
@@ -312,6 +317,51 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
         );
 
         if (response.ok) {
+          try {
+            const indexDbImages = (await getAllImagesFromDB()) as {
+              id: string;
+              data: Blob;
+              name: string;
+            }[];
+
+            const editImagesFormData = new FormData();
+
+            for (let i = 0; i < indexDbImages.length; i++) {
+              const file = new File(
+                [indexDbImages[i].data],
+                `${indexDbImages[i].name}`
+              );
+              editImagesFormData.append('images', file);
+            }
+
+            editImagesFormData.append('proeprtyId', property._id);
+
+            if (images.length > 0) {
+              for (let i = 0; i < images.length; i++) {
+                const blob = images[i].substring(0, 4);
+                console.log("🚀 ~ handleSubmit ~ blob:", blob)
+                if (blob !== 'blob') images.splice(i, 1)
+              }
+            }
+
+            editImagesFormData.append('prevImages', JSON.stringify(images))
+
+            try {
+              const propertyImagesResponse = await fetch(
+                `${process.env.NEXT_PUBLIC_BASE_API_URL}/property/edit-property-images`,
+                {
+                  method: 'POST',
+                  body: editImagesFormData
+                }
+              );
+            } catch (error) {
+              showErrorToast(ErrorToastNames.ImageUploadError);
+            }
+          } catch (error) {
+            toast.dismiss();
+            showErrorToast(ErrorToastNames.ImageUploadError);
+          }
+
           toast.dismiss();
           showSuccessToast(SuccessToastNames.PropertyUpdate);
           router.push('/admin?page=1');
@@ -380,9 +430,8 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
                 <label htmlFor="painel-1" className={classes.labelAccordion}>
                   Endereço
                   <span
-                    className={`transition-transform transform ${
-                      rotate1 ? 'rotate-180' : ''
-                    }`}
+                    className={`transition-transform transform ${rotate1 ? 'rotate-180' : ''
+                      }`}
                   >
                     <ArrowDownIconcon width="13" className="cursor-pointer" />
                   </span>
@@ -412,9 +461,8 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
                 <label htmlFor="painel-2" className={classes.labelAccordion}>
                   Fotos
                   <span
-                    className={`transition-transform transform ${
-                      rotate2 ? 'rotate-180' : ''
-                    }`}
+                    className={`transition-transform transform ${rotate2 ? 'rotate-180' : ''
+                      }`}
                   >
                     <ArrowDownIconcon width="13" className="cursor-pointer" />
                   </span>
@@ -443,9 +491,8 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
                 <label htmlFor="painel-3" className={classes.labelAccordion}>
                   Características
                   <span
-                    className={`transition-transform transform ${
-                      rotate3 ? 'rotate-180' : ''
-                    }`}
+                    className={`transition-transform transform ${rotate3 ? 'rotate-180' : ''
+                      }`}
                   >
                     <ArrowDownIconcon width="13" className="cursor-pointer" />
                   </span>
@@ -491,10 +538,10 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
                           (obj: IPrices) => obj.type === 'condominio'
                         )?.value !== null
                           ? property.prices
-                              .find(
-                                (obj: IPrices) => obj.type === 'condominio'
-                              )!
-                              .value.toString()
+                            .find(
+                              (obj: IPrices) => obj.type === 'condominio'
+                            )!
+                            .value.toString()
                           : ''
                       }
                       editarIptuValue={
@@ -502,8 +549,8 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
                           (price) => price.type === 'IPTU'
                         ) !== undefined
                           ? property.prices
-                              .find((price) => price.type === 'IPTU')!
-                              .value.toString()
+                            .find((price) => price.type === 'IPTU')!
+                            .value?.toString()
                           : ''
                       }
                       editarIptu={property.prices.some(
@@ -531,9 +578,8 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
                 <label htmlFor="painel-4" className={classes.labelAccordion}>
                   Outras características
                   <span
-                    className={`transition-transform transform ${
-                      rotate4 ? 'rotate-180' : ''
-                    }`}
+                    className={`transition-transform transform ${rotate4 ? 'rotate-180' : ''
+                      }`}
                   >
                     <ArrowDownIconcon width="13" className="cursor-pointer" />
                   </span>
@@ -652,7 +698,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     const [property] = await Promise.all([
       fetch(`${baseUrl}/property/${propertyId}?isEdit=${isEdit}`)
         .then((res) => res.json())
-        .catch(() => {}),
+        .catch(() => { }),
       fetchJson(`${baseUrl}/property/${propertyId}?isEdit=${isEdit}`),
     ]);
 

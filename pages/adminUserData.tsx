@@ -16,8 +16,9 @@ import {
   IPropertyInfo,
 } from '../common/interfaces/property/propertyData';
 import { IUser, IUserDataComponent } from '../common/interfaces/user/user';
+import { defaultProfileImage } from '../common/utils/defaultImage/defaultImage';
 import { fetchJson } from '../common/utils/fetchJson';
-import { getAllImagesFromDB } from '../common/utils/indexDb';
+import { clearIndexDB, getAllImagesFromDB } from '../common/utils/indexDb';
 import {
   ErrorToastNames,
   SuccessToastNames,
@@ -67,6 +68,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   properties,
   ownerData,
 }) => {
+  console.log("🚀 ~ ownerData:", ownerData)
 
   const router = useRouter();
   const isMobile = useIsMobile();
@@ -79,7 +81,6 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const [creditCardIsOpen, setCreditCardIsOpen] = useState(false);
   const [deleteAccountIsOpen, setDeleteAccountIsOpen] = useState(false);
   const [isEditPassword, setIsEditPassword] = useState(false);
-  const defaultProfilePicture = 'https://static.vecteezy.com/system/resources/previews/019/879/186/non_2x/user-icon-on-transparent-background-free-png.png';
   const [isAdminPage, setIsAdminPage] = useState(false);
   const isEdit = true;
 
@@ -99,7 +100,10 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     cpf: '',
     cellPhone: '',
     phone: '',
-    picture: '',
+    picture: {
+      id: '1',
+      src: ownerData?.user?.picture
+    },
     wppNumber: ''
   });
 
@@ -289,14 +293,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
         username: formData.username,
         email: formData.email,
         cpf: formData.cpf,
-        picture: formData.picture
-          ? formData.picture
-          : defaultProfilePicture,
       };
-
-      const picture = formData.picture
-        ? formData.picture
-        : ownerData.owner?.picture;
 
       const ownerFormData: IOwner = {
         id: ownerData?.owner ? ownerData.owner._id : '',
@@ -304,9 +301,6 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
         phones: [formData.cellPhone, formData.phone],
         userId: userData._id,
         email: formData.email ? formData.email : '',
-        picture: picture
-          ? picture
-          : defaultProfilePicture,
         adCredits: ownerData.owner?.adCredits ? ownerData.owner?.adCredits : 0,
       };
 
@@ -341,24 +335,40 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
 
       const imagesForm = new FormData();
       const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+      let file;
 
-      for (let i = 0; i < indexDbImages.length; i++) {
-        const file = new File(
-          [indexDbImages[i].data],
-          `${indexDbImages[i].name}`
+      if (indexDbImages.length > 0) {
+        file = new File(
+          [indexDbImages[0].data],
+          `${indexDbImages[0].name}`
         );
-        imagesForm.append('images', file);
+      } else {
+        file = new File([], '');
       }
+
+      imagesForm.append('images', file);
 
       imagesForm.append('userId', ownerData?.user?._id);
 
-      const imagesResponse = await fetch(
-        `${baseUrl}/property/upload-images`,
-        {
-          method: 'POST',
-          body: imagesForm,
+      try {
+        const imagesResponse = await fetch(
+          `${baseUrl}/property/upload-profile-image`,
+          {
+            method: 'POST',
+            body: imagesForm,
+          }
+        );
+
+        if (imagesResponse.ok) {
+          clearIndexDB();
+        } else {
+          clearIndexDB();
+          showErrorToast(ErrorToastNames.ImagesUploadError);
         }
-      );
+      } catch (error) {
+        clearIndexDB();
+        showErrorToast(ErrorToastNames.ImageUploadError);
+      }
 
       try {
         toast.loading('Enviando...');
@@ -416,7 +426,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                 firstProperty={properties?.docs[0]}
                 error={formDataErrors}
                 userDataInputRefs={userDataInputRefs}
-                picture={ownerData.user.picture ? ownerData.user.picture : defaultProfilePicture}
+                picture={formData.picture ? formData.picture : { id: '1', src: defaultProfileImage }}
               />
               <div className="mx-5 my-10">
                 <EditPassword

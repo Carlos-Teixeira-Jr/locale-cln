@@ -113,8 +113,8 @@ const MainFeatures: React.FC<IMainFeatures> = ({
       adSubtype: isEdit
         ? editarSubType!
         : isCommercial
-        ? 'comercial'
-        : 'residencial',
+          ? 'comercial'
+          : 'residencial',
       propertyType: isEdit ? editarPropertyType! : 'casa',
       propertySubtype: isEdit ? editarPropertySubtype! : 'padrao',
       description: isEdit ? editarDescription! : '',
@@ -225,21 +225,17 @@ const MainFeatures: React.FC<IMainFeatures> = ({
     }));
   };
 
-  const buyBtnClassName = `w-full md:w-40 rounded-full border-secondary text-quaternary font-bold text-sm ${
-    isBuy ? 'bg-secondary text-quinary border' : 'bg-tertiary  text-quaternary'
-  }`;
+  const buyBtnClassName = `w-full md:w-40 rounded-full border-secondary text-quaternary font-bold text-sm ${isBuy ? 'bg-secondary text-quinary border' : 'bg-tertiary  text-quaternary'
+    }`;
 
-  const rentBtnClassName = `w-full md:w-40 rounded-full border-black text-quaternary font-bold text-sm ${
-    isRent ? 'bg-secondary text-quinary' : 'bg-tertiary text-quaternary'
-  }`;
+  const rentBtnClassName = `w-full md:w-40 rounded-full border-black text-quaternary font-bold text-sm ${isRent ? 'bg-secondary text-quinary' : 'bg-tertiary text-quaternary'
+    }`;
 
-  const commercialBtnClassName = `w-full md:w-40 rounded-full border-secondary text-quaternary font-bold text-sm ${
-    isCommercial ? 'bg-secondary text-quinary' : 'bg-tertiary  text-quaternary'
-  }`;
+  const commercialBtnClassName = `w-full md:w-40 rounded-full border-secondary text-quaternary font-bold text-sm ${isCommercial ? 'bg-secondary text-quinary' : 'bg-tertiary  text-quaternary'
+    }`;
 
-  const residentialBtnClassName = `w-full md:w-40 rounded-full border-black text-quaternary font-bold text-sm ${
-    isResidential ? 'bg-secondary text-quinary' : 'bg-tertiary text-quaternary'
-  }`;
+  const residentialBtnClassName = `w-full md:w-40 rounded-full border-black text-quaternary font-bold text-sm ${isResidential ? 'bg-secondary text-quinary' : 'bg-tertiary text-quaternary'
+    }`;
 
   const handlePropertyTypeSelection = (type: string, subType: string) => {
     setPropertyFeaturesData({
@@ -346,9 +342,9 @@ const MainFeatures: React.FC<IMainFeatures> = ({
 
   const maskedPrice = (value: string) => {
     let price = value;
-    price = price.replace(/\D/g, '');
-    price = price.replace(/\.\d+$/, '');
-    price = price.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    price = price?.replace(/\D/g, '');
+    price = price?.replace(/\.\d+$/, '');
+    price = price?.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     return price;
   };
 
@@ -417,17 +413,15 @@ const MainFeatures: React.FC<IMainFeatures> = ({
               : `Tipo de imóvel`}
           </p>
           <ArrowDownIcon
-            className={`my-auto cursor-pointer ${
-              propTypeDropdownIsOpen
+            className={`my-auto cursor-pointer ${propTypeDropdownIsOpen
                 ? 'transform rotate-360 transition-transform duration-300 ease-in-out'
                 : 'transform rotate-180 transition-transform duration-300 ease-in-out'
-            }`}
+              }`}
           />
         </div>
         <div
-          className={` md:w-fit w-full h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md ${
-            propTypeDropdownIsOpen ? 'hidden ' : ''
-          }`}
+          className={` md:w-fit w-full h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md ${propTypeDropdownIsOpen ? 'hidden ' : ''
+            }`}
         >
           {propertyTypesData.map((prop, index) => (
             <div
@@ -665,11 +659,10 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                   }
                   placeholder="R$"
                   maxLength={15}
-                  className={`border border-quaternary rounded-[10px] h-12 lg:ml-0 md:ml-0 text-quaternary text-sm font-bold md:px-2 drop-shadow-lg mt-1 p-2 ${
-                    !propertyFeaturesData.condominium
+                  className={`border border-quaternary rounded-[10px] h-12 lg:ml-0 md:ml-0 text-quaternary text-sm font-bold md:px-2 drop-shadow-lg mt-1 p-2 ${!propertyFeaturesData.condominium
                       ? 'bg-[#CACACA]'
                       : 'bg-tertiary'
-                  }`}
+                    }`}
                   style={
                     propertyFeaturesErrors.condominiumValue
                       ? { border: '1px solid red' }
@@ -696,11 +689,10 @@ const MainFeatures: React.FC<IMainFeatures> = ({
               </div>
 
               <div
-                className={`lg:ml-5 w-12 h-12 shrink-0 border bg-tertiary rounded-[10px] mt-1 drop-shadow-lg cursor-pointer ${
-                  propertyFeaturesData.condominium
+                className={`lg:ml-5 w-12 h-12 shrink-0 border bg-tertiary rounded-[10px] mt-1 drop-shadow-lg cursor-pointer ${propertyFeaturesData.condominium
                     ? 'border-secondary'
                     : 'border-quaternary'
-                }`}
+                  }`}
                 onClick={() =>
                   setPropertyFeaturesData({
                     ...propertyFeaturesData,
@@ -712,11 +704,10 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                   <CheckIcon
                     fill="#F5BF5D"
                     width="42"
-                    className={`pl-1 ${
-                      propertyFeaturesData.condominium
+                    className={`pl-1 ${propertyFeaturesData.condominium
                         ? ' border-secondary'
                         : ''
-                    }`}
+                      }`}
                   />
                 )}
               </div>
@@ -744,9 +735,8 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                   }
                   placeholder="R$"
                   maxLength={15}
-                  className={`border border-quaternary rounded-[10px] h-12 lg:ml-0 md:ml-0 text-quaternary text-sm font-bold md:px-2 drop-shadow-lg mt-1 p-2 ${
-                    !propertyFeaturesData.iptu ? 'bg-[#CACACA]' : 'bg-tertiary'
-                  }`}
+                  className={`border border-quaternary rounded-[10px] h-12 lg:ml-0 md:ml-0 text-quaternary text-sm font-bold md:px-2 drop-shadow-lg mt-1 p-2 ${!propertyFeaturesData.iptu ? 'bg-[#CACACA]' : 'bg-tertiary'
+                    }`}
                   style={
                     propertyFeaturesErrors.iptuValue
                       ? { border: '1px solid red' }
@@ -775,11 +765,10 @@ const MainFeatures: React.FC<IMainFeatures> = ({
               </div>
 
               <div
-                className={`lg:ml-5 w-12 h-12 border bg-tertiary rounded-[10px] mt-1 drop-shadow-lg cursor-pointer shrink-0 ${
-                  propertyFeaturesData.iptu
+                className={`lg:ml-5 w-12 h-12 border bg-tertiary rounded-[10px] mt-1 drop-shadow-lg cursor-pointer shrink-0 ${propertyFeaturesData.iptu
                     ? 'border-secondary'
                     : 'border-quaternary'
-                }`}
+                  }`}
                 onClick={() => {
                   setPropertyFeaturesData({
                     ...propertyFeaturesData,
@@ -791,9 +780,8 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                   <CheckIcon
                     fill="#F5BF5D"
                     width="42"
-                    className={`pl-1 ${
-                      propertyFeaturesData.iptu ? ' border-secondary' : ''
-                    }`}
+                    className={`pl-1 ${propertyFeaturesData.iptu ? ' border-secondary' : ''
+                      }`}
                   />
                 )}
               </div>
