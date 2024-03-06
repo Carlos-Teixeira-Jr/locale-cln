@@ -13,6 +13,7 @@ const NewAd: NextPageWithLayout = () => {
   const [rotate2, setRotate2] = useState(false);
   const [rotate3, setRotate3] = useState(false);
   const [rotate4, setRotate4] = useState(false);
+
   const showHide = (element: string) => {
     const classList = document.getElementById(element)?.classList;
     classList?.contains('hidden')
@@ -22,12 +23,15 @@ const NewAd: NextPageWithLayout = () => {
     document.getElementById('accordion-1')?.classList?.contains('hidden')
       ? setRotate1(true)
       : setRotate1(false);
+
     document.getElementById('accordion-2')?.classList?.contains('hidden')
       ? setRotate2(true)
       : setRotate2(false);
+
     document.getElementById('accordion-3')?.classList?.contains('hidden')
       ? setRotate3(true)
       : setRotate3(false);
+
     document.getElementById('accordion-4')?.classList?.contains('hidden')
       ? setRotate4(true)
       : setRotate4(false);
@@ -37,14 +41,13 @@ const NewAd: NextPageWithLayout = () => {
     <div>
       <AdminHeader />
       <div className="flex flex-row justify-center lg:justify-end xl:justify-end 2xl:justify-center">
-        <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:flex">
+        <div className="fixed left-0 top-7  sm:hidden hidden md:hidden lg:flex">
           <SideMenu />
         </div>
         <div className="flex flex-col items-center mt-16 max-w-[900px] text-xl lg:text-4xl px-2 md:px-10">
           <h1 className="font-bold text-2xl lg:text-4xl text-quaternary mb-10 mt-20">
             Novo Anúncio
             <div className="accordion flex flex-col">
-              {/** Accordion 1 */}
               <div>
                 <input
                   type="checkbox"
@@ -71,7 +74,6 @@ const NewAd: NextPageWithLayout = () => {
                   </p>
                 </div>
               </div>
-              {/** Accordion 2 */}
               <div>
                 <input
                   type="checkbox"
@@ -98,7 +100,6 @@ const NewAd: NextPageWithLayout = () => {
                   </p>
                 </div>
               </div>
-              {/** Accordion 3 */}
               <div>
                 <input
                   type="checkbox"
@@ -125,7 +126,6 @@ const NewAd: NextPageWithLayout = () => {
                   </p>
                 </div>
               </div>
-              {/** Accordion 4 */}
               <div>
                 <input
                   type="checkbox"

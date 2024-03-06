@@ -14,13 +14,17 @@ interface IAdminHeader {
 
 const AdminHeader: React.FC<IAdminHeader> = ({ isOwnerProp }) => {
   const [open, setOpen] = useState(false);
+
   const ref = useRef<HTMLDivElement>(null);
+
   const isMobile = useIsMobile();
+
   const isOwner = isOwnerProp ? isOwnerProp : false;
+
   const { data: session } = useSession() as any;
 
   return (
-    <div className="flex flex-row fixed top-0 w-full z-50 justify-between bg-tertiary h-20 drop-shadow-md">
+    <div className="flex flex-row fixed top-0 w-full z-50 justify-between bg-tertiary h-16 drop-shadow-md">
       <Link
         href="/"
         className="relative flex items-center cursor-pointer my-auto ml-4"

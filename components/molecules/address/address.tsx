@@ -70,7 +70,6 @@ const Address: React.FC<IAddressComponent> = ({
     complemento: '',
   });
 
-  // Realiza o auto-scroll para o input que apresenta erro;
   useEffect(() => {
     const scrollToError = (errorKey: keyof typeof addressErrors) => {
       if (
@@ -91,7 +90,6 @@ const Address: React.FC<IAddressComponent> = ({
     scrollToError('uf');
   }, [addressErrors]);
 
-  // Necessário para lidar com a mudança dos estados de address quando sao inseridos automaticamente pela lib ViaCep;
   useEffect(() => {
     if (shouldExecuteEffect) {
       setAddressData({
@@ -105,16 +103,13 @@ const Address: React.FC<IAddressComponent> = ({
   }, [viaZipCodeData]);
 
   useEffect(() => {
-    // Define shouldExecuteEffect como true após a primeira renderização para mostrar os dados de endereço antes da alteração.
     setShouldExecuteEffect(true);
   }, [viaZipCodeData]);
 
-  // Envia os dados de endereço para o componente pai;
   useEffect(() => {
     onAddressUpdate!(addressData);
   }, [addressData]);
 
-  // Busca os dados automaticamente usando o cep por meio da lib ViaCep;
   const handleZipCodeBlur = () => {
     if (addressData.zipCode.length === 8) {
       fetch(`https://viacep.com.br/ws/${addressData.zipCode}/json/`)
@@ -200,14 +195,25 @@ const Address: React.FC<IAddressComponent> = ({
     return `${numericOnly?.substring(0, 5)}-${numericOnly.substring(5, 8)}`;
   };
 
+  const classes = {
+    largeInput:
+      'border border-quaternary rounded-[10px] w-full h-12 text-quaternary md:text-md text-sm font-bold px-5 drop-shadow-lg bg-[#CACACA] mt-2',
+    mediumInput:
+      'border border-quaternary rounded-[10px] h-12 text-quaternary md:text-md text-sm font-bold px-5 drop-shadow-lg bg-tertiary mt-2',
+    tinyInput:
+      'border border-quaternary rounded-[10px] md:w-full w-[150px] h-12 text-quaternary md:text-nd text-sm font-bold px-5 drop-shadow-lg bg-tertiary mt-2',
+    inputLabel: 'text-lg font-normal text-quaternary leading-7',
+    errorLabel: 'text-red-500 text-xs',
+  };
+
   return (
     <div className="px-5 lg:mx-auto w-full mx-auto max-w-[1215px]">
       <form>
         <div className="mt-10 mb-5 md:w-96">
-          <h3 className="md:text-[32px] text-2xl text-quaternary font-semibold  leading-9 my-5">
+          <h3 className="md:text-xl text-2xl text-quaternary font-semibold  leading-9 my-5">
             Endereço do Imóvel
           </h3>
-          <label className="text-xl font-normal text-quaternary leading-7">
+          <label className="text-lg font-normal text-quaternary leading-7">
             CEP
           </label>
           <div className="flex flex-col w-full">
@@ -216,7 +222,7 @@ const Address: React.FC<IAddressComponent> = ({
               className="flex flex-col w-full"
             >
               <input
-                className="border border-quaternary rounded-[10px] h-12 sm:w-1/3 md:w-full text-quaternary md:text-2xl text-xl font-bold px-5 drop-shadow-lg bg-tertiary mt-3"
+                className="border border-quaternary rounded-[10px] h-12 sm:w-1/3 md:w-full text-quaternary md:text-sm text-md font-bold px-5 drop-shadow-lg bg-tertiary mt-2"
                 type="cep"
                 value={formatCEP(addressData.zipCode)}
                 onChange={handleZipCodeChange}
@@ -226,7 +232,7 @@ const Address: React.FC<IAddressComponent> = ({
                 required
               />
               {addressErrors.zipCode && (
-                <span className="text-red-500 text-xs">
+                <span className={classes.errorLabel}>
                   {addressErrors.zipCode}
                 </span>
               )}
@@ -234,7 +240,7 @@ const Address: React.FC<IAddressComponent> = ({
             <a
               href="https://buscacepinter.correios.com.br/app/endereco/index.php"
               target="_blank"
-              className="text-secondary text-xl font-normal leading-8 mt-2 cursor-pointer"
+              className="text-secondary text-sm font-normal leading-8 mt-2 cursor-pointer underline"
               rel="noreferrer"
             >
               Não sei meu CEP
@@ -246,11 +252,9 @@ const Address: React.FC<IAddressComponent> = ({
             className="md:flex flex-col md:mr-5 md:w-4/5"
             ref={addressInputsErrorScroll.city}
           >
-            <label className="text-xl font-normal text-quaternary leading-7">
-              Cidade
-            </label>
+            <label className={classes.inputLabel}>Cidade</label>
             <input
-              className="border border-quaternary rounded-[10px] w-full h-12 text-quaternary md:text-2xl text-xl font-bold px-5 drop-shadow-lg bg-[#CACACA] mt-3"
+              className={classes.largeInput}
               value={
                 viaZipCodeData.localidade
                   ? viaZipCodeData.localidade
@@ -262,26 +266,24 @@ const Address: React.FC<IAddressComponent> = ({
               readOnly
             />
             {addressErrors.city && (
-              <span className="text-red-500 text-xs">{addressErrors.city}</span>
+              <span className={classes.errorLabel}>{addressErrors.city}</span>
             )}
           </div>
           <div
             className="flex flex-col md:ml-5 mt-5 md:mt-0 md:w-1/5"
             ref={addressInputsErrorScroll.uf}
           >
-            <label className="text-xl font-normal text-quaternary leading-7">
-              UF
-            </label>
+            <label className={classes.inputLabel}> UF</label>
             <input
               required
               style={addressErrors.uf ? { border: '1px solid red' } : {}}
-              className="border border-quaternary rounded-[10px] md:w-full w-[150px] h-12 text-quaternary md:text-2xl text-xl font-bold px-5 drop-shadow-lg bg-tertiary mt-3"
+              className={classes.tinyInput}
               value={viaZipCodeData.uf ? viaZipCodeData.uf : addressData.uf}
               maxLength={2}
               onChange={handleUFChange}
             />
             {addressErrors.uf && (
-              <span className="text-red-500 text-xs">{addressErrors.uf}</span>
+              <span className={classes.errorLabel}>{addressErrors.uf}</span>
             )}
           </div>
         </div>
@@ -290,11 +292,9 @@ const Address: React.FC<IAddressComponent> = ({
             className="md:flex flex-col md:mr-5 md:w-4/5"
             ref={addressInputsErrorScroll.streetName}
           >
-            <label className="text-xl font-normal text-quaternary leading-7">
-              Logradouro
-            </label>
+            <label className={classes.inputLabel}> Logradouro</label>
             <input
-              className="border border-quaternary rounded-[10px] w-full h-12 text-quaternary md:text-2xl text-xl font-bold px-5 drop-shadow-lg bg-[#CACACA] mt-3"
+              className={classes.largeInput}
               value={
                 viaZipCodeData.logradouro
                   ? viaZipCodeData.logradouro
@@ -308,7 +308,7 @@ const Address: React.FC<IAddressComponent> = ({
               readOnly
             />
             {addressErrors.streetName && (
-              <span className="text-red-500 text-xs">
+              <span className={classes.errorLabel}>
                 {addressErrors.streetName}
               </span>
             )}
@@ -317,12 +317,10 @@ const Address: React.FC<IAddressComponent> = ({
             className="flex flex-col md:ml-5 md:w-1/5"
             ref={addressInputsErrorScroll.streetNumber}
           >
-            <label className="text-xl font-normal text-quaternary leading-7 mt-5 md:mt-0">
-              Número
-            </label>
+            <label className={classes.inputLabel}> Número</label>
             <input
               required
-              className="border border-quaternary rounded-[10px] md:w-full w-[150px] h-12 text-quaternary md:text-2xl text-xl font-bold px-5 drop-shadow-lg bg-tertiary mt-3"
+              className={classes.tinyInput}
               value={
                 viaZipCodeData.numero
                   ? viaZipCodeData.numero
@@ -335,7 +333,7 @@ const Address: React.FC<IAddressComponent> = ({
               onChange={handleNumberChange}
             />
             {addressErrors.streetNumber && (
-              <span className="text-red-500 text-xs">
+              <span className={classes.errorLabel}>
                 {addressErrors.streetNumber}
               </span>
             )}
@@ -343,22 +341,18 @@ const Address: React.FC<IAddressComponent> = ({
         </div>
         <div className="lg:flex mt-5 mb-10">
           <div className="flex flex-col md:mr-5 md:w-full">
-            <label className="text-xl font-normal text-quaternary leading-7">
-              Complemento
-            </label>
+            <label className={classes.inputLabel}> Complemento</label>
             <input
-              className={`border border-quaternary rounded-[10px] h-12 text-quaternary md:text-2xl text-xl font-bold px-5 drop-shadow-lg bg-tertiary mt-3`}
+              className={classes.mediumInput}
               onChange={handleComplementChange}
               value={addressData.complement}
               maxLength={50}
             />
           </div>
           <div className="flex flex-col lg:ml-5 md:w-full mt-5 lg:mt-0">
-            <label className="text-xl font-normal text-quaternary leading-7">
-              Bairro
-            </label>
+            <label className={classes.inputLabel}> Bairro</label>
             <input
-              className={`border border-quaternary rounded-[10px] h-12 text-quaternary md:text-2xl text-xl font-bold px-5 drop-shadow-lg bg-[#CACACA] mt-3 `}
+              className={classes.mediumInput}
               value={
                 viaZipCodeData.bairro
                   ? viaZipCodeData.bairro

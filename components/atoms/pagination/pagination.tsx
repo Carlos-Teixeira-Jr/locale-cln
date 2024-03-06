@@ -17,7 +17,6 @@ const Pagination: React.FC<IPagination> = ({
   currentPage = 0,
   setCurrentPage = () => {},
 }) => {
-
   const router = useRouter();
   const query = router.query;
   const [pages, setPages] = useState<number | undefined>();
@@ -33,7 +32,7 @@ const Pagination: React.FC<IPagination> = ({
         <>
           <div
             onClick={() => setCurrentPage(1)}
-            className="max-w-[91px] max-h-[38px] bg-[#F7F7F6] cursor-pointer border rounded-[30px] border-[#6B7280] text-[#F5BF5D] font-extrabold text-lg leading-5 px-5 py-2 active:bg-[#F5BF5D] active:text-white"
+            className="max-w-[91px] max-h-[38px] bg-[#F7F7F6] cursor-pointer border rounded-[30px] border-[#6B7280] text-[#F5BF5D] font-extrabold text-md leading-5 px-5 py-2 active:bg-[#F5BF5D] active:text-white"
           >
             Início
           </div>
@@ -97,8 +96,7 @@ const Pagination: React.FC<IPagination> = ({
             <ArrowRightIcon />
           </span>
           <div
-            //href={`/${pages - 1}`}
-            className="max-w-[91px] max-h-[38px] bg-[#F7F7F6] cursor-pointer border rounded-[30px] border-[#6B7280] text-[#F5BF5D] font-extrabold text-lg leading-5 px-5 py-2 active:bg-[#F5BF5D] active:text-white"
+            className="max-w-[91px] max-h-[38px] bg-[#F7F7F6] cursor-pointer border rounded-[30px] border-[#6B7280] text-[#F5BF5D] font-extrabold text-md leading-5 px-5 py-2 active:bg-[#F5BF5D] active:text-white"
             onClick={() => {
               if (pages) {
                 setCurrentPage(pages);

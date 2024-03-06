@@ -34,12 +34,8 @@ const FilterList: React.FC<IFilterListProps> = ({
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const query = router.query as any;
-
-  // adType
   const [isBuy, setIsBuy] = useState(true);
   const [isRent, setIsRent] = useState(false);
-
-  // propertyType
   const [propertyType, setPropertyType] = useState({
     propertyType: query.propertyType ? query.propertyType : 'todos',
     propertySubtype:
@@ -48,46 +44,25 @@ const FilterList: React.FC<IFilterListProps> = ({
         : query.propertySubtype,
   });
   const [propTypeDropdownIsOpen, setPropTypeDropdownIsOpen] = useState(false);
-
-  // Location
-  // Lida apenas com o valor que aparecerá no input de localização;
   const [locationInput, setLocationInput] = useState('');
-  // Lida com a formatação da lozalização e categoria da localização para mostrá-las no dropdown;
   const [filteredLocations, setFilteredLocations] = useState<ILocation[]>([]);
   const queryParsed = query.location ? JSON.parse(query.location) : [];
   const [location, setLocation] = useState<ILocation[]>(queryParsed);
   const [allLocations, setAllLocations] = useState(false);
-
-  // prices
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
-
-  // condominium
   const [minCondominium, setMinCondominium] = useState('');
   const [maxCondominium, setMaxCondominium] = useState('');
-
-  // metadata
   const [bedrooms, setBedrooms] = useState(0);
   const [bathrooms, setBathrooms] = useState(0);
   const [parkingSpaces, setParkingSpaces] = useState(0);
-
-  // tags
   const tagsData: ITagsData[] = tagsProp;
-
-  // code
   const [codeToSearch, setCodeToSearch] = useState('');
-
-  // dropdown
   const [open, setOpen] = useState(false);
   const [openLocationDropdown, setOpenLocationDropdown] = useState(false);
-
-  // mobile
   const [mobileFilterIsOpen, setMobileFilterIsOpen] = useState<boolean>(false);
   const [firstRender, setFirstRender] = useState(true);
 
-  // ADTYPE
-
-  // Lida com o switcher de aluguel/compra quando o valor já vem do filtro da homepage;
   useEffect(() => {
     if (query.adType === 'alugar') {
       setIsRent(true);
@@ -109,20 +84,17 @@ const FilterList: React.FC<IFilterListProps> = ({
     router.push({ query: queryParams }, undefined, { scroll: false });
   };
 
-  // Estilos do switch button de compra/aluguel;
-  const buyBtnClassName = `w-full h-[34px] md:h-fit lg:h-[33px] rounded-full border-black text-quaternary font-bold lg:text-lg transition-all ${
+  const buyBtnClassName = `w-full h-[34px] md:h-fit lg:h-[33px] rounded-full border-black text-quaternary font-bold lg:text-md transition-all ${
     isBuy
       ? 'bg-secondary text-quinary border-secondary border'
       : 'bg-tertiary  text-quaternary'
   }`;
 
-  const rentBtnClassName = `w-full h-[34px] md:h-fit lg:h-[33px] rounded-full border-black text-quaternary font-bold lg:text-lg transition-all ${
+  const rentBtnClassName = `w-full h-[34px] md:h-fit lg:h-[33px] rounded-full border-black text-quaternary font-bold lg:text-md transition-all ${
     isRent
       ? 'bg-secondary text-quinary border border-secondary'
       : 'bg-tertiary text-quaternary'
   }`;
-
-  // PROPERTY TYPE
 
   const handlePropertyTypeSelection = (type: string, subType: string) => {
     setPropertyType({
@@ -144,9 +116,6 @@ const FilterList: React.FC<IFilterListProps> = ({
     });
   };
 
-  // ADDRESS
-
-  // Traduz o nome das categorias de endereço do inglês para o portugues para mostrar no dropdown;
   const categoryMappings: Record<string, string> = {
     Cidade: 'city',
     Estado: 'state',
@@ -154,7 +123,6 @@ const FilterList: React.FC<IFilterListProps> = ({
     Bairro: 'neighborhood',
   };
 
-  // Lida com a retradução para o inglês pois é dessa forma que a rota realiza a busca;
   const categoryTranslations: Record<string, string> = {
     city: 'Cidade',
     state: 'Estado',
@@ -162,7 +130,6 @@ const FilterList: React.FC<IFilterListProps> = ({
     neighborhood: 'Bairro',
   };
 
-  //Filtra os docs de location retornados pela query para mostrar apenas os docs referentes ao que foi digitado no input;
   const filterLocation = (value: string) => {
     const filtered = locationProp.filter((city) =>
       city.name.toLowerCase().startsWith(value.toLowerCase())
@@ -170,7 +137,6 @@ const FilterList: React.FC<IFilterListProps> = ({
     setFilteredLocations(filtered);
   };
 
-  // Reorganiza filteredLocations para que se torne um objeto onde cada prop representa uma categoria em forma de um array com todas as strings de localização referentes à essa categoria;
   const categorizedLocations: Record<string, ILocation[]> =
     filteredLocations.reduce(
       (categories: Record<string, ILocation[]>, location) => {
@@ -185,36 +151,28 @@ const FilterList: React.FC<IFilterListProps> = ({
       {}
     );
 
-  // Insere e remove os objetos de location ao clicar nas opções do dropdown;
   const toggleLocation = (name: string, category: string) => {
-    // Procura no array location um objeto que tenha a categoria igual a selecionada;
     const existingCategory = location.find(
       (item) => item.category === categoryMappings[category]
     );
 
     if (existingCategory) {
-      // Verifica se já existe um objeto com a categoria selecionada, então apenas atualizamos o array name dentro do objeto dessa categoria;
       const updatedLocation = location
         .map((item) => {
           if (item.category === categoryMappings[category]) {
-            // Verifica se o name selecionado já está presente no array name do objeto com a categoria selecionada;
             if (item.name.includes(name)) {
-              // Se já existir esse name, ele é removido do array;
               const updatedName = item.name.filter(
                 (itemName: string) => itemName !== name
               );
-              // Se o name removido for o ultimo do array, retornamos um valor null para posteriormente remover todo o objeto da categoria correspondente;
               if (updatedName.length === 0) {
-                return null; // Retorna null para filtrar o objeto do array
+                return null;
               } else {
-                // Se não for o ultimo, então retornamos um novo array name com o novo name selecionado;
                 return {
                   ...item,
                   name: updatedName,
                 };
               }
             } else {
-              // Se não houver o name no array retornamos um novo array name com o novo name selecionado;
               return {
                 ...item,
                 name: [...item.name, name],
@@ -222,11 +180,9 @@ const FilterList: React.FC<IFilterListProps> = ({
             }
           }
           return item;
-          // O filter remove os objetos que tenham retoornado null no map acima para removê-los de updatedLocation;
         })
         .filter(Boolean) as ILocation[];
       setLocation(updatedLocation);
-      // Caso a opção selecionada pertença a uma categoria ainda não inserida em location, apenas é inserido um objeto com o name e category selecionados;
     } else {
       setLocation([
         ...location,
@@ -235,16 +191,11 @@ const FilterList: React.FC<IFilterListProps> = ({
     }
   };
 
-  // Envia os valores de location para a Search sempre que houver uma alteração no
   useEffect(() => {
     locationChangeProp(location);
   }, [location]);
 
-  //// METADATA ////
-
-  // Lida com a inserção e remoção do parametro na url;
   useEffect(() => {
-    // Verifica se essa é a primeira renderização, se for, não executa automaticamente a função removeQueryParams, o que impede que os parametros da URL sofram uma atualização e assim não realizando uma nova requisição duplicada na primeira renderização da página;
     if (firstRender) {
       setFirstRender(false);
       return;
@@ -258,9 +209,7 @@ const FilterList: React.FC<IFilterListProps> = ({
     }
   }, [bedrooms]);
 
-  // Lida com a inserção e remoção do parametro na url;
   useEffect(() => {
-    // Verifica se essa é a primeira renderização, se for, não executa automaticamente a função removeQueryParams, o que impede que os parametros da URL sofram uma atualização e assim não realizando uma nova requisição duplicada na primeira renderização da página;
     if (firstRender) {
       setFirstRender(false);
       return;
@@ -274,9 +223,7 @@ const FilterList: React.FC<IFilterListProps> = ({
     }
   }, [bathrooms]);
 
-  // Lida com a inserção e remoção do parametro na url;
   useEffect(() => {
-    // Verifica se essa é a primeira renderização, se for, não executa automaticamente a função removeQueryParams, o que impede que os parametros da URL sofram uma atualização e assim não realizando uma nova requisição duplicada na primeira renderização da página;
     if (firstRender) {
       setFirstRender(false);
       return;
@@ -290,7 +237,6 @@ const FilterList: React.FC<IFilterListProps> = ({
     }
   }, [parkingSpaces]);
 
-  // Lida com o comportamento do estilo de seleção dos checkboxes dependendo do valor vindo dos parametros daurl;
   useEffect(() => {
     setBedrooms(
       parseInt(query.bedroom !== undefined ? query.bedroom.toString() : '0')
@@ -307,9 +253,6 @@ const FilterList: React.FC<IFilterListProps> = ({
     );
   }, [query]);
 
-  //// TAGS ////
-
-  // Insere e remove as tags clicadas nos parâmetros da URL;
   const toggleSelection = (item: string) => {
     const tags: string[] = Array.isArray(query.tags)
       ? query.tags
@@ -338,7 +281,6 @@ const FilterList: React.FC<IFilterListProps> = ({
       );
     } else {
       const { tags, ...updatedQuery } = query;
-      // Faz com que o parametro page volte a ser 1 quando o parametro tags é removido da url;
       updatedQuery.page = '1';
       router.push(
         {
@@ -351,21 +293,16 @@ const FilterList: React.FC<IFilterListProps> = ({
     }
   };
 
-  //// FILTER BOX ON MOBILE ////
-
-  // Mobile: Envia a informação de que o botão de fechar os filtros foi clicado;
   useEffect(() => {
     if (!mobileFilterIsOpen) {
       onMobileFilterIsOpenChange(false);
     }
   }, [mobileFilterIsOpen]);
 
-  // Mobile: se o filtro for aberto no componente de atalhos esse efeito recebe a informação emuda o valor do estado que contra a abertura do compnente de filtros;
   useEffect(() => {
     setMobileFilterIsOpen(mobileFilterIsOpenProp);
   }, [mobileFilterIsOpenProp]);
 
-  // Lida com cliques fora e dentro dos dropdowns para o comportamento de fechamento;
   useEffect(() => {
     document.addEventListener('click', handleClick);
     return () => document.removeEventListener('click', handleClick);
@@ -379,19 +316,16 @@ const FilterList: React.FC<IFilterListProps> = ({
     }
   });
 
-  //// PRICES ////
-
   const maskedPrice = (value: string) => {
     let price = value;
     price = price.replace(/\D/g, '');
-    price = price.replace(/(\d)(\d{2})$/, '$1,$2');
+    price = price.replace(/(\d)(\d{0})$/, '$1,$2');
     price = price.replace(/(?=(\d{3})+(\D))\B/g, '.');
+    price = price.substring(0, price.length - 1);
     return price;
   };
 
-  // As funções abaixo lidam com a remoção da máscara para inserção do valor nos parâmetros da url para que sejam usados na busca;
   useEffect(() => {
-    // Verifica se essa é a primeira renderização, se for, não executa automaticamente a função removeQueryParams, o que impede que os parametros da URL sofram uma atualização e assim não realizando uma nova requisição duplicada na primeira renderização da página;
     if (firstRender) {
       setFirstRender(false);
       return;
@@ -409,7 +343,6 @@ const FilterList: React.FC<IFilterListProps> = ({
   }, [minPrice]);
 
   useEffect(() => {
-    // Verifica se essa é a primeira renderização, se for, não executa automaticamente a função removeQueryParams, o que impede que os parametros da URL sofram uma atualização e assim não realizando uma nova requisição duplicada na primeira renderização da página;
     if (firstRender) {
       setFirstRender(false);
       return;
@@ -431,7 +364,6 @@ const FilterList: React.FC<IFilterListProps> = ({
   }, [maxPrice]);
 
   useEffect(() => {
-    // Verifica se essa é a primeira renderização, se for, não executa automaticamente a função removeQueryParams, o que impede que os parametros da URL sofram uma atualização e assim não realizando uma nova requisição duplicada na primeira renderização da página;
     if (firstRender) {
       setFirstRender(false);
       return;
@@ -477,9 +409,6 @@ const FilterList: React.FC<IFilterListProps> = ({
     }
   }, [maxCondominium]);
 
-  //// FUNCTIONALITIES ////
-
-  // Remove parametros da URL da query e faz o refresh para que seja feita uma nova requisição a partir da url atualizada;
   const removeQueryParam = (param: string) => {
     const { pathname } = router;
     const params = new URLSearchParams(stringify(query));
@@ -512,7 +441,6 @@ const FilterList: React.FC<IFilterListProps> = ({
       )}
 
       <div className="flex flex-col md:flex-row lg:flex-col justify-between">
-        {/* Basic info */}
         <div>
           <h3 className="font-normal text-base text-quaternary leading-[19px] mb-2 ">
             O que procura?
@@ -536,10 +464,10 @@ const FilterList: React.FC<IFilterListProps> = ({
             </h3>
 
             <div
-              className="drop-shadow-lg h-12 w-full lg:text-lg rounded-xl p-2 mb-1 border border-quaternary flex justify-between"
+              className="drop-shadow-lg h-10 w-full lg:text-md rounded-xl p-2 text-gray-400 mb-1 border border-quaternary flex justify-between"
               onClick={() => setPropTypeDropdownIsOpen(!propTypeDropdownIsOpen)}
             >
-              <p className="text-quaternary text">
+              <p className="text-gray-400 text-sm pl-1 font-normal">
                 {propertyType.propertyType !== 'todos'
                   ? propertyType.propertySubtype
                   : `todos`}
@@ -553,27 +481,28 @@ const FilterList: React.FC<IFilterListProps> = ({
               />
             </div>
             <div
-              className={`z-50 w-full h-fit rounded-xl bg-tertiary overflow-hidden text-quaternary cursor-pointer shadow-md ${
+              className={`z-50 w-full px-2 h-fit rounded-xl bg-tertiary overflow-hidden text-quaternary cursor-pointer shadow-md ${
                 !propTypeDropdownIsOpen ? 'hidden ' : 'absolute'
               }`}
             >
+              <p
+                className="text-left lowercase px-3 pt-1 hover:bg-quaternary hover:text-tertiary text-quaternary font-bold text-md"
+                onClick={() => handlePropertyTypeSelection('todos', 'todos')}
+              >
+                todos
+              </p>
               {propertyTypesData.map((prop, index) => (
-                <div key={index} className="w-full rounded-t-8 bg-tertiary">
-                  <p
-                    className="text-center p-1 hover:bg-quaternary hover:text-tertiary font-normal text-lg"
-                    onClick={() =>
-                      handlePropertyTypeSelection('todos', 'todos')
-                    }
-                  >
-                    Todos
-                  </p>
-                  <p className="text-quaternary lg:text-2xl p-1 text-center font-bold ">
+                <div
+                  key={index}
+                  className="w-full rounded-t-8 bg-tertiary px-2"
+                >
+                  <p className="text-quaternary px-1 lg:text-lg text-left font-bold ">
                     {prop.type}
                   </p>
                   {propertyTypesData[index].subTypes.map((type) => (
                     <div
                       key={type}
-                      className="text-center p-1 hover:bg-quaternary hover:text-tertiary"
+                      className="text-left text-sm last:mb-1 px-1 hover:bg-quaternary hover:text-tertiary"
                       onClick={() =>
                         handlePropertyTypeSelection(prop.type, type)
                       }
@@ -586,13 +515,13 @@ const FilterList: React.FC<IFilterListProps> = ({
             </div>
           </div>
 
-          <div className="flex flex-col my-5">
+          <div className="flex flex-col my-3">
             <label className="font-normal text-base text-quaternary leading-[19px] mb-2">
               Onde?
             </label>
             <input
-              className="bg-transparent w-full font-normal text-base text-quaternary leading-[19px] shadow-lg p-3 border border-quaternary rounded-xl outline-none"
-              placeholder="Digite um bairro, cidade, rua..."
+              className="bg-transparent w-full h-10 font-normal text-sm text-quaternary leading-[19px] shadow-lg p-3 border border-quaternary rounded-xl outline-none"
+              placeholder="digite um bairro, cidade, rua..."
               onChange={(event: ChangeEvent<HTMLInputElement>) => {
                 const value = event.target.value;
                 setLocationInput(value !== 'todos' ? value : '');
@@ -641,7 +570,7 @@ const FilterList: React.FC<IFilterListProps> = ({
                 {Object.entries(categorizedLocations).map(
                   ([category, locations]) => (
                     <div key={category} className="w-full py-2 h-fit">
-                      <h3 className="font-bold text-xl ml-[20px]">
+                      <h3 className="font-bold text-lg ml-[20px]">
                         {category}
                       </h3>
                       {locations.map(({ name }: ILocation) => (
@@ -719,7 +648,6 @@ const FilterList: React.FC<IFilterListProps> = ({
           </div>
         </div>
 
-        {/* Characteristics */}
         <div className="md:mt-[87px] lg:mt-0">
           <h3 className="font-normal text-base text-quaternary leading-[19px] mb-2 lg:my-2">
             Preço
@@ -727,9 +655,9 @@ const FilterList: React.FC<IFilterListProps> = ({
           <div className="flex flex-row mb-5 md:mb-3">
             <input
               value={maskedPrice(minPrice)}
-              placeholder="Min."
+              placeholder="min."
               className={
-                'bg-transparent outline-none w-full h-12 font-normal text-base text-quaternary leading-[19px] lg:mb-2 shadow-lg p-3 border border-quaternary rounded-xl'
+                'bg-transparent outline-none w-full h-10 font-normal text-sm text-quaternary leading-[19px] lg:mb-2 shadow-lg p-3 border border-quaternary rounded-xl'
               }
               onChange={(e) => setMinPrice(maskedPrice(e.target.value))}
               maxLength={10}
@@ -737,9 +665,9 @@ const FilterList: React.FC<IFilterListProps> = ({
             <span className="px-3 md:px-3 mt-2 text-quaternary">a</span>
             <input
               value={maskedPrice(maxPrice)}
-              placeholder="Max."
+              placeholder="max."
               className={
-                'bg-transparent outline-none w-full h-12 font-normal text-base text-quaternary leading-[19px] lg:mb-2 shadow-lg p-3 border border-quaternary rounded-xl'
+                'bg-transparent outline-none w-full h-10 font-normal text-sm text-quaternary leading-[19px] lg:mb-2 shadow-lg p-3 border border-quaternary rounded-xl'
               }
               onChange={(e) => setMaxPrice(maskedPrice(e.target.value))}
               maxLength={10}
@@ -752,9 +680,9 @@ const FilterList: React.FC<IFilterListProps> = ({
           <div className="flex flex-row">
             <input
               value={maskedPrice(minCondominium)}
-              placeholder="Min."
+              placeholder="min."
               className={
-                'bg-transparent outline-none w-full h-12 font-normal text-base text-quaternary leading-[19px] lg:mb-2 shadow-lg p-3 border border-quaternary rounded-xl'
+                'bg-transparent outline-none w-full h-10 font-normal text-sm text-quaternary leading-[19px] lg:mb-2 shadow-lg p-3 border border-quaternary rounded-xl'
               }
               onChange={(e) => setMinCondominium(maskedPrice(e.target.value))}
               maxLength={10}
@@ -762,9 +690,9 @@ const FilterList: React.FC<IFilterListProps> = ({
             <span className="px-3 md:px-3 mt-2 text-quaternary">a</span>
             <input
               value={maskedPrice(maxCondominium)}
-              placeholder="Max."
+              placeholder="max."
               className={
-                'bg-transparent outline-none w-full h-12 font-normal text-base text-quaternary leading-[19px] mb-5 lg:mb-2 shadow-lg p-3 border border-quaternary rounded-xl'
+                'bg-transparent outline-none w-full h-10 font-normal text-sm text-quaternary leading-[19px] mb-5 lg:mb-2 shadow-lg p-3 border border-quaternary rounded-xl'
               }
               onChange={(e) => setMaxCondominium(maskedPrice(e.target.value))}
               maxLength={10}
@@ -773,8 +701,8 @@ const FilterList: React.FC<IFilterListProps> = ({
         </div>
       </div>
 
-      <div className="md:flex lg:flex-col gap-2 justify-between md:mt-5">
-        <div>
+      <div className="md:flex lg:flex-col gap-2 justify-between md:mt-3">
+        <div className="-mb-5">
           <h3 className="font-normal text-base text-quaternary leading-[19px] mb-2">
             Quartos
           </h3>
@@ -846,7 +774,7 @@ const FilterList: React.FC<IFilterListProps> = ({
 
         <div className="w-1 h-16 mt-5 border-l border-quaternary hidden md:flex lg:hidden"></div>
 
-        <div>
+        <div className="-mb-5">
           <h3 className="font-normal text-base text-quaternary leading-[19px] mb-2">
             Banheiros
           </h3>
@@ -985,10 +913,9 @@ const FilterList: React.FC<IFilterListProps> = ({
         </div>
       </div>
 
-      <div className="border border-b-quaternary mb-9" />
+      <div className="border border-b-quaternary -mt-2 mb-5" />
 
       <div>
-        {/* Other filters */}
         <div>
           <h3 className="font-normal text-base text-quaternary leading-[19px] mb-3">
             Outros filtros
@@ -1001,8 +928,8 @@ const FilterList: React.FC<IFilterListProps> = ({
                   id={name}
                   className={`w-[20px] h-[20px] border border-quaternary rounded-[3px] bg-tertiary ${
                     query.tags?.toLowerCase().includes(name.toLowerCase())
-                        ? 'border-yellow-500' // estilo de clique
-                        : '' // estilo normal
+                      ? 'border-yellow-500'
+                      : ''
                   }`}
                   onClick={() => toggleSelection(name)}
                 >
@@ -1015,7 +942,7 @@ const FilterList: React.FC<IFilterListProps> = ({
                     />
                   )}
                 </div>
-                <h3 className="font-normal text-base text-quaternary leading-[19px] ml-3">
+                <h3 className="font-normal text-sm text-quaternary leading-[19px] ml-3">
                   {name} ({amount})
                 </h3>
               </div>
@@ -1028,30 +955,29 @@ const FilterList: React.FC<IFilterListProps> = ({
             </div>
           )}
 
-          <div className="border border-b-quaternary my-9" />
+          <div className="border border-b-quaternary my-6" />
         </div>
 
-        {/* Search by code */}
         <div className="md:w-1/2 lg:w-full">
           <h3 className="font-normal text-base text-quaternary leading-[19px] mb-3">
             Buscar imóvel por código
           </h3>
           <div className="flex gap-3">
             <input
-              placeholder="Digite o código..."
-              className="bg-transparent w-full font-normal text-base text-quaternary leading-[19px] mb-1 shadow-lg p-3 border border-quaternary rounded-xl outline-none"
+              placeholder="digite o código..."
+              className="bg-transparent w-full h-10 font-normal text-sm text-quaternary leading-[19px] mb-1 shadow-lg p-3 border border-quaternary rounded-xl outline-none"
               value={codeToSearch}
               onChange={(e) => setCodeToSearch(e.target.value)}
               maxLength={30}
             />
             <div
-              className="bg-secondary shadow-lg border border-quaternary rounded-xl outline-none px-2 mb-1 cursor-pointer hover:bg-primary active:bg-primary transition-colors"
+              className="bg-secondary shadow-lg border border-quaternary rounded-xl outline-none px-2 py-0 h-10 cursor-pointer hover:bg-primary active:bg-primary transition-colors"
               onClick={() => {
                 const queryParams = { ...router.query, code: codeToSearch };
                 router.push({ query: queryParams });
               }}
             >
-              <SearchIcon fill="#F7F7F6" width="30" />
+              <SearchIcon fill="#F7F7F6" width="25" className="pb-1" />
             </div>
           </div>
         </div>
