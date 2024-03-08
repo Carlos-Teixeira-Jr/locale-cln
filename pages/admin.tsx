@@ -24,6 +24,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
   ownerProperties,
   notifications,
 }) => {
+  console.log("🚀 ~ ownerProperties:", ownerProperties)
 
   const { data: session } = useSession() as any;
   const [isOwner, setIsOwner] = useState<boolean>(false);
@@ -60,9 +61,8 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
   }, [currentPage]);
 
   const classes = {
-    sideMenu: `${
-      width < 1080 ? 'hidden' : 'flex'
-    } fixed left-0 top-7 md:hidden lg:flex xl:flex`,
+    sideMenu: `${width < 1080 ? 'hidden' : 'flex'
+      } fixed left-0 top-7 md:hidden lg:flex xl:flex`,
   };
 
   return (
@@ -210,7 +210,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ _id: userId }),
+          body: JSON.stringify({ userId }),
         }
       );
 

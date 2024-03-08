@@ -1,5 +1,11 @@
 import { ErrorToastNames, SuccessToastNames, showErrorToast, showSuccessToast } from "./toasts";
 
+export type ImageData = {
+  id: string;
+  data: Blob;
+  name: string;
+};
+
 export const openDatabase = () => {
   return new Promise<IDBDatabase>((resolve, reject) => {
     const request = indexedDB.open('propertyImages', 1);
@@ -66,7 +72,7 @@ export const addImageToDB = (file: File, src: string, id: string) => {
 };
 
 
-export const getAllImagesFromDB = () => {
+export const getAllImagesFromDB = (): Promise<ImageData[]> => {
   return new Promise((resolve, reject) => {
     openDatabase().then(db => {
       const transaction = db.transaction(['imagens'], 'readonly');
@@ -127,3 +133,29 @@ export const clearIndexDB = () => {
     });
   });
 };
+
+export const getImageFromDBById = (id: string): Promise<ImageData> => {
+  return new Promise((resolve, reject) => {
+    openDatabase().then(db => {
+      const transaction = db.transaction(['imagens'], 'readonly');
+      const objectStore = transaction.objectStore('imagens');
+
+      // Obter a imagem do IndexedDB usando o ID UUID
+      const getRequest = objectStore.get(id);
+
+      getRequest.onsuccess = () => {
+        const imageData = getRequest.result;
+        if (imageData) {
+          resolve(imageData); // Resolvendo com os dados da imagem
+        } else {
+          reject("Imagem não encontrada no IndexedDB."); // Rejeitando se a imagem não for encontrada
+        }
+      };
+
+      getRequest.onerror = (event) => {
+        reject(`Erro ao obter imagem do IndexedDB: ${(event.target as IDBRequest).error}`);
+      };
+    });
+  });
+};
+

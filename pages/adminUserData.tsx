@@ -16,7 +16,9 @@ import {
   IPropertyInfo,
 } from '../common/interfaces/property/propertyData';
 import { IUser, IUserDataComponent } from '../common/interfaces/user/user';
+import { defaultProfileImage } from '../common/utils/defaultImage/defaultImage';
 import { fetchJson } from '../common/utils/fetchJson';
+import { clearIndexDB, getAllImagesFromDB } from '../common/utils/indexDb';
 import {
   ErrorToastNames,
   SuccessToastNames,
@@ -44,13 +46,12 @@ interface IAdminUserDataPageProps {
   selectedPlanCard: string;
   setSelectedPlanCard: (_selectedCard: string) => void;
   plans: IPlan[];
-  userData: any;
   properties: IPropertyInfo;
   ownerData: IOwnerData;
   notifications: [];
 }
 
-type AddressErrors =  {
+type AddressErrors = {
   [key: string]: string;
   zipCode: string;
   city: string;
@@ -62,26 +63,24 @@ type AddressErrors =  {
 const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   notifications,
   plans,
-  userData,
   properties,
   ownerData,
 }) => {
 
   const router = useRouter();
   const isMobile = useIsMobile();
-
+  const userData = ownerData?.user;
   const reversedCards = [...plans].reverse();
-  const isOwner = properties?.docs?.length > 0 ? true : false;
+  const isOwner = properties?.docs?.length > 0 || ownerData?.owner ? true : false;
   const [selectedPlan, setSelectedPlan] = useState(
     ownerData?.owner ? ownerData?.owner?.plan : ''
   );
   const [creditCardIsOpen, setCreditCardIsOpen] = useState(false);
   const [deleteAccountIsOpen, setDeleteAccountIsOpen] = useState(false);
   const [isEditPassword, setIsEditPassword] = useState(false);
-  const defaultProfilePicture = 'https://static.vecteezy.com/system/resources/previews/019/879/186/non_2x/user-icon-on-transparent-background-free-png.png';
   const [isAdminPage, setIsAdminPage] = useState(false);
   const isEdit = true;
-  
+
   const creditCardInfo = ownerData?.owner?.paymentData?.creditCardInfo
     ? ownerData?.owner?.paymentData?.creditCardInfo
     : {
@@ -89,7 +88,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       creditCardNumber: '',
       creditCardToken: ''
     };
-  
+
   const planObj = plans.find((plan) => plan._id === selectedPlan);
 
   const [formData, setFormData] = useState<IUserDataComponent>({
@@ -98,7 +97,10 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     cpf: '',
     cellPhone: '',
     phone: '',
-    picture: '',
+    picture: {
+      id: '1',
+      src: ownerData?.user?.picture
+    },
     wppNumber: ''
   });
 
@@ -134,7 +136,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const [address, setAddress] = useState<IAddress>({
     zipCode: userData ? userData.address.zipCode : '',
     city: userData ? userData.address.city : '',
-    streetName: userData ? userData.address.streetNuame : '',
+    streetName: userData ? userData.address.streetName : '',
     streetNumber: userData ? userData.address.streetNumber : '',
     complement: userData ? userData.address.complement : '',
     neighborhood: userData ? userData.address.neighborhood : '',
@@ -284,14 +286,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
         username: formData.username,
         email: formData.email,
         cpf: formData.cpf,
-        picture: formData.picture
-          ? formData.picture
-          : defaultProfilePicture,
       };
-
-      const picture = formData.picture
-        ? formData.picture
-        : ownerData.owner?.picture;
 
       const ownerFormData: IOwner = {
         id: ownerData?.owner ? ownerData.owner._id : '',
@@ -299,9 +294,6 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
         phones: [formData.cellPhone, formData.phone],
         userId: userData._id,
         email: formData.email ? formData.email : '',
-        picture: picture
-          ? picture
-          : defaultProfilePicture,
         adCredits: ownerData.owner?.adCredits ? ownerData.owner?.adCredits : 0,
       };
 
@@ -326,6 +318,49 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
           owner: ownerFormData,
           password: editPasswordFormData,
         };
+      }
+
+      const indexDbImages = (await getAllImagesFromDB()) as {
+        id: string;
+        data: Blob;
+        name: string;
+      }[];
+
+      const imagesForm = new FormData();
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+      let file;
+
+      if (indexDbImages.length > 0) {
+        file = new File(
+          [indexDbImages[0].data],
+          `${indexDbImages[0].name}`
+        );
+      } else {
+        file = new File([], '');
+      }
+
+      imagesForm.append('images', file);
+
+      imagesForm.append('userId', ownerData?.user?._id);
+
+      try {
+        const imagesResponse = await fetch(
+          `${baseUrl}/property/upload-profile-image`,
+          {
+            method: 'POST',
+            body: imagesForm,
+          }
+        );
+
+        if (imagesResponse.ok) {
+          clearIndexDB();
+        } else {
+          clearIndexDB();
+          showErrorToast(ErrorToastNames.ImagesUploadError);
+        }
+      } catch (error) {
+        clearIndexDB();
+        showErrorToast(ErrorToastNames.ImageUploadError);
       }
 
       try {
@@ -377,14 +412,13 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
             <div className="my-5">
               <UserDataInputs
                 isEdit={isEdit}
-                userData={ownerData}
+                ownerData={ownerData}
                 onUserDataUpdate={(updatedUserData: IUserDataComponent) => {
                   setFormData(updatedUserData);
                 }}
-                firstProperty={properties?.docs[0]}
                 error={formDataErrors}
                 userDataInputRefs={userDataInputRefs}
-                picture={ownerData.user.picture ? ownerData.user.picture : defaultProfilePicture}
+                picture={formData.picture ? formData.picture : { id: '1', src: defaultProfileImage }}
               />
               <div className="mx-5 my-10">
                 <EditPassword
@@ -437,7 +471,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
               <div className="flex mt-1 md:mt-1">
                 <UserAddress
                   isEdit={isEdit}
-                  address={userData.address}
+                  address={userData?.address}
                   onAddressUpdate={(updateAddres: IAddress) =>
                     setAddress(updateAddres)
                   }
@@ -462,9 +496,8 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                 >
                   <ArrowDownIcon
                     width="13"
-                    className={`cursor-pointer ${
-                      creditCardIsOpen ? '' : 'rotate-180'
-                    }`}
+                    className={`cursor-pointer ${creditCardIsOpen ? '' : 'rotate-180'
+                      }`}
                   />
                 </span>
               </label>
@@ -515,9 +548,8 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                 >
                   <ArrowDownIcon
                     width="13"
-                    className={`cursor-pointer ${
-                      deleteAccountIsOpen ? '' : 'rotate-180'
-                    }`}
+                    className={`cursor-pointer ${deleteAccountIsOpen ? '' : 'rotate-180'
+                      }`}
                   />
                 </span>
               </label>
@@ -612,7 +644,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ _id: userId  }),
+          body: JSON.stringify({ _id: userId }),
         }
       );
       if (ownerIdResponse.ok) {
@@ -641,7 +673,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ _id: userId }),
+          body: JSON.stringify({ userId }),
         })
           .then((res) => res.json())
           .catch(() => []),

@@ -17,29 +17,29 @@ const PropertyInfoTop = ({ propertyID }: any) => {
     numBathrooms: IMetadata,
     numGarage: any
   ) => [
-    {
-      icon: <AreaIcon />,
-      value: propertyID?.size?.totalArea,
-      description: 'm² area',
-    },
-    {
-      icon: <BedroomIcon />,
-      value: numBedrooms?.amount,
-      description: 'quarto',
-    },
-    {
-      icon: <BathroomIcon />,
-      value: numBathrooms?.amount,
-      description: 'banheiro',
-    },
-    {
-      icon: <ParkingIcon />,
-      value: numGarage?.amount,
-      description: 'garagem',
-    },
-  ];
+      {
+        icon: <AreaIcon />,
+        value: propertyID?.size?.totalArea,
+        description: 'm² area',
+      },
+      {
+        icon: <BedroomIcon />,
+        value: numBedrooms?.amount,
+        description: 'quarto',
+      },
+      {
+        icon: <BathroomIcon />,
+        value: numBathrooms?.amount,
+        description: 'banheiro',
+      },
+      {
+        icon: <ParkingIcon />,
+        value: numGarage?.amount,
+        description: 'garagem',
+      },
+    ];
 
-  const iptuValue: [] = propertyID.prices[2].value;
+  const iptuValue: [] = propertyID?.prices[2]?.value;
 
   return (
     <div className="m-5 lg:mx-auto md:w-2/3">

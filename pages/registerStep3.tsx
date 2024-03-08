@@ -1,8 +1,10 @@
-import { useSession } from 'next-auth/react';
+import { GetServerSidePropsContext } from 'next';
+import { getSession, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { MouseEvent, useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import store from 'store';
+import { IOwnerData } from '../common/interfaces/owner/owner';
 import { IPlan } from '../common/interfaces/plans/plans';
 import { IAddress } from '../common/interfaces/property/propertyData';
 import {
@@ -11,8 +13,11 @@ import {
   IRegisterPropertyData_Step3,
 } from '../common/interfaces/property/register/register';
 import { IUserDataComponent } from '../common/interfaces/user/user';
+import { defaultProfileImage } from '../common/utils/defaultImage/defaultImage';
+import { fetchJson } from '../common/utils/fetchJson';
 import { geocodeAddress } from '../common/utils/geocodeAddress';
 import { clearIndexDB, getAllImagesFromDB } from '../common/utils/indexDb';
+import useProgressRedirect from '../common/utils/stepProgressHandler';
 import { ErrorToastNames, showErrorToast } from '../common/utils/toasts';
 import Loading from '../components/atoms/loading';
 import PaymentFailModal from '../components/atoms/modals/paymentFailModal';
@@ -33,6 +38,7 @@ interface IRegisterStep3Props {
   selectedPlanCard: string;
   setSelectedPlanCard: (_selectedCard: string) => void;
   plans: IPlan[];
+  ownerData: IOwnerData;
 }
 
 type BodyReq = {
@@ -46,7 +52,7 @@ type BodyReq = {
   picture?: string;
 };
 
-const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
+const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerData }) => {
   const router = useRouter();
   const { progress, updateProgress } = useProgress();
   const query = router.query;
@@ -105,7 +111,10 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     cpf: '',
     cellPhone: '',
     phone: '',
-    picture: '',
+    picture: {
+      id: '',
+      src: ''
+    },
     wppNumber: ''
   });
 
@@ -152,11 +161,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     cardBrand: ''
   });
 
-  useEffect(() => {
-    if (progress < 3) {
-      router.push('/register');
-    }
-  });
+  // Verifica se o estado progress que determina em qual step o usuário está corresponde ao step atual;
+  useProgressRedirect(progress, 3, '/register');
 
   useEffect(() => {
     setAddressData(property ? property.address : '');
@@ -283,7 +289,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         cellPhone: userDataForm.cellPhone,
         picture: userDataForm.picture
           ? userDataForm.picture
-          : 'https://static.vecteezy.com/system/resources/previews/019/879/186/non_2x/user-icon-on-transparent-background-free-png.png',
+          : { id: '1', src: defaultProfileImage },
         phone: userDataForm.phone,
         wppNumber: userDataForm.wppNumber ? userDataForm.wppNumber : '',
         zipCode: addressData.zipCode,
@@ -306,7 +312,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         cpf: userDataForm.cpf.replace(/\D/g, ''),
         picture: userDataForm.picture
           ? userDataForm.picture
-          : 'https://static.vecteezy.com/system/resources/previews/019/879/186/non_2x/user-icon-on-transparent-background-free-png.png',
+          : { id: '1', src: defaultProfileImage },
       };
 
       const propertyData: ICreateProperty_propertyData = {
@@ -324,7 +330,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         ownerInfo: {
           picture: userDataForm.picture
             ? userDataForm.picture
-            : 'https://static.vecteezy.com/system/resources/previews/019/879/186/non_2x/user-icon-on-transparent-background-free-png.png',
+            : { id: '1', src: defaultProfileImage },
           name: userDataForm.username,
           phones: [`55 ${userDataForm.cellPhone}`, userDataForm.phone],
           wppNumber: userDataForm.wppNumber ? `55 ${userDataForm.wppNumber}` : ''
@@ -386,27 +392,61 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
             name: string;
           }[];
 
-          const formData = new FormData();
+          const propertyImagesFormData = new FormData();
 
           for (let i = 0; i < indexDbImages.length; i++) {
-            const file = new File(
-              [indexDbImages[i].data],
-              `${indexDbImages[i].name}`
-            );
-            formData.append('images', file);
+            if (indexDbImages[i].id !== userDataForm.picture.id) {
+              const file = new File(
+                [indexDbImages[i].data],
+                `${indexDbImages[i].name}`
+              );
+              propertyImagesFormData.append('images', file);
+            }
           }
 
-          formData.append('propertyId', data.createdProperty._id);
+          propertyImagesFormData.append('propertyId', data.createdProperty._id);
 
-          const imagesResponse = await fetch(
-            `${baseUrl}/property/upload-images`,
+          const propertyImagesResponse = await fetch(
+            `${baseUrl}/property/upload-property-images`,
             {
               method: 'POST',
-              body: formData,
+              body: propertyImagesFormData,
             }
           );
 
-          if (imagesResponse.ok) {
+          if (propertyImagesResponse.ok) {
+            if (userDataForm.picture.id) {
+              const profileImageFormData = new FormData();
+
+              for (let i = 0; i < indexDbImages.length; i++) {
+                if (indexDbImages[i].id === userDataForm.picture.id) {
+                  const file = new File(
+                    [indexDbImages[i].data],
+                    `${indexDbImages[i].name}`
+                  );
+                  profileImageFormData.append('images', file);
+                }
+              }
+
+              profileImageFormData.append('userId', data.user._id);
+
+              const profileImageResponse = await fetch(
+                `${baseUrl}/property/upload-profile-image`,
+                {
+                  method: 'POST',
+                  body: profileImageFormData,
+                }
+              );
+
+              if (!profileImageResponse.ok) {
+                showErrorToast(ErrorToastNames.SendImages);
+                showErrorToast(ErrorToastNames.ImagesUploadError);
+                setTimeout(() => {
+                  router.push('/register');
+                }, 7000);
+              }
+            }
+
             clearIndexDB();
             updateProgress(4);
             if (!urlEmail) {
@@ -494,6 +534,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
                 urlEmail={urlEmail ? urlEmail : undefined}
                 error={userDataErrors}
                 userDataInputRefs={userDataInputRefs}
+                ownerData={ownerData}
               />
             </div>
 
@@ -548,7 +589,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
               <button
                 className={classes.button}
                 onClick={handleSubmit}
-                disabled={loading}
+              //disabled={loading}
               >
                 <span className={`${loading ? 'ml-5' : ''}`}>Continuar</span>
                 {loading && <Loading />}
@@ -571,16 +612,41 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
 
 export default RegisterStep3;
 
-export async function getStaticProps() {
-  const plans = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/plan`)
-    .then((res) => res.json())
-    .catch(() => ({}));
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+
+  const session = (await getSession(context) as any);
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+
+  const userId =
+    session?.user.data._id !== undefined
+      ? session?.user.data._id
+      : session?.user.id;
+
+
+  const [plans, ownerData] = await Promise.all([
+    fetch(`${baseUrl}/plan`)
+      .then((res) => res.json())
+      .catch(() => []),
+    fetch(`${baseUrl}/user/find-owner-by-user`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId }),
+      }
+    )
+      .then((res) => res.json())
+      .catch(() => []),
+    fetchJson(`${baseUrl}/plan`),
+    fetchJson(`${baseUrl}/user/find-owner-by-user`)
+  ]);
 
   return {
     props: {
       plans,
+      ownerData
     },
-    revalidate: 60,
   };
 }
 

@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import store from 'store';
 import { IPlan } from '../common/interfaces/plans/plans';
+import useProgressRedirect from '../common/utils/stepProgressHandler';
 import CheckIcon from '../components/atoms/icons/checkIcon';
 import Loading from '../components/atoms/loading';
 import LinearStepper from '../components/atoms/stepper/stepper';
@@ -33,13 +34,11 @@ const RegisterStep35: NextPageWithLayout<IRegisterStep35> = ({ plans }) => {
     }
   }, [storedData]);
 
-  useEffect(() => {
-    if (progress < 4) {
-      router.push('/register');
-    }
-  });
+  // Verifica se o estado progress que determina em qual step o usuário está corresponde ao step atual;
+  useProgressRedirect(progress, 4, '/register');
 
   const handleSubmit = () => {
+    setLoading(true);
     updateProgress(5);
     store.clearAll();
     if (!urlEmail) {
@@ -87,22 +86,7 @@ const RegisterStep35: NextPageWithLayout<IRegisterStep35> = ({ plans }) => {
             <button
               className={classes.button}
               disabled={loading}
-              onClick={() => {
-                updateProgress(5);
-                store.clearAll();
-                if (!urlEmail) {
-                  router.push('/registerStep4');
-                  setLoading(true);
-                } else {
-                  setLoading(true);
-                  router.push({
-                    pathname: '/registerStep4',
-                    query: {
-                      email: urlEmail,
-                    },
-                  });
-                }
-              }}
+              onClick={handleSubmit}
             >
               <span className={`${loading ? 'ml-5' : ''}`}>Continuar</span>
               {loading && <Loading />}
