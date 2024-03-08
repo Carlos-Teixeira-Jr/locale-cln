@@ -26,6 +26,7 @@ import {
   showSuccessToast,
 } from '../common/utils/toasts';
 import ArrowDownIcon from '../components/atoms/icons/arrowDownIcon';
+import Loading from '../components/atoms/loading';
 import UserAddress from '../components/molecules/address/userAdress';
 import { PlansCardsHidden } from '../components/molecules/cards';
 import CreditCard, {
@@ -80,6 +81,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const [isEditPassword, setIsEditPassword] = useState(false);
   const [isAdminPage, setIsAdminPage] = useState(false);
   const isEdit = true;
+  const [loading, setLoading] = useState(false);
 
   const creditCardInfo = ownerData?.owner?.paymentData?.creditCardInfo
     ? ownerData?.owner?.paymentData?.creditCardInfo
@@ -343,6 +345,8 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
 
       imagesForm.append('userId', ownerData?.user?._id);
 
+      setLoading(true);
+
       try {
         const imagesResponse = await fetch(
           `${baseUrl}/property/upload-profile-image`,
@@ -392,6 +396,26 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     } else {
       showErrorToast(ErrorToastNames.EmptyFields);
     }
+  };
+
+  const classes = {
+    root: 'max-w-[1232px] mx-auto justify-center items-center',
+    sideMenuContainer: 'flex flex-row items-center max-w-[1232px] justify-center',
+    sideMenu: 'fixed left-0 top-7 sm:hidden hidden md:hidden lg:flex',
+    buttonContainer:
+      'lg:float-right flex md:justify-end justify-center md:w-[90%] lg:w-full mb-10 md:mr-16 lg:mr-5',
+    button:
+      `w-72 h-16 flex items-center justify-center text-quinary rounded-[10px] py-3 px-10 text-lg font-extrabold ${loading ?
+        'bg-red-200' :
+        'bg-primary transition-colors duration-300 hover:bg-red-600 hover:text-white'
+      }`,
+    accordion:
+      'flex flex-row items-center justify-between max-w-[1232px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 text-lg text-quaternary rounded-xl font-bold transition bg-opacity-90 hover:bg-gray-300',
+    plans:
+      'grid sm:grid-cols-1 grid-cols-1 md:grid-cols-3 xl:grid-cols-3 md:gap-6',
+    h2: 'md:text-2xl text-lg leading-10 text-quaternary font-bold mb-5 lg:mb-10 mx-5',
+    userData: 'my-5 lg:mx-10 md:mx-2 max-w-[1232px]',
+    content: 'flex flex-col mt-16 lg:ml-80 max-w-[1232px] justify-center md:mx-5',
   };
 
   return (
@@ -482,8 +506,9 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
             </div>
 
             <div className={classes.buttonContainer}>
-              <button className={classes.button} onClick={handleUpdateBtn}>
-                Atualizar Dados
+              <button className={classes.button} onClick={handleUpdateBtn} disabled={loading}>
+                <span className={`${loading ? 'mr-5' : 'flex text-center'}`}>Atualizar dados</span>
+                {loading && <Loading />}
               </button>
             </div>
 
@@ -710,20 +735,3 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     };
   }
 }
-
-const classes = {
-  root: 'max-w-[1232px] mx-auto justify-center items-center',
-  sideMenuContainer: 'flex flex-row items-center max-w-[1232px] justify-center',
-  sideMenu: 'fixed left-0 top-7 sm:hidden hidden md:hidden lg:flex',
-  buttonContainer:
-    'lg:float-right flex md:justify-end justify-center md:w-[90%] lg:w-full mb-10 md:mr-16 lg:mr-5',
-  button:
-    'bg-primary w-fit h-16 flex items-center text-quinary rounded-[10px] py-3 px-10 text-lg font-extrabold transition-colors duration-300 hover:bg-red-600 hover:text-white',
-  accordion:
-    'flex flex-row items-center justify-between max-w-[1232px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 text-lg text-quaternary rounded-xl font-bold transition bg-opacity-90 hover:bg-gray-300',
-  plans:
-    'grid sm:grid-cols-1 grid-cols-1 md:grid-cols-3 xl:grid-cols-3 md:gap-6',
-  h2: 'md:text-2xl text-lg leading-10 text-quaternary font-bold mb-5 lg:mb-10 mx-5',
-  userData: 'my-5 lg:mx-10 md:mx-2 max-w-[1232px]',
-  content: 'flex flex-col mt-16 lg:ml-80 max-w-[1232px] justify-center md:mx-5',
-};

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import { IMessage } from '../../../../common/interfaces/message/messages';
+import { monetaryFormat } from '../../../../common/utils/masks/monetaryFormat';
 import {
   ErrorToastNames,
   showErrorToast,
@@ -14,8 +15,6 @@ import MessageIcon from '../../../atoms/icons/messageIcon';
 import StarIcon from '../../../atoms/icons/starIcon';
 import ViewIcon from '../../../atoms/icons/viewIcon';
 import ConfirmActivationModal from '../../../atoms/modals/confirmActivationModal';
-import { monetaryFormat } from '../../../../common/utils/masks/monetaryFormat';
-import LocaleLogo from '../../../atoms/logos/locale';
 
 interface IAdminPropertyCard {
   _id: string;
@@ -46,7 +45,7 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
   isActiveProp,
   highlighted,
 }: IAdminPropertyCard) => {
-  
+
   const priceString = price.toString();
   const formattedPrice = monetaryFormat(priceString);
 
@@ -125,24 +124,21 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
     <div className="flex flex-col items-center mb-10 justify-between">
       <Link href={`/property/${_id}?isEdit=true`}>
         <div
-          className={`flex flex-col md:flex-row bg-tertiary h-fit md:h-64 w-[777px] shadow-lg ${
-            isActive ? '' : 'opacity-100'
-          }`}
+          className={`flex flex-col md:flex-row bg-tertiary h-fit md:h-64 w-[777px] shadow-lg ${isActive ? '' : 'opacity-100'
+            }`}
         >
           <Image
             src={image}
             alt={'Admin property image'}
-            className={`max-w-xs min-w-[250px] ${
-              !isActive ? 'opacity-30' : ''
-            } overflow-x-visible`}
+            className={`md:max-w-xs md:min-w-[250px] w-full ${!isActive ? 'opacity-30' : ''
+              } overflow-x-visible`}
             width={250}
             height={265}
           />
           {highlighted && (
             <div
-              className={`absolute mt-2 opacity-70 hover:opacity-100 hover:scale-110 transition-opacity duration-200 ease-in-out ml-2 ${
-                !isActive ? 'opacity-30' : ''
-              }`}
+              className={`absolute mt-2 opacity-70 hover:opacity-100 hover:scale-110 transition-opacity duration-200 ease-in-out ml-2 ${!isActive ? 'opacity-30' : ''
+                }`}
             >
               <StarIcon
                 width="35"
@@ -152,13 +148,12 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
             </div>
           )}
           <div
-            className={`flex flex-col mt-6 px-5 w-full ${
-              !isActive ? 'opacity-30' : ''
-            }`}
+            className={`flex md:flex-col justify-between gap-5 md:justify-start mt-6 px-5 w-full ${!isActive ? 'opacity-30' : ''
+              }`}
             style={{ overflow: 'hidden' }}
           >
             <h1
-              className="font-bold text-3xl text-black mb-5"
+              className="font-bold text-3xl text-black"
               style={{
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
@@ -168,17 +163,17 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
               {' '}
               {formattedPrice}
             </h1>
-            <div className="flex flex-row space-x-2 items-center text-quaternary font-bold text-lg mb-3">
+            <div className="flex flex-row space-x-2 items-center text-quaternary font-bold text-lg">
               <ViewIcon />
               <span>{views}</span>
               <h2>{views === 1 ? 'visualização' : 'visualizações'}</h2>
             </div>
-            <div className="flex flex-row space-x-2 items-center text-quaternary font-bold text-lg mb-5">
+            <div className="flex flex-row space-x-2 items-center text-quaternary font-bold text-lg">
               <MessageIcon />
               <span>{messages.length}</span>
               <h2>{messages.length === 1 ? 'mensagem' : 'mensagens'}</h2>
             </div>
-            <h3 className="w-fit text-quaternary font-bold text-sm">
+            <h3 className="w-fit text-quaternary font-bold text-sm my-auto">
               {location}
             </h3>
           </div>
@@ -192,11 +187,10 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
                 >
                   <button
                     key={btn.key}
-                    className={`${
-                      btn.key !== 'deactivate' && !isActive
-                        ? `${btn.className} opacity-30`
-                        : `${btn.className}`
-                    }`}
+                    className={`${btn.key !== 'deactivate' && !isActive
+                      ? `${btn.className} opacity-30`
+                      : `${btn.className}`
+                      }`}
                     onClick={btn.onClick}
                   >
                     {btn.key === 'deactivate' && !isActive
