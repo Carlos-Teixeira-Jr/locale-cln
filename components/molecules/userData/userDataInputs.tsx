@@ -70,7 +70,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
       : '',
     cpf: ownerData?.user?.cpf ? ownerData?.user?.cpf : '',
     cellPhone: ownerData && ownerData.owner ? ownerData.owner.cellPhone : '',
-    picture: ownerData?.owner?.picture
+    picture: ownerData?.user?.picture
       ? { id: uuidv4.toString(), src: ownerData?.user?.picture }
       : image,
     phone: ownerData && ownerData.owner ? ownerData.owner.phone : '',

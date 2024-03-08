@@ -202,7 +202,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ _id: userId }),
+          body: JSON.stringify({ userId }),
         }
       );
 
@@ -242,8 +242,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           },
         }
       )
-      .then((res) => res.json())
-      .catch(() => []);
+        .then((res) => res.json())
+        .catch(() => []);
 
       return {
         props: {
@@ -261,11 +261,11 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           },
         }
       )
-      
+
       if (response.ok) {
         notifications = await response.json();
       }
-      
+
       return {
         props: {
           notifications,

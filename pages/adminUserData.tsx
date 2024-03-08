@@ -71,7 +71,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const isMobile = useIsMobile();
   const userData = ownerData?.user;
   const reversedCards = [...plans].reverse();
-  const isOwner = properties?.docs?.length > 0 ? true : false;
+  const isOwner = properties?.docs?.length > 0 || ownerData?.owner ? true : false;
   const [selectedPlan, setSelectedPlan] = useState(
     ownerData?.owner ? ownerData?.owner?.plan : ''
   );
@@ -471,7 +471,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
               <div className="flex mt-1 md:mt-1">
                 <UserAddress
                   isEdit={isEdit}
-                  address={userData.address}
+                  address={userData?.address}
                   onAddressUpdate={(updateAddres: IAddress) =>
                     setAddress(updateAddres)
                   }
@@ -673,7 +673,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ _id: userId }),
+          body: JSON.stringify({ userId }),
         })
           .then((res) => res.json())
           .catch(() => []),
