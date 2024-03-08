@@ -44,7 +44,7 @@ const UploadImages = ({
   }, [editarImages, images.length]);
 
   useEffect(() => {
-    console.log("🚀 ~ images:", images)
+    onImagesUpdate!(images.map((image) => image.src));
   }, [images]);
 
   const [error, setError] = useState<OnErrorInfo>({
@@ -68,17 +68,13 @@ const UploadImages = ({
   }, [error, onErrorsInfo]);
 
   useEffect(() => {
-    onImagesUpdate!(images.map((image) => image.src));
-  }, [images]);
-
-  useEffect(() => {
     if (editarImages?.length === 0) {
       const loadImagesFromDB = async () => {
         try {
           // Consulta o IndexedDB para recuperar as imagens salvas
           const imagesFromDB = await getAllImagesFromDB();
           // Define o estado `images` com as imagens recuperadas
-          setImages(imagesFromDB as any[]);
+          setImages(imagesFromDB);
         } catch (error) {
           showErrorToast(ErrorToastNames.LoadImages);
         }
@@ -88,21 +84,23 @@ const UploadImages = ({
     }
   }, []);
 
-  const handleAddImage = async (event: any) => {
+  const handleAddImage = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
 
-    if (files.length + images.length > 50) {
+    if (files && files.length + images.length > 50) {
       showErrorToast(ErrorToastNames.ImagesMaxLimit);
       return;
     }
 
-    for (const file of files) {
-      const id = uuidv4();
-      const src = URL.createObjectURL(file);
+    if (files) {
+      for (const file of files) {
+        const id = uuidv4();
+        const src = URL.createObjectURL(file);
 
-      await addImageToDB(file, src, id);
+        await addImageToDB(file, src, id);
 
-      setImages((prevImages) => [...prevImages, { src, id }]);
+        setImages((prevImages) => [...prevImages, { src, id }]);
+      }
     }
   };
 
@@ -125,13 +123,9 @@ const UploadImages = ({
 
   const moveImage = (dragIndex: number, hoverIndex: number) => {
     const dragImage = images[dragIndex];
-
     const newImages = [...images];
-
     newImages.splice(dragIndex, 1);
-
     newImages.splice(hoverIndex, 0, dragImage);
-
     setImages(newImages);
   };
 
@@ -222,7 +216,6 @@ const Image: React.FC<ImageProps> = ({
   onRemove,
   moveImage,
 }) => {
-  console.log("🚀 ~ src:", src)
   const ref = useRef<HTMLDivElement>(null);
 
   const [{ isDragging }, drag, preview] = useDrag(() => ({

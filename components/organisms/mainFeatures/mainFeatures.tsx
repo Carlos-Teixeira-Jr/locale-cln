@@ -9,6 +9,8 @@ import {
   propSubtype,
   propType,
 } from '../../../common/interfaces/property/propertyData';
+import { PropertyFeaturesErrors } from '../../../common/interfaces/property/propertyFeaturesErrors';
+import { scrollToError } from '../../../common/utils/errors/errorsAutoScrollUtil';
 import { lowerLetters } from '../../../common/utils/strings/capitalizeFirstLetter';
 import propertyTypesData from '../../../data/propertyTypesData.json';
 import ArrowDownIcon from '../../atoms/icons/arrowDownIcon';
@@ -157,7 +159,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
     onMainFeaturesUpdate!(propertyFeaturesData);
   }, [propertyFeaturesData]);
 
-  const [propertyFeaturesErrors, setPropertyFeaturesErrors] = useState({
+  const [propertyFeaturesErrors, setPropertyFeaturesErrors] = useState<PropertyFeaturesErrors>({
     description: errors ? errors.description : '',
     totalArea: '',
     propertyValue: '',
@@ -170,23 +172,11 @@ const MainFeatures: React.FC<IMainFeatures> = ({
   }, [errors]);
 
   useEffect(() => {
-    const scrollToError = (errorKey: keyof typeof propertyFeaturesErrors) => {
-      if (
-        propertyFeaturesErrors[errorKey] !== '' &&
-        mainFeaturesInputRefs[errorKey]?.current
-      ) {
-        mainFeaturesErrorScroll[errorKey]?.current.scrollIntoView({
-          behavior: 'auto',
-          block: 'center',
-        });
-      }
-    };
-
-    scrollToError('description');
-    scrollToError('totalArea');
-    scrollToError('propertyValue');
-    scrollToError('condominiumValue');
-    scrollToError('iptuValue');
+    scrollToError('description', propertyFeaturesErrors, mainFeaturesInputRefs, mainFeaturesErrorScroll);
+    scrollToError('totalArea', propertyFeaturesErrors, mainFeaturesInputRefs, mainFeaturesErrorScroll);
+    scrollToError('propertyValue', propertyFeaturesErrors, mainFeaturesInputRefs, mainFeaturesErrorScroll);
+    scrollToError('condominiumValue', propertyFeaturesErrors, mainFeaturesInputRefs, mainFeaturesErrorScroll);
+    scrollToError('iptuValue', propertyFeaturesErrors, mainFeaturesInputRefs, mainFeaturesErrorScroll);
   }, [propertyFeaturesErrors]);
 
   const handleBuy = () => {
@@ -414,8 +404,8 @@ const MainFeatures: React.FC<IMainFeatures> = ({
           </p>
           <ArrowDownIcon
             className={`my-auto cursor-pointer ${propTypeDropdownIsOpen
-                ? 'transform rotate-360 transition-transform duration-300 ease-in-out'
-                : 'transform rotate-180 transition-transform duration-300 ease-in-out'
+              ? 'transform rotate-360 transition-transform duration-300 ease-in-out'
+              : 'transform rotate-180 transition-transform duration-300 ease-in-out'
               }`}
           />
         </div>
@@ -660,8 +650,8 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                   placeholder="R$"
                   maxLength={15}
                   className={`border border-quaternary rounded-[10px] h-12 lg:ml-0 md:ml-0 text-quaternary text-sm font-bold md:px-2 drop-shadow-lg mt-1 p-2 ${!propertyFeaturesData.condominium
-                      ? 'bg-[#CACACA]'
-                      : 'bg-tertiary'
+                    ? 'bg-[#CACACA]'
+                    : 'bg-tertiary'
                     }`}
                   style={
                     propertyFeaturesErrors.condominiumValue
@@ -690,8 +680,8 @@ const MainFeatures: React.FC<IMainFeatures> = ({
 
               <div
                 className={`lg:ml-5 w-12 h-12 shrink-0 border bg-tertiary rounded-[10px] mt-1 drop-shadow-lg cursor-pointer ${propertyFeaturesData.condominium
-                    ? 'border-secondary'
-                    : 'border-quaternary'
+                  ? 'border-secondary'
+                  : 'border-quaternary'
                   }`}
                 onClick={() =>
                   setPropertyFeaturesData({
@@ -705,8 +695,8 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                     fill="#F5BF5D"
                     width="42"
                     className={`pl-1 ${propertyFeaturesData.condominium
-                        ? ' border-secondary'
-                        : ''
+                      ? ' border-secondary'
+                      : ''
                       }`}
                   />
                 )}
@@ -766,8 +756,8 @@ const MainFeatures: React.FC<IMainFeatures> = ({
 
               <div
                 className={`lg:ml-5 w-12 h-12 border bg-tertiary rounded-[10px] mt-1 drop-shadow-lg cursor-pointer shrink-0 ${propertyFeaturesData.iptu
-                    ? 'border-secondary'
-                    : 'border-quaternary'
+                  ? 'border-secondary'
+                  : 'border-quaternary'
                   }`}
                 onClick={() => {
                   setPropertyFeaturesData({

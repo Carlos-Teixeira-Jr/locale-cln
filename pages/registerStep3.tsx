@@ -113,10 +113,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     wppNumber: ''
   });
 
-  useEffect(() => {
-    console.log("🚀 ~ userDataForm:", userDataForm.picture)
-  }, [userDataForm.picture])
-
   const [userDataErrors, setUserDataErrors] = useState({
     username: '',
     email: '',

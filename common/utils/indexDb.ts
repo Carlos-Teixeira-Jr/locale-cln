@@ -1,5 +1,11 @@
 import { ErrorToastNames, SuccessToastNames, showErrorToast, showSuccessToast } from "./toasts";
 
+export type ImageData = {
+  id: string;
+  data: Blob;
+  name: string;
+};
+
 export const openDatabase = () => {
   return new Promise<IDBDatabase>((resolve, reject) => {
     const request = indexedDB.open('propertyImages', 1);
@@ -66,7 +72,7 @@ export const addImageToDB = (file: File, src: string, id: string) => {
 };
 
 
-export const getAllImagesFromDB = () => {
+export const getAllImagesFromDB = (): Promise<ImageData[]> => {
   return new Promise((resolve, reject) => {
     openDatabase().then(db => {
       const transaction = db.transaction(['imagens'], 'readonly');
@@ -128,7 +134,7 @@ export const clearIndexDB = () => {
   });
 };
 
-export const getImageFromDBById = (id: string) => {
+export const getImageFromDBById = (id: string): Promise<ImageData> => {
   return new Promise((resolve, reject) => {
     openDatabase().then(db => {
       const transaction = db.transaction(['imagens'], 'readonly');

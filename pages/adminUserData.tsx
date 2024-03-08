@@ -46,7 +46,6 @@ interface IAdminUserDataPageProps {
   selectedPlanCard: string;
   setSelectedPlanCard: (_selectedCard: string) => void;
   plans: IPlan[];
-  userData: any;
   properties: IPropertyInfo;
   ownerData: IOwnerData;
   notifications: [];
@@ -64,15 +63,13 @@ type AddressErrors = {
 const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   notifications,
   plans,
-  userData,
   properties,
   ownerData,
 }) => {
-  console.log("🚀 ~ ownerData:", ownerData)
 
   const router = useRouter();
   const isMobile = useIsMobile();
-
+  const userData = ownerData?.user;
   const reversedCards = [...plans].reverse();
   const isOwner = properties?.docs?.length > 0 ? true : false;
   const [selectedPlan, setSelectedPlan] = useState(
@@ -107,10 +104,6 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     wppNumber: ''
   });
 
-  useEffect(() => {
-    console.log("🚀 ~ formData:", formData)
-  }, [formData])
-
   const [formDataErrors, setFormDataErrors] = useState({
     username: '',
     email: '',
@@ -143,7 +136,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const [address, setAddress] = useState<IAddress>({
     zipCode: userData ? userData.address.zipCode : '',
     city: userData ? userData.address.city : '',
-    streetName: userData ? userData.address.streetNuame : '',
+    streetName: userData ? userData.address.streetName : '',
     streetNumber: userData ? userData.address.streetNumber : '',
     complement: userData ? userData.address.complement : '',
     neighborhood: userData ? userData.address.neighborhood : '',

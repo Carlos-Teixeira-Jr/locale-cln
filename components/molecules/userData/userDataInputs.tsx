@@ -6,6 +6,7 @@ import {
   IUserDataComponent,
   IUserDataComponentErrors,
 } from '../../../common/interfaces/user/user';
+import { scrollToError } from '../../../common/utils/errors/errorsAutoScrollUtil';
 import { addImageToDB, removeImageFromDB } from '../../../common/utils/indexDb';
 import { applyNumericMask } from '../../../common/utils/masks/numericMask';
 import CameraIcon from '../../atoms/icons/cameraIcon';
@@ -62,8 +63,6 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
   const [errorModalIsOpen, setErrorModalIsOpen] = useState(false);
   const [succesModalIsOpen, setSuccesModalIsOpen] = useState(false);
 
-  const phone = userData && userData?.owner ? userData?.owner.phone : '';
-
   const [formData, setFormData] = useState<IUserDataComponent>({
     username: firstProperty?.ownerInfo?.name
       ? firstProperty?.ownerInfo?.name
@@ -79,45 +78,32 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
   });
 
   useEffect(() => {
+    onUserDataUpdate(formData);
+  }, [formData]);
+
+  useEffect(() => {
     if (urlEmail) {
       setFormData({ ...formData, email: urlEmail });
     }
   }, [urlEmail]);
 
-  const [userDataErrors, setUserDataErrors] =
-    useState<IUserDataComponentErrors>({
-      username: '',
-      email: '',
-      cpf: '',
-      cellPhone: '',
-    });
+  const [userDataErrors, setUserDataErrors] = useState<IUserDataComponentErrors>({
+    username: '',
+    email: '',
+    cpf: '',
+    cellPhone: '',
+  });
 
   useEffect(() => {
     setUserDataErrors(error);
   }, [error]);
 
   useEffect(() => {
-    const scrollToError = (errorKey: keyof typeof userDataErrors) => {
-      if (
-        userDataErrors[errorKey] !== '' &&
-        userDataInputRefs[errorKey]?.current
-      ) {
-        userDataErrorScroll[errorKey]?.current.scrollIntoView({
-          behavior: 'auto',
-          block: 'center',
-        });
-      }
-    };
-
-    scrollToError('username');
-    scrollToError('email');
-    scrollToError('cpf');
-    scrollToError('cellPhone');
+    scrollToError('username', userDataErrors, userDataInputRefs, userDataErrorScroll);
+    scrollToError('email', userDataErrors, userDataInputRefs, userDataErrorScroll);
+    scrollToError('cpf', userDataErrors, userDataInputRefs, userDataErrorScroll);
+    scrollToError('cellPhone', userDataErrors, userDataInputRefs, userDataErrorScroll);
   }, [userDataErrors]);
-
-  useEffect(() => {
-    onUserDataUpdate(formData);
-  }, [formData]);
 
   const inputs: Input[] = [
     {
@@ -216,28 +202,27 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
     },
   ];
 
-  const handleAddImage = async (event: any) => {
+  const handleAddImage = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
 
-    for (const file of files) {
-      const id = uuidv4();
-      const src = URL.createObjectURL(file);
-      const imageObject = {
-        id,
-        src
+    if (files !== null) {
+      for (const file of files) {
+        const id = uuidv4();
+        const src = URL.createObjectURL(file);
+        const imageObject = {
+          id,
+          src
+        }
+
+        await addImageToDB(file, src, id);
+
+        setImage(imageObject);
+        setFormData({ ...formData, picture: imageObject })
       }
-
-      await addImageToDB(file, src, id);
-
-      setImage(imageObject);
-      setFormData({ ...formData, picture: imageObject })
     }
   };
 
   const handleRemoveImage = async (id: string) => {
-    console.log("🚀 ~ handleRemoveImage ~ formData.picture.id:", formData.picture.id)
-    console.log("🚀 ~ handleRemoveImage ~ id:", id);
-
     await removeImageFromDB(id);
 
     setFormData({ ...formData, picture: { id: '', src: '' } });

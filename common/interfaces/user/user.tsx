@@ -33,7 +33,7 @@ export interface IUser {
   picture?: any;
 }
 
-export interface IUserDataComponentErrors {
+export type IUserDataComponentErrors = {
   [key: string]: string;
   username: string;
   email: string;

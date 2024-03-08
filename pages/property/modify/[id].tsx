@@ -17,7 +17,7 @@ import {
   PricesType,
 } from '../../../common/interfaces/property/propertyData';
 import { fetchJson } from '../../../common/utils/fetchJson';
-import { getAllImagesFromDB } from '../../../common/utils/indexDb';
+import { clearIndexDB, getAllImagesFromDB } from '../../../common/utils/indexDb';
 import {
   ErrorToastNames,
   SuccessToastNames,
@@ -41,13 +41,9 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
   property,
 }) => {
   const [rotate1, setRotate1] = useState(false);
-
   const [rotate2, setRotate2] = useState(false);
-
   const [rotate3, setRotate3] = useState(false);
-
   const [rotate4, setRotate4] = useState(false);
-
   const router = useRouter();
 
   const isEdit = router.pathname == '/property/modify/[id]';
@@ -125,11 +121,11 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
     isEdit ? property.youtubeLink : ''
   );
 
-  const [images, setImages] = useState<string[]>(isEdit ? property.images : []);
-
   useEffect(() => {
-    console.log("🚀 ~ images:", images)
-  }, [images])
+    setVideoLink(property.youtubeLink);
+  }, [property.youtubeLink]);
+
+  const [images, setImages] = useState<string[]>(isEdit ? property.images : []);
 
   const imagesInputRef = useRef<HTMLElement>(null);
 
@@ -137,10 +133,6 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
     error: '',
     prop: '',
   });
-
-  useEffect(() => {
-    setVideoLink(property.youtubeLink);
-  }, [property.youtubeLink]);
 
   const showHide = (element: string) => {
     const classList = document.getElementById(element)?.classList;
@@ -217,33 +209,33 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
       uf: '',
     };
 
-    // if (!mainFeatures.description) newMainFeaturesErrors.description = error;
-    // if (!mainFeatures.size.totalArea) newMainFeaturesErrors.totalArea = error;
-    // if (!mainFeatures.propertyValue)
-    //   newMainFeaturesErrors.propertyValue = error;
-    // if (mainFeatures.condominium) {
-    //   if (!mainFeatures.condominiumValue)
-    //     newMainFeaturesErrors.condominiumValue = error;
-    // }
-    // if (mainFeatures.iptu) {
-    //   if (!mainFeatures.iptuValue) newMainFeaturesErrors.iptuValue = error;
-    // }
-    // if (!address.zipCode) newAddressErrors.zipCode = error;
-    // if (!address.streetName) newAddressErrors.streetName = error;
-    // if (!address.streetNumber) newAddressErrors.streetNumber = error;
-    // if (!address.city) newAddressErrors.city = error;
-    // if (!address.uf) newAddressErrors.uf = error;
-    // if (images.length < 5) {
-    //   const imagesError = 'Você precisa ter pelo menos três fotos.';
-    //   setErrorInfo({
-    //     error: imagesError,
-    //     prop: 'images',
-    //   });
-    //   errorHandler.current = {
-    //     error: error,
-    //     prop: 'images',
-    //   };
-    // }
+    if (!mainFeatures.description) newMainFeaturesErrors.description = error;
+    if (!mainFeatures.size.totalArea) newMainFeaturesErrors.totalArea = error;
+    if (!mainFeatures.propertyValue)
+      newMainFeaturesErrors.propertyValue = error;
+    if (mainFeatures.condominium) {
+      if (!mainFeatures.condominiumValue)
+        newMainFeaturesErrors.condominiumValue = error;
+    }
+    if (mainFeatures.iptu) {
+      if (!mainFeatures.iptuValue) newMainFeaturesErrors.iptuValue = error;
+    }
+    if (!address.zipCode) newAddressErrors.zipCode = error;
+    if (!address.streetName) newAddressErrors.streetName = error;
+    if (!address.streetNumber) newAddressErrors.streetNumber = error;
+    if (!address.city) newAddressErrors.city = error;
+    if (!address.uf) newAddressErrors.uf = error;
+    if (images.length < 5) {
+      const imagesError = 'Você precisa ter pelo menos três fotos.';
+      setErrorInfo({
+        error: imagesError,
+        prop: 'images',
+      });
+      errorHandler.current = {
+        error: error,
+        prop: 'images',
+      };
+    }
 
     setMainFeaturesErrors(newMainFeaturesErrors);
     setAddressErrors(newAddressErrors);
@@ -334,20 +326,17 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
               editImagesFormData.append('images', file);
             }
 
-            editImagesFormData.append('proeprtyId', property._id);
-
-            if (images.length > 0) {
-              for (let i = 0; i < images.length; i++) {
-                const blob = images[i].substring(0, 4);
-                console.log("🚀 ~ handleSubmit ~ blob:", blob)
-                if (blob !== 'blob') images.splice(i, 1)
-              }
+            const data = {
+              propertyId: property._id,
+              prevImages: [""]
             }
 
-            editImagesFormData.append('prevImages', JSON.stringify(images))
+            data.prevImages = images.filter(image => !image.startsWith('blob'));
+
+            editImagesFormData.append('data', JSON.stringify(data));
 
             try {
-              const propertyImagesResponse = await fetch(
+              await fetch(
                 `${process.env.NEXT_PUBLIC_BASE_API_URL}/property/edit-property-images`,
                 {
                   method: 'POST',
@@ -355,13 +344,14 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
                 }
               );
             } catch (error) {
+              clearIndexDB();
               showErrorToast(ErrorToastNames.ImageUploadError);
             }
           } catch (error) {
             toast.dismiss();
             showErrorToast(ErrorToastNames.ImageUploadError);
           }
-
+          clearIndexDB();
           toast.dismiss();
           showSuccessToast(SuccessToastNames.PropertyUpdate);
           router.push('/admin?page=1');
