@@ -17,11 +17,12 @@ import {
   PricesType,
 } from '../../../common/interfaces/property/propertyData';
 import { fetchJson } from '../../../common/utils/fetchJson';
+import { clearIndexDB, getAllImagesFromDB } from '../../../common/utils/indexDb';
 import {
   ErrorToastNames,
   SuccessToastNames,
   showErrorToast,
-  showSuccessToast,
+  showSuccessToast
 } from '../../../common/utils/toasts';
 import ArrowDownIconcon from '../../../components/atoms/icons/arrowDownIcon';
 import Address from '../../../components/molecules/address/address';
@@ -40,13 +41,9 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
   property,
 }) => {
   const [rotate1, setRotate1] = useState(false);
-
   const [rotate2, setRotate2] = useState(false);
-
   const [rotate3, setRotate3] = useState(false);
-
   const [rotate4, setRotate4] = useState(false);
-
   const router = useRouter();
 
   const isEdit = router.pathname == '/property/modify/[id]';
@@ -124,6 +121,10 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
     isEdit ? property.youtubeLink : ''
   );
 
+  useEffect(() => {
+    setVideoLink(property.youtubeLink);
+  }, [property.youtubeLink]);
+
   const [images, setImages] = useState<string[]>(isEdit ? property.images : []);
 
   const imagesInputRef = useRef<HTMLElement>(null);
@@ -132,10 +133,6 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
     error: '',
     prop: '',
   });
-
-  useEffect(() => {
-    setVideoLink(property.youtubeLink);
-  }, [property.youtubeLink]);
 
   const showHide = (element: string) => {
     const classList = document.getElementById(element)?.classList;
@@ -257,6 +254,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
       errorHandler.current.error === '' &&
       !hasErrors
     ) {
+
       const propertyData: IEditPropertyData = {
         id: property._id,
         adType: mainFeatures.adType,
@@ -266,7 +264,6 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
         address: address,
         description: mainFeatures.description,
         metadata: mainFeatures.metadata,
-        images: images,
         size: {
           width: mainFeatures.size.width,
           height: mainFeatures.size.height,
@@ -288,10 +285,10 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
             type: PricesType.condominio,
             value: mainFeatures.condominium
               ? parseInt(
-                  mainFeatures.condominiumValue
-                    .replace(/\./g, '')
-                    .replace(',', '.')
-                )
+                mainFeatures.condominiumValue
+                  .replace(/\./g, '')
+                  .replace(',', '.')
+              )
               : 0,
           },
         ],
@@ -312,6 +309,49 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
         );
 
         if (response.ok) {
+          try {
+            const indexDbImages = (await getAllImagesFromDB()) as {
+              id: string;
+              data: Blob;
+              name: string;
+            }[];
+
+            const editImagesFormData = new FormData();
+
+            for (let i = 0; i < indexDbImages.length; i++) {
+              const file = new File(
+                [indexDbImages[i].data],
+                `${indexDbImages[i].name}`
+              );
+              editImagesFormData.append('images', file);
+            }
+
+            const data = {
+              propertyId: property._id,
+              prevImages: [""]
+            }
+
+            data.prevImages = images.filter(image => !image.startsWith('blob'));
+
+            editImagesFormData.append('data', JSON.stringify(data));
+
+            try {
+              await fetch(
+                `${process.env.NEXT_PUBLIC_BASE_API_URL}/property/edit-property-images`,
+                {
+                  method: 'POST',
+                  body: editImagesFormData
+                }
+              );
+            } catch (error) {
+              clearIndexDB();
+              showErrorToast(ErrorToastNames.ImageUploadError);
+            }
+          } catch (error) {
+            toast.dismiss();
+            showErrorToast(ErrorToastNames.ImageUploadError);
+          }
+          clearIndexDB();
           toast.dismiss();
           showSuccessToast(SuccessToastNames.PropertyUpdate);
           router.push('/admin?page=1');
@@ -380,9 +420,8 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
                 <label htmlFor="painel-1" className={classes.labelAccordion}>
                   Endereço
                   <span
-                    className={`transition-transform transform ${
-                      rotate1 ? 'rotate-180' : ''
-                    }`}
+                    className={`transition-transform transform ${rotate1 ? 'rotate-180' : ''
+                      }`}
                   >
                     <ArrowDownIconcon width="13" className="cursor-pointer" />
                   </span>
@@ -412,9 +451,8 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
                 <label htmlFor="painel-2" className={classes.labelAccordion}>
                   Fotos
                   <span
-                    className={`transition-transform transform ${
-                      rotate2 ? 'rotate-180' : ''
-                    }`}
+                    className={`transition-transform transform ${rotate2 ? 'rotate-180' : ''
+                      }`}
                   >
                     <ArrowDownIconcon width="13" className="cursor-pointer" />
                   </span>
@@ -443,9 +481,8 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
                 <label htmlFor="painel-3" className={classes.labelAccordion}>
                   Características
                   <span
-                    className={`transition-transform transform ${
-                      rotate3 ? 'rotate-180' : ''
-                    }`}
+                    className={`transition-transform transform ${rotate3 ? 'rotate-180' : ''
+                      }`}
                   >
                     <ArrowDownIconcon width="13" className="cursor-pointer" />
                   </span>
@@ -491,10 +528,10 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
                           (obj: IPrices) => obj.type === 'condominio'
                         )?.value !== null
                           ? property.prices
-                              .find(
-                                (obj: IPrices) => obj.type === 'condominio'
-                              )!
-                              .value.toString()
+                            .find(
+                              (obj: IPrices) => obj.type === 'condominio'
+                            )!
+                            .value.toString()
                           : ''
                       }
                       editarIptuValue={
@@ -502,8 +539,8 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
                           (price) => price.type === 'IPTU'
                         ) !== undefined
                           ? property.prices
-                              .find((price) => price.type === 'IPTU')!
-                              .value.toString()
+                            .find((price) => price.type === 'IPTU')!
+                            .value?.toString()
                           : ''
                       }
                       editarIptu={property.prices.some(
@@ -531,9 +568,8 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
                 <label htmlFor="painel-4" className={classes.labelAccordion}>
                   Outras características
                   <span
-                    className={`transition-transform transform ${
-                      rotate4 ? 'rotate-180' : ''
-                    }`}
+                    className={`transition-transform transform ${rotate4 ? 'rotate-180' : ''
+                      }`}
                   >
                     <ArrowDownIconcon width="13" className="cursor-pointer" />
                   </span>
@@ -652,7 +688,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     const [property] = await Promise.all([
       fetch(`${baseUrl}/property/${propertyId}?isEdit=${isEdit}`)
         .then((res) => res.json())
-        .catch(() => {}),
+        .catch(() => { }),
       fetchJson(`${baseUrl}/property/${propertyId}?isEdit=${isEdit}`),
     ]);
 

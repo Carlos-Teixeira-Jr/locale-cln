@@ -1,15 +1,20 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+import { ProfilePicture } from '../../../common/interfaces/images/profilePicture';
 import { IOwnerData } from '../../../common/interfaces/owner/owner';
 import {
   IUserDataComponent,
   IUserDataComponentErrors,
 } from '../../../common/interfaces/user/user';
+import { scrollToError } from '../../../common/utils/errors/errorsAutoScrollUtil';
+import { addImageToDB, removeImageFromDB } from '../../../common/utils/indexDb';
 import { applyNumericMask } from '../../../common/utils/masks/numericMask';
 import CameraIcon from '../../atoms/icons/cameraIcon';
 import WhatsAppIcon from '../../atoms/icons/wppIcon';
 import ErrorOnUpdateModal from '../../atoms/modals/errorOnUpdateModal';
 import SuccessOnUpdateModal from '../../atoms/modals/successOnUpdateModal';
 import Image from '../uploadImages/uploadProfilePic';
+
 
 export type UserDataErrorsTypes = {
   username: string;
@@ -35,6 +40,8 @@ interface IUserDataInputs {
   userDataInputRefs?: any;
   profilePicPropertyData?: string;
   ownerData?: IOwnerData;
+  picture?: ProfilePicture;
+  firstProperty?: any;
 }
 
 const UserDataInputs: React.FC<IUserDataInputs> = ({
@@ -45,12 +52,12 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
   userDataInputRefs,
   ownerData,
 }) => {
+
   const userDataErrorScroll = {
     ...userDataInputRefs,
   };
 
-  const images = '';
-
+  const [image, setImage] = useState({ id: '', src: '' });
   const [isSameNumber, setIsSameNumber] = useState(true);
   const [errorModalIsOpen, setErrorModalIsOpen] = useState(false);
   const [succesModalIsOpen, setSuccesModalIsOpen] = useState(false);
@@ -64,11 +71,15 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
     cpf: ownerData?.user?.cpf ? ownerData?.user?.cpf : '',
     cellPhone: ownerData && ownerData.owner ? ownerData.owner.cellPhone : '',
     picture: ownerData?.owner?.picture
-      ? ownerData?.owner?.picture
-      : images,
+      ? { id: uuidv4.toString(), src: ownerData?.user?.picture }
+      : image,
     phone: ownerData && ownerData.owner ? ownerData.owner.phone : '',
     wppNumber: ownerData?.owner?.wppNumber ? ownerData?.owner?.wppNumber : '',
   });
+
+  useEffect(() => {
+    onUserDataUpdate(formData);
+  }, [formData]);
 
   useEffect(() => {
     if (urlEmail) {
@@ -76,40 +87,23 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
     }
   }, [urlEmail]);
 
-  const [userDataErrors, setUserDataErrors] =
-    useState<IUserDataComponentErrors>({
-      username: '',
-      email: '',
-      cpf: '',
-      cellPhone: '',
-    });
+  const [userDataErrors, setUserDataErrors] = useState<IUserDataComponentErrors>({
+    username: '',
+    email: '',
+    cpf: '',
+    cellPhone: '',
+  });
 
   useEffect(() => {
     setUserDataErrors(error);
   }, [error]);
 
   useEffect(() => {
-    const scrollToError = (errorKey: keyof typeof userDataErrors) => {
-      if (
-        userDataErrors[errorKey] !== '' &&
-        userDataInputRefs[errorKey]?.current
-      ) {
-        userDataErrorScroll[errorKey]?.current.scrollIntoView({
-          behavior: 'auto',
-          block: 'center',
-        });
-      }
-    };
-
-    scrollToError('username');
-    scrollToError('email');
-    scrollToError('cpf');
-    scrollToError('cellPhone');
+    scrollToError('username', userDataErrors, userDataInputRefs, userDataErrorScroll);
+    scrollToError('email', userDataErrors, userDataInputRefs, userDataErrorScroll);
+    scrollToError('cpf', userDataErrors, userDataInputRefs, userDataErrorScroll);
+    scrollToError('cellPhone', userDataErrors, userDataInputRefs, userDataErrorScroll);
   }, [userDataErrors]);
-
-  useEffect(() => {
-    onUserDataUpdate(formData);
-  }, [formData]);
 
   const inputs: Input[] = [
     {
@@ -208,30 +202,30 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
     },
   ];
 
-  const handleAddImage = (event: any) => {
+  const handleAddImage = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
 
-    if (files.length === 0) {
-      return;
+    if (files !== null) {
+      for (const file of files) {
+        const id = uuidv4();
+        const src = URL.createObjectURL(file);
+        const imageObject = {
+          id,
+          src
+        }
+
+        await addImageToDB(file, src, id);
+
+        setImage(imageObject);
+        setFormData({ ...formData, picture: imageObject })
+      }
     }
-
-    if (files.length > 1 || images) {
-      alert('Você só pode adicionar uma imagem');
-      return;
-    }
-
-    const file = files[0];
-
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setFormData({ ...formData, picture: String(reader.result) });
-    };
-
-    reader.readAsDataURL(file);
   };
 
-  const handleRemoveImage = () => {
-    setFormData({ ...formData, picture: '' });
+  const handleRemoveImage = async (id: string) => {
+    await removeImageFromDB(id);
+
+    setFormData({ ...formData, picture: { id: '', src: '' } });
 
     const fileInput = document.getElementById(
       'uploadImages'
@@ -259,15 +253,14 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
           <div className="flex items-center">
             {formData.picture && (
               <Image
-                key={
-                  formData.picture
-                    ? formData.picture
-                    : `${formData.picture}`
+                key={formData.picture.id
+                  ? formData.picture.id
+                  : `key`
                 }
-                id={formData.picture}
-                src={formData.picture}
+                id={formData.picture.id}
+                src={formData.picture.src}
                 index={0}
-                onRemove={handleRemoveImage}
+                onImageChange={(id: string) => handleRemoveImage(id)}
                 alt={'Foto de perfil'}
               />
             )}
@@ -278,7 +271,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
           >
             <CameraIcon />
             <span className="font-bold text-quinary text-lg">
-              Adicionar foto
+              {formData.picture ? 'Alterar foto' : 'Adicionar foto'}
             </span>
           </label>
           <div className="hidden">
@@ -353,7 +346,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
                   }
                   style={
                     Object.keys(userDataErrors).includes(input.key) &&
-                    userDataErrors[input.key] !== ''
+                      userDataErrors[input.key] !== ''
                       ? { border: '1px solid red' }
                       : {}
                   }
@@ -370,11 +363,10 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
         </div>
         <div className="flex flex-row">
           <button
-            className={` w-8 h-8 rounded-full bg-tertiary drop-shadow-lg mr-5 flex justify-center cursor-pointer ${
-              !isSameNumber
-                ? 'border-[3px] border-secondary'
-                : 'border border-quaternary'
-            }`}
+            className={` w-8 h-8 rounded-full bg-tertiary drop-shadow-lg mr-5 flex justify-center cursor-pointer ${!isSameNumber
+              ? 'border-[3px] border-secondary'
+              : 'border border-quaternary'
+              }`}
             onClick={() => setIsSameNumber(!isSameNumber)}
           >
             {!isSameNumber && (
@@ -383,9 +375,8 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
           </button>
           <div className="flex flex-row gap-1">
             <h1
-              className={`text-base leading-10 font-normal cursor-pointer ${
-                !isSameNumber ? 'text-secondary' : 'text-quaternary'
-              }`}
+              className={`text-base leading-10 font-normal cursor-pointer ${!isSameNumber ? 'text-secondary' : 'text-quaternary'
+                }`}
             >
               Este não é o meu{' '}
               <span className="text-green-500 text-base font-semibold mr-2">
@@ -433,7 +424,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
                       input.value = previousValue;
                       input.setSelectionRange(selectionStart, selectionEnd);
                     }
-                    setFormData({...formData, wppNumber: maskedValue});
+                    setFormData({ ...formData, wppNumber: maskedValue });
                   }}
                 />
                 {userDataErrors.whatsapp && (

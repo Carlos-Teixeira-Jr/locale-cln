@@ -13,6 +13,7 @@ import {
   IRegisterPropertyData_Step3,
 } from '../common/interfaces/property/register/register';
 import { IUserDataComponent } from '../common/interfaces/user/user';
+import { defaultProfileImage } from '../common/utils/defaultImage/defaultImage';
 import { fetchJson } from '../common/utils/fetchJson';
 import { geocodeAddress } from '../common/utils/geocodeAddress';
 import { clearIndexDB, getAllImagesFromDB } from '../common/utils/indexDb';
@@ -110,7 +111,10 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     cpf: '',
     cellPhone: '',
     phone: '',
-    picture: '',
+    picture: {
+      id: '',
+      src: ''
+    },
     wppNumber: ''
   });
 
@@ -285,7 +289,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
         cellPhone: userDataForm.cellPhone,
         picture: userDataForm.picture
           ? userDataForm.picture
-          : 'https://static.vecteezy.com/system/resources/previews/019/879/186/non_2x/user-icon-on-transparent-background-free-png.png',
+          : { id: '1', src: defaultProfileImage },
         phone: userDataForm.phone,
         wppNumber: userDataForm.wppNumber ? userDataForm.wppNumber : '',
         zipCode: addressData.zipCode,
@@ -308,7 +312,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
         cpf: userDataForm.cpf.replace(/\D/g, ''),
         picture: userDataForm.picture
           ? userDataForm.picture
-          : 'https://static.vecteezy.com/system/resources/previews/019/879/186/non_2x/user-icon-on-transparent-background-free-png.png',
+          : { id: '1', src: defaultProfileImage },
       };
 
       const propertyData: ICreateProperty_propertyData = {
@@ -326,7 +330,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
         ownerInfo: {
           picture: userDataForm.picture
             ? userDataForm.picture
-            : 'https://static.vecteezy.com/system/resources/previews/019/879/186/non_2x/user-icon-on-transparent-background-free-png.png',
+            : { id: '1', src: defaultProfileImage },
           name: userDataForm.username,
           phones: [`55 ${userDataForm.cellPhone}`, userDataForm.phone],
           wppNumber: userDataForm.wppNumber ? `55 ${userDataForm.wppNumber}` : ''
@@ -388,27 +392,61 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
             name: string;
           }[];
 
-          const formData = new FormData();
+          const propertyImagesFormData = new FormData();
 
           for (let i = 0; i < indexDbImages.length; i++) {
-            const file = new File(
-              [indexDbImages[i].data],
-              `${indexDbImages[i].name}`
-            );
-            formData.append('images', file);
+            if (indexDbImages[i].id !== userDataForm.picture.id) {
+              const file = new File(
+                [indexDbImages[i].data],
+                `${indexDbImages[i].name}`
+              );
+              propertyImagesFormData.append('images', file);
+            }
           }
 
-          formData.append('propertyId', data.createdProperty._id);
+          propertyImagesFormData.append('propertyId', data.createdProperty._id);
 
-          const imagesResponse = await fetch(
-            `${baseUrl}/property/upload-images`,
+          const propertyImagesResponse = await fetch(
+            `${baseUrl}/property/upload-property-images`,
             {
               method: 'POST',
-              body: formData,
+              body: propertyImagesFormData,
             }
           );
 
-          if (imagesResponse.ok) {
+          if (propertyImagesResponse.ok) {
+            if (userDataForm.picture.id) {
+              const profileImageFormData = new FormData();
+
+              for (let i = 0; i < indexDbImages.length; i++) {
+                if (indexDbImages[i].id === userDataForm.picture.id) {
+                  const file = new File(
+                    [indexDbImages[i].data],
+                    `${indexDbImages[i].name}`
+                  );
+                  profileImageFormData.append('images', file);
+                }
+              }
+
+              profileImageFormData.append('userId', data.user._id);
+
+              const profileImageResponse = await fetch(
+                `${baseUrl}/property/upload-profile-image`,
+                {
+                  method: 'POST',
+                  body: profileImageFormData,
+                }
+              );
+
+              if (!profileImageResponse.ok) {
+                showErrorToast(ErrorToastNames.SendImages);
+                showErrorToast(ErrorToastNames.ImagesUploadError);
+                setTimeout(() => {
+                  router.push('/register');
+                }, 7000);
+              }
+            }
+
             clearIndexDB();
             updateProgress(4);
             if (!urlEmail) {
@@ -551,7 +589,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
               <button
                 className={classes.button}
                 onClick={handleSubmit}
-                //disabled={loading}
+              //disabled={loading}
               >
                 <span className={`${loading ? 'ml-5' : ''}`}>Continuar</span>
                 {loading && <Loading />}
@@ -579,7 +617,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = (await getSession(context) as any);
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
 
-  const userId = 
+  const userId =
     session?.user.data._id !== undefined
       ? session?.user.data._id
       : session?.user.id;

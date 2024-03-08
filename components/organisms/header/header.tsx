@@ -8,7 +8,7 @@ import MenuIcon from '../../atoms/icons/menuIcon';
 import UserIcon from '../../atoms/icons/userIcon';
 import LocaleLogo from '../../atoms/logos/locale';
 
-export interface IHeader extends React.ComponentPropsWithoutRef<'header'> {}
+export interface IHeader extends React.ComponentPropsWithoutRef<'header'> { }
 
 const Header: React.FC<IHeader> = () => {
   const { data: session } = useSession() as any;
@@ -54,21 +54,19 @@ const Header: React.FC<IHeader> = () => {
         </Link>
         <div className="hidden md:flex md:flex-row md:items-center justify-between space-x-2 text-md ml-5 md:ml-0 font-bold text-quaternary">
           <Link
-            className={`cursor-pointer ${
-              isBuy
+            className={`cursor-pointer ${isBuy
                 ? 'border-b-4  border-red-400'
                 : 'hover:border-b-4  border-red-400'
-            }`}
+              }`}
             href="/search?adType=comprar"
           >
             Comprar
           </Link>
           <Link
-            className={`cursor-pointer ${
-              isRent
+            className={`cursor-pointer ${isRent
                 ? 'border-b-4  border-red-400'
                 : 'hover:border-b-4  border-red-400'
-            }`}
+              }`}
             href="/search?adType=alugar"
           >
             Alugar

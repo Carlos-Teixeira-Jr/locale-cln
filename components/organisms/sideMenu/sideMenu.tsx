@@ -66,16 +66,15 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications }) => {
       id: 'my-announces-button',
       icon: (
         <MyAnnouncesIcon
-          fill={`${
-            activeButton === 'my-announces-button' ? '#F5BF5D' : '#6B7280'
-          }`}
+          fill={`${activeButton === 'my-announces-button' ? '#F5BF5D' : '#6B7280'
+            }`}
           className="my-auto mr-5"
           width="30"
           height="30"
         />
       ),
       title: 'Meus anúncios',
-      link: '/admin?page=1',
+      link: '/admin',
     },
     {
       key: 'myData',
@@ -96,9 +95,8 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications }) => {
       id: 'favourites-button',
       icon: (
         <HeartIcon
-          fill={`${
-            activeButton === 'favourites-button' ? '#F5BF5D' : '#6B7280'
-          }`}
+          fill={`${activeButton === 'favourites-button' ? '#F5BF5D' : '#6B7280'
+            }`}
           className="my-auto mr-5"
           width="30"
           height="30"
@@ -127,9 +125,8 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications }) => {
       icon: (
         <div className="flex items-center justify-around pr-5">
           <BellIcon
-            fill={`${
-              activeButton === 'notifications-button' ? '#F5BF5D' : '#6B7280'
-            }`}
+            fill={`${activeButton === 'notifications-button' ? '#F5BF5D' : '#6B7280'
+              }`}
             className="my-auto"
             width="30"
             height="30"
@@ -177,11 +174,10 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications }) => {
                   >
                     {icon}
                     <h2
-                      className={`text-md font-bold leading-7 my-auto transition-colors duration-300 ${
-                        activeButton === id
+                      className={`text-md font-bold leading-7 my-auto transition-colors duration-300 ${activeButton === id
                           ? 'text-secondary hover:text-yellow'
                           : 'text-quaternary hover:text-gray-700'
-                      }`}
+                        }`}
                     >
                       {title}
                     </h2>

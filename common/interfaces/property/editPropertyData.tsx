@@ -25,7 +25,7 @@ export interface IEditPropertyData {
   address: IAddress
   description: string
   metadata: IMetadata[]
-  images: string[]
+  images?: string[]
   size: ISize
   tags: string[]
   condominiumTags: string[]
