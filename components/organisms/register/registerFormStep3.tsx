@@ -48,7 +48,7 @@ const RegisterFormStep3: React.FC<IProps> = ({ selectedPlanCard }) => {
     cellPhone: '',
     phone: '',
     plan: '',
-    profilePicture: '',
+    picture: '',
   });
 
   const [errors, setErrors] = useState({
@@ -265,8 +265,8 @@ const RegisterFormStep3: React.FC<IProps> = ({ selectedPlanCard }) => {
       email: formData.email,
       cpf: formData.cpf,
       cellPhone: formData.cellPhone,
-      profilePicture: formData.profilePicture
-        ? formData.profilePicture
+      picture: formData.picture
+        ? formData.picture
         : 'https://static.vecteezy.com/system/resources/previews/019/879/186/non_2x/user-icon-on-transparent-background-free-png.png',
       phone: formData.phone,
       plan: formData.plan,
@@ -466,8 +466,7 @@ const RegisterFormStep3: React.FC<IProps> = ({ selectedPlanCard }) => {
           !newErrors.cvc))
     ) {
       router.push(
-        `/register-step-3-5?cardFlag=${cardFlag ? cardFlag : ''}&plan=${
-          formData.plan ? formData.plan : ''
+        `/register-step-3-5?cardFlag=${cardFlag ? cardFlag : ''}&plan=${formData.plan ? formData.plan : ''
         }`
       );
     } else {
@@ -494,7 +493,7 @@ const RegisterFormStep3: React.FC<IProps> = ({ selectedPlanCard }) => {
     reader.onloadend = () => {
       //setImages(reader.result);
 
-      setFormData({ ...formData, profilePicture: String(reader.result) });
+      setFormData({ ...formData, picture: String(reader.result) });
     };
 
     reader.readAsDataURL(file);
@@ -502,7 +501,7 @@ const RegisterFormStep3: React.FC<IProps> = ({ selectedPlanCard }) => {
 
   const handleRemoveImage = () => {
     //setImages(null);
-    setFormData({ ...formData, profilePicture: '' });
+    setFormData({ ...formData, picture: '' });
 
     const fileInput = document.getElementById(
       'uploadImages'
@@ -524,13 +523,13 @@ const RegisterFormStep3: React.FC<IProps> = ({ selectedPlanCard }) => {
             Adicionar foto de perfil (Opcional)
           </h1>
           <div className="flex items-center">
-            {formData.profilePicture && (
+            {formData.picture && (
               <Image
-                key={formData.profilePicture}
-                id={formData.profilePicture}
-                src={formData.profilePicture}
+                key={formData.picture}
+                id={formData.picture}
+                src={formData.picture}
                 index={0}
-                onRemove={handleRemoveImage}
+                onImageChange={handleRemoveImage}
                 alt={'Foto de perfil'}
               />
             )}
@@ -647,11 +646,10 @@ const RegisterFormStep3: React.FC<IProps> = ({ selectedPlanCard }) => {
         <div className="lg:flex">
           <div className="flex lg:w-3/6 my-5 lg:my-0">
             <div
-              className={`w-[40px] h-[40px] shrink-0 rounded-full bg-tertiary drop-shadow-lg mr-5 flex justify-center cursor-pointer ${
-                sameAddresCheckbox
+              className={`w-[40px] h-[40px] shrink-0 rounded-full bg-tertiary drop-shadow-lg mr-5 flex justify-center cursor-pointer ${sameAddresCheckbox
                   ? 'border-[3px] border-secondary'
                   : 'border border-quaternary'
-              }`}
+                }`}
               onClick={handleSameAddressCheckbox}
             >
               {sameAddresCheckbox && (
@@ -664,11 +662,10 @@ const RegisterFormStep3: React.FC<IProps> = ({ selectedPlanCard }) => {
           </div>
           <div className="flex">
             <div
-              className={`w-[40px] h-[40px] shrink-0 rounded-full bg-tertiary drop-shadow-lg mr-5 flex justify-center cursor-pointer ${
-                anotherAddressCheckbox
+              className={`w-[40px] h-[40px] shrink-0 rounded-full bg-tertiary drop-shadow-lg mr-5 flex justify-center cursor-pointer ${anotherAddressCheckbox
                   ? 'border-[3px] border-secondary'
                   : 'border border-quaternary'
-              }`}
+                }`}
               onClick={handleAnotherAddressCheckbox}
             >
               {anotherAddressCheckbox && (

@@ -1,19 +1,14 @@
 export function monetaryFormat(value: string) {
   try {
-    const numericValue = parseFloat(value);
+    const numericValue = parseInt(value);
 
     if (isNaN(numericValue)) {
       throw new Error("Formato inválido");
     }
 
-    const valorFormatado = numericValue.toLocaleString("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
+    const formattedInteger = numericValue.toLocaleString("pt-BR");
 
-    return valorFormatado;
+    return "R$ " + formattedInteger;
   } catch (error) {
     return "Formato inválido";
   }

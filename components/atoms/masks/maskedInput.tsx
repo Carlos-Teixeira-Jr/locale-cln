@@ -30,6 +30,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   setPropertyValue?: any;
   setUseableAreaValue?: any;
   spanClassName?: string;
+  onChange?: any;
 }
 
 const currencySpanClassName =
@@ -42,6 +43,7 @@ const MaskedInput: React.FC<InputProps> = ({
   setPropertyValue,
   setUseableAreaValue,
   spanClassName = currencySpanClassName,
+  onChange,
   ...props
 }) => {
   const handleKeyUp = useCallback(
@@ -56,7 +58,10 @@ const MaskedInput: React.FC<InputProps> = ({
         cpfMask(event);
       }
       if (mask === 'area') {
-        areaMask(event);
+        const newValue = areaMask(event);
+        if (onChange) {
+          onChange(newValue);
+        }
       }
       if (mask === 'cellPhone') {
         cellPhoneMask(event);

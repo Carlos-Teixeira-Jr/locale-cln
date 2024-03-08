@@ -14,6 +14,7 @@ const nextConfig = {
       'lh3.googleusercontent.com',
       'platform-lookaside.fbsbx.com',
       'static.vecteezy.com',
+      'pt.wikipedia.org'
     ],
   },
 };

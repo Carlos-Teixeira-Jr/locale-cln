@@ -1,8 +1,10 @@
-import { useSession } from 'next-auth/react';
+import { GetServerSidePropsContext } from 'next';
+import { getSession, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { MouseEvent, useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import store from 'store';
+import { IOwnerData } from '../common/interfaces/owner/owner';
 import { IPlan } from '../common/interfaces/plans/plans';
 import { IAddress } from '../common/interfaces/property/propertyData';
 import {
@@ -11,8 +13,12 @@ import {
   IRegisterPropertyData_Step3,
 } from '../common/interfaces/property/register/register';
 import { IUserDataComponent } from '../common/interfaces/user/user';
+import { defaultProfileImage } from '../common/utils/defaultImage/defaultImage';
+import { fetchJson } from '../common/utils/fetchJson';
 import { geocodeAddress } from '../common/utils/geocodeAddress';
 import { clearIndexDB, getAllImagesFromDB } from '../common/utils/indexDb';
+import useProgressRedirect from '../common/utils/stepProgressHandler';
+import { ErrorToastNames, showErrorToast } from '../common/utils/toasts';
 import Loading from '../components/atoms/loading';
 import PaymentFailModal from '../components/atoms/modals/paymentFailModal';
 import LinearStepper from '../components/atoms/stepper/stepper';
@@ -24,8 +30,7 @@ import CreditCard, {
   CreditCardForm,
 } from '../components/molecules/userData/creditCard';
 import UserDataInputs from '../components/molecules/userData/userDataInputs';
-import Footer from '../components/organisms/footer/footer';
-import Header from '../components/organisms/header/header';
+import { Footer, Header } from '../components/organisms';
 import { useProgress } from '../context/registerProgress';
 import { NextPageWithLayout } from './page';
 
@@ -33,6 +38,7 @@ interface IRegisterStep3Props {
   selectedPlanCard: string;
   setSelectedPlanCard: (_selectedCard: string) => void;
   plans: IPlan[];
+  ownerData: IOwnerData;
 }
 
 type BodyReq = {
@@ -43,23 +49,21 @@ type BodyReq = {
   phone: string;
   cellPhone: string;
   creditCardData?: CreditCardForm;
-  profilePicture?: string;
+  picture?: string;
 };
 
-const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
+const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerData }) => {
   const router = useRouter();
+  const { progress, updateProgress } = useProgress();
   const query = router.query;
   const urlEmail = query.email as string;
-  const { progress, updateProgress } = useProgress();
   const storedData = store.get('propertyData');
   const storedPlan = store.get('plans');
   const choosedPlan = storedPlan ? storedPlan : '';
   const propertyAddress = storedData?.address ? storedData.address : {};
   const [paymentError, setPaymentError] = useState('');
-
   const [loading, setLoading] = useState(false);
 
-  // Lida com o autoscroll das validações de erro dos inputs;
   const userDataInputRefs = {
     username: useRef<HTMLElement>(null),
     email: useRef<HTMLElement>(null),
@@ -67,7 +71,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     cellPhone: useRef<HTMLElement>(null),
   };
 
-  // Lida com o auto-scroll para os inputs de Address que mostrarem erro;
   const addressInputRefs = {
     zipCode: useRef<HTMLInputElement>(null),
     city: useRef<HTMLInputElement>(null),
@@ -76,7 +79,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     uf: useRef<HTMLInputElement>(null),
   };
 
-  // Lida com o auto-scroll para os inputs de creditCard que mostrarem erro;
   const creditCardInputRefs = {
     cardName: useRef<HTMLInputElement>(null),
     cardNumber: useRef<HTMLInputElement>(null),
@@ -109,7 +111,11 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     cpf: '',
     cellPhone: '',
     phone: '',
-    profilePicture: '',
+    picture: {
+      id: '',
+      src: ''
+    },
+    wppNumber: ''
   });
 
   const [userDataErrors, setUserDataErrors] = useState({
@@ -142,6 +148,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     cardNumber: '',
     ccv: '',
     expiry: '',
+    cpfCnpj: '',
+    cardBrand: ''
   });
 
   const [creditCardErrors, setCreditCardErrors] = useState<CreditCardForm>({
@@ -149,16 +157,13 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     cardNumber: '',
     ccv: '',
     expiry: '',
+    cpfCnpj: '',
+    cardBrand: ''
   });
 
   // Verifica se o estado progress que determina em qual step o usuário está corresponde ao step atual;
-  useEffect(() => {
-    if (progress < 3) {
-      router.push('/register');
-    }
-  });
+  useProgressRedirect(progress, 3, '/register');
 
-  // // Busca o endereço do imóvel armazenado no local storage e atualiza o valor de addressData sempre que há o componente de endereço é aberto ou fechado - isso é necessário para que o componente ChangeAddressCheckbox recupere o endereço do localStorage quando a opção é alterada;
   useEffect(() => {
     setAddressData(property ? property.address : '');
   }, []);
@@ -221,7 +226,10 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
       cardNumber: '',
       ccv: '',
       expiry: '',
+      cpfCnpj: '',
+      cardBrand: ''
     };
+
     if (!userDataForm.username) newUserDataErrors.username = error;
     if (!userDataForm.email) newUserDataErrors.email = error;
     if (!userDataForm.cpf) newUserDataErrors.cpf = error;
@@ -239,6 +247,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         if (!creditCard.cardNumber) newCreditCardErrors.cardNumber = error;
         if (!creditCard.expiry) newCreditCardErrors.expiry = error;
         if (!creditCard.ccv) newCreditCardErrors.ccv = error;
+        if (!creditCard.cpfCnpj) newCreditCardErrors.cpfCnpj = error;
       }
     }
 
@@ -246,14 +255,12 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
     setAddressErrors(newAddressErrors);
     setCreditCardErrors(newCreditCardErrors);
 
-    // Combina os erros de registro e endereço em um único objeto de erros
     const combinedErrors = {
       ...newAddressErrors,
       ...newUserDataErrors,
       ...newCreditCardErrors,
     };
 
-    // Verifica se algum dos valores do objeto de erros combinados não é uma string vazia
     const hasErrors = Object.values(combinedErrors).some(
       (error) => error !== ''
     );
@@ -280,10 +287,11 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         email: userDataForm.email,
         cpf: userDataForm.cpf,
         cellPhone: userDataForm.cellPhone,
-        profilePicture: userDataForm.profilePicture
-          ? userDataForm.profilePicture
-          : 'https://static.vecteezy.com/system/resources/previews/019/879/186/non_2x/user-icon-on-transparent-background-free-png.png',
+        picture: userDataForm.picture
+          ? userDataForm.picture
+          : { id: '1', src: defaultProfileImage },
         phone: userDataForm.phone,
+        wppNumber: userDataForm.wppNumber ? userDataForm.wppNumber : '',
         zipCode: addressData.zipCode,
         city: addressData.city,
         uf: addressData.uf,
@@ -302,9 +310,9 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         email: userDataForm.email,
         address: isSameAddress ? storedData.address : addressData,
         cpf: userDataForm.cpf.replace(/\D/g, ''),
-        profilePicture: userDataForm.profilePicture
-          ? userDataForm.profilePicture
-          : 'https://static.vecteezy.com/system/resources/previews/019/879/186/non_2x/user-icon-on-transparent-background-free-png.png',
+        picture: userDataForm.picture
+          ? userDataForm.picture
+          : { id: '1', src: defaultProfileImage },
       };
 
       const propertyData: ICreateProperty_propertyData = {
@@ -318,14 +326,14 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
             : addressData,
         description: storedData.description,
         metadata: storedData.metadata,
-        //images: storedData.images,
         size: storedData.size,
         ownerInfo: {
-          profilePicture: userDataForm.profilePicture
-            ? userDataForm.profilePicture
-            : 'https://static.vecteezy.com/system/resources/previews/019/879/186/non_2x/user-icon-on-transparent-background-free-png.png',
+          picture: userDataForm.picture
+            ? userDataForm.picture
+            : { id: '1', src: defaultProfileImage },
           name: userDataForm.username,
-          phones: [userDataForm.cellPhone, userDataForm.phone],
+          phones: [`55 ${userDataForm.cellPhone}`, userDataForm.phone],
+          wppNumber: userDataForm.wppNumber ? `55 ${userDataForm.wppNumber}` : ''
         },
         tags: storedData.tags,
         condominiumTags: storedData.condominiumTags,
@@ -347,7 +355,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
           plan: propertyDataStep3.plan,
           isPlanFree,
           phone: userDataForm.phone,
-          cellPhone: userDataForm.cellPhone,
+          cellPhone: `55 ${userDataForm.cellPhone}`,
         };
 
         if (!isPlanFree) {
@@ -366,11 +374,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
 
         if (response.ok) {
           const data = await response.json();
-          console.log(
-            'propertyData.ownerInfo.profilePicture',
-            propertyData.ownerInfo.profilePicture
-          );
-          console.log('userData.profilePicture', userData.profilePicture);
           const paymentData = {
             cardBrand: data.creditCardBrand ? data.creditCardBrand : 'Free',
             value: data.paymentValue ? data.paymentValue : '00',
@@ -383,35 +386,67 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
             paymentData,
           });
 
-          // Salvar imagens
-
           const indexDbImages = (await getAllImagesFromDB()) as {
             id: string;
             data: Blob;
             name: string;
           }[];
 
-          const formData = new FormData();
+          const propertyImagesFormData = new FormData();
 
           for (let i = 0; i < indexDbImages.length; i++) {
-            const file = new File(
-              [indexDbImages[i].data],
-              `${indexDbImages[i].name}`
-            );
-            formData.append('images', file);
+            if (indexDbImages[i].id !== userDataForm.picture.id) {
+              const file = new File(
+                [indexDbImages[i].data],
+                `${indexDbImages[i].name}`
+              );
+              propertyImagesFormData.append('images', file);
+            }
           }
 
-          formData.append('propertyId', data.createdProperty._id);
+          propertyImagesFormData.append('propertyId', data.createdProperty._id);
 
-          const imagesResponse = await fetch(
-            `${baseUrl}/property/uploadDropImageWithRarity`,
+          const propertyImagesResponse = await fetch(
+            `${baseUrl}/property/upload-property-images`,
             {
               method: 'POST',
-              body: formData,
+              body: propertyImagesFormData,
             }
           );
 
-          if (imagesResponse.ok) {
+          if (propertyImagesResponse.ok) {
+            if (userDataForm.picture.id) {
+              const profileImageFormData = new FormData();
+
+              for (let i = 0; i < indexDbImages.length; i++) {
+                if (indexDbImages[i].id === userDataForm.picture.id) {
+                  const file = new File(
+                    [indexDbImages[i].data],
+                    `${indexDbImages[i].name}`
+                  );
+                  profileImageFormData.append('images', file);
+                }
+              }
+
+              profileImageFormData.append('userId', data.user._id);
+
+              const profileImageResponse = await fetch(
+                `${baseUrl}/property/upload-profile-image`,
+                {
+                  method: 'POST',
+                  body: profileImageFormData,
+                }
+              );
+
+              if (!profileImageResponse.ok) {
+                showErrorToast(ErrorToastNames.SendImages);
+                showErrorToast(ErrorToastNames.ImagesUploadError);
+                setTimeout(() => {
+                  router.push('/register');
+                }, 7000);
+              }
+            }
+
             clearIndexDB();
             updateProgress(4);
             if (!urlEmail) {
@@ -425,7 +460,11 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
               });
             }
           } else {
-            console.log('Erro ao enviar as imagens');
+            showErrorToast(ErrorToastNames.SendImages);
+            showErrorToast(ErrorToastNames.ImagesUploadError);
+            setTimeout(() => {
+              router.push('/register');
+            }, 7000);
           }
         } else {
           toast.dismiss();
@@ -448,10 +487,10 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
 
   return (
     <>
-      <div className="max-w-[1215px] mx-auto">
+      <div className={classes.body}>
         <Header />
         <div className="justify-center">
-          <div className="md:mt-26 mt-28 sm:mt-32 md:mb-8 lg:mb-2 mx-auto">
+          <div className={classes.stepLabel}>
             <LinearStepper isSubmited={false} sharedActiveStep={2} />
           </div>
 
@@ -486,7 +525,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
           </div>
 
           <div className="lg:mx-0">
-            <div className="flex justify-center flex-col">
+            <div className={classes.userData}>
               <UserDataInputs
                 isEdit={false}
                 onUserDataUpdate={(updatedUserData: IUserDataComponent) =>
@@ -495,6 +534,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
                 urlEmail={urlEmail ? urlEmail : undefined}
                 error={userDataErrors}
                 userDataInputRefs={userDataInputRefs}
+                ownerData={ownerData}
               />
             </div>
 
@@ -542,20 +582,16 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
               termsError={termsError}
             />
 
-            <div className="flex flex-col md:flex-row lg:flex-row xl:flex-row gap-4 md:gap-0 lg:gap-0 xl:gap-0 items-center justify-between my-4 max-w-[1215px]">
-              <button
-                className="active:bg-gray-500 cursor-pointer flex items-center flex-row justify-around bg-primary w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold text-2xl lg:text-3xl hover:bg-red-600 hover:text-white"
-                onClick={handlePreviousStep}
-              >
+            <div className={classes.containerButton}>
+              <button className={classes.button} onClick={handlePreviousStep}>
                 Voltar
               </button>
-
               <button
-                className="active:bg-gray-500 cursor-pointer flex items-center flex-row justify-around bg-primary w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold text-2xl lg:text-3xl hover:bg-red-600 hover:text-white"
+                className={classes.button}
                 onClick={handleSubmit}
-                disabled={loading}
+              //disabled={loading}
               >
-                <span className={`${loading ? 'ml-16' : ''}`}>Continuar</span>
+                <span className={`${loading ? 'ml-5' : ''}`}>Continuar</span>
                 {loading && <Loading />}
               </button>
             </div>
@@ -569,22 +605,57 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans }) => {
         />
       </div>
 
-      <Footer smallPage={false} />
+      <Footer />
     </>
   );
 };
 
 export default RegisterStep3;
 
-export async function getStaticProps() {
-  const plans = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/plan`)
-    .then((res) => res.json())
-    .catch(() => ({}));
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+
+  const session = (await getSession(context) as any);
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+
+  const userId =
+    session?.user.data._id !== undefined
+      ? session?.user.data._id
+      : session?.user.id;
+
+
+  const [plans, ownerData] = await Promise.all([
+    fetch(`${baseUrl}/plan`)
+      .then((res) => res.json())
+      .catch(() => []),
+    fetch(`${baseUrl}/user/find-owner-by-user`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId }),
+      }
+    )
+      .then((res) => res.json())
+      .catch(() => []),
+    fetchJson(`${baseUrl}/plan`),
+    fetchJson(`${baseUrl}/user/find-owner-by-user`)
+  ]);
 
   return {
     props: {
       plans,
+      ownerData
     },
-    revalidate: 60,
   };
 }
+
+const classes = {
+  body: 'max-w-[1215px] mx-auto',
+  stepLabel: 'md:mt-26 mt-28 sm:mt-32 md:mb-8 lg:mb-2 mx-auto',
+  userData: 'flex justify-center flex-col',
+  containerButton:
+    'flex flex-col md:flex-row lg:flex-row xl:flex-row gap-4 md:gap-0 lg:gap-0 xl:gap-0 items-center justify-between my-4 max-w-[1215px]',
+  button:
+    'active:bg-gray-500 cursor-pointer flex items-center flex-row justify-around bg-primary w-44 h-14 text-tertiary rounded transition-colors duration-300 font-bold text-lg md:text-xl hover:bg-red-600 hover:text-white',
+};

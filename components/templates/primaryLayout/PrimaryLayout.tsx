@@ -20,7 +20,7 @@ const PrimaryLayout: React.FC<IPrimaryLayout> = ({
         <Header />
         <main className="px-5">{children}</main>
         <div />
-        <Footer smallPage={false} />
+        <Footer />
       </div>
     </>
   );

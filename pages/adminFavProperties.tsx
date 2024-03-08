@@ -12,9 +12,9 @@ import {
 import { fetchJson } from '../common/utils/fetchJson';
 import SentimentIcon from '../components/atoms/icons/sentimentIcon';
 import Pagination from '../components/atoms/pagination/pagination';
-import PropertyCard from '../components/molecules/cards/propertyCard/PropertyCard';
-import AdminHeader from '../components/organisms/adminHeader/adminHeader';
-import SideMenu from '../components/organisms/sideMenu/sideMenu';
+import { PropertyCard } from '../components/molecules';
+import { AdminHeader, SideMenu } from '../components/organisms';
+import { useIsMobile } from '../hooks/useIsMobile';
 import { NextPageWithLayout } from './page';
 
 interface IAdminFavProperties {
@@ -28,19 +28,17 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
   ownerProperties,
   notifications,
 }) => {
-  console.log("🚀 ~ favouriteProperties:", favouriteProperties)
   const [isOwner, setIsOwner] = useState<boolean>(false);
   const [properties, _setProperties] = useState<IPropertyInfo>(ownerProperties);
   const [currentPage, setCurrentPage] = useState(1);
   const router = useRouter();
   const query = router.query as any;
+  const isMobile = useIsMobile();
 
-  // Determina se o usuário já possui anúncios ou não;
   useEffect(() => {
     setIsOwner(properties?.docs?.length > 0 ? true : false);
   }, [properties]);
 
-  // Determina se o usuário já possui anúncios ou não;
   useEffect(() => {
     setIsOwner(ownerProperties.docs?.length > 0 ? true : false);
   }, [ownerProperties]);
@@ -53,13 +51,11 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
   });
 
   useEffect(() => {
-    // Check if the page parameter in the URL matches the current page
     const pageQueryParam =
       router.query.page !== undefined && typeof query.page === 'string'
         ? parseInt(query.page)
         : 1;
 
-    // Only update the URL if the page parameter is different from the current page
     if (pageQueryParam !== currentPage) {
       const queryParams = {
         ...query,
@@ -72,60 +68,56 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
   return (
     <>
       <AdminHeader isOwnerProp={isOwner} />
-      <div className="flex flex-row items-center justify-center  lg:ml-96 xl:ml-96">
-        <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:flex">
-          <SideMenu isOwnerProp={isOwner} notifications={notifications} />
+      <div className={classes.content}>
+        <div className={classes.sideMenu}>
+          {!isMobile ? (
+            <SideMenu isOwnerProp={isOwner} notifications={notifications} />
+          ) : (
+            ''
+          )}
         </div>
-        <div className="flex flex-col items-center mt-24 w-full ">
-          <div className="flex flex-col items-center mb-5 max-w-[1215px]">
-            <h1 className="font-extrabold text-2xl md:text-4xl text-quaternary md:mb-5 text-center md:mr-16">
-              Imóveis Favoritos
-            </h1>
-            {favouriteProperties?.docs?.length === 0 ? (
-              ''
-            ) : (
-              <div className=" md:mr-16">
-                <Pagination totalPages={favouriteProperties?.totalPages} />
-              </div>
-            )}
-
-            <div className="grid sm:grid-cols-1 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 my-5 gap-10 lg:justify-start">
-              {favouriteProperties?.docs?.length > 0 ? (
-                favouriteProperties?.docs.map(
-                  ({
-                    _id,
-                    prices,
-                    address,
-                    images,
-                    highlighted,
-                    description,
-                  }: IData) => (
-                    <div className="w-60" key={_id}>
-                      <PropertyCard
-                        key={_id}
-                        description={description}
-                        images={images}
-                        location={`${address.city}, ${address.uf} - ${address.streetName}`}
-                        favorited={highlighted}
-                        id={_id}
-                        prices={prices}
-                        highlighted={highlighted}
-                      />
-                    </div>
-                  )
-                )
-              ) : (
-                <div className="flex flex-col items-center align-middle mt-36">
-                  <SentimentIcon />
-                  <h1 className="text-3xl text-quaternary">
-                    Você ainda não favotirou nenhum imóvel.
-                  </h1>
-                </div>
-              )}
+        <div className={classes.favPropertiesContainer}>
+          <h1 className={classes.title}>Imóveis Favoritos</h1>
+          {favouriteProperties?.docs?.length === 0 ? (
+            ''
+          ) : (
+            <div className=" md:mr-16">
+              <Pagination totalPages={favouriteProperties?.totalPages} />
             </div>
-            {/* <Pagination 
-              totalPages={0} 
-            /> */}
+          )}
+          {favouriteProperties?.docs?.length == 0 && (
+            <div className={classes.notFound}>
+              <SentimentIcon />
+              <h1 className={classes.h1}>
+                Você ainda não favoritou nenhum imóvel.
+              </h1>
+            </div>
+          )}
+          <div className={classes.favProperties}>
+            {favouriteProperties?.docs?.length > 0 &&
+              favouriteProperties?.docs.map(
+                ({
+                  _id,
+                  prices,
+                  address,
+                  images,
+                  highlighted,
+                  description,
+                }: IData) => (
+                  <div className="w-60" key={_id}>
+                    <PropertyCard
+                      key={_id}
+                      description={description}
+                      images={images}
+                      location={`${address.city}, ${address.uf} - ${address.streetName}`}
+                      favorited={highlighted}
+                      id={_id}
+                      prices={prices}
+                      highlighted={highlighted}
+                    />
+                  </div>
+                )
+              )}
           </div>
         </div>
       </div>
@@ -220,14 +212,13 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ _id: userId }),
+          body: JSON.stringify({ userId }),
         }
       );
 
       if (ownerIdResponse.ok) {
         const ownerData = await ownerIdResponse.json();
         ownerId = ownerData?.owner?._id;
-        console.log('adminFavProperties:', userId);
       }
     } catch (error) {
       console.error(error);
@@ -281,3 +272,17 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     };
   }
 }
+
+const classes = {
+  content: 'flex flex-row items-center justify-center lg:ml-96 xl:ml-96',
+  sideMenu: 'fixed left-0 top-7 sm:hidden hidden md:hidden lg:flex',
+  title:
+    'font-extrabold text-lg md:text-2xl text-quaternary md:mb-5 text-center md:mr-16',
+  h1: 'text-2xl text-quaternary mt-2',
+  favPropertiesContainer:
+    'flex flex-col items-center justify-center mb-5 max-w-[1215px]',
+  notFound:
+    'flex flex-col items-center align-middle mt-36 justify-center mr-0 lg:mr-40',
+  favProperties:
+    'grid sm:grid-cols-1 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 my-5 gap-10 lg:justify-start',
+};
