@@ -27,7 +27,6 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
 
   const { data: session } = useSession() as any;
   const [isOwner, setIsOwner] = useState<boolean>(false);
-  console.log("🚀 ~ isOwner:", isOwner)
   const [currentPage, setCurrentPage] = useState(1);
   const router = useRouter();
   const query = router.query as any;
@@ -67,11 +66,11 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
   return (
     <div>
       <AdminHeader isOwnerProp={isOwner} />
-      <div className="flex flex-row items-center justify-evenly">
+      <div className="flex flex-row items-center justify-evenly w-fit max-w-full">
         <div className={classes.sideMenu}>
           <SideMenu isOwnerProp={isOwner} notifications={notifications} />
         </div>
-        <div className="flex flex-col items-center mt-24 lg:ml-[305px]">
+        <div className="flex flex-col items-center mt-24 lg:ml-[26rem]">
           <div className="flex flex-col items-center">
             <h1 className="font-extrabold text-xl md:text-3xl text-quaternary md:mb-5 md:mr-20. text-center">
               Bem vindo
