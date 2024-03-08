@@ -466,8 +466,7 @@ const RegisterFormStep3: React.FC<IProps> = ({ selectedPlanCard }) => {
           !newErrors.cvc))
     ) {
       router.push(
-        `/register-step-3-5?cardFlag=${cardFlag ? cardFlag : ''}&plan=${
-          formData.plan ? formData.plan : ''
+        `/register-step-3-5?cardFlag=${cardFlag ? cardFlag : ''}&plan=${formData.plan ? formData.plan : ''
         }`
       );
     } else {
@@ -530,7 +529,7 @@ const RegisterFormStep3: React.FC<IProps> = ({ selectedPlanCard }) => {
                 id={formData.picture}
                 src={formData.picture}
                 index={0}
-                onRemove={handleRemoveImage}
+                onImageChange={handleRemoveImage}
                 alt={'Foto de perfil'}
               />
             )}
@@ -647,11 +646,10 @@ const RegisterFormStep3: React.FC<IProps> = ({ selectedPlanCard }) => {
         <div className="lg:flex">
           <div className="flex lg:w-3/6 my-5 lg:my-0">
             <div
-              className={`w-[40px] h-[40px] shrink-0 rounded-full bg-tertiary drop-shadow-lg mr-5 flex justify-center cursor-pointer ${
-                sameAddresCheckbox
+              className={`w-[40px] h-[40px] shrink-0 rounded-full bg-tertiary drop-shadow-lg mr-5 flex justify-center cursor-pointer ${sameAddresCheckbox
                   ? 'border-[3px] border-secondary'
                   : 'border border-quaternary'
-              }`}
+                }`}
               onClick={handleSameAddressCheckbox}
             >
               {sameAddresCheckbox && (
@@ -664,11 +662,10 @@ const RegisterFormStep3: React.FC<IProps> = ({ selectedPlanCard }) => {
           </div>
           <div className="flex">
             <div
-              className={`w-[40px] h-[40px] shrink-0 rounded-full bg-tertiary drop-shadow-lg mr-5 flex justify-center cursor-pointer ${
-                anotherAddressCheckbox
+              className={`w-[40px] h-[40px] shrink-0 rounded-full bg-tertiary drop-shadow-lg mr-5 flex justify-center cursor-pointer ${anotherAddressCheckbox
                   ? 'border-[3px] border-secondary'
                   : 'border border-quaternary'
-              }`}
+                }`}
               onClick={handleAnotherAddressCheckbox}
             >
               {anotherAddressCheckbox && (
