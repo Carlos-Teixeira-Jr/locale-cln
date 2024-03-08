@@ -5,10 +5,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import { DndProvider, DropTargetMonitor, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { v4 as uuidv4 } from 'uuid';
-import { addImageToDB, getAllImagesFromDB, removeImageFromDB } from '../../../common/utils/indexDb';
+import {
+  addImageToDB,
+  getAllImagesFromDB,
+  removeImageFromDB,
+} from '../../../common/utils/indexDb';
+import { ErrorToastNames, showErrorToast } from '../../../common/utils/toasts';
 import CameraIcon from '../../atoms/icons/cameraIcon';
 import TrashIcon from '../../atoms/icons/trashIcon';
-import { ErrorToastNames, showErrorToast } from '../../../common/utils/toasts';
 
 interface IImages {
   editarImages?: string[];
@@ -70,7 +74,7 @@ const UploadImages = ({
         // Define o estado `images` com as imagens recuperadas
         setImages(imagesFromDB as any[]);
       } catch (error) {
-        showErrorToast(ErrorToastNames.LoadImages)
+        showErrorToast(ErrorToastNames.LoadImages);
       }
     };
     // Chama a função para carregar imagens do IndexedDB quando o componente é montado
@@ -84,25 +88,19 @@ const UploadImages = ({
       showErrorToast(ErrorToastNames.ImagesMaxLimit);
       return;
     }
-    
+
     for (const file of files) {
       const id = uuidv4();
       const src = URL.createObjectURL(file);
 
-      // Adiciona a imagem ao IndexedDB junto com o ID UUID
       await addImageToDB(file, src, id);
 
-      // Atualiza o estado com a imagem usando o ID UUID
-      setImages((prevImages) => [
-        ...prevImages,
-        { src, id },
-      ]);
+      setImages((prevImages) => [...prevImages, { src, id }]);
     }
   };
 
   const handleRemoveImage = async (id: string) => {
     try {
-      // Obter o ID numérico correspondente ao ID fornecido
       const foundId = images.find((image) => image.id === id);
 
       if (foundId === undefined) {
@@ -110,10 +108,8 @@ const UploadImages = ({
         return;
       }
 
-      // Remover a imagem do IndexedDB usando o ID UUID
       await removeImageFromDB(id);
 
-      // Atualizar o estado com as imagens restantes
       setImages((prevImages) => prevImages.filter((image) => image.id !== id));
     } catch (error) {
       console.error('Erro ao remover a imagem:', error);
@@ -122,9 +118,13 @@ const UploadImages = ({
 
   const moveImage = (dragIndex: number, hoverIndex: number) => {
     const dragImage = images[dragIndex];
+
     const newImages = [...images];
+
     newImages.splice(dragIndex, 1);
+
     newImages.splice(hoverIndex, 0, dragImage);
+
     setImages(newImages);
   };
 
@@ -134,11 +134,13 @@ const UploadImages = ({
       ref={imagesErrorScroll}
     >
       <label
-        className="flex flex-row items-center px-6 w-64 h-12 border rounded-[50px] bg-secondary cursor-pointer mt-4 mx-auto"
+        className="flex flex-row justify-center items-center px-5 w-64 h-12 border rounded-[50px] bg-secondary cursor-pointer mt-4 mx-auto"
         htmlFor="uploadImages"
       >
         <CameraIcon />
-        <span className="font-bold text-quinary text-2xl">Adicionar Fotos</span>
+        <span className="font-bold text-quinary text-lg text-center">
+          Adicionar Fotos
+        </span>
       </label>
       <input
         type="file"
@@ -246,12 +248,10 @@ const Image: React.FC<ImageProps> = ({
       const clientOffset: any = monitor.getClientOffset();
       const hoverClientY = clientOffset.y - hoverBoundingRect.top;
 
-      // Arrastando para baixo
       if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
         return;
       }
 
-      // Arrastando para cima
       if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
         return;
       }
@@ -291,7 +291,7 @@ const Image: React.FC<ImageProps> = ({
       >
         <TrashIcon />
       </div>
-      <span className="absolute bottom-0 left-0 p-1 px-3 text-white bg-black bg-opacity-50 rounded-3xl">
+      <span className="absolute bottom-0 left-0 p-1 px-3 text-sm text-white bg-black bg-opacity-50 rounded-3xl">
         {index === 0 ? 'Capa do anúncio' : index + 1}
       </span>
     </div>

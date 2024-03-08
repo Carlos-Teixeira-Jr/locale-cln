@@ -7,8 +7,7 @@ import CheckIcon from '../components/atoms/icons/checkIcon';
 import Loading from '../components/atoms/loading';
 import LinearStepper from '../components/atoms/stepper/stepper';
 import PaymentBoard_Step3_5 from '../components/molecules/payment/paymentBoardStep3_5';
-import Footer from '../components/organisms/footer/footer';
-import Header from '../components/organisms/header/header';
+import { Footer, Header } from '../components/organisms';
 import { useProgress } from '../context/registerProgress';
 import { NextPageWithLayout } from './page';
 
@@ -18,12 +17,12 @@ interface IRegisterStep35 {
 
 const RegisterStep35: NextPageWithLayout<IRegisterStep35> = ({ plans }) => {
   const router = useRouter();
+  const { progress, updateProgress } = useProgress();
+  const [cardBrand, setCardBrand] = useState('');
+  const [loading, setLoading] = useState(false);
   const query = router.query;
   const urlEmail = query.email as string;
-  const { progress, updateProgress } = useProgress();
   const storedData = store.get('propertyData');
-  const [cardBrand, setCardBrand] = useState('');
-  const [loading] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -39,6 +38,7 @@ const RegisterStep35: NextPageWithLayout<IRegisterStep35> = ({ plans }) => {
   useProgressRedirect(progress, 4, '/register');
 
   const handleSubmit = () => {
+    setLoading(true);
     updateProgress(5);
     store.clearAll();
     if (!urlEmail) {
@@ -56,48 +56,46 @@ const RegisterStep35: NextPageWithLayout<IRegisterStep35> = ({ plans }) => {
   return (
     <>
       <Header />
-      <div className="flex flex-col mx-auto max-w-[1215px]">
+      <div className={classes.body}>
         <div className="lg:mx-24">
-          <div className="md:mt-26 mt-28 sm:mt-32 md:mb-8 lg:mb-2 w-full mx-auto xl:mx-auto">
+          <div className={classes.stepLabel}>
             <LinearStepper isSubmited={false} sharedActiveStep={3} />
           </div>
 
-          {/**Confirmed payment */}
-          <div className="bg-[#F7F7F6] border-4 border-[#4BB543] flex flex-row justify-between items-center p-7 md:p-14 min-h-[198px] my-8">
+          <div className={classes.card}>
             <div className="flex flex-col p-4">
-              <h1 className="text-[#4BB543] text-4xl font-bold mb-6">
+              <h1 className={classes.h1}>
                 {!cardBrand || cardBrand === 'Free'
                   ? 'Imóvel Cadastrado!'
                   : 'Pagamento Confirmado!'}
               </h1>
-              <p className="text-quaternary text-md md:text-2xl font-bold">
+              <p className={classes.p}>
                 {!cardBrand || cardBrand === 'Free'
                   ? 'Seu imóvel foi cadastrado e agora falta bem pouco para o seu anúncio estar no ar!'
                   : 'Seu pagamento foi confirmado e agora falta bem pouco para o seu anúncio estar no ar!'}
               </p>
             </div>
-            <div className="rounde rounded-full bg-[#4BB543] w-20 h-20 flex items-center justify-center shrink-0">
+            <div className={classes.checkIcon}>
               <CheckIcon fill="#F7F7F6" />
             </div>
           </div>
 
           <PaymentBoard_Step3_5 storedData={storedData} plans={plans} />
 
-          {/**Button */}
-          <div className="flex md:justify-end justify-center lg:justify-end xl:justify-end my-4 max-w-[1215px]">
+          <div className={classes.buttonContainer}>
             <button
-              className="active:bg-gray-500 cursor-pointer flex items-center flex-row justify-around bg-primary w-80 h-16 text-tertiary rounded transition-colors duration-300 font-bold text-2xl lg:text-3xl hover:bg-red-600 hover:text-white"
+              className={classes.button}
               disabled={loading}
               onClick={handleSubmit}
             >
-              <span className={`${loading ? 'ml-16' : ''}`}>Continuar</span>
+              <span className={`${loading ? 'ml-5' : ''}`}>Continuar</span>
               {loading && <Loading />}
             </button>
           </div>
         </div>
       </div>
 
-      <Footer smallPage={true} />
+      <Footer />
     </>
   );
 };
@@ -116,3 +114,18 @@ export async function getStaticProps() {
     revalidate: 60,
   };
 }
+
+const classes = {
+  body: 'flex flex-col mx-auto max-w-[1215px]',
+  stepLabel:
+    'md:mt-26 mt-28 sm:mt-32 md:mb-8 lg:mb-2 w-full mx-auto xl:mx-auto',
+  card: 'bg-[#F7F7F6] border-4 border-[#4BB543] flex flex-row justify-between items-center p-7 md:p-14 min-h-[198px] my-8',
+  h1: 'text-[#4BB543] text-xl md:text-2xl font-bold mb-6',
+  p: 'text-quaternary text-md md:text-xl font-bold',
+  buttonContainer:
+    'flex md:justify-end justify-center lg:justify-end xl:justify-end my-4 max-w-[1215px]',
+  button:
+    'active:bg-gray-500 cursor-pointer flex items-center flex-row justify-around bg-primary w-44 h-14 text-tertiary rounded transition-colors duration-300 font-bold text-lg md:text-xl hover:bg-red-600 hover:text-white',
+  checkIcon:
+    'rounded-full bg-[#4BB543] w-20 h-20 flex items-center justify-center shrink-0',
+};

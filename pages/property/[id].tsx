@@ -54,36 +54,34 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
   property,
   isFavourite,
   relatedProperties,
-  ownerData,
+  ownerData
 }: IPropertyPage) => {
   
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   const [mapIsActive, setMapIsActive] = useState(false);
+
   const dynamicRoute = useRouter().asPath;
 
-  // Atualiza o valor de mapIsActive quando o usuário clica em um novo card apresentado nesta página;
   useEffect(() => {
     setMapIsActive(false);
   }, [dynamicRoute]);
 
+  const galeryModalCSS = `lg:mx-auto m-5 mb-36 md:mb-5 md:mt-0 lg:mt-5  ${
+    isModalOpen ? 'z-50' : 'z-30'
+  }`;
+
   return (
     <>
-      <div
-        className={
-          'flex flex-col max-w-5xl items-center mx-auto lg:pt-10 pt-[90px]'
-        }
-      >
-        <div
-          className={`lg:mx-auto m-5 mb-36 md:mb-5 md:mt-0 lg:mt-5  ${
-            isModalOpen ? 'z-50' : 'z-30'
-          }`}
-        >
+      <div className={classes.content}>
+        <div className={galeryModalCSS}>
           <Gallery
             propertyID={property}
             isModalOpen={isModalOpen}
             onGalleryModalOpen={(isOpen: boolean) => setIsModalOpen(isOpen)}
           />
         </div>
+
         <div className="md:flex w-full justify-between mb-4">
           <PropertyInfoTop propertyID={property} />
 
@@ -97,7 +95,8 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
             owner={ownerData}
           />
         </div>
-        <div className="flex flex-col md:flex-row gap-5 justify-center m-5 lg:my-5 lg:mx-0">
+
+        <div className={classes.relatedProperties}>
           {relatedProperties.docs.length > 0 &&
             relatedProperties?.docs
               .slice(0, 3)
@@ -123,12 +122,10 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
                 />
               ))}
         </div>
-        <div className="w-full md:h-fit mx-auto mb-20 drop-shadow-xl">
+
+        <div className={classes.mapContainer}>
           {!mapIsActive && (
-            <div
-              id="dynamic-map"
-              className={'lg:w-full h-fit my-10 mx-auto drop-shadow-xl'}
-            >
+            <div id="dynamic-map" className={classes.staticMap}>
               <StaticMap
                 width={1312}
                 height={223}
@@ -145,7 +142,7 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
         </div>
       </div>
 
-      <Footer smallPage={false} />
+      <Footer />
     </>
   );
 };
@@ -244,3 +241,11 @@ export async function getServerSideProps(context: NextPageContext) {
     },
   };
 }
+
+const classes = {
+  content: 'flex flex-col max-w-5xl items-center mx-auto lg:pt-10 pt-[90px]',
+  relatedProperties:
+    'flex flex-col md:flex-row gap-5 justify-center m-5 lg:my-5 lg:mx-0',
+  mapContainer: 'w-full md:h-fit mx-auto mb-20 drop-shadow-xl',
+  staticMap: 'lg:w-full h-fit my-10 mx-auto drop-shadow-xl',
+};

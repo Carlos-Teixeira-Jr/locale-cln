@@ -1,17 +1,16 @@
+import { signOut, useSession } from 'next-auth/react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import DropdownMenu from '../../atoms/dropdowns/dropdownMenu';
 import MenuIcon from '../../atoms/icons/menuIcon';
-import LocaleLogo from '../../atoms/logos/locale';
-import { signOut, useSession } from 'next-auth/react';
 import UserIcon from '../../atoms/icons/userIcon';
-import Image from 'next/image';
+import LocaleLogo from '../../atoms/logos/locale';
 
 export interface IHeader extends React.ComponentPropsWithoutRef<'header'> {}
 
 const Header: React.FC<IHeader> = () => {
-  
   const { data: session } = useSession() as any;
   const router = useRouter();
   const [isBuy, setIsBuy] = useState(false);
@@ -46,14 +45,14 @@ const Header: React.FC<IHeader> = () => {
 
   return (
     <div>
-      <div className="top-0 fixed z-40 w-[95%] justify-between grid grid-cols-2 md:grid md:grid-cols-3 bg-tertiary h-fit shadow-md mt-8 p-2 rounded-[50px] left-1/2 transform -translate-x-1/2">
+      <div className="top-0 fixed z-40 w-[95%] justify-between grid grid-cols-2 md:grid md:grid-cols-3 bg-tertiary h-fit shadow-md mt-8 py-1.5 rounded-[50px] left-1/2 transform -translate-x-1/2">
         <Link
           href="/"
           className="relative flex items-center cursor-pointer my-auto ml-4"
         >
           <LocaleLogo />
         </Link>
-        <div className="hidden md:flex md:flex-row md:items-center justify-between space-x-2 text-lg ml-5 md:ml-0 font-bold text-quaternary">
+        <div className="hidden md:flex md:flex-row md:items-center justify-between space-x-2 text-md ml-5 md:ml-0 font-bold text-quaternary">
           <Link
             className={`cursor-pointer ${
               isBuy
@@ -83,8 +82,8 @@ const Header: React.FC<IHeader> = () => {
         </div>
         <div className="flex flex-row items-center justify-end">
           {session ? (
-            <div className='flex gap-2'>
-              <p className='my-auto mx-2'>{session.user?.data.username}</p>
+            <div className="flex gap-2">
+              <p className="my-auto mx-2">{session.user?.data.username}</p>
               <Link href={'/admin?page=1'}>
                 {session.user.data.picture!! ? (
                   <Image
@@ -92,16 +91,21 @@ const Header: React.FC<IHeader> = () => {
                     alt={'Admin image'}
                     width={50}
                     height={50}
-                    className="border border-primary rounded-full w-12 h-12"
+                    className="border border-primary rounded-full w-10 h-10"
                   />
                 ) : (
                   <UserIcon
                     className="border border-secondary rounded-full w-10 h-10 p-1 bg-white"
-                    fill='#F75D5F'
+                    fill="#F75D5F"
                   />
                 )}
               </Link>
-              <button className='my-auto cursor-pointer mx-2 text-primary font-semibold text-xl' onClick={() => signOut()}>Sair</button>
+              <button
+                className="my-auto cursor-pointer mx-2 text-primary font-semibold text-md"
+                onClick={() => signOut()}
+              >
+                Sair
+              </button>
             </div>
           ) : (
             <>
