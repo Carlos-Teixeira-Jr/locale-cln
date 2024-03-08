@@ -40,6 +40,7 @@ interface IEditAnnouncement {
 const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
   property,
 }) => {
+  console.log("🚀 ~ property:", property)
   const [rotate1, setRotate1] = useState(false);
   const [rotate2, setRotate2] = useState(false);
   const [rotate3, setRotate3] = useState(false);
@@ -226,7 +227,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
     if (!address.city) newAddressErrors.city = error;
     if (!address.uf) newAddressErrors.uf = error;
     if (images.length < 5) {
-      const imagesError = 'Você precisa ter pelo menos três fotos.';
+      const imagesError = 'Você precisa ter pelo menos cinco fotos.';
       setErrorInfo({
         error: imagesError,
         prop: 'images',
