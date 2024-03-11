@@ -1,5 +1,3 @@
-import { NextPageContext } from 'next';
-import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import {
@@ -56,7 +54,7 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
   relatedProperties,
   ownerData
 }: IPropertyPage) => {
-  
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [mapIsActive, setMapIsActive] = useState(false);
@@ -67,9 +65,8 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
     setMapIsActive(false);
   }, [dynamicRoute]);
 
-  const galeryModalCSS = `lg:mx-auto m-5 mb-36 md:mb-5 md:mt-0 lg:mt-5  ${
-    isModalOpen ? 'z-50' : 'z-30'
-  }`;
+  const galeryModalCSS = `lg:mx-auto m-5 mb-36 md:mb-5 md:mt-0 lg:mt-5  ${isModalOpen ? 'z-50' : 'z-30'
+    }`;
 
   return (
     <>
@@ -89,9 +86,9 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
         </div>
 
         <div className="w-full h-fit">
-          <PropertyInfo 
-            property={property} 
-            isFavourite={isFavourite} 
+          <PropertyInfo
+            property={property}
+            isFavourite={isFavourite}
             owner={ownerData}
           />
         </div>
@@ -149,54 +146,29 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
 
 export default PropertyPage;
 
-export async function getServerSideProps(context: NextPageContext) {
-
-  const session = (await getSession(context)) as any;
-  const userId =
-    session?.user?.data?._id
-      ? session?.user?.data?._id
-      : session?.user.id;
-  const propertyId = context.query.id;
+export async function getStaticPaths() {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
-  let isFavourite: boolean = false;
+  const propertiesResponse = await fetch(`${baseUrl}/property/filter/?page=1&limit=100`);
+  const properties = await propertiesResponse.json();
+  const paths = properties.docs.map((property: any) => ({
+    params: { id: property._id },
+  }));
+
+  return {
+    paths,
+    fallback: 'blocking', // or 'blocking', 'rewrites', or 'false'
+  };
+}
+
+export async function getStaticProps({ params }: any) {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
   let property;
-
-  if (userId) {
-    try {
-      const fetchFavourites = await fetch(`${baseUrl}/user/favourite`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id: userId,
-          page: 1,
-        }),
-      });
-
-      if (fetchFavourites.ok) {
-        const favourites = await fetchFavourites.json();
-
-        if (favourites.docs.length > 0) {
-          isFavourite = favourites.docs.some(
-            (prop: any) => prop._id === propertyId
-          );
-        } else {
-          isFavourite = false;
-        }
-      } else {
-        isFavourite = false;
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  } else {
-    isFavourite = false;
-  }
+  let isFavourite: boolean = false;
+  let ownerData;
 
   try {
     const propertyResponse = await fetch(
-      `${baseUrl}/property/${propertyId}?isEdit=false`
+      `${baseUrl}/property/${params.id}?isEdit=false`
     );
 
     if (propertyResponse.ok) {
@@ -219,18 +191,86 @@ export async function getServerSideProps(context: NextPageContext) {
     };
   }
 
-  const url = `${process.env.NEXT_PUBLIC_BASE_API_URL}/property/filter/?page=1&limit=4`;
-  const relatedProperties = await fetch(url).then((res) => res.json());
+  console.log("🚀 ~ getStaticProps ~ property?.ownerInfo:", property)
 
-  const ownerData = await fetch(`${baseUrl}/user/find-owner-by-user`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ userId }),
-  })
-    .then((res) => res.json())
-    .catch(() => []);
+
+  if (property?.ownerInfo) {
+    try {
+      const fetchUser = await fetch(`${baseUrl}/user/find-by-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: property.ownerInfo.email
+        }),
+      });
+
+      console.log("🚀 ~ getStaticProps ~ fetchUser.ok:", fetchUser.ok)
+
+      if (fetchUser.ok) {
+        const userData = await fetchUser.json();
+
+        try {
+          const fetchFavourites = await fetch(`${baseUrl}/user/favourite`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              id: userData._id,
+              page: 1,
+            }),
+          });
+
+          if (fetchFavourites.ok) {
+            const favourites = await fetchFavourites.json();
+
+            if (favourites.docs.length > 0) {
+              isFavourite = favourites.docs.some(
+                (prop: any) => prop._id === params.id
+              );
+            } else {
+              isFavourite = false;
+            }
+          } else {
+            isFavourite = false;
+          }
+        } catch (error) {
+          console.log(error);
+        }
+
+        try {
+          const fetchOwner = await fetch(`${baseUrl}/find-owner-by-user`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              userId: userData._id,
+            }),
+          });
+
+          if (fetchOwner.ok) {
+            ownerData = await fetchOwner.json();
+          } else {
+            console.error('Não foi possível buscar o proprietário.');
+          }
+        } catch (error) {
+          console.error('Não foi possível buscar o proprietário');
+        }
+      } else {
+        console.error('Não foi possível achar o usuário.');
+      }
+    } catch (error) {
+      console.error('Não foi possível achar o usuário.');
+    }
+  } else {
+    isFavourite = false;
+  }
+
+  const url = `${baseUrl}/property/filter/?page=1&limit=4`;
+  const relatedProperties = await fetch(url).then((res) => res.json());
 
   return {
     props: {
@@ -241,6 +281,99 @@ export async function getServerSideProps(context: NextPageContext) {
     },
   };
 }
+
+// export async function getServerSideProps(context: NextPageContext) {
+
+//   const session = (await getSession(context)) as any;
+//   const userId =
+//     session?.user?.data?._id
+//       ? session?.user?.data?._id
+//       : session?.user.id;
+//   const propertyId = context.query.id;
+//   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+//   let isFavourite: boolean = false;
+//   let property;
+
+//   if (userId) {
+//     try {
+//       const fetchFavourites = await fetch(`${baseUrl}/user/favourite`, {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify({
+//           id: userId,
+//           page: 1,
+//         }),
+//       });
+
+//       if (fetchFavourites.ok) {
+//         const favourites = await fetchFavourites.json();
+
+//         if (favourites.docs.length > 0) {
+//           isFavourite = favourites.docs.some(
+//             (prop: any) => prop._id === propertyId
+//           );
+//         } else {
+//           isFavourite = false;
+//         }
+//       } else {
+//         isFavourite = false;
+//       }
+//     } catch (error) {
+//       console.log(error);
+//     }
+//   } else {
+//     isFavourite = false;
+//   }
+
+//   try {
+//     const propertyResponse = await fetch(
+//       `${baseUrl}/property/${propertyId}?isEdit=false`
+//     );
+
+//     if (propertyResponse.ok) {
+//       property = await propertyResponse.json();
+//     } else {
+//       return {
+//         redirect: {
+//           destination: '/',
+//           permanent: false, // Se for true, indica um redirecionamento permanente (HTTP 301)
+//         },
+//       };
+//     }
+//   } catch (error) {
+//     console.log(error);
+//     return {
+//       redirect: {
+//         destination: '/',
+//         permanent: false, // Se for true, indica um redirecionamento permanente (HTTP 301)
+//       },
+//     };
+//   }
+
+//   const url = `${process.env.NEXT_PUBLIC_BASE_API_URL}/property/filter/?page=1&limit=4`;
+//   const relatedProperties = await fetch(url).then((res) => res.json());
+
+//   const ownerData = await fetch(`${baseUrl}/user/find-owner-by-user`, {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify({ userId }),
+//   })
+//     .then((res) => res.json())
+//     .catch(() => []);
+
+//   return {
+//     props: {
+//       property,
+//       isFavourite,
+//       relatedProperties,
+//       ownerData,
+//     },
+//   };
+// }
 
 const classes = {
   content: 'flex flex-col max-w-5xl items-center mx-auto lg:pt-10 pt-[90px]',
