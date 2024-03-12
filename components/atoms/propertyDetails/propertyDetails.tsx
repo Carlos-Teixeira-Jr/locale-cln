@@ -7,7 +7,6 @@ interface IDetails {
 }
 
 const PropertyDetails = ({ icon, value, description }: IDetails) => {
-  console.log("🚀 ~ value:", value)
   return (
     <div className="flex flex-row items-end text-quaternary font-semibold lg:pt-3 justify-between">
       <div className="flex flex-col lg:flex-row md:mr-2 lg:items-end items-center">

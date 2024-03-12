@@ -234,6 +234,7 @@ export async function getStaticProps({ params }: any) {
           console.log(error);
         }
       } else {
+        ownerData = null;
         console.error('Não foi possível achar o usuário.');
       }
     } catch (error) {
