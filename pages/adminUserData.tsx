@@ -401,7 +401,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const classes = {
     root: 'max-w-[1232px] mx-auto justify-center items-center',
     sideMenuContainer: 'flex flex-row items-center max-w-[1232px] justify-center',
-    sideMenu: 'fixed left-0 top-7 sm:hidden hidden md:hidden lg:flex',
+    sideMenu: 'fixed left-0 top-7 sm:hidden hidden md:hidden xl:flex',
     buttonContainer:
       'lg:float-right flex md:justify-end justify-center md:w-[90%] lg:w-full mb-10 md:mr-16 lg:mr-5',
     button:
@@ -415,7 +415,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       'grid sm:grid-cols-1 grid-cols-1 md:grid-cols-3 xl:grid-cols-3 md:gap-6',
     h2: 'md:text-2xl text-lg leading-10 text-quaternary font-bold mb-5 lg:mb-10 mx-5',
     userData: 'my-5 lg:mx-10 md:mx-2 max-w-[1232px]',
-    content: 'flex flex-col mt-16 lg:ml-80 max-w-[1232px] justify-center md:mx-5',
+    content: 'flex flex-col mt-16 xl:ml-80 max-w-[1232px] justify-center md:mx-5',
   };
 
   return (

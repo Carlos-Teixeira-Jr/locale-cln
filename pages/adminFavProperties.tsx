@@ -274,7 +274,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 }
 
 const classes = {
-  content: 'flex flex-row items-center justify-center lg:ml-96 xl:ml-96',
+  content: 'flex flex-col mt-16 xl:ml-80 max-w-[1232px] justify-center md:mx-5',
   sideMenu: 'fixed left-0 top-7 sm:hidden hidden md:hidden lg:flex',
   title:
     'font-extrabold text-lg md:text-2xl text-quaternary md:mb-5 text-center md:mr-16',
