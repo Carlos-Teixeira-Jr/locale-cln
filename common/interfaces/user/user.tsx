@@ -1,3 +1,4 @@
+import { ProfilePicture } from '../images/profilePicture';
 import { IAddress } from '../property/propertyData';
 
 export type User = {
@@ -6,7 +7,7 @@ export type User = {
   cpf: string;
   email: string;
   address: IAddress;
-  profilePicture: string;
+  picture: string;
 };
 
 export interface IUserDataComponent {
@@ -16,7 +17,7 @@ export interface IUserDataComponent {
   cellPhone: string;
   phone: string;
   wppNumber: string | undefined;
-  profilePicture: string;
+  picture: ProfilePicture;
 }
 
 export interface IUserData extends IUserDataComponent {
@@ -29,15 +30,15 @@ export interface IUser {
   email: string;
   cpf: string;
   address: IAddress;
-  profilePicture?: any;
+  picture?: any;
 }
 
-export interface IUserDataComponentErrors {
+export type IUserDataComponentErrors = {
   [key: string]: string;
   username: string;
   email: string;
   cpf: string;
   cellPhone?: any;
   phone?: any;
-  profilePicture?: any;
+  picture?: any;
 }

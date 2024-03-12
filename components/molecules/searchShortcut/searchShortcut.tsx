@@ -21,7 +21,6 @@ const SearchShortcut: React.FC<ISearchShortcut> = ({
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
-  // Pega as tags que vieram da query na passagem da Home para a Search usando os cards de acesso rápido;
   useEffect(() => {
     if (query.tags === 'aceita pets' && !selectedTags.includes('aceita pets')) {
       setSelectedTags(['aceita pets']);
@@ -86,7 +85,6 @@ const SearchShortcut: React.FC<ISearchShortcut> = ({
     }
   });
 
-  // Insere e remove as tags clicadas nos parâmetros da URL;
   const toggleSelection = (item: string) => {
     const tags: string[] = Array.isArray(query.tags)
       ? query.tags
@@ -111,7 +109,6 @@ const SearchShortcut: React.FC<ISearchShortcut> = ({
       });
     } else {
       const { tags, ...updatedQuery } = query;
-      // Faz com que o parametro page volte a ser 1 quando o parametro tags é removido da url;
       updatedQuery.page = '1';
       router.push({
         pathname: router.pathname,
@@ -122,8 +119,7 @@ const SearchShortcut: React.FC<ISearchShortcut> = ({
 
   return (
     <>
-      <div className="overflow-x-scroll overflow-y-hidden scroll-smooth md:overflow-hidden lg:overflow-hidden xl:overflow-hidden flex flex-row items-center justify-between max-w-full md:max-w-[750px] lg:max-w-[900px] lg:w-full h-[77px] bg-tertiary shadow-md mt-9 md:mt-8 lg:mt-12 mx-auto md:mx-2 lg:ml-8 lg:mx-[35px] rounded-[30px] px-2 gap-5">
-        {/* Filter button */}
+      <div className="overflow-x-scroll overflow-y-hidden scroll-smooth md:overflow-hidden lg:overflow-hidden xl:overflow-hidden flex flex-row items-center justify-between max-w-full md:max-w-[750px] lg:max-w-[900px] lg:w-full h-[70px] bg-tertiary shadow-md mt-9 md:mt-8 lg:mt-12 mx-auto md:mx-2 lg:ml-8 lg:mx-[35px] rounded-[30px] px-2 gap-5">
         <div
           onClick={() => onMobileFilterIsOpenChange(true)}
           className={`flex lg:hidden flex-row items-center max-w-[153px] h-[44px] border border-quaternary rounded-[30px] p-3 lg:hover:bg-quaternary cursor-pointer ${
@@ -150,7 +146,7 @@ const SearchShortcut: React.FC<ISearchShortcut> = ({
                 ? null
                 : toggleSelection(shortcut.tag);
             }}
-            className={`group flex flex-row items-center max-w-[153px] h-[44px] border ${
+            className={`group flex flex-row items-center max-w-[153px] h-[40px] border ${
               query.tags?.includes(shortcut.tag)
                 ? 'border-2 border-secondary'
                 : 'border-quaternary'
@@ -181,7 +177,7 @@ const SearchShortcut: React.FC<ISearchShortcut> = ({
                     ? 'font-extrabold text-secondary'
                     : 'font-bold'
                 }
-                text-quaternary text-lg leading-5 group-hover:text-tertiary mx-4`}
+                text-quaternary text-md leading-5 group-hover:text-tertiary mx-4`}
               >
                 {shortcut.label}
               </h3>

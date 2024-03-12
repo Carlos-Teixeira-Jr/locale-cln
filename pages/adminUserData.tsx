@@ -16,16 +16,19 @@ import {
   IPropertyInfo,
 } from '../common/interfaces/property/propertyData';
 import { IUser, IUserDataComponent } from '../common/interfaces/user/user';
+import { defaultProfileImage } from '../common/utils/defaultImage/defaultImage';
 import { fetchJson } from '../common/utils/fetchJson';
+import { clearIndexDB, getAllImagesFromDB } from '../common/utils/indexDb';
 import {
   ErrorToastNames,
   SuccessToastNames,
   showErrorToast,
-  showSuccessToast,
+  showSuccessToast
 } from '../common/utils/toasts';
 import ArrowDownIcon from '../components/atoms/icons/arrowDownIcon';
+import Loading from '../components/atoms/loading';
 import UserAddress from '../components/molecules/address/userAdress';
-import PlansCardsHidden from '../components/molecules/cards/plansCards/plansCardHidden';
+import { PlansCardsHidden } from '../components/molecules/cards';
 import CreditCard, {
   CreditCardForm,
 } from '../components/molecules/userData/creditCard';
@@ -44,13 +47,12 @@ interface IAdminUserDataPageProps {
   selectedPlanCard: string;
   setSelectedPlanCard: (_selectedCard: string) => void;
   plans: IPlan[];
-  userData: any;
   properties: IPropertyInfo;
   ownerData: IOwnerData;
   notifications: [];
 }
 
-type AddressErrors =  {
+type AddressErrors = {
   [key: string]: string;
   zipCode: string;
   city: string;
@@ -62,13 +64,15 @@ type AddressErrors =  {
 const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   notifications,
   plans,
-  userData,
   properties,
   ownerData,
 }) => {
 
   const router = useRouter();
-  const isOwner = properties?.docs?.length > 0 ? true : false;
+  const isMobile = useIsMobile();
+  const userData = ownerData?.user;
+  const reversedCards = [...plans].reverse();
+  const isOwner = properties?.docs?.length > 0 || ownerData?.owner ? true : false;
   const [selectedPlan, setSelectedPlan] = useState(
     ownerData?.owner ? ownerData?.owner?.plan : ''
   );
@@ -77,8 +81,8 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const [isEditPassword, setIsEditPassword] = useState(false);
   const [isAdminPage, setIsAdminPage] = useState(false);
   const isEdit = true;
-  const isMobile = useIsMobile();
-  const reversedCards = [...plans].reverse();
+  const [loading, setLoading] = useState(false);
+
   const creditCardInfo = ownerData?.owner?.paymentData?.creditCardInfo
     ? ownerData?.owner?.paymentData?.creditCardInfo
     : {
@@ -86,6 +90,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       creditCardNumber: '',
       creditCardToken: ''
     };
+
   const planObj = plans.find((plan) => plan._id === selectedPlan);
 
   const [formData, setFormData] = useState<IUserDataComponent>({
@@ -94,9 +99,13 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     cpf: '',
     cellPhone: '',
     phone: '',
-    profilePicture: '',
+    picture: {
+      id: '1',
+      src: ownerData?.user?.picture
+    },
     wppNumber: ''
   });
+
   const [formDataErrors, setFormDataErrors] = useState({
     username: '',
     email: '',
@@ -114,7 +123,6 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     passwordConfirmattion: '',
   });
 
-  // Lida com o autoscroll das validações de erro dos inputs;
   const userDataInputRefs = {
     username: useRef<HTMLElement>(null),
     email: useRef<HTMLElement>(null),
@@ -130,7 +138,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const [address, setAddress] = useState<IAddress>({
     zipCode: userData ? userData.address.zipCode : '',
     city: userData ? userData.address.city : '',
-    streetName: userData ? userData.address.streetNuame : '',
+    streetName: userData ? userData.address.streetName : '',
     streetNumber: userData ? userData.address.streetNumber : '',
     complement: userData ? userData.address.complement : '',
     neighborhood: userData ? userData.address.neighborhood : '',
@@ -144,8 +152,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     streetNumber: '',
     uf: '',
   });
-  
-  // Lida com o auto-scroll para os inputs de Address que mostrarem erro;
+
   const addressInputRefs = {
     zipCode: useRef<HTMLInputElement>(null),
     city: useRef<HTMLInputElement>(null),
@@ -153,6 +160,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     streetNumber: useRef<HTMLInputElement>(null),
     uf: useRef<HTMLInputElement>(null),
   };
+
   const creditCardErrors: CreditCardForm = {
     cardName: '',
     cardNumber: '',
@@ -160,19 +168,21 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     expiry: '',
     cpfCnpj: ''
   };
-  // Lida com o auto-scroll para os inputs de creditCard que mostrarem erro;
+
   const creditCardInputRefs = {
     cardName: useRef<HTMLInputElement>(null),
     cardNumber: useRef<HTMLInputElement>(null),
     expiry: useRef<HTMLInputElement>(null),
     cvc: useRef<HTMLInputElement>(null),
   };
+
   useEffect(() => {
     const url = router.pathname;
     if (url === '/adminUserData') {
       setIsAdminPage(true);
     }
   }, [router.pathname]);
+
   const handleUpdateBtn = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const error = 'Este campo é obrigatório';
@@ -188,6 +198,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       cpf: '',
       cellPhone: '',
     });
+
     setAddressErrors({
       zipCode: '',
       city: '',
@@ -207,6 +218,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       cpf: '',
       cellPhone: '',
     };
+
     const newAddressErrors = {
       zipCode: '',
       city: '',
@@ -248,8 +260,9 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     setFormDataErrors(newFormDataErrors);
     setAddressErrors(newAddressErrors);
     setPasswordErrors(newPasswordErrors);
+
     let combinedErrors;
-    // Combina os erros de registro e endereço em um único objeto de erros
+
     if (isEditPassword) {
       combinedErrors = {
         ...newAddressErrors,
@@ -265,7 +278,6 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
 
     if (isEditPassword) combinedErrors;
 
-    // Verifica se algum dos valores do objeto de erros combinados não é uma string vazia
     const hasErrors = Object.values(combinedErrors).some(
       (error) => error !== ''
     );
@@ -276,24 +288,14 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
         username: formData.username,
         email: formData.email,
         cpf: formData.cpf,
-        profilePicture: formData.profilePicture
-          ? formData.profilePicture
-          : 'https://static.vecteezy.com/system/resources/previews/019/879/186/non_2x/user-icon-on-transparent-background-free-png.png',
       };
 
-      const picture = formData.profilePicture
-        ? formData.profilePicture
-        : ownerData.owner?.profilePicture;
-
       const ownerFormData: IOwner = {
-        id: ownerData.owner ? ownerData.owner._id : '',
+        id: ownerData?.owner ? ownerData.owner._id : '',
         ownername: formData.username,
         phones: [formData.cellPhone, formData.phone],
         userId: userData._id,
         email: formData.email ? formData.email : '',
-        profilePicture: picture
-          ? picture
-          : 'https://static.vecteezy.com/system/resources/previews/019/879/186/non_2x/user-icon-on-transparent-background-free-png.png',
         adCredits: ownerData.owner?.adCredits ? ownerData.owner?.adCredits : 0,
       };
 
@@ -305,6 +307,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       };
 
       let body;
+
       if (isEditPassword) {
         body = {
           user: userFormData,
@@ -315,8 +318,52 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
         body = {
           user: userFormData,
           owner: ownerFormData,
-          password: editPasswordFormData,
         };
+      }
+
+      const indexDbImages = (await getAllImagesFromDB()) as {
+        id: string;
+        data: Blob;
+        name: string;
+      }[];
+
+      const imagesForm = new FormData();
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+      let file;
+
+      if (indexDbImages.length > 0) {
+        file = new File(
+          [indexDbImages[0].data],
+          `${indexDbImages[0].name}`
+        );
+      } else {
+        file = new File([], '');
+      }
+
+      imagesForm.append('images', file);
+
+      imagesForm.append('userId', ownerData?.user?._id);
+
+      setLoading(true);
+
+      try {
+        const imagesResponse = await fetch(
+          `${baseUrl}/property/upload-profile-image`,
+          {
+            method: 'POST',
+            body: imagesForm,
+          }
+        );
+
+        if (imagesResponse.ok) {
+          clearIndexDB();
+        } else {
+          clearIndexDB();
+          showErrorToast(ErrorToastNames.ImagesUploadError);
+        }
+      } catch (error) {
+        clearIndexDB();
+        showErrorToast(ErrorToastNames.ImageUploadError);
       }
 
       try {
@@ -331,54 +378,74 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
             body: JSON.stringify(body),
           }
         );
+
         if (response.ok) {
           toast.dismiss();
           showSuccessToast(SuccessToastNames.UserDataUpdate);
 
           router.push('/admin?page=1');
         } else {
+          setLoading(false);
           toast.dismiss();
           showErrorToast(ErrorToastNames.UserDataUpdate);
         }
       } catch (error) {
+        setLoading(false);
         toast.dismiss();
         showErrorToast(ErrorToastNames.ServerConnection);
       }
     } else {
+      setLoading(false);
       showErrorToast(ErrorToastNames.EmptyFields);
     }
   };
 
+  const classes = {
+    root: 'max-w-[1232px] mx-auto justify-center items-center',
+    sideMenuContainer: 'flex flex-row items-center max-w-[1232px] justify-center',
+    sideMenu: 'fixed left-0 top-7 sm:hidden hidden md:hidden lg:flex',
+    buttonContainer:
+      'lg:float-right flex md:justify-end justify-center md:w-[90%] lg:w-full mb-10 md:mr-16 lg:mr-5',
+    button:
+      `w-72 h-16 flex items-center justify-center text-quinary rounded-[10px] py-3 px-10 text-lg font-extrabold ${loading ?
+        'bg-red-200' :
+        'bg-primary transition-colors duration-300 hover:bg-red-600 hover:text-white'
+      }`,
+    accordion:
+      'flex flex-row items-center justify-between max-w-[1232px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 text-lg text-quaternary rounded-xl font-bold transition bg-opacity-90 hover:bg-gray-300',
+    plans:
+      'grid sm:grid-cols-1 grid-cols-1 md:grid-cols-3 xl:grid-cols-3 md:gap-6',
+    h2: 'md:text-2xl text-lg leading-10 text-quaternary font-bold mb-5 lg:mb-10 mx-5',
+    userData: 'my-5 lg:mx-10 md:mx-2 max-w-[1232px]',
+    content: 'flex flex-col mt-16 lg:ml-80 max-w-[1232px] justify-center md:mx-5',
+  };
+
   return (
-    <div className="max-w-[1232px] mx-auto justify-center items-center">
+    <div className={classes.root}>
       <div className="fixed z-50 top-0 w-full inset-x-0">
         <AdminHeader isOwnerProp={isOwner} />
       </div>
-      <div className="flex flex-row items-center max-w-[1232px] justify-center">
+
+      <div className={classes.sideMenuContainer}>
         {!isMobile && (
-          <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:flex">
+          <div className={classes.sideMenu}>
             <SideMenu isOwnerProp={isOwner} notifications={notifications} />
           </div>
         )}
 
-        <div className="flex flex-col mt-16 lg:ml-80 max-w-[1232px] justify-center md:mx-5">
-          <div className="my-5 lg:mx-10 md:mx-2 max-w-[1232px]">
+        <div className={classes.content}>
+          <div className={classes.userData}>
             <div className="my-5">
               <UserDataInputs
                 isEdit={isEdit}
-                userData={ownerData}
+                ownerData={ownerData}
                 onUserDataUpdate={(updatedUserData: IUserDataComponent) => {
                   setFormData(updatedUserData);
                 }}
-                firstProperty={properties?.docs[0]}
                 error={formDataErrors}
                 userDataInputRefs={userDataInputRefs}
-                profilePicPropertyData={
-                  properties?.docs[0]?.ownerInfo?.profilePicture &&
-                  properties?.docs[0]?.ownerInfo.profilePicture
-                }
+                picture={formData.picture ? formData.picture : { id: '1', src: defaultProfileImage }}
               />
-
               <div className="mx-5 my-10">
                 <EditPassword
                   onPasswordUpdate={(passwordData: IPasswordData) =>
@@ -392,10 +459,8 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                 />
               </div>
 
-              <h2 className="md:text-3xl text-2xl leading-10 text-quaternary font-bold mb-5 lg:mb-10 mx-5">
-                Dados de Cobrança
-              </h2>
-              <div className="grid sm:grid-cols-1 grid-cols-1 md:grid-cols-3 xl:grid-cols-3 md:gap-6">
+              <h2 className={classes.h2}>Dados de Cobrança</h2>
+              <div className={classes.plans}>
                 {reversedCards.map(
                   ({
                     _id,
@@ -428,11 +493,11 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                   )
                 )}
               </div>
-              {/** Endereço do imóvel */}
+
               <div className="flex mt-1 md:mt-1">
                 <UserAddress
                   isEdit={isEdit}
-                  address={userData.address}
+                  address={userData?.address}
                   onAddressUpdate={(updateAddres: IAddress) =>
                     setAddress(updateAddres)
                   }
@@ -440,18 +505,17 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                   addressInputRefs={addressInputRefs}
                 />
               </div>
-              {/** Endereço do imóvel */}
             </div>
-            <div className="lg:float-right flex md:justify-end justify-center md:w-[90%] lg:w-full mb-10 md:mr-16 lg:mr-5">
-              <button
-                className="bg-primary w-fit h-16 flex items-center text-quinary rounded-[10px] py-5 px-20 text-xl md:text-2xl font-extrabold transition-colors duration-300 hover:bg-red-600 hover:text-white"
-                onClick={handleUpdateBtn}
-              >
-                Atualizar Dados
+
+            <div className={classes.buttonContainer}>
+              <button className={classes.button} onClick={handleUpdateBtn} disabled={loading}>
+                <span className={`${loading ? 'mr-5' : 'flex text-center'}`}>Atualizar dados</span>
+                {loading && <Loading />}
               </button>
             </div>
+
             <div className="lg:pt-20 pt-0.5 mx-4">
-              <label className="flex flex-row items-center justify-between max-w-[1232px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 md:text-3xl text-md text-quaternary rounded-xl font-bold transition bg-opacity-90 hover:bg-gray-300">
+              <label className={classes.accordion}>
                 Dados do Cartão de Crédito
                 <span
                   className={`transition-transform transform`}
@@ -459,12 +523,12 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                 >
                   <ArrowDownIcon
                     width="13"
-                    className={`cursor-pointer ${
-                      creditCardIsOpen ? '' : 'rotate-180'
-                    }`}
+                    className={`cursor-pointer ${creditCardIsOpen ? '' : 'rotate-180'
+                      }`}
                   />
                 </span>
               </label>
+
               <div className="bg-grey-lighter">
                 {creditCardIsOpen && (
                   <CreditCard
@@ -501,8 +565,9 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                 )}
               </div>
             </div>
+
             <div className="lg:pt-5 pt-0.5 mb-20 mx-4">
-              <label className="flex flex-row items-center justify-between max-w-[1232px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 md:text-3xl text-md text-quaternary rounded-xl font-bold transition bg-opacity-90 hover:bg-gray-300">
+              <label className={classes.accordion}>
                 Excluir conta
                 <span
                   className={`transition-transform transform`}
@@ -510,12 +575,12 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                 >
                   <ArrowDownIcon
                     width="13"
-                    className={`cursor-pointer ${
-                      deleteAccountIsOpen ? '' : 'rotate-180'
-                    }`}
+                    className={`cursor-pointer ${deleteAccountIsOpen ? '' : 'rotate-180'
+                      }`}
                   />
                 </span>
               </label>
+
               <div className="bg-grey-lighter">
                 {deleteAccountIsOpen && <DeleteAccount />}
               </div>
@@ -606,7 +671,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ userId }),
+          body: JSON.stringify({ _id: userId }),
         }
       );
       if (ownerIdResponse.ok) {

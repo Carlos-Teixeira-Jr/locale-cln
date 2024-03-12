@@ -12,7 +12,7 @@ import {
   categoryTranslations,
   translateLocations,
 } from '../../../common/utils/translateLocations';
-import propertyTypesData from '../../../data/propertyTypesData.json';
+import propertyTypeSubtype from '../../../data/propertyTypeSubType.json';
 import useTrackLocation from '../../../hooks/trackLocation';
 import ArrowDownIcon from '../icons/arrowDownIcon';
 import CheckIcon from '../icons/checkIcon';
@@ -68,8 +68,6 @@ const HomeFilter: React.FC<IHomeFilter> = ({
   const [allLocations, setAllLocations] = useState(false);
   const { longitude, latitude, location: geolocation } = useTrackLocation();
 
-  //// AD TYPE ////
-
   const handleBuy = () => {
     setIsBuy(true);
     setIsRent(false);
@@ -84,22 +82,16 @@ const HomeFilter: React.FC<IHomeFilter> = ({
     setRentProp(true);
   };
 
-  // Estilos do switch button de aluguel/compra;
-  const buyBtnClassName = `w-full h-[34px] md:h-fit lg:h-[33px] rounded-full border-black text-quaternary font-bold lg:text-lg transition-all ${
-    isBuy
+  const buyBtnClassName = `w-full h-[34px] md:h-fit lg:h-[33px] rounded-full border-black text-quaternary font-bold lg:text-md transition-all ${isBuy
       ? 'bg-secondary text-quinary border border-secondary'
       : 'bg-tertiary  text-quaternary'
-  }`;
+    }`;
 
-  const rentBtnClassName = `w-full h-[34px] md:h-fit lg:h-[33px] rounded-full border-black text-quaternary font-bold lg:text-lg transition-all ${
-    isRent
+  const rentBtnClassName = `w-full h-[34px] md:h-fit lg:h-[33px] rounded-full border-black text-quaternary font-bold lg:text-md transition-all ${isRent
       ? 'bg-secondary text-quinary border border-secondary'
       : 'bg-tertiary text-quaternary'
-  }`;
+    }`;
 
-  //// ADDRESS ////
-
-  //Filtra os docs de location retornados pela query para mostrar apenas os docs referentes ao que foi digitado no input;
   const filterLocation = (value: string) => {
     const filtered: ILocation[] = locationProp.filter((location) =>
       location.name.toLowerCase().startsWith(value.toLowerCase())
@@ -107,7 +99,6 @@ const HomeFilter: React.FC<IHomeFilter> = ({
     setFilteredLocations(filtered);
   };
 
-  // Reorganiza filteredLocations para que se torne um objeto onde cada prop é representa uma categoria em forma de um array com todas as strings de localização referentes à essa categoria;
   const categorizedLocations: Record<string, ILocation[]> =
     filteredLocations.reduce(
       (categories: Record<string, ILocation[]>, location) => {
@@ -135,36 +126,28 @@ const HomeFilter: React.FC<IHomeFilter> = ({
       {}
     );
 
-  // Insere e remove os objetos de location ao clicar nas opções do dropdown;
   const toggleLocation = (name: string, category: string) => {
-    // Procura no array location um objeto que tenha a categoria igual a selecionada;
     const existingCategory = location.find(
       (item) => item.category === category
     );
 
     if (existingCategory) {
-      // Verifica se já existe um objeto com a categoria selecionada, então apenas atualizamos o array name dentro do objeto dessa categoria;
       const updatedLocation = location
         .map((item) => {
           if (item.category === category) {
-            // Verifica se o name selecionado já está presente no array name do objeto com a categoria selecionada;
             if (item.name.includes(name)) {
-              // Se já existir esse name, ele é removido do array;
               const updatedName = item.name.filter(
                 (itemName: string) => itemName !== name
               );
-              // Se o name removido for o ultimo do array, retornamos um valor null para posteriormente remover todo o objeto da categoria correspondente;
               if (updatedName.length === 0) {
-                return null; // Retorna null para filtrar o objeto do array
+                return null;
               } else {
-                // Se não for o ultimo, então retornamos um novo array name com o novo name selecionado;
                 return {
                   ...item,
                   name: updatedName,
                 };
               }
             } else {
-              // Se não houver o name no array retornamos um novo array name com o novo name selecionado;
               return {
                 ...item,
                 name: [...item.name, name],
@@ -172,11 +155,9 @@ const HomeFilter: React.FC<IHomeFilter> = ({
             }
           }
           return item;
-          // O filter remove os objetos que tenham retoornado null no map acima para removê-los de updatedLocation;
         })
         .filter(Boolean) as ILocation[];
       setLocation(updatedLocation);
-      // Caso a opção selecionada pertença a uma categoria ainda não inserida em location, apenas é inserido um objeto com o name e category selecionados;
     } else {
       setLocation([...location, { name: [name], category }]);
     }
@@ -201,7 +182,7 @@ const HomeFilter: React.FC<IHomeFilter> = ({
 
     if (geolocation) {
       query.longitude = longitude,
-      query.latitude = latitude
+        query.latitude = latitude
     }
 
     router.push(
@@ -216,9 +197,6 @@ const HomeFilter: React.FC<IHomeFilter> = ({
     );
   };
 
-  //// FUNCTIONALITIES ////
-
-  // Lida com cliques fora e dentro dos dropdowns para o comportamento de fechamento;
   useEffect(() => {
     document.addEventListener('click', handleClick);
     return () => document.removeEventListener('click', handleClick);
@@ -265,7 +243,7 @@ const HomeFilter: React.FC<IHomeFilter> = ({
                 <label>Qual o tipo do imóvel?</label>
 
                 <div
-                  className="drop-shadow-lg lg:h-9 lg:w-64 lg:text-lg text-quaternary rounded-lg p-2 mb-1 border border-quaternary flex justify-between"
+                  className="drop-shadow-lg lg:h-9 lg:w-64 lg:text-sm text-gray-500 rounded-lg p-2 mb-1 border border-quaternary flex justify-between"
                   onClick={() =>
                     setPropTypeDropdownIsOpen(!propTypeDropdownIsOpen)
                   }
@@ -276,27 +254,25 @@ const HomeFilter: React.FC<IHomeFilter> = ({
                       : `Tipo de imóvel`}
                   </p>
                   <ArrowDownIcon
-                    className={`my-auto cursor-pointer ${
-                      propTypeDropdownIsOpen
+                    className={`my-auto cursor-pointer ${propTypeDropdownIsOpen
                         ? 'transform rotate-360 transition-transform duration-300 ease-in-out'
                         : 'transform rotate-180 transition-transform duration-300 ease-in-out'
-                    }`}
+                      }`}
                   />
                 </div>
                 <div
-                  className={`z-50 md:w-fit w-full h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md mt-20 ${
-                    !propTypeDropdownIsOpen ? 'hidden ' : 'absolute'
-                  }`}
+                  className={`z-50 md:w-fit w-full h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md mt-20 ${!propTypeDropdownIsOpen ? 'hidden ' : 'absolute'
+                    }`}
                 >
-                  {propertyTypesData.map((prop, index) => (
+                  {propertyTypeSubtype.map((prop, index) => (
                     <div className="w-full rounded-t-8 bg-tertiary" key={index}>
-                      <p className="text-quaternary lg:text-2xl p-1 text-center font-bold ">
+                      <p className="text-quaternary lg:text-lg text-left px-6 font-bold ">
                         {lowerLetters(prop.type)}
                       </p>
-                      {propertyTypesData[index].subTypes.map((type) => (
+                      {propertyTypeSubtype[index].subTypes.map((type) => (
                         <div
                           key={type}
-                          className="text-center p-1 hover:bg-quaternary hover:text-tertiary"
+                          className="items-start text-sm text-left px-6 hover:bg-quaternary hover:text-tertiary last:mb-1"
                           onClick={() => {
                             setPropertyType({
                               ...propertyType,
@@ -318,7 +294,7 @@ const HomeFilter: React.FC<IHomeFilter> = ({
             <div className="flex flex-col-reverse md:flex-col gap-5">
               <div className="w-full">
                 <button
-                  className="bg-primary rounded-full w-full h-12 md:h-fit lg:h-[34px] md:mt-9 lg:mt-8 float-right text-tertiary text-xl shadow-md hover:bg-red-600 hover:text-tertiary hover:shadow-lg transition-all duration-200 active:bg-primary-dark active:text-tertiary active:shadow-none focus:outline-none"
+                  className="bg-primary rounded-full w-full h-12 md:h-fit lg:h-[34px] md:mt-9 lg:mt-8 float-right text-tertiary text-lg shadow-md hover:bg-red-600 hover:text-tertiary hover:shadow-lg transition-all duration-200 active:bg-primary-dark active:text-tertiary active:shadow-none focus:outline-none"
                   onClick={handleFindBtnClick}
                 >
                   Buscar
@@ -329,7 +305,7 @@ const HomeFilter: React.FC<IHomeFilter> = ({
                 <label className="text-base">Onde?</label>
                 <input
                   className="lg:h-9 lg:text-lg border bg-transparent border-quaternary rounded-lg p-2 mt-[0.1rem] placeholder:text-sm"
-                  placeholder="Digite um bairro, cidade, rua..."
+                  placeholder="digite um bairro, cidade, rua..."
                   maxLength={30}
                   onChange={(event: ChangeEvent<HTMLInputElement>) => {
                     const newName = event.target.value;
@@ -340,9 +316,8 @@ const HomeFilter: React.FC<IHomeFilter> = ({
                   value={location.length > 0 ? location[0].name[0] : inputValue}
                 />
                 <div
-                  className={`z-50 w-full md:w-48 mt-20 h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md ${
-                    openLocationDropdown ? 'absolute' : 'hidden'
-                  }`}
+                  className={`z-50 w-full md:w-48 mt-20 h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md ${openLocationDropdown ? 'absolute' : 'hidden'
+                    }`}
                   ref={ref}
                 >
                   <div className="flex flex-col w-full text-center font-normal text-base text-quaternary leading-5">
@@ -399,13 +374,13 @@ const HomeFilter: React.FC<IHomeFilter> = ({
                                           obj.name.includes(option)
                                         ) ||
                                           allLocations) && (
-                                          <CheckIcon
-                                            width="20"
-                                            height="20"
-                                            fill="#F5BF5D"
-                                            viewBox="40 126 960 960"
-                                          />
-                                        )}
+                                            <CheckIcon
+                                              width="20"
+                                              height="20"
+                                              fill="#F5BF5D"
+                                              viewBox="40 126 960 960"
+                                            />
+                                          )}
                                       </div>
                                       <span
                                         id={option}
@@ -428,13 +403,13 @@ const HomeFilter: React.FC<IHomeFilter> = ({
                                         obj.name.includes(name)
                                       ) ||
                                         allLocations) && (
-                                        <CheckIcon
-                                          width="20"
-                                          height="20"
-                                          fill="#F5BF5D"
-                                          viewBox="40 126 960 960"
-                                        />
-                                      )}
+                                          <CheckIcon
+                                            width="20"
+                                            height="20"
+                                            fill="#F5BF5D"
+                                            viewBox="40 126 960 960"
+                                          />
+                                        )}
                                     </div>
                                     <span
                                       id={name}

@@ -82,6 +82,7 @@ const CreditCard = ({
   }, [emptyAddressError]);
 
   // Envia os dados do usuário para o componente pai;
+
   useEffect(() => {
     if (onCreditCardUpdate) onCreditCardUpdate(creditCardFormData);
   }, [creditCardFormData]);
@@ -90,7 +91,6 @@ const CreditCard = ({
     setErrors(error);
   }, [error]);
 
-  // Realiza o auto-scroll para o input que apresenta erro;
   useEffect(() => {
     const scrollToError = (errorKey: keyof typeof errors) => {
       if (errors[errorKey] !== '' && creditCardInputRefs[errorKey]?.current) {
@@ -291,7 +291,7 @@ const CreditCard = ({
 
   return (
     <div className="md:w-[90%] w-full">
-      <h2 className="md:text-4xl text-2xl leading-10 text-quaternary font-bold mb-10 md:mt-16 mt-5 w-full">
+      <h2 className="md:text-2xl text-lg leading-10 text-quaternary font-bold mb-5 md:mt-16 mt-5 w-full">
         Formas de Pagamento
       </h2>
 
@@ -330,7 +330,7 @@ const CreditCard = ({
                     ? creditCardFormData[input.name]
                     : creditCardFormData[input.name].replace(/[^\d- ]/g, '')
                 }
-                className={`border border-quaternary rounded-[10px] h-12 text-quaternary lg:text-[26px] text-xl font-bold px-5 drop-shadow-lg bg-tertiary mt-5 lg:ml-5 w-full mr-1`}
+                className={`border border-quaternary rounded-[10px] h-12 text-quaternary md:text-base text-sm font-bold px-5 drop-shadow-lg bg-tertiary mt-5 lg:ml-5 w-full mr-1`}
                 style={
                   errors[input.key] !== '' ? { border: '1px solid red' } : {}
                 }
@@ -349,7 +349,7 @@ const CreditCard = ({
       {isEdit && (
         <div className="flex my-10 justify-center">
           <button
-            className="bg-primary w-fit h-16 item text-quinary rounded-[10px] py-5 px-20 lg:ml-8 gap-3 text-2xl font-extrabold transition-colors duration-300 hover:bg-red-600 hover:text-white"
+            className="bg-primary w-fit h-13 item text-quinary rounded-[10px] py-3 px-10 lg:ml-8 gap-3 text-lg font-extrabold transition-colors duration-300 hover:bg-red-600 hover:text-white"
             onClick={handleSubmit}
           >
             Atualizar

@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/router';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { IEditPropertyMainFeatures } from '../../../common/interfaces/property/editPropertyData';
 import {
   ISize,
@@ -8,13 +9,14 @@ import {
   propSubtype,
   propType,
 } from '../../../common/interfaces/property/propertyData';
+import { PropertyFeaturesErrors } from '../../../common/interfaces/property/propertyFeaturesErrors';
+import { scrollToError } from '../../../common/utils/errors/errorsAutoScrollUtil';
 import { lowerLetters } from '../../../common/utils/strings/capitalizeFirstLetter';
 import propertyTypesData from '../../../data/propertyTypesData.json';
 import ArrowDownIcon from '../../atoms/icons/arrowDownIcon';
 import CheckIcon from '../../atoms/icons/checkIcon';
-import AreaCalculatorModal from '../../molecules/areaModal/areaModal';
-import { useRouter } from 'next/router';
 import MaskedInput from '../../atoms/masks/maskedInput';
+import AreaCalculatorModal from '../../molecules/areaModal/areaModal';
 
 export type MainFeaturesErrors = {
   description: string;
@@ -71,7 +73,6 @@ const MainFeatures: React.FC<IMainFeatures> = ({
   errors,
   mainFeaturesInputRefs,
 }: IMainFeatures) => {
-
   const mainFeaturesErrorScroll = {
     ...mainFeaturesInputRefs,
   };
@@ -114,8 +115,8 @@ const MainFeatures: React.FC<IMainFeatures> = ({
       adSubtype: isEdit
         ? editarSubType!
         : isCommercial
-        ? 'comercial'
-        : 'residencial',
+          ? 'comercial'
+          : 'residencial',
       propertyType: isEdit ? editarPropertyType! : 'casa',
       propertySubtype: isEdit ? editarPropertySubtype! : 'padrao',
       description: isEdit ? editarDescription! : '',
@@ -154,12 +155,11 @@ const MainFeatures: React.FC<IMainFeatures> = ({
       ],
     });
 
-  // Atualiza o objeto que é enviado ao componente pai;
   useEffect(() => {
     onMainFeaturesUpdate!(propertyFeaturesData);
   }, [propertyFeaturesData]);
 
-  const [propertyFeaturesErrors, setPropertyFeaturesErrors] = useState({
+  const [propertyFeaturesErrors, setPropertyFeaturesErrors] = useState<PropertyFeaturesErrors>({
     description: errors ? errors.description : '',
     totalArea: '',
     propertyValue: '',
@@ -171,25 +171,12 @@ const MainFeatures: React.FC<IMainFeatures> = ({
     setPropertyFeaturesErrors(errors!);
   }, [errors]);
 
-  // Faz a rolagem automática para o input que apresentar erro;
   useEffect(() => {
-    const scrollToError = (errorKey: keyof typeof propertyFeaturesErrors) => {
-      if (
-        propertyFeaturesErrors[errorKey] !== '' &&
-        mainFeaturesInputRefs[errorKey]?.current
-      ) {
-        mainFeaturesErrorScroll[errorKey]?.current.scrollIntoView({
-          behavior: 'auto',
-          block: 'center',
-        });
-      }
-    };
-
-    scrollToError('description');
-    scrollToError('totalArea');
-    scrollToError('propertyValue');
-    scrollToError('condominiumValue');
-    scrollToError('iptuValue');
+    scrollToError('description', propertyFeaturesErrors, mainFeaturesInputRefs, mainFeaturesErrorScroll);
+    scrollToError('totalArea', propertyFeaturesErrors, mainFeaturesInputRefs, mainFeaturesErrorScroll);
+    scrollToError('propertyValue', propertyFeaturesErrors, mainFeaturesInputRefs, mainFeaturesErrorScroll);
+    scrollToError('condominiumValue', propertyFeaturesErrors, mainFeaturesInputRefs, mainFeaturesErrorScroll);
+    scrollToError('iptuValue', propertyFeaturesErrors, mainFeaturesInputRefs, mainFeaturesErrorScroll);
   }, [propertyFeaturesErrors]);
 
   const handleBuy = () => {
@@ -228,21 +215,17 @@ const MainFeatures: React.FC<IMainFeatures> = ({
     }));
   };
 
-  const buyBtnClassName = `w-full md:w-44 rounded-full border-secondary text-quaternary font-bold text-xl ${
-    isBuy ? 'bg-secondary text-quinary border' : 'bg-tertiary  text-quaternary'
-  }`;
+  const buyBtnClassName = `w-full md:w-40 rounded-full border-secondary text-quaternary font-bold text-sm ${isBuy ? 'bg-secondary text-quinary border' : 'bg-tertiary  text-quaternary'
+    }`;
 
-  const rentBtnClassName = `w-full md:w-44 rounded-full border-black text-quaternary font-bold text-xl ${
-    isRent ? 'bg-secondary text-quinary' : 'bg-tertiary text-quaternary'
-  }`;
+  const rentBtnClassName = `w-full md:w-40 rounded-full border-black text-quaternary font-bold text-sm ${isRent ? 'bg-secondary text-quinary' : 'bg-tertiary text-quaternary'
+    }`;
 
-  const commercialBtnClassName = `w-full md:w-44 rounded-full border-secondary text-quaternary font-bold text-xl ${
-    isCommercial ? 'bg-secondary text-quinary' : 'bg-tertiary  text-quaternary'
-  }`;
+  const commercialBtnClassName = `w-full md:w-40 rounded-full border-secondary text-quaternary font-bold text-sm ${isCommercial ? 'bg-secondary text-quinary' : 'bg-tertiary  text-quaternary'
+    }`;
 
-  const residentialBtnClassName = `w-full md:w-44 rounded-full border-black text-quaternary font-bold text-xl ${
-    isResidential ? 'bg-secondary text-quinary' : 'bg-tertiary text-quaternary'
-  }`;
+  const residentialBtnClassName = `w-full md:w-40 rounded-full border-black text-quaternary font-bold text-sm ${isResidential ? 'bg-secondary text-quinary' : 'bg-tertiary text-quaternary'
+    }`;
 
   const handlePropertyTypeSelection = (type: string, subType: string) => {
     setPropertyFeaturesData({
@@ -349,18 +332,16 @@ const MainFeatures: React.FC<IMainFeatures> = ({
 
   const maskedPrice = (value: string) => {
     let price = value;
-    price = price.replace(/\D/g, ''); // Remove todos os caracteres não numéricos
-    price = price.replace(/\.\d+$/, ''); // Remove a parte decimal (centavos)
-    price = price.replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Adiciona o separador de milhares
+    price = price?.replace(/\D/g, '');
+    price = price?.replace(/\.\d+$/, '');
+    price = price?.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     return price;
   };
 
-  // modal functions
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  // Modal
   const handleCalcSizeArea = (value: number) => {
     const checkValue = !Number.isNaN(value) ? value : 0;
     setPropertyFeaturesData({
@@ -369,14 +350,21 @@ const MainFeatures: React.FC<IMainFeatures> = ({
     });
   };
 
+  const classes = {
+    labelInput: 'text-base font-normal text-quaternary leading-7',
+    mediumInput:
+      'border border-quaternary rounded-[10px] h-12 w-full text-quaternary text-sm font-bold p-2 md:font-bold drop-shadow-lg bg-tertiary mt-1',
+    errorLabel: 'text-red-500 mt-2 text-xs',
+  };
+
   return (
     <>
       <div className="max-w-[1215px] mx-5">
         <div className="my-5 mx-5 lg:mx-0">
-          <label className="md:text-3xl text-2xl text-quaternary font-semibold leading-9 md:mx-0">
+          <label className="md:text-xl text-lg text-quaternary font-semibold leading-9 md:mx-0">
             O que você deseja?
           </label>
-          <div className="flex flex-row rounded-full border bg-tertiary border-quaternary h-8 mt-5 md:w-[355px] w-full">
+          <div className="flex flex-row rounded-full border bg-tertiary border-quaternary h-8 mt-1 md:w-52 w-full">
             <button className={buyBtnClassName} onClick={handleBuy}>
               Comprar
             </button>
@@ -386,10 +374,10 @@ const MainFeatures: React.FC<IMainFeatures> = ({
           </div>
         </div>
         <div className="my-5 mx-5 lg:mx-0">
-          <label className="md:text-3xl text-2xl text-quaternary font-semibold leading-9 md:mx-0">
+          <label className="md:text-xl text-lg text-quaternary font-semibold leading-9 md:mx-0">
             O seu imóvel é?
           </label>
-          <div className="flex flex-row rounded-full border bg-tertiary border-quaternary h-8 mt-5 md:w-[355px] w-full">
+          <div className="flex flex-row rounded-full border bg-tertiary border-quaternary h-8 mt-1 md:w-52 w-full">
             <button
               className={commercialBtnClassName}
               onClick={handleCommercial}
@@ -409,43 +397,41 @@ const MainFeatures: React.FC<IMainFeatures> = ({
           className="drop-shadow-lg lg:h-12 md:w-96 lg:text-lg rounded-lg p-2 border border-quaternary flex justify-between mt-10"
           onClick={() => setPropTypeDropdownIsOpen(!propTypeDropdownIsOpen)}
         >
-          <p className="text-quaternary text">
+          <p className="text-quaternary text-sm py-1">
             {propertyFeaturesData.propertyType
               ? lowerLetters(propertyFeaturesData.propertySubtype)
               : `Tipo de imóvel`}
           </p>
           <ArrowDownIcon
-            className={`my-auto cursor-pointer ${
-              propTypeDropdownIsOpen
-                ? 'transform rotate-360 transition-transform duration-300 ease-in-out'
-                : 'transform rotate-180 transition-transform duration-300 ease-in-out'
-            }`}
+            className={`my-auto cursor-pointer ${propTypeDropdownIsOpen
+              ? 'transform rotate-360 transition-transform duration-300 ease-in-out'
+              : 'transform rotate-180 transition-transform duration-300 ease-in-out'
+              }`}
           />
         </div>
         <div
-          className={` md:w-fit w-full h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md ${
-            propTypeDropdownIsOpen ? 'hidden ' : ''
-          }`}
+          className={` md:w-fit w-full h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md ${propTypeDropdownIsOpen ? 'hidden ' : ''
+            }`}
         >
           {propertyTypesData.map((prop, index) => (
             <div
               className="w-96 rounded-t-8 text-quaternary bg-tertiary"
               key={prop.key}
             >
-              {router.asPath === "/search" && (
+              {router.asPath === '/search' && (
                 <p
-                  className="text-center p-1 hover:bg-quaternary hover:text-tertiary font-normal text-lg"
+                  className="text-center p-1 hover:bg-quaternary hover:text-tertiary font-normal text-base"
                   onClick={() => handlePropertyTypeSelection('todos', 'todos')}
                 >
                   Todos
                 </p>
               )}
-              <p className="text-quaternary lg:text-2xl p-1 text-center font-bold ">
+              <p className="text-quaternary lg:text-lg p-1 text-left font-bold px-4">
                 {lowerLetters(prop.type)}
               </p>
               {propertyTypesData[index].subTypes.map((type) => (
                 <div
-                  className="text-center p-1 hover:bg-quaternary hover:text-tertiary font-normal text-lg"
+                  className="text-left hover:bg-quaternary hover:text-tertiary font-normal text-sm px-4 last:mb-1"
                   onClick={() => handlePropertyTypeSelection(prop.type, type)}
                   key={type}
                 >
@@ -457,27 +443,26 @@ const MainFeatures: React.FC<IMainFeatures> = ({
         </div>
 
         <div className="my-5 px-5. lg:px-0 lg:ml-0">
-          <h3 className="md:text-3xl text-2xl text-quaternary font-semibold leading-9 my-5">
+          <h3 className="md:text-xl text-lg text-quaternary font-semibold leading-9 my-5">
             Dados do Imóvel:
           </h3>
           <div className="md:flex gap-5">
             <div
-              className="flex flex-col md:w-full lg:mr-5 my-5 md:mt-0"
+              className="flex flex-col md:w-full lg:mr-5 my-3 md:mt-0"
               ref={mainFeaturesErrorScroll.totalArea}
             >
-              <label className="text-2xl font-normal text-quaternary leading-7">
-                Área Total
-              </label>
-              <MaskedInput 
-                mask={'area'} 
-                className={
-                  'border border-quaternary rounded-[10px] h-12 w-full text-quaternary text-2xl font-bold p-2 md:font-bold drop-shadow-lg bg-tertiary mt-5'
-                }
-                onChange={(e: { target: { value: string; }; }) => {
-                  // Remove a máscara para obter o valor numérico
-                  const numericValue = parseInt(e.target.value.replace(/\D/g, ''));
-                  const totalArea = Number.isNaN(numericValue) ? 0 : numericValue;
-                  setPropertyFeaturesData(prevState => ({
+              <label className={classes.labelInput}>Área Total</label>
+              <MaskedInput
+                mask={'area'}
+                className={classes.mediumInput}
+                onChange={(e: { target: { value: string } }) => {
+                  const numericValue = parseInt(
+                    e.target.value.replace(/\D/g, '')
+                  );
+                  const totalArea = Number.isNaN(numericValue)
+                    ? 0
+                    : numericValue;
+                  setPropertyFeaturesData((prevState) => ({
                     ...prevState,
                     size: {
                       ...prevState.size,
@@ -491,13 +476,13 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                 }}
               />
               {propertyFeaturesErrors.totalArea && (
-                <span className="text-red-500 mt-2 text-xs">
+                <span className={classes.errorLabel}>
                   {propertyFeaturesErrors.totalArea}
                 </span>
               )}
               <span
                 onClick={handleOpen}
-                className="text-secondary text-base font-semibold cursor-pointer mt-2 hover:text-yellow-600 transition-colors duration-300 ease-in-out"
+                className="text-secondary text-sm underline font-semibold cursor-pointer mt-2 hover:text-yellow-600 transition-colors duration-300 ease-in-out"
               >
                 Calcular área para mim
               </span>
@@ -509,19 +494,18 @@ const MainFeatures: React.FC<IMainFeatures> = ({
             </div>
 
             <div className="flex flex-col md:w-full md:mr-5">
-              <label className="text-2xl font-normal text-quaternary leading-7">
-                Área Útil (opcional)
-              </label>
-              <MaskedInput 
-                mask={'area'} 
-                className={
-                  'border border-quaternary rounded-[10px] h-12 w-full text-quaternary text-2xl font-bold p-2 md:font-bold drop-shadow-lg bg-tertiary mt-5'
-                }
-                onChange={(e: { target: { value: string; }; }) => {
-                  // Remove a máscara para obter o valor numérico
-                  const numericValue = parseInt(e.target.value.replace(/\D/g, ''));
-                  const totalArea = Number.isNaN(numericValue) ? 0 : numericValue;
-                  setPropertyFeaturesData(prevState => ({
+              <label className={classes.labelInput}>Área Útil (opcional)</label>
+              <MaskedInput
+                mask={'area'}
+                className={classes.mediumInput}
+                onChange={(e: { target: { value: string } }) => {
+                  const numericValue = parseInt(
+                    e.target.value.replace(/\D/g, '')
+                  );
+                  const totalArea = Number.isNaN(numericValue)
+                    ? 0
+                    : numericValue;
+                  setPropertyFeaturesData((prevState) => ({
                     ...prevState,
                     size: {
                       ...prevState.size,
@@ -537,24 +521,24 @@ const MainFeatures: React.FC<IMainFeatures> = ({
         <div className="my-5 lg:flex grid grid-cols-2 md:grid-cols-3 w-full lg:justify-between">
           {metadataButtons.map((btn) => (
             <div className="ml-5 lg:ml-0 flex flex-col" key={btn.key}>
-              <label className="text-lg font-normal text-center text-quaternary leading-7 lg:flex justify-center drop-shadow-lg">
+              <label className="text-sm font-normal text-center text-quaternary leading-7 lg:flex justify-center drop-shadow-lg">
                 {btn.label}
               </label>
               <div className="flex my-5 justify-center">
-                <div className="rounded-full md:w-8 md:h-8 w-8 h-8 border border-secondary drop-shadow-xl md:flex justify-center">
+                <div className="rounded-full md:w-7 md:h-7 w-7 h-7 border border-secondary drop-shadow-xl md:flex justify-center">
                   <p
-                    className="text-secondary font-extrabold text-4xl flex align-middle justify-center md:leading-5 leading-[18px] cursor-pointer"
+                    className="text-secondary font-extrabold text-2xl flex align-middle justify-center md:leading-5 leading-[18px] cursor-pointer"
                     onClick={btn.clickMinus}
                   >
                     -
                   </p>
                 </div>
-                <span className="text-2xl text-quaternary font-bold drop-shadow-lg mx-3 leading-7">
+                <span className="text-xl text-quaternary font-bold drop-shadow-lg mx-3 leading-7">
                   {btn.var}
                 </span>
-                <div className="rounded-full md:w-8 md:h-8 w-8 h-8 border border-secondary drop-shadow-xl md:flex justify-center">
+                <div className="rounded-full md:w-7 md:h-7 w-7 h-7 border border-secondary drop-shadow-xl md:flex justify-center">
                   <p
-                    className="text-secondary font-extrabold text-4xl flex align-middle justify-center leading-[23px] cursor-pointer"
+                    className="text-secondary font-extrabold text-2xl flex align-middle justify-center leading-[23px] cursor-pointer"
                     onClick={btn.clickAdd}
                   >
                     +
@@ -570,11 +554,11 @@ const MainFeatures: React.FC<IMainFeatures> = ({
             className="flex flex-col lg:mx-0"
             ref={mainFeaturesErrorScroll.description}
           >
-            <label className="text-2xl font-normal text-quaternary leading-7 mb-5 drop-shadow-xl">
+            <label className="text-lg font-normal text-quaternary leading-7 mb-5 drop-shadow-xl">
               Descrição do Imóvel:
             </label>
             <textarea
-              className="bg-tertiary border border-quaternary rounded-[10px] h-40 drop-shadow-xl text-lg p-2 font-semibold text-quaternary"
+              className="bg-tertiary border border-quaternary rounded-[10px] h-32 min-h-fit drop-shadow-xl text-sm p-2 font-semibold text-quaternary"
               value={propertyFeaturesData.description}
               maxLength={1000}
               onChange={(e) => {
@@ -595,7 +579,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
               required
             />
             {propertyFeaturesErrors.description && (
-              <span className="text-red-500 mt-2 text-xs">
+              <span className={classes.errorLabel}>
                 {propertyFeaturesErrors.description}
               </span>
             )}
@@ -603,7 +587,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
         </div>
 
         <div className="my-10 lg:px-0">
-          <h3 className="text-3xl text-quaternary font-semibold leading-9 my-5">
+          <h3 className="text-xl text-quaternary font-semibold leading-9 my-5">
             Valores do Imóvel:
           </h3>
 
@@ -612,16 +596,14 @@ const MainFeatures: React.FC<IMainFeatures> = ({
               className="flex flex-col md:w-96 lg:pr-6"
               ref={mainFeaturesErrorScroll.description}
             >
-              <label className="text-2xl font-normal text-quaternary leading-7">
+              <label className="text-base font-normal text-quaternary leading-7">
                 {`${isBuy ? 'Valor do Imóvel' : 'Valor do Aluguel'}`}
               </label>
               <input
                 value={maskedPrice(propertyFeaturesData.propertyValue)}
                 placeholder="R$"
                 maxLength={15}
-                className={
-                  'border border-quaternary rounded-[10px] h-12 w-full text-quaternary text-2xl font-bold p-2 md:font-bold drop-shadow-lg bg-tertiary mt-5'
-                }
+                className={classes.mediumInput}
                 style={
                   propertyFeaturesErrors.propertyValue
                     ? { border: '1px solid red' }
@@ -639,22 +621,20 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                 }}
               />
               {propertyFeaturesErrors.propertyValue && (
-                <span className="text-red-500 mt-2 text-xs">
+                <span className={classes.errorLabel}>
                   {propertyFeaturesErrors.propertyValue}
                 </span>
               )}
             </div>
           </div>
 
-          <div className="my-10">
+          <div className="my-5">
             <div
               className="flex"
               ref={mainFeaturesErrorScroll.condominiumValue}
             >
-              <label className="text-2xl font-normal text-quaternary leading-7">
-                Condomínio{' '}
-              </label>
-              <p className="text-2xl font-light md:ml-2 text-quaternary leading-7">
+              <label className={classes.labelInput}>Condomínio </label>
+              <p className="text-sm font-light md:ml-2 text-quaternary leading-7">
                 {' '}
                 (valor mensal)
               </p>
@@ -669,11 +649,10 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                   }
                   placeholder="R$"
                   maxLength={15}
-                  className={`border border-quaternary rounded-[10px] h-12 lg:ml-0 md:ml-0 text-quaternary md:text-[26px] text-2xl font-bold md:px-2 drop-shadow-lg mt-5 p-2 ${
-                    !propertyFeaturesData.condominium
-                      ? 'bg-[#CACACA]'
-                      : 'bg-tertiary'
-                  }`}
+                  className={`border border-quaternary rounded-[10px] h-12 lg:ml-0 md:ml-0 text-quaternary text-sm font-bold md:px-2 drop-shadow-lg mt-1 p-2 ${!propertyFeaturesData.condominium
+                    ? 'bg-[#CACACA]'
+                    : 'bg-tertiary'
+                    }`}
                   style={
                     propertyFeaturesErrors.condominiumValue
                       ? { border: '1px solid red' }
@@ -693,18 +672,17 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                   }}
                 />
                 {propertyFeaturesErrors.condominiumValue && (
-                  <span className="text-red-500 mt-2 text-xs">
+                  <span className={classes.errorLabel}>
                     {propertyFeaturesErrors.condominiumValue}
                   </span>
                 )}
               </div>
 
               <div
-                className={`lg:ml-5 w-12 h-12 shrink-0 border bg-tertiary rounded-[10px] mt-5 drop-shadow-lg cursor-pointer ${
-                  propertyFeaturesData.condominium
-                    ? 'border-secondary'
-                    : 'border-quaternary'
-                }`}
+                className={`lg:ml-5 w-12 h-12 shrink-0 border bg-tertiary rounded-[10px] mt-1 drop-shadow-lg cursor-pointer ${propertyFeaturesData.condominium
+                  ? 'border-secondary'
+                  : 'border-quaternary'
+                  }`}
                 onClick={() =>
                   setPropertyFeaturesData({
                     ...propertyFeaturesData,
@@ -716,15 +694,14 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                   <CheckIcon
                     fill="#F5BF5D"
                     width="42"
-                    className={`pl-1 ${
-                      propertyFeaturesData.condominium
-                        ? ' border-secondary'
-                        : ''
-                    }`}
+                    className={`pl-1 ${propertyFeaturesData.condominium
+                      ? ' border-secondary'
+                      : ''
+                      }`}
                   />
                 )}
               </div>
-              <p className="text-xl md:text-2xl font-light text-quaternary leading-7 mt-2 lg:mt-9 lg:ml-5">
+              <p className="text-sm md:text-base font-light text-quaternary leading-7 mt-2 lg:mt-4 lg:ml-2">
                 {!propertyFeaturesData.condominium ? 'Aplicar' : 'Remover'}
               </p>
             </div>
@@ -732,10 +709,8 @@ const MainFeatures: React.FC<IMainFeatures> = ({
               className="flex mt-10 "
               ref={mainFeaturesErrorScroll.iptuValue}
             >
-              <label className="text-2xl font-normal text-quaternary leading-7">
-                IPTU
-              </label>
-              <p className="text-2xl font-light ml-2 text-quaternary leading-7">
+              <label className={classes.labelInput}>IPTU</label>
+              <p className="text-sm font-light ml-2 text-quaternary leading-7">
                 {' '}
                 (valor anual)
               </p>
@@ -750,9 +725,8 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                   }
                   placeholder="R$"
                   maxLength={15}
-                  className={`border border-quaternary rounded-[10px] h-12 lg:ml-0 md:ml-0 text-quaternary md:text-[26px] text-2xl font-bold md:px-2 drop-shadow-lg mt-5 p-2 ${
-                    !propertyFeaturesData.iptu ? 'bg-[#CACACA]' : 'bg-tertiary'
-                  }`}
+                  className={`border border-quaternary rounded-[10px] h-12 lg:ml-0 md:ml-0 text-quaternary text-sm font-bold md:px-2 drop-shadow-lg mt-1 p-2 ${!propertyFeaturesData.iptu ? 'bg-[#CACACA]' : 'bg-tertiary'
+                    }`}
                   style={
                     propertyFeaturesErrors.iptuValue
                       ? { border: '1px solid red' }
@@ -774,18 +748,17 @@ const MainFeatures: React.FC<IMainFeatures> = ({
 
                 {propertyFeaturesData.iptu &&
                   propertyFeaturesErrors.iptuValue && (
-                    <span className="text-red-500 mt-2 text-xs">
+                    <span className={classes.errorLabel}>
                       {propertyFeaturesErrors.iptuValue}
                     </span>
                   )}
               </div>
 
               <div
-                className={`lg:ml-5 w-12 h-12 border bg-tertiary rounded-[10px] mt-5 drop-shadow-lg cursor-pointer shrink-0 ${
-                  propertyFeaturesData.iptu
-                    ? 'border-secondary'
-                    : 'border-quaternary'
-                }`}
+                className={`lg:ml-5 w-12 h-12 border bg-tertiary rounded-[10px] mt-1 drop-shadow-lg cursor-pointer shrink-0 ${propertyFeaturesData.iptu
+                  ? 'border-secondary'
+                  : 'border-quaternary'
+                  }`}
                 onClick={() => {
                   setPropertyFeaturesData({
                     ...propertyFeaturesData,
@@ -797,13 +770,12 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                   <CheckIcon
                     fill="#F5BF5D"
                     width="42"
-                    className={`pl-1 ${
-                      propertyFeaturesData.iptu ? ' border-secondary' : ''
-                    }`}
+                    className={`pl-1 ${propertyFeaturesData.iptu ? ' border-secondary' : ''
+                      }`}
                   />
                 )}
               </div>
-              <p className="text-xl md:text-2xl font-light text-quaternary leading-7 mt-2 lg:mt-9 lg:ml-5">
+              <p className="text-sm md:text-base font-light text-quaternary leading-7 mt-2 lg:mt-4 lg:ml-2">
                 {!propertyFeaturesData.iptu ? 'Aplicar' : 'Remover'}
               </p>
             </div>

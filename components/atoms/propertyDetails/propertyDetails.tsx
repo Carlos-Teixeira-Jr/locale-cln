@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode } from 'react';
 
 interface IDetails {
   icon: ReactNode;
@@ -8,19 +8,17 @@ interface IDetails {
 
 const PropertyDetails = ({ icon, value, description }: IDetails) => {
   return (
-    <div className="flex flex-row items-end text-quaternary font-semibold lg:text-xl lg:pt-5 justify-between">
-      <div 
-        className="flex flex-col md:flex-row md:mr-2 md:items-end items-center"
-      >
-        <span 
-          className="text-[#6B7280] mr-2"
+    <div className="flex flex-row items-end text-quaternary font-semibold lg:pt-3 justify-between">
+      <div className="flex flex-col lg:flex-row md:mr-2 lg:items-end items-center">
+        <span className="text-[#6B7280] mr-1">{icon}</span>
+        <p
+          className={`md:mr-2 flex   {${value?.length > 3 ? 'text-xs' : 'text-sm'
+            }`}
         >
-          {icon}
-        </span>
-        <p 
-          className="md:mr-2 flex max-w-[75px] md:max-w-[125px] overflow-hidden overflow-ellipsis"
-        >
-          {value} {value > 1 && description !== 'm² area' ? `${description}s` : description }
+          {value}{' '}
+          {value > 1 && description !== 'm² area'
+            ? `${description}s`
+            : description}
         </p>
       </div>
     </div>

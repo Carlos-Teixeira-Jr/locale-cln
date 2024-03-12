@@ -17,11 +17,12 @@ import {
   PricesType,
 } from '../../../common/interfaces/property/propertyData';
 import { fetchJson } from '../../../common/utils/fetchJson';
+import { clearIndexDB, getAllImagesFromDB } from '../../../common/utils/indexDb';
 import {
   ErrorToastNames,
   SuccessToastNames,
   showErrorToast,
-  showSuccessToast,
+  showSuccessToast
 } from '../../../common/utils/toasts';
 import ArrowDownIconcon from '../../../components/atoms/icons/arrowDownIcon';
 import Address from '../../../components/molecules/address/address';
@@ -39,12 +40,13 @@ interface IEditAnnouncement {
 const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
   property,
 }) => {
+  console.log("🚀 ~ property:", property)
   const [rotate1, setRotate1] = useState(false);
   const [rotate2, setRotate2] = useState(false);
   const [rotate3, setRotate3] = useState(false);
   const [rotate4, setRotate4] = useState(false);
-
   const router = useRouter();
+
   const isEdit = router.pathname == '/property/modify/[id]';
 
   const [address, setAddress] = useState<IAddress>({
@@ -65,7 +67,6 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
     streetName: '',
   });
 
-  // Lida com o auto-scroll para os inputs de Address que mostrarem erro;
   const addressInputRefs = {
     zipCode: useRef<HTMLInputElement>(null),
     city: useRef<HTMLInputElement>(null),
@@ -103,7 +104,6 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
     iptuValue: '',
   });
 
-  // Lida com o auto-scroll para os inputs de MainFeatures que mostrarem erro;
   const mainFeaturesInputRefs = {
     description: useRef<HTMLElement>(null),
     totalArea: useRef<HTMLInputElement>(null),
@@ -113,28 +113,31 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
   };
 
   const [tags, setTags] = useState<string[]>(isEdit ? property.tags : []);
+
   const [condominiumTags, setCondominiumTags] = useState<string[]>(
     isEdit ? property.condominiumTags : []
   );
+
   const [videoLink, setVideoLink] = useState<string>(
     isEdit ? property.youtubeLink : ''
   );
-  const [images, setImages] = useState<string[]>(isEdit ? property.images : []);
-
-  const imagesInputRef = useRef<HTMLElement>(null);
-
-  // Envia as mensagens de erros para os componetes;
-  const [errorInfo, setErrorInfo] = useState({
-    error: '',
-    prop: '',
-  });
 
   useEffect(() => {
     setVideoLink(property.youtubeLink);
   }, [property.youtubeLink]);
 
+  const [images, setImages] = useState<string[]>(isEdit ? property.images : []);
+
+  const imagesInputRef = useRef<HTMLElement>(null);
+
+  const [errorInfo, setErrorInfo] = useState({
+    error: '',
+    prop: '',
+  });
+
   const showHide = (element: string) => {
     const classList = document.getElementById(element)?.classList;
+
     classList?.contains('hidden')
       ? classList?.remove('hidden')
       : classList?.add('hidden');
@@ -142,18 +145,20 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
     document.getElementById('accordion-1')?.classList?.contains('hidden')
       ? setRotate1(true)
       : setRotate1(false);
+
     document.getElementById('accordion-2')?.classList?.contains('hidden')
       ? setRotate2(true)
       : setRotate2(false);
+
     document.getElementById('accordion-3')?.classList?.contains('hidden')
       ? setRotate3(true)
       : setRotate3(false);
+
     document.getElementById('accordion-4')?.classList?.contains('hidden')
       ? setRotate4(true)
       : setRotate4(false);
   };
 
-  // Lida com a verificação de erros do handleSubmit (necessário para acessar o valor atualizado de erros ainda antes do final da execução do handleSubmit)
   const errorHandler = useRef<{ error: string; prop: string }>({
     error: '',
     prop: '',
@@ -222,7 +227,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
     if (!address.city) newAddressErrors.city = error;
     if (!address.uf) newAddressErrors.uf = error;
     if (images.length < 5) {
-      const imagesError = 'Você precisa ter pelo menos três fotos.';
+      const imagesError = 'Você precisa ter pelo menos cinco fotos.';
       setErrorInfo({
         error: imagesError,
         prop: 'images',
@@ -241,7 +246,6 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
       ...newMainFeaturesErrors,
     };
 
-    // Verifica se algum dos valores do objeto de erros combinados não é uma string vazia
     const hasErrors = Object.values(combinedErrors).some(
       (error) => error !== ''
     );
@@ -251,6 +255,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
       errorHandler.current.error === '' &&
       !hasErrors
     ) {
+
       const propertyData: IEditPropertyData = {
         id: property._id,
         adType: mainFeatures.adType,
@@ -260,7 +265,6 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
         address: address,
         description: mainFeatures.description,
         metadata: mainFeatures.metadata,
-        images: images,
         size: {
           width: mainFeatures.size.width,
           height: mainFeatures.size.height,
@@ -282,10 +286,10 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
             type: PricesType.condominio,
             value: mainFeatures.condominium
               ? parseInt(
-                  mainFeatures.condominiumValue
-                    .replace(/\./g, '')
-                    .replace(',', '.')
-                )
+                mainFeatures.condominiumValue
+                  .replace(/\./g, '')
+                  .replace(',', '.')
+              )
               : 0,
           },
         ],
@@ -306,6 +310,49 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
         );
 
         if (response.ok) {
+          try {
+            const indexDbImages = (await getAllImagesFromDB()) as {
+              id: string;
+              data: Blob;
+              name: string;
+            }[];
+
+            const editImagesFormData = new FormData();
+
+            for (let i = 0; i < indexDbImages.length; i++) {
+              const file = new File(
+                [indexDbImages[i].data],
+                `${indexDbImages[i].name}`
+              );
+              editImagesFormData.append('images', file);
+            }
+
+            const data = {
+              propertyId: property._id,
+              prevImages: [""]
+            }
+
+            data.prevImages = images.filter(image => !image.startsWith('blob'));
+
+            editImagesFormData.append('data', JSON.stringify(data));
+
+            try {
+              await fetch(
+                `${process.env.NEXT_PUBLIC_BASE_API_URL}/property/edit-property-images`,
+                {
+                  method: 'POST',
+                  body: editImagesFormData
+                }
+              );
+            } catch (error) {
+              clearIndexDB();
+              showErrorToast(ErrorToastNames.ImageUploadError);
+            }
+          } catch (error) {
+            toast.dismiss();
+            showErrorToast(ErrorToastNames.ImageUploadError);
+          }
+          clearIndexDB();
           toast.dismiss();
           showSuccessToast(SuccessToastNames.PropertyUpdate);
           router.push('/admin?page=1');
@@ -323,6 +370,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
       const addressErrorSection = Object.values(newAddressErrors).some(
         (error) => error !== ''
       );
+
       const mainFeaturesErrorSection = Object.values(
         newMainFeaturesErrors
       ).some((error) => error !== '');
@@ -333,11 +381,13 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
         document.getElementById('accordion-1')?.classList?.contains('hidden')
       )
         showHide('accordion-1');
+
       if (
         imagesErrorSection &&
         document.getElementById('accordion-2')?.classList?.contains('hidden')
       )
         showHide('accordion-2');
+
       if (
         mainFeaturesErrorSection &&
         document.getElementById('accordion-3')?.classList?.contains('hidden')
@@ -349,15 +399,15 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
   return (
     <div>
       <AdminHeader isOwnerProp={true} />
-      <div className="flex flex-row justify-center w-full">
-        <div className="fixed left-0 top-20 sm:hidden hidden md:hidden lg:hidden xl:flex">
+      <div className={classes.body}>
+        <div className={classes.sideMenu}>
           <SideMenu
             isOwnerProp={property !== undefined && true}
             notifications={[]}
           />
         </div>
-        <div className="flex flex-col items-center mt-16 max-w-[900px] px-2 md:px-10 sm:ml-0 ml-0 xl:ml-24 2xl:ml-24">
-          <h1 className="font-bold text-2xl lg:text-3xl text-quaternary my-10 mx-auto">
+        <div className={classes.content}>
+          <h1 className={classes.title}>
             Edição do Anúncio
             <div className="accordion flex flex-col">
               <div>
@@ -368,23 +418,16 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
                   className="hidden"
                   onClick={() => showHide('accordion-1')}
                 />
-                <label
-                  htmlFor="painel-1"
-                  className="flex flex-row items-center justify-between sm:min-w-[300px] md:min-w-[600px] lg:min-w-[600px] xl:min-w-[800px] 2xl:min-w-[1000px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 mx-4 text-xl transition bg-opacity-90 hover:bg-gray-300"
-                >
+                <label htmlFor="painel-1" className={classes.labelAccordion}>
                   Endereço
                   <span
-                    className={`transition-transform transform ${
-                      rotate1 ? 'rotate-180' : ''
-                    }`}
+                    className={`transition-transform transform ${rotate1 ? 'rotate-180' : ''
+                      }`}
                   >
                     <ArrowDownIconcon width="13" className="cursor-pointer" />
                   </span>
                 </label>
-                <div
-                  className="accordion__content hidden bg-grey-lighter dis"
-                  id="accordion-1"
-                >
+                <div className={classes.accordionContainer} id="accordion-1">
                   <div className="accordion__body" id="painel1">
                     <Address
                       isEdit={isEdit}
@@ -406,23 +449,16 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
                   className="hidden"
                   onClick={() => showHide('accordion-2')}
                 />
-                <label
-                  htmlFor="painel-2"
-                  className="flex flex-row items-center justify-between sm:min-w-[300px] md:min-w-[620px] lg:min-w-[600px] xl:min-w-[800px] 2xl:min-w-[1000px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 mx-4 text-xl transition bg-opacity-90 hover:bg-gray-300"
-                >
+                <label htmlFor="painel-2" className={classes.labelAccordion}>
                   Fotos
                   <span
-                    className={`transition-transform transform ${
-                      rotate2 ? 'rotate-180' : ''
-                    }`}
+                    className={`transition-transform transform ${rotate2 ? 'rotate-180' : ''
+                      }`}
                   >
                     <ArrowDownIconcon width="13" className="cursor-pointer" />
                   </span>
                 </label>
-                <div
-                  className="accordion__content hidden bg-grey-lighter dis"
-                  id="accordion-2"
-                >
+                <div className={classes.accordionContainer} id="accordion-2">
                   <div className="accordion__body" id="painel2">
                     <UploadImages
                       editarImages={property.images}
@@ -443,23 +479,16 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
                   className="hidden"
                   onClick={() => showHide('accordion-3')}
                 />
-                <label
-                  htmlFor="painel-3"
-                  className="flex flex-row items-center justify-between sm:min-w-[300px] md:min-w-[620px] lg:min-w-[600px] xl:min-w-[800px] 2xl:min-w-[1000px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 mx-4 text-xl transition bg-opacity-90 hover:bg-gray-300"
-                >
+                <label htmlFor="painel-3" className={classes.labelAccordion}>
                   Características
                   <span
-                    className={`transition-transform transform ${
-                      rotate3 ? 'rotate-180' : ''
-                    }`}
+                    className={`transition-transform transform ${rotate3 ? 'rotate-180' : ''
+                      }`}
                   >
                     <ArrowDownIconcon width="13" className="cursor-pointer" />
                   </span>
                 </label>
-                <div
-                  className="accordion__content hidden bg-grey-lighter dis"
-                  id="accordion-3"
-                >
+                <div className={classes.accordionContainer} id="accordion-3">
                   <div className="accordion__body" id="painel3">
                     <MainFeatures
                       propertyId={property._id}
@@ -500,10 +529,10 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
                           (obj: IPrices) => obj.type === 'condominio'
                         )?.value !== null
                           ? property.prices
-                              .find(
-                                (obj: IPrices) => obj.type === 'condominio'
-                              )!
-                              .value.toString()
+                            .find(
+                              (obj: IPrices) => obj.type === 'condominio'
+                            )!
+                            .value.toString()
                           : ''
                       }
                       editarIptuValue={
@@ -511,8 +540,8 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
                           (price) => price.type === 'IPTU'
                         ) !== undefined
                           ? property.prices
-                              .find((price) => price.type === 'IPTU')!
-                              .value.toString()
+                            .find((price) => price.type === 'IPTU')!
+                            .value?.toString()
                           : ''
                       }
                       editarIptu={property.prices.some(
@@ -537,23 +566,16 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
                   className="hidden"
                   onClick={() => showHide('accordion-4')}
                 />
-                <label
-                  htmlFor="painel-4"
-                  className="flex flex-row items-center justify-between  sm:min-w-[300px] md:min-w-[620px] lg:min-w-[600px] xl:min-w-[800px] 2xl:min-w-[1000px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 mx-4 text-xl transition bg-opacity-90 hover:bg-gray-300"
-                >
-                  Outras Características
+                <label htmlFor="painel-4" className={classes.labelAccordion}>
+                  Outras características
                   <span
-                    className={`transition-transform transform ${
-                      rotate4 ? 'rotate-180' : ''
-                    }`}
+                    className={`transition-transform transform ${rotate4 ? 'rotate-180' : ''
+                      }`}
                   >
                     <ArrowDownIconcon width="13" className="cursor-pointer" />
                   </span>
                 </label>
-                <div
-                  className="accordion__content hidden bg-grey-lighter dis"
-                  id="accordion-4"
-                >
+                <div className={classes.accordionContainer} id="accordion-4">
                   <div className="accordion__body mx-2" id="painel4">
                     <PropertyDifferentials
                       shouldRenderCondDiv={
@@ -576,11 +598,8 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
                 </div>
               </div>
             </div>
-            <div className="flex self-end md:justify-end justify-center mb-32 mt-16">
-              <button
-                className="bg-primary w-80 h-16 text-tertiary rounded transition-colors duration-300 hover:bg-red-600 hover:text-white"
-                onClick={handleSubmit}
-              >
+            <div className={classes.buttonContainer}>
+              <button className={classes.button} onClick={handleSubmit}>
                 Atualizar Dados
               </button>
             </div>
@@ -670,7 +689,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     const [property] = await Promise.all([
       fetch(`${baseUrl}/property/${propertyId}?isEdit=${isEdit}`)
         .then((res) => res.json())
-        .catch(() => {}),
+        .catch(() => { }),
       fetchJson(`${baseUrl}/property/${propertyId}?isEdit=${isEdit}`),
     ]);
 
@@ -681,3 +700,17 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     };
   }
 }
+
+const classes = {
+  body: 'flex flex-row justify-center w-full',
+  sideMenu: 'fixed left-0 top-7 sm:hidden hidden md:hidden lg:hidden xl:flex',
+  content:
+    'flex flex-col items-center mt-16 max-w-[900px] px-2 md:px-10 sm:ml-0 ml-0 xl:ml-24 2xl:ml-24',
+  labelAccordion:
+    'flex flex-row items-center justify-between sm:min-w-[300px] md:min-w-[620px] lg:min-w-[600px] xl:min-w-[800px] 2xl:min-w-[1000px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 mx-4 text-lg transition bg-opacity-90 hover:bg-gray-300',
+  accordionContainer: 'accordion__content hidden bg-grey-lighter dis',
+  title: 'font-bold text-xl lg:text-2xl text-quaternary my-10 mx-auto',
+  buttonContainer: 'flex self-end md:justify-end justify-center mb-32 mt-16',
+  button:
+    'bg-primary w-56 h-12 text-lg text-tertiary rounded transition-colors duration-300 hover:bg-red-600 hover:text-white',
+};

@@ -32,7 +32,7 @@ type Owner = {
   customerId: string;
   isNewCreditCard: boolean;
   newCreditCardData: any;
-  profilePicture: string;
+  picture: string;
   paymentData: OwnerPaymentData
 };
 
@@ -48,5 +48,4 @@ export interface IOwner {
   phones: string[];
   email: string;
   adCredits: number;
-  profilePicture: string;
 }

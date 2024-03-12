@@ -1,3 +1,5 @@
+import { ProfilePicture } from '../../images/profilePicture';
+
 import {
   IAddress,
   IMetadata,
@@ -47,7 +49,7 @@ export interface IRegisterPropertyData_Step2 {
 
 export interface IRegisterPropertyData_Step3 {
   username: string;
-  profilePicture: string;
+  picture: ProfilePicture;
   email: string;
   cpf: string;
   cellPhone: string;
@@ -75,7 +77,7 @@ export interface ICreateProperty_propertyData {
   ownerInfo: {
     name: string;
     phones: string[];
-    profilePicture: string;
+    picture: ProfilePicture;
     wppNumber: string;
   };
   size: ISize;
@@ -92,5 +94,5 @@ export interface ICreateProperty_userData {
   email: string;
   address: IAddress;
   cpf: string;
-  profilePicture: string;
+  picture: ProfilePicture;
 }

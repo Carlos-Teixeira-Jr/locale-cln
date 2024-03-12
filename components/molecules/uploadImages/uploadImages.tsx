@@ -5,10 +5,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import { DndProvider, DropTargetMonitor, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { v4 as uuidv4 } from 'uuid';
-import { addImageToDB, getAllImagesFromDB, removeImageFromDB } from '../../../common/utils/indexDb';
+import {
+  addImageToDB,
+  getAllImagesFromDB,
+  removeImageFromDB
+} from '../../../common/utils/indexDb';
+import { ErrorToastNames, showErrorToast } from '../../../common/utils/toasts';
 import CameraIcon from '../../atoms/icons/cameraIcon';
 import TrashIcon from '../../atoms/icons/trashIcon';
-import { ErrorToastNames, showErrorToast } from '../../../common/utils/toasts';
 
 interface IImages {
   editarImages?: string[];
@@ -30,7 +34,18 @@ const UploadImages = ({
 }: IImages) => {
   const imagesErrorScroll = useRef(imagesInputRef);
 
-  const [images, setImages] = useState<any[]>(editarImages || []);
+  const [images, setImages] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (editarImages && editarImages.length > 0 && images.length === 0) {
+      const newImages = editarImages.map(src => ({ id: uuidv4(), src }));
+      setImages(newImages);
+    }
+  }, [editarImages, images.length]);
+
+  useEffect(() => {
+    onImagesUpdate!(images.map((image) => image.src));
+  }, [images]);
 
   const [error, setError] = useState<OnErrorInfo>({
     prop: '',
@@ -53,56 +68,44 @@ const UploadImages = ({
   }, [error, onErrorsInfo]);
 
   useEffect(() => {
-    onImagesUpdate!(images.map((image) => image.src));
-  }, [images]);
-
-  useEffect(() => {
-    if (editarImages) {
-      setImages(editarImages.map((src) => ({ src, id: uuidv4() })));
+    if (editarImages?.length === 0) {
+      const loadImagesFromDB = async () => {
+        try {
+          // Consulta o IndexedDB para recuperar as imagens salvas
+          const imagesFromDB = await getAllImagesFromDB();
+          // Define o estado `images` com as imagens recuperadas
+          setImages(imagesFromDB);
+        } catch (error) {
+          showErrorToast(ErrorToastNames.LoadImages);
+        }
+      };
+      // Chama a função para carregar imagens do IndexedDB quando o componente é montado
+      loadImagesFromDB();
     }
-  }, [editarImages]);
-
-  useEffect(() => {
-    const loadImagesFromDB = async () => {
-      try {
-        // Consulta o IndexedDB para recuperar as imagens salvas
-        const imagesFromDB = await getAllImagesFromDB();
-        // Define o estado `images` com as imagens recuperadas
-        setImages(imagesFromDB as any[]);
-      } catch (error) {
-        showErrorToast(ErrorToastNames.LoadImages)
-      }
-    };
-    // Chama a função para carregar imagens do IndexedDB quando o componente é montado
-    loadImagesFromDB();
   }, []);
 
-  const handleAddImage = async (event: any) => {
+  const handleAddImage = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
 
-    if (files.length + images.length > 50) {
+    if (files && files.length + images.length > 50) {
       showErrorToast(ErrorToastNames.ImagesMaxLimit);
       return;
     }
-    
-    for (const file of files) {
-      const id = uuidv4();
-      const src = URL.createObjectURL(file);
 
-      // Adiciona a imagem ao IndexedDB junto com o ID UUID
-      await addImageToDB(file, src, id);
+    if (files) {
+      for (const file of files) {
+        const id = uuidv4();
+        const src = URL.createObjectURL(file);
 
-      // Atualiza o estado com a imagem usando o ID UUID
-      setImages((prevImages) => [
-        ...prevImages,
-        { src, id },
-      ]);
+        await addImageToDB(file, src, id);
+
+        setImages((prevImages) => [...prevImages, { src, id }]);
+      }
     }
   };
 
   const handleRemoveImage = async (id: string) => {
     try {
-      // Obter o ID numérico correspondente ao ID fornecido
       const foundId = images.find((image) => image.id === id);
 
       if (foundId === undefined) {
@@ -110,10 +113,8 @@ const UploadImages = ({
         return;
       }
 
-      // Remover a imagem do IndexedDB usando o ID UUID
       await removeImageFromDB(id);
 
-      // Atualizar o estado com as imagens restantes
       setImages((prevImages) => prevImages.filter((image) => image.id !== id));
     } catch (error) {
       console.error('Erro ao remover a imagem:', error);
@@ -134,11 +135,13 @@ const UploadImages = ({
       ref={imagesErrorScroll}
     >
       <label
-        className="flex flex-row items-center px-6 w-64 h-12 border rounded-[50px] bg-secondary cursor-pointer mt-4 mx-auto"
+        className="flex flex-row justify-center items-center px-5 w-64 h-12 border rounded-[50px] bg-secondary cursor-pointer mt-4 mx-auto"
         htmlFor="uploadImages"
       >
         <CameraIcon />
-        <span className="font-bold text-quinary text-2xl">Adicionar Fotos</span>
+        <span className="font-bold text-quinary text-lg text-center">
+          Adicionar Fotos
+        </span>
       </label>
       <input
         type="file"
@@ -150,16 +153,14 @@ const UploadImages = ({
         max={7}
       />
       <p
-        className={`text-quaternary font-medium text-xs mt-1 mb-2 flex ${
-          images.length === 0 ? 'hidden' : ''
-        }`}
+        className={`text-quaternary font-medium text-xs mt-1 mb-2 flex ${images.length === 0 ? 'hidden' : ''
+          }`}
       >
         Adicione ao menos 5 fotos para publicar o imóvel{' '}
       </p>
       <div
-        className={`flex flex-col justify-center sm:max-w-7xl min-h-max bg-[#F7F7F6] border border-secondary gap-10 p-3 m-1 ${
-          images.length === 0 ? 'hidden' : ''
-        }`}
+        className={`flex flex-col justify-center sm:max-w-7xl min-h-max bg-[#F7F7F6] border border-secondary gap-10 p-3 m-1 ${images.length === 0 ? 'hidden' : ''
+          }`}
         style={
           onErrorsInfo?.prop === 'images' ? { border: '1px solid red' } : {}
         }
@@ -171,7 +172,7 @@ const UploadImages = ({
               onErrorsInfo?.prop === 'images' ? { border: '1px solid red' } : {}
             }
           >
-            {images.map((image, index) => (
+            {images.length > 0 && images.map((image, index) => (
               <Image
                 key={image.id ? image.id : `${image}-${index}`}
                 id={image.id}
@@ -190,9 +191,8 @@ const UploadImages = ({
         </span>
       )}
       <p
-        className={`text-quaternary text-sm font-medium mt-2 text-justify p-2 md:p-0 ${
-          images.length === 0 ? 'hidden' : ''
-        }`}
+        className={`text-quaternary text-sm font-medium mt-2 text-justify p-2 md:p-0 ${images.length === 0 ? 'hidden' : ''
+          }`}
       >
         Você pode arrastar as imagens dentro da caixa para mudar a ordem de
         exibição. A primeira imagem será a capa do anúncio.
@@ -246,12 +246,10 @@ const Image: React.FC<ImageProps> = ({
       const clientOffset: any = monitor.getClientOffset();
       const hoverClientY = clientOffset.y - hoverBoundingRect.top;
 
-      // Arrastando para baixo
       if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
         return;
       }
 
-      // Arrastando para cima
       if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
         return;
       }
@@ -263,9 +261,9 @@ const Image: React.FC<ImageProps> = ({
 
   const draggingStyle = isDragging
     ? {
-        backgroundColor: 'rgba(211, 211, 211, 1)',
-        boxShadow: '0 0 8px rgba(0, 0, 0, 0.5)',
-      }
+      backgroundColor: 'rgba(211, 211, 211, 1)',
+      boxShadow: '0 0 8px rgba(0, 0, 0, 0.5)',
+    }
     : {};
 
   drag(drop(ref));
@@ -291,7 +289,7 @@ const Image: React.FC<ImageProps> = ({
       >
         <TrashIcon />
       </div>
-      <span className="absolute bottom-0 left-0 p-1 px-3 text-white bg-black bg-opacity-50 rounded-3xl">
+      <span className="absolute bottom-0 left-0 p-1 px-3 text-sm text-white bg-black bg-opacity-50 rounded-3xl">
         {index === 0 ? 'Capa do anúncio' : index + 1}
       </span>
     </div>

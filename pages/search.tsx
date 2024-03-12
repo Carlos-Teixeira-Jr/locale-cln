@@ -13,8 +13,7 @@ import ArrowDropdownIcon from '../components/atoms/icons/arrowDropdownIcon';
 import GridIcon from '../components/atoms/icons/gridIcon';
 import ListIcon from '../components/atoms/icons/listIcon';
 import Pagination from '../components/atoms/pagination/pagination';
-import PropertyInfoCard from '../components/molecules/cards/PropertyInfoCard/PropertyInfoCard';
-import PropertyCard from '../components/molecules/cards/propertyCard/PropertyCard';
+import { PropertyCard, PropertyInfoCard } from '../components/molecules/cards';
 import FilterList from '../components/molecules/filterList/FilterList';
 import SearchShortcut from '../components/molecules/searchShortcut/searchShortcut';
 import Footer from '../components/organisms/footer/footer';
@@ -48,7 +47,7 @@ const Search: NextPageWithLayout<ISearch> = ({
   const [currentPage, setCurrentPage] = useState(1);
   const isCodeSearch = query.code ? true : false;
   const { latitude, longitude, location: geolocation } = useTrackLocation();
-  
+
   const defaultPropertyPhoto = "/images/property-not-found.png";
 
   // mobile
@@ -56,21 +55,14 @@ const Search: NextPageWithLayout<ISearch> = ({
   const isMobile = useIsMobile();
   const [mobileFilterIsOpen, setMobileFilterIsOpen] = useState<boolean>(false);
   const [isSearchBtnClicked, setIsSearchBtnClicked] = useState(false);
-
-  // grid or list
   const [grid, setGrid] = useState(false);
   const [list, setList] = useState(true);
-
-  // location
   const queryParsed = query.location ? JSON.parse(query.location) : [];
   const [location, setLocation] = useState<any>(queryParsed);
 
-  // Insere ou remove as location no url query params;
   useEffect(() => {
     updateLocationQueryParam(location, query, router);
   }, [location]);
-
-  //// PAGE ////
 
   useEffect(() => {
     if (router.query.page !== undefined && typeof query.page === 'string') {
@@ -80,13 +72,11 @@ const Search: NextPageWithLayout<ISearch> = ({
   });
 
   useEffect(() => {
-    // Check if the page parameter in the URL matches the current page
     const pageQueryParam =
       router.query.page !== undefined && typeof query.page === 'string'
         ? parseInt(query.page)
         : 1;
 
-    // Only update the URL if the page parameter is different from the current page
     if (pageQueryParam !== currentPage) {
       const queryParams = {
         ...query,
@@ -117,16 +107,11 @@ const Search: NextPageWithLayout<ISearch> = ({
     }
   }, [isSearchBtnClicked]);
 
-  //// DROPDOWN ////
-
-  // Lida com o comportamento de fechamento do dropdown de endereço quando há um clique fora do elemento;
   useEffect(() => {
     const clickHandler = handleClickOutside(ref, setOpen);
     document.addEventListener('click', clickHandler);
     return () => document.removeEventListener('click', clickHandler);
   }, [ref, setOpen]);
-
-  //// CARDS VISUALIZATION MODE ////
 
   const handleGrid = () => {
     setList(false);
@@ -138,13 +123,37 @@ const Search: NextPageWithLayout<ISearch> = ({
     setGrid(false);
   };
 
+  const classes = {
+    root: 'flex items-center justify-center mt-20',
+    bodyContainer: 'lg:flex justify-center lg:max-w-[1232px]',
+    body: 'flex flex-col lg:flex-row md:mt-0',
+    content: 'flex flex-row items-center justify-between gap-7 ml-0 xl:ml-20',
+    filterList: `mx-auto md:w-fit lg:w-[25%] lg:flex ${mobileFilterIsOpen ? '' : 'hidden'}`,
+    searchShortcut: `justify-center ${mobileFilterIsOpen ? 'hidden' : ''
+      } flex w-screen px-2 md:w-full itens-center md:px-0`,
+    propertiesGridListOrderBy:
+      'flex flex-row items-center justify-around mt-2 md:my-3 mr-0',
+    listGridContainer: 'flex flex-row items-center gap-1 mr-[-30px] w-fit',
+    list: `w-[47px] h-[44px] border border-[#6B7280] rounded-[10px] ${list && 'border-[#F5BF5D] shadow-inner'
+      }`,
+    grid: `w-[47px] h-[44px] border border-[#6B7280] rounded-[10px] ${grid && 'border-[#F5BF5D] shadow-inner'
+      }`,
+    propertyNotFound: 'flex flex-col mx-auto justify-center my-5',
+    orderBy:
+      'flex flex-row items-center justify-around cursor-pointer md:my-auto bg-tertiary sm:max-w-[188px] md:w-[180px] h-[44px] font-bold text-sm md:text-md text-quaternary leading-5 shadow-lg p-[10px] border border-quaternary rounded-[30px] mt-7 md:mr-4 ml-2',
+    h2: 'text-quaternary text-sm md:text-base lg:text-lg leading-5 font-bold md:ml-4 text-justify px-5',
+    h3: 'text-quaternary text-sm lg:text-md leading-5 font-bold text-justify ml-2',
+    gridContainer:
+      'sm:grid sm:grid-cols-1 md:grid. md:grid-cols-2. md:flex flex-wrap justify-between gap-2 lg:gap-5 mx-2 lg:mx-10',
+  };
+
   return (
     <div>
       <Header />
-      <div className="flex items-center justify-center mt-20">
-        <div className="lg:flex justify-center lg:max-w-[1232px]">
-          <div className="flex flex-col lg:flex-row md:mt-0">
-            <div className="mx-auto md:w-fit lg:w-[25%]">
+      <div className={classes.root}>
+        <div className={classes.bodyContainer}>
+          <div className={classes.body}>
+            <div className={classes.filterList}>
               <FilterList
                 locationProp={locations}
                 tagsProp={tagsData}
@@ -157,51 +166,36 @@ const Search: NextPageWithLayout<ISearch> = ({
                 locationChangeProp={(loc) => setLocation(loc)}
               />
             </div>
+
             <div className="flex flex-col lg:w-[75%] lg:ml-5">
-              <div
-                className={`justify-center ${
-                  mobileFilterIsOpen ? 'hidden' : ''
-                } flex w-screen px-2 md:w-full itens-center md:px-0`}
-              >
+              <div className={classes.searchShortcut}>
                 <SearchShortcut
                   onMobileFilterIsOpenChange={(isOpen) =>
                     setMobileFilterIsOpen(isOpen)
                   }
                 />
               </div>
-              <div className="flex flex-row items-center justify-around mt-2 md:my-3 mr-0 ">
-                <h3 className="text-quaternary text-sm md:text-base leading-5 font-bold text-justify ml-2">
+              <div className={classes.propertiesGridListOrderBy}>
+                <h3 className={classes.h3}>
                   {propertyInfo.totalCount} imóveis encontrados com base na
                   pesquisa
                 </h3>
-                <div className="flex flex-row items-center justify-between gap-7 ml-0 xl:ml-20">
-                  {/* SearchView - start*/}
+                <div className={classes.content}>
                   {!isMobile && (
-                    <div className="flex flex-row items-center gap-1 mr-[-30px] w-fit">
-                      <button
-                        onClick={handleList}
-                        className={`w-[47px] h-[44px] border border-[#6B7280] rounded-[10px] ${
-                          list && 'border-[#F5BF5D] shadow-inner'
-                        }`}
-                      >
+                    <div className={classes.listGridContainer}>
+                      <button onClick={handleList} className={classes.list}>
                         <ListIcon list={list} />
                       </button>
-                      <button
-                        onClick={handleGrid}
-                        className={`w-[47px] h-[44px] border border-[#6B7280] rounded-[10px] ${
-                          grid && 'border-[#F5BF5D] shadow-inner'
-                        }`}
-                      >
+                      <button onClick={handleGrid} className={classes.grid}>
                         <GridIcon grid={grid} />
                       </button>
                     </div>
                   )}
 
-                  {/* SearchView - end*/}
                   {!isMobile && (
                     <div ref={ref} onClick={() => setOpen(!open)}>
-                      <div className="flex flex-row items-center justify-around cursor-pointer md:my-auto bg-tertiary sm:max-w-[188px] md:w-[188px] h-[44px] font-bold text-sm md:text-lg text-quaternary leading-5 shadow-lg p-[10px] border border-quaternary rounded-[30px] mt-7 md:mr-4 ml-2">
-                        <span>Ordenar Por</span>
+                      <div className={classes.orderBy}>
+                        <span>Ordenar por</span>
                         <span>
                           <ArrowDropdownIcon open={false} />
                         </span>
@@ -211,7 +205,6 @@ const Search: NextPageWithLayout<ISearch> = ({
                   )}
                 </div>
               </div>
-              {/* </div> */}
 
               {!mobileFilterIsOpen &&
                 propertyInfo.docs &&
@@ -227,10 +220,10 @@ const Search: NextPageWithLayout<ISearch> = ({
 
               {propertyInfo?.docs?.length === 0 && (
                 <div className="flex flex-col mt-5">
-                  <h2 className="text-quaternary text-sm md:text-base lg:text-2xl leading-5 font-bold md:ml-4 text-justify px-5">
+                  <h2 className={classes.h2}>
                     Oops! Não encontramos nenhum resultado para essa busca.
                   </h2>
-                  <div className="flex flex-col mx-auto justify-center my-5">
+                  <div className={classes.propertyNotFound}>
                     <Image
                       src={'/images/property-not-found.png'}
                       width={300}
@@ -238,7 +231,7 @@ const Search: NextPageWithLayout<ISearch> = ({
                       alt={'Property not found'}
                     />
                   </div>
-                  <h2 className="text-quaternary text-sm md:text-base lg:text-2xl leading-5 font-bold md:ml-4 text-justify px-5">
+                  <h2 className={classes.h2}>
                     Você pode tentar remover alguns filtros para tentar
                     encontrar algum resultado.
                   </h2>
@@ -247,11 +240,11 @@ const Search: NextPageWithLayout<ISearch> = ({
 
               {!propertyInfo.docs && isCodeSearch && (
                 <div className="flex flex-col mt-5">
-                  <h2 className="text-quaternary text-sm md:text-base lg:text-2xl leading-5 font-bold md:ml-4 text-justify px-5">
+                  <h2 className={classes.h2}>
                     Oops! Não encontramos nenhum imóvel referente ao código
                     informado.
                   </h2>
-                  <div className="flex flex-col mx-auto justify-center my-5">
+                  <div className={classes.propertyNotFound}>
                     <Image
                       src={'/images/property-not-found.png'}
                       width={300}
@@ -259,7 +252,7 @@ const Search: NextPageWithLayout<ISearch> = ({
                       alt={'Property not found'}
                     />
                   </div>
-                  <h2 className="text-quaternary text-sm md:text-base lg:text-2xl leading-5 font-bold md:ml-4 text-justify px-5">
+                  <h2 className={classes.h2}>
                     Verifique se o código está correto e tente novamente.
                   </h2>
                 </div>
@@ -267,9 +260,9 @@ const Search: NextPageWithLayout<ISearch> = ({
 
               {grid ? (
                 <div
-                  className={`sm:grid sm:grid-cols-1 md:grid. md:grid-cols-2. md:flex flex-wrap justify-between gap-2 lg:gap-5 mx-2 lg:mx-10 ${
-                    mobileFilterIsOpen ? 'hidden' : ''
-                  }`}
+                  className={
+                    (classes.gridContainer, mobileFilterIsOpen ? 'hidden' : '')
+                  }
                 >
                   {propertyInfo.docs &&
                     propertyInfo?.docs.map(
@@ -281,6 +274,7 @@ const Search: NextPageWithLayout<ISearch> = ({
                         images,
                         metadata,
                         highlighted,
+                        owner
                       }: IData) => (
                         <div className="md:w-60 lg:w-64" key={_id}>
                           <PropertyCard
@@ -301,9 +295,8 @@ const Search: NextPageWithLayout<ISearch> = ({
                 </div>
               ) : (
                 <div
-                  className={`lg:float-right${
-                    mobileFilterIsOpen ? 'hidden' : ''
-                  }`}
+                  className={`lg:float-right${mobileFilterIsOpen ? 'hidden' : ''
+                    }`}
                 >
                   {propertyInfo?.docs?.map(
                     (
@@ -352,7 +345,7 @@ const Search: NextPageWithLayout<ISearch> = ({
           </div>
         </div>
       </div>
-      <Footer smallPage={false} />
+      <Footer />
     </div>
   );
 };
@@ -405,11 +398,10 @@ export async function getServerSideProps(context: NextPageContext) {
       }
     }
     filter.push(geoQuery)
-  } 
+  }
 
   const encodedFilter = decodeURIComponent(JSON.stringify(filter));
 
-  //// SORT ////
   let encodedSort;
   if (query.sort !== '') {
     if (query.sort === 'mostRecent')
@@ -423,8 +415,6 @@ export async function getServerSideProps(context: NextPageContext) {
         JSON.stringify([{ 'prices.0.value': -1 }])
       );
   }
-
-  //// OTHER FETCHES ////
 
   const locations = await fetch(`${baseUrl}/location`)
     .then((res) => res.json())
@@ -450,9 +440,8 @@ export async function getServerSideProps(context: NextPageContext) {
       );
     }
   } else {
-    const url = `${baseUrl}/property/filter/?page=${currentPage}&limit=15&filter=${encodedFilter}${
-      encodedSort ? `&sort=${encodedSort}` : ``
-    }&need_count=true`;
+    const url = `${baseUrl}/property/filter/?page=${currentPage}&limit=15&filter=${encodedFilter}${encodedSort ? `&sort=${encodedSort}` : ``
+      }&need_count=true`;
 
     propertyInfo = await fetch(url)
       .then((res) => res.json())

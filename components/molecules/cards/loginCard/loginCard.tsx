@@ -11,7 +11,7 @@ import EyeIcon from '../../../atoms/icons/eyeIcon';
 import TurnedOffEyeIcon from '../../../atoms/icons/turnedOffEyeIcon';
 import ForgotPasswordModal from '../../../atoms/modals/forgotPasswordModal';
 import VerifyEmailModal from '../../../atoms/modals/verifyEmailModal';
-import { SocialAuthButton } from '../../buttons/socialAuthButtons';
+import SocialAuthButton from '../../buttons/socialAuthButtons';
 
 const LoginCard: React.FC = () => {
 
