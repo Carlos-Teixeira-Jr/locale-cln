@@ -48,6 +48,7 @@ const Search: NextPageWithLayout<ISearch> = ({
   const [currentPage, setCurrentPage] = useState(1);
   const isCodeSearch = query.code ? true : false;
   const { latitude, longitude, location: geolocation } = useTrackLocation();
+  
   const defaultPropertyPhoto = "/images/property-not-found.png";
 
   // mobile
@@ -99,7 +100,12 @@ const Search: NextPageWithLayout<ISearch> = ({
 
   // Insere as coordenadas geográficas do usuário na url para buscar os imóveis mais próximos
   useEffect(() => {
-    updateGeolocationQueryParam(geolocation, router, latitude, longitude);
+    const isFirstRender = true;
+    if (isFirstRender) {
+      setTimeout(() => {
+        updateGeolocationQueryParam(geolocation, router, latitude, longitude);
+      }, 2000);
+    }
   }, [geolocation]);
 
   //// FILTER ON MOBILE ////

@@ -22,6 +22,9 @@ const useTrackLocation = () => {
   useEffect(() => {
     if(!navigator.geolocation){
       setLocationErrorMessage("Seu navegador não suporta a geolocalização")
+      setLatitude('');
+      setLongitude('');
+      setLocation(null);
     }else{
       navigator.geolocation.getCurrentPosition(success, error);
     }

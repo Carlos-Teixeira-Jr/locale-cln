@@ -7,9 +7,9 @@ const updateLocationQueryParam = (location: string | any[], query: any, router: 
       ...query,
       location: JSON.stringify(location),
     };
-    router.push({ query: queryParams }, undefined, { scroll: false });
+    return router.push({ query: queryParams }, undefined, { scroll: false });
   } else {
-    removeQueryParamUtil('location', router, query);
+    return removeQueryParamUtil('location', router, query);
   }
 };
 
