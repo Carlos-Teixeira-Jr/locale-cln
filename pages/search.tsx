@@ -114,19 +114,16 @@ const Search: NextPageWithLayout<ISearch> = ({
     bodyContainer: 'lg:flex justify-center lg:max-w-[1232px]',
     body: 'flex flex-col lg:flex-row md:mt-0',
     content: 'flex flex-row items-center justify-between gap-7 ml-0 xl:ml-20',
-    filterList: 'mx-auto md:w-fit lg:w-[25%] hidden lg:flex',
-    searchShortcut: `justify-center ${
-      mobileFilterIsOpen ? 'hidden' : ''
-    } flex w-screen px-2 md:w-full itens-center md:px-0`,
+    filterList: `mx-auto md:w-fit lg:w-[25%] lg:flex ${mobileFilterIsOpen ? '' : 'hidden'}`,
+    searchShortcut: `justify-center ${mobileFilterIsOpen ? 'hidden' : ''
+      } flex w-screen px-2 md:w-full itens-center md:px-0`,
     propertiesGridListOrderBy:
       'flex flex-row items-center justify-around mt-2 md:my-3 mr-0',
     listGridContainer: 'flex flex-row items-center gap-1 mr-[-30px] w-fit',
-    list: `w-[47px] h-[44px] border border-[#6B7280] rounded-[10px] ${
-      list && 'border-[#F5BF5D] shadow-inner'
-    }`,
-    grid: `w-[47px] h-[44px] border border-[#6B7280] rounded-[10px] ${
-      grid && 'border-[#F5BF5D] shadow-inner'
-    }`,
+    list: `w-[47px] h-[44px] border border-[#6B7280] rounded-[10px] ${list && 'border-[#F5BF5D] shadow-inner'
+      }`,
+    grid: `w-[47px] h-[44px] border border-[#6B7280] rounded-[10px] ${grid && 'border-[#F5BF5D] shadow-inner'
+      }`,
     propertyNotFound: 'flex flex-col mx-auto justify-center my-5',
     orderBy:
       'flex flex-row items-center justify-around cursor-pointer md:my-auto bg-tertiary sm:max-w-[188px] md:w-[180px] h-[44px] font-bold text-sm md:text-md text-quaternary leading-5 shadow-lg p-[10px] border border-quaternary rounded-[30px] mt-7 md:mr-4 ml-2',
@@ -263,6 +260,7 @@ const Search: NextPageWithLayout<ISearch> = ({
                         images,
                         metadata,
                         highlighted,
+                        owner
                       }: IData) => (
                         <div className="md:w-60 lg:w-64" key={_id}>
                           <PropertyCard
@@ -283,9 +281,8 @@ const Search: NextPageWithLayout<ISearch> = ({
                 </div>
               ) : (
                 <div
-                  className={`lg:float-right${
-                    mobileFilterIsOpen ? 'hidden' : ''
-                  }`}
+                  className={`lg:float-right${mobileFilterIsOpen ? 'hidden' : ''
+                    }`}
                 >
                   {propertyInfo?.docs?.map(
                     (
@@ -420,9 +417,8 @@ export async function getServerSideProps(context: NextPageContext) {
       );
     }
   } else {
-    const url = `${baseUrl}/property/filter/?page=${currentPage}&limit=15&filter=${encodedFilter}${
-      encodedSort ? `&sort=${encodedSort}` : ``
-    }&need_count=true`;
+    const url = `${baseUrl}/property/filter/?page=${currentPage}&limit=15&filter=${encodedFilter}${encodedSort ? `&sort=${encodedSort}` : ``
+      }&need_count=true`;
 
     propertyInfo = await fetch(url)
       .then((res) => res.json())

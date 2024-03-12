@@ -40,11 +40,11 @@ const PropertyCard: React.FC<IPropertyCard> = ({
 }) => {
   const { data: session } = useSession() as any;
   const userId = session?.user.data.id || session?.user?.data._id;
-
   const [currentIndex, setCurrentIndex] = useState(0);
-
   const [expanded, setExpanded] = useState(false);
   const [isExpandable, setIsExpandable] = useState(false);
+  const price = prices[0].value;
+  const formattedPrice = monetaryFormat(price.toString());
 
   const descriptionRef = useRef<HTMLParagraphElement>(null);
 
@@ -96,9 +96,6 @@ const PropertyCard: React.FC<IPropertyCard> = ({
 
   memoizedCardInfos.bathrooms;
 
-  const price = prices[0].value;
-  const formattedPrice = monetaryFormat(price.toString());
-
   const handleFavouriteIcon = async () => {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
     try {
@@ -131,9 +128,8 @@ const PropertyCard: React.FC<IPropertyCard> = ({
 
   return (
     <div
-      className={`flex flex-col lg:max-w-[270px] md:max-w-[250px] bg-tertiary shadow-lg rounded-[30px] mt-2 cursor-pointer ${
-        expanded ? `min-h-[470px] max-h-fit` : 'max-h-[470px]'
-      }`}
+      className={`flex flex-col lg:max-w-[270px] md:max-w-[250px] bg-tertiary shadow-lg rounded-[30px] mt-2 cursor-pointer ${expanded ? `min-h-[470px] max-h-fit` : 'max-h-[470px]'
+        }`}
     >
       <Link href={`/property/${id}`}>
         <div className="group relative h-[200px]">
@@ -184,11 +180,10 @@ const PropertyCard: React.FC<IPropertyCard> = ({
               <div
                 key={imagesIndex}
                 onClick={() => goToImage(imagesIndex)}
-                className={`${
-                  imagesIndex === currentIndex
-                    ? 'text-tertiary'
-                    : 'text-[#D9D9D9]/70'
-                } cursor-pointer `}
+                className={`${imagesIndex === currentIndex
+                  ? 'text-tertiary'
+                  : 'text-[#D9D9D9]/70'
+                  } cursor-pointer `}
               >
                 <DotIcon />
               </div>
@@ -196,9 +191,8 @@ const PropertyCard: React.FC<IPropertyCard> = ({
           </div>
         </div>
         <div
-          className={`flex flex-col px-4 mt-2 justify-between ${
-            expanded ? 'h-fit' : 'h-36'
-          }`}
+          className={`flex flex-col px-4 mt-2 justify-between ${expanded ? 'h-fit' : 'h-36'
+            }`}
         >
           {favorited ? (
             <div className="flex flex-row items-center">
