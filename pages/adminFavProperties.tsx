@@ -28,6 +28,7 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
   ownerProperties,
   notifications,
 }) => {
+  console.log("🚀 ~ favouriteProperties:", favouriteProperties)
   const [isOwner, setIsOwner] = useState<boolean>(false);
   const [properties, _setProperties] = useState<IPropertyInfo>(ownerProperties);
   const [currentPage, setCurrentPage] = useState(1);
@@ -282,7 +283,7 @@ const classes = {
   favPropertiesContainer:
     'flex flex-col items-center justify-center mb-5 max-w-[1215px]',
   notFound:
-    'flex flex-col items-center align-middle mt-36 justify-center mr-0 lg:mr-40',
+    'flex flex-col items-center text-center align-middle lg:mt-36 justify-center mr-0 lg:mr-40',
   favProperties:
     'grid sm:grid-cols-1 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 my-5 gap-10 lg:justify-start',
 };
