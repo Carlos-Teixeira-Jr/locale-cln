@@ -28,7 +28,6 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
   ownerProperties,
   notifications,
 }) => {
-  console.log("🚀 ~ favouriteProperties:", favouriteProperties)
   const [isOwner, setIsOwner] = useState<boolean>(false);
   const [properties, _setProperties] = useState<IPropertyInfo>(ownerProperties);
   const [currentPage, setCurrentPage] = useState(1);
@@ -278,12 +277,12 @@ const classes = {
   content: 'flex flex-col mt-16 xl:ml-80 max-w-[1232px] justify-center md:mx-5',
   sideMenu: 'fixed left-0 top-7 sm:hidden hidden md:hidden lg:flex',
   title:
-    'font-extrabold text-lg md:text-2xl text-quaternary md:mb-5 text-center md:mr-16',
+    'font-extrabold text-lg md:text-2xl text-quaternary md:mb-5 text-center md:mx-auto',
   h1: 'text-2xl text-quaternary mt-2',
   favPropertiesContainer:
     'flex flex-col items-center justify-center mb-5 max-w-[1215px]',
   notFound:
-    'flex flex-col items-center text-center align-middle lg:mt-36 justify-center mr-0 lg:mr-40',
+    'flex flex-col items-center text-center align-middle lg:mt-36 justify-center mr-0 lg:mx-auto',
   favProperties:
     'grid sm:grid-cols-1 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 my-5 gap-10 lg:justify-start',
 };

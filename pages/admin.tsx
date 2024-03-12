@@ -30,8 +30,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
   const [currentPage, setCurrentPage] = useState(1);
   const router = useRouter();
   const query = router.query as any;
-  const [width, height] = useDeviceSize();
-  console.log("🚀 ~ width:", width)
+  const [width] = useDeviceSize();
 
   useEffect(() => {
     setIsOwner(ownerProperties?.docs?.length > 0 ? true : false);
@@ -63,7 +62,6 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
     sideMenu: `${width < 1080 ? 'hidden' : 'fixed left-0 top-7 lg:flex xl:flex md:hidden'
       } `,
   };
-  console.log("🚀 ~ width < 1080:", width < 1080)
 
   return (
     <div>
@@ -276,7 +274,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           .catch(() => []),
         fetchJson(`${baseUrl}/property/owner-properties`),
       ]);
-      console.log("🚀 ~ getServerSideProps ~ ownerProperties:", ownerProperties)
 
       return {
         props: {
