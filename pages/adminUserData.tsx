@@ -23,7 +23,7 @@ import {
   ErrorToastNames,
   SuccessToastNames,
   showErrorToast,
-  showSuccessToast,
+  showSuccessToast
 } from '../common/utils/toasts';
 import ArrowDownIcon from '../components/atoms/icons/arrowDownIcon';
 import Loading from '../components/atoms/loading';
@@ -318,7 +318,6 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
         body = {
           user: userFormData,
           owner: ownerFormData,
-          password: editPasswordFormData,
         };
       }
 
@@ -386,14 +385,17 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
 
           router.push('/admin?page=1');
         } else {
+          setLoading(false);
           toast.dismiss();
           showErrorToast(ErrorToastNames.UserDataUpdate);
         }
       } catch (error) {
+        setLoading(false);
         toast.dismiss();
         showErrorToast(ErrorToastNames.ServerConnection);
       }
     } else {
+      setLoading(false);
       showErrorToast(ErrorToastNames.EmptyFields);
     }
   };
