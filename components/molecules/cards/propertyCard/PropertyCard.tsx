@@ -40,11 +40,11 @@ const PropertyCard: React.FC<IPropertyCard> = ({
 }) => {
   const { data: session } = useSession() as any;
   const userId = session?.user.data.id || session?.user?.data._id;
-
   const [currentIndex, setCurrentIndex] = useState(0);
-
   const [expanded, setExpanded] = useState(false);
   const [isExpandable, setIsExpandable] = useState(false);
+  const price = prices[0].value;
+  const formattedPrice = monetaryFormat(price.toString());
 
   const descriptionRef = useRef<HTMLParagraphElement>(null);
 
@@ -95,9 +95,6 @@ const PropertyCard: React.FC<IPropertyCard> = ({
   }, [id, prices, description, bedrooms, bathrooms, parking_spaces, location]);
 
   memoizedCardInfos.bathrooms;
-
-  const price = prices[0].value;
-  const formattedPrice = monetaryFormat(price.toString());
 
   const handleFavouriteIcon = async () => {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
@@ -184,8 +181,8 @@ const PropertyCard: React.FC<IPropertyCard> = ({
                 key={imagesIndex}
                 onClick={() => goToImage(imagesIndex)}
                 className={`${imagesIndex === currentIndex
-                    ? 'text-tertiary'
-                    : 'text-[#D9D9D9]/70'
+                  ? 'text-tertiary'
+                  : 'text-[#D9D9D9]/70'
                   } cursor-pointer `}
               >
                 <DotIcon />

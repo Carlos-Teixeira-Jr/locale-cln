@@ -56,9 +56,7 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
 }: IPropertyPage) => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const [mapIsActive, setMapIsActive] = useState(false);
-
   const dynamicRoute = useRouter().asPath;
 
   useEffect(() => {
@@ -150,13 +148,13 @@ export async function getStaticPaths() {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
   const propertiesResponse = await fetch(`${baseUrl}/property/filter/?page=1&limit=100`);
   const properties = await propertiesResponse.json();
-  const paths = properties.docs.map((property: any) => ({
+  const paths = properties.docs.map((property: IData) => ({
     params: { id: property._id },
   }));
 
   return {
     paths,
-    fallback: 'blocking', // or 'blocking', 'rewrites', or 'false'
+    fallback: 'blocking',
   };
 }
 
@@ -165,6 +163,7 @@ export async function getStaticProps({ params }: any) {
   let property;
   let isFavourite: boolean = false;
   let ownerData;
+  let ownerId;
 
   try {
     const propertyResponse = await fetch(
@@ -173,6 +172,7 @@ export async function getStaticProps({ params }: any) {
 
     if (propertyResponse.ok) {
       property = await propertyResponse.json();
+      ownerId = property.owner;
     } else {
       return {
         redirect: {
@@ -191,25 +191,19 @@ export async function getStaticProps({ params }: any) {
     };
   }
 
-  console.log("🚀 ~ getStaticProps ~ property?.ownerInfo:", property)
-
-
   if (property?.ownerInfo) {
     try {
-      const fetchUser = await fetch(`${baseUrl}/user/find-by-email`, {
-        method: 'POST',
+      const fetchUser = await fetch(`${baseUrl}/user/find-user-by-owner/${ownerId}`, {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          email: property.ownerInfo.email
-        }),
       });
 
-      console.log("🚀 ~ getStaticProps ~ fetchUser.ok:", fetchUser.ok)
-
       if (fetchUser.ok) {
-        const userData = await fetchUser.json();
+        ownerData = await fetchUser.json();
+
+        const userId = ownerData.user._id
 
         try {
           const fetchFavourites = await fetch(`${baseUrl}/user/favourite`, {
@@ -218,7 +212,7 @@ export async function getStaticProps({ params }: any) {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              id: userData._id,
+              id: userId,
               page: 1,
             }),
           });
@@ -228,7 +222,7 @@ export async function getStaticProps({ params }: any) {
 
             if (favourites.docs.length > 0) {
               isFavourite = favourites.docs.some(
-                (prop: any) => prop._id === params.id
+                (prop: IData) => prop._id === params.id
               );
             } else {
               isFavourite = false;
@@ -238,26 +232,6 @@ export async function getStaticProps({ params }: any) {
           }
         } catch (error) {
           console.log(error);
-        }
-
-        try {
-          const fetchOwner = await fetch(`${baseUrl}/find-owner-by-user`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              userId: userData._id,
-            }),
-          });
-
-          if (fetchOwner.ok) {
-            ownerData = await fetchOwner.json();
-          } else {
-            console.error('Não foi possível buscar o proprietário.');
-          }
-        } catch (error) {
-          console.error('Não foi possível buscar o proprietário');
         }
       } else {
         console.error('Não foi possível achar o usuário.');
@@ -279,101 +253,9 @@ export async function getStaticProps({ params }: any) {
       relatedProperties,
       ownerData,
     },
+    revalidate: 60
   };
 }
-
-// export async function getServerSideProps(context: NextPageContext) {
-
-//   const session = (await getSession(context)) as any;
-//   const userId =
-//     session?.user?.data?._id
-//       ? session?.user?.data?._id
-//       : session?.user.id;
-//   const propertyId = context.query.id;
-//   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
-//   let isFavourite: boolean = false;
-//   let property;
-
-//   if (userId) {
-//     try {
-//       const fetchFavourites = await fetch(`${baseUrl}/user/favourite`, {
-//         method: 'POST',
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify({
-//           id: userId,
-//           page: 1,
-//         }),
-//       });
-
-//       if (fetchFavourites.ok) {
-//         const favourites = await fetchFavourites.json();
-
-//         if (favourites.docs.length > 0) {
-//           isFavourite = favourites.docs.some(
-//             (prop: any) => prop._id === propertyId
-//           );
-//         } else {
-//           isFavourite = false;
-//         }
-//       } else {
-//         isFavourite = false;
-//       }
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   } else {
-//     isFavourite = false;
-//   }
-
-//   try {
-//     const propertyResponse = await fetch(
-//       `${baseUrl}/property/${propertyId}?isEdit=false`
-//     );
-
-//     if (propertyResponse.ok) {
-//       property = await propertyResponse.json();
-//     } else {
-//       return {
-//         redirect: {
-//           destination: '/',
-//           permanent: false, // Se for true, indica um redirecionamento permanente (HTTP 301)
-//         },
-//       };
-//     }
-//   } catch (error) {
-//     console.log(error);
-//     return {
-//       redirect: {
-//         destination: '/',
-//         permanent: false, // Se for true, indica um redirecionamento permanente (HTTP 301)
-//       },
-//     };
-//   }
-
-//   const url = `${process.env.NEXT_PUBLIC_BASE_API_URL}/property/filter/?page=1&limit=4`;
-//   const relatedProperties = await fetch(url).then((res) => res.json());
-
-//   const ownerData = await fetch(`${baseUrl}/user/find-owner-by-user`, {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//     body: JSON.stringify({ userId }),
-//   })
-//     .then((res) => res.json())
-//     .catch(() => []);
-
-//   return {
-//     props: {
-//       property,
-//       isFavourite,
-//       relatedProperties,
-//       ownerData,
-//     },
-//   };
-// }
 
 const classes = {
   content: 'flex flex-col max-w-5xl items-center mx-auto lg:pt-10 pt-[90px]',
