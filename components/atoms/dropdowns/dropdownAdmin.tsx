@@ -6,6 +6,7 @@ interface IDropdownAdmin {
 }
 
 export default function DropdownAdmin({ isOwnerProp }: IDropdownAdmin) {
+  console.log("🚀 ~ DropdownAdmin ~ isOwnerProp:", isOwnerProp)
   const isOwner = isOwnerProp;
   const optionsClassname =
     'translate-x-[1px] w-[150px] h-fit hover:bg-quaternary hover:text-tertiary py-3 ';
@@ -37,7 +38,7 @@ export default function DropdownAdmin({ isOwnerProp }: IDropdownAdmin) {
       title: 'Mensagens',
       ref: '/adminMessages?page=1',
       className: optionsClassname,
-      ownerOption: true,
+      ownerOption: false,
     },
     {
       key: 'myNotifications',

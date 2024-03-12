@@ -43,7 +43,7 @@ const MessageNotifications = ({
 
   return (
     <main>
-      <AdminHeader />
+      <AdminHeader isOwnerProp={isOwner} />
       <div className={classes.body}>
         <div className={classes.sideMenu}>
           {!isMobile ? (
@@ -58,7 +58,7 @@ const MessageNotifications = ({
         <div className={classes.content}>
           <h1 className={classes.title}>Notificações</h1>
 
-          {!showPagination ? (
+          {showPagination ? (
             ''
           ) : (
             <div className=" md:mr-16">
@@ -104,7 +104,7 @@ const MessageNotifications = ({
             )}
         </div>
 
-        {!showPagination ? (
+        {showPagination ? (
           ''
         ) : (
           <div className=" md:mr-16">
