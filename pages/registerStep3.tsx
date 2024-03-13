@@ -267,6 +267,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
 
     if (!hasErrors && termsAreRead) {
       try {
+
         const result = await geocodeAddress(addressData);
 
         if (result !== null) {
@@ -345,6 +346,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
         },
         highlighted: false,
       };
+
 
       try {
         toast.loading('Enviando...');
@@ -589,7 +591,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
               <button
                 className={classes.button}
                 onClick={handleSubmit}
-              //disabled={loading}
+                disabled={loading}
               >
                 <span className={`${loading ? 'ml-5' : ''}`}>Continuar</span>
                 {loading && <Loading />}
