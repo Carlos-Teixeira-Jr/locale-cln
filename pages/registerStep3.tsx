@@ -492,9 +492,9 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     containerButton:
       'flex flex-col md:flex-row lg:flex-row xl:flex-row gap-4 md:gap-0 lg:gap-0 xl:gap-0 items-center justify-between my-4 max-w-[1215px]',
     button:
-      `cursor-pointer flex items-center flex-row justify-around w-44 h-14 text-tertiary rounded font-bold text-lg md:text-xl ${loading ?
-        'bg-gray-500' :
-        'bg-primary transition-colors duration-300 hover:bg-red-600 hover:text-white'
+      `flex items-center flex-row justify-around w-44 h-14 text-tertiary rounded font-bold text-lg md:text-xl ${loading ?
+        'bg-red-300 transition-colors duration-300' :
+        'bg-primary transition-colors duration-300 hover:bg-red-600 hover:text-white cursor-pointer'
       }`,
   };
 

@@ -276,7 +276,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           .catch(() => []),
         fetchJson(`${baseUrl}/property/owner-properties`),
       ]);
-      console.log("🚀 ~ getServerSideProps ~ ownerProperties:", ownerProperties)
 
       return {
         props: {
