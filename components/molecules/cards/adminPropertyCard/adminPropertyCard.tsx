@@ -79,9 +79,15 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
         showSuccessToast(SuccessToastNames.HighlightProperty);
         window.location.reload();
       } else {
-        showErrorToast(ErrorToastNames.ActivateProperty);
+        toast.dismiss();
+        if (response.status === 400) {
+          showErrorToast(ErrorToastNames.EmptyCredits);
+        } else {
+          showErrorToast(ErrorToastNames.HighlightProperty);
+        }
       }
     } catch (error) {
+      toast.dismiss();
       showErrorToast(ErrorToastNames.ServerConnection);
     }
   };
@@ -113,7 +119,7 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
     {
       key: 'highlight',
       title: 'Destacar',
-      link: '',
+      link: '/admin?page=1',
       className:
         'flex flex-row items-center justify-center bg-primary w-full h-12 px-10 rounded-md font-bold text-secondary text-xl shadow-sm mb-6 md:mb-0 md:mr-6 transition-colors duration-300 hover:bg-red-500 hover:text-yellow-300',
       onClick: handleHighlight,
@@ -122,97 +128,97 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
 
   return (
     <div className="flex flex-col items-center mb-10 justify-between">
-      <Link href={`/property/${_id}?isEdit=true`}>
-        <div
-          className={`flex flex-col md:flex-row bg-tertiary h-fit md:h-64 w-[777px] shadow-lg ${isActive ? '' : 'opacity-100'
-            }`}
-        >
-          <Image
-            src={image}
-            alt={'Admin property image'}
-            className={`md:max-w-xs md:min-w-[250px] w-full ${!isActive ? 'opacity-30' : ''
-              } overflow-x-visible`}
-            width={250}
-            height={265}
-          />
-          {highlighted && (
-            <div
-              className={`absolute mt-2 opacity-70 hover:opacity-100 hover:scale-110 transition-opacity duration-200 ease-in-out ml-2 ${!isActive ? 'opacity-30' : ''
-                }`}
-            >
-              <StarIcon
-                width="35"
-                height="35"
-                className={!isActive ? 'opacity-30' : ''}
-              />
-            </div>
-          )}
+      {/* <Link href={`/property/${_id}?isEdit=true`}> */}
+      <div
+        className={`flex flex-col md:flex-row bg-tertiary h-fit md:h-64 w-[777px] shadow-lg ${isActive ? '' : 'opacity-100'
+          }`}
+      >
+        <Image
+          src={image}
+          alt={'Admin property image'}
+          className={`md:max-w-xs md:min-w-[250px] w-full ${!isActive ? 'opacity-30' : ''
+            } overflow-x-visible`}
+          width={250}
+          height={265}
+        />
+        {highlighted && (
           <div
-            className={`flex md:flex-col justify-between gap-5 md:justify-start mt-6 px-5 w-full ${!isActive ? 'opacity-30' : ''
+            className={`absolute mt-2 opacity-70 hover:opacity-100 hover:scale-110 transition-opacity duration-200 ease-in-out ml-2 ${!isActive ? 'opacity-30' : ''
               }`}
-            style={{ overflow: 'hidden' }}
           >
-            <h1
-              className="font-bold text-3xl text-black"
-              style={{
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              {' '}
-              {formattedPrice}
-            </h1>
-            <div className="flex flex-row space-x-2 items-center text-quaternary font-bold text-lg">
-              <ViewIcon />
-              <span>{views}</span>
-              <h2>{views === 1 ? 'visualização' : 'visualizações'}</h2>
-            </div>
-            <div className="flex flex-row space-x-2 items-center text-quaternary font-bold text-lg">
-              <MessageIcon />
-              <span>{messages.length}</span>
-              <h2>{messages.length === 1 ? 'mensagem' : 'mensagens'}</h2>
-            </div>
-            <h3 className="w-fit text-quaternary font-bold text-sm my-auto">
-              {location}
-            </h3>
+            <StarIcon
+              width="35"
+              height="35"
+              className={!isActive ? 'opacity-30' : ''}
+            />
           </div>
-
-          <div className="flex flex-col gap-1 justify-center px-2 mt-4 md:mt-0 pr-2 w-full md:w-fit">
-            {buttons.map((btn: btnTypes) =>
-              btn.key !== 'highlight' ? (
-                <Link
-                  key={btn.key}
-                  href={btn.key !== 'deactivate' ? btn.link + `${_id}` : '#'}
-                >
-                  <button
-                    key={btn.key}
-                    className={`${btn.key !== 'deactivate' && !isActive
-                      ? `${btn.className} opacity-30`
-                      : `${btn.className}`
-                      }`}
-                    onClick={btn.onClick}
-                  >
-                    {btn.key === 'deactivate' && !isActive
-                      ? 'Ativar'
-                      : btn.title}
-                  </button>
-                </Link>
-              ) : (
-                <Link key={btn.key} href={btn.link}>
-                  <button
-                    key={btn.key}
-                    className={!highlighted ? btn.className : 'hidden'}
-                    onClick={btn.onClick}
-                  >
-                    {btn.title}
-                  </button>
-                </Link>
-              )
-            )}
+        )}
+        <div
+          className={`flex md:flex-col justify-between gap-5 md:justify-start mt-6 px-5 w-full ${!isActive ? 'opacity-30' : ''
+            }`}
+          style={{ overflow: 'hidden' }}
+        >
+          <h1
+            className="font-bold text-3xl text-black"
+            style={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {' '}
+            {formattedPrice}
+          </h1>
+          <div className="flex flex-row space-x-2 items-center text-quaternary font-bold text-lg">
+            <ViewIcon />
+            <span>{views}</span>
+            <h2>{views === 1 ? 'visualização' : 'visualizações'}</h2>
           </div>
+          <div className="flex flex-row space-x-2 items-center text-quaternary font-bold text-lg">
+            <MessageIcon />
+            <span>{messages.length}</span>
+            <h2>{messages.length === 1 ? 'mensagem' : 'mensagens'}</h2>
+          </div>
+          <h3 className="w-fit text-quaternary font-bold text-sm my-auto">
+            {location}
+          </h3>
         </div>
-      </Link>
+
+        <div className="flex flex-col gap-1 justify-center px-2 mt-4 md:mt-0 pr-2 w-full md:w-fit">
+          {buttons.map((btn: btnTypes) =>
+            btn.key !== 'highlight' ? (
+              <Link
+                key={btn.key}
+                href={btn.key !== 'deactivate' ? btn.link + `${_id}` : '#'}
+              >
+                <button
+                  key={btn.key}
+                  className={`${btn.key !== 'deactivate' && !isActive
+                    ? `${btn.className} opacity-30`
+                    : `${btn.className}`
+                    }`}
+                  onClick={btn.onClick}
+                >
+                  {btn.key === 'deactivate' && !isActive
+                    ? 'Ativar'
+                    : btn.title}
+                </button>
+              </Link>
+            ) : (
+              <Link key={btn.key} href={btn.link}>
+                <button
+                  key={btn.key}
+                  className={!highlighted ? btn.className : 'hidden'}
+                  onClick={btn.onClick}
+                >
+                  {btn.title}
+                </button>
+              </Link>
+            )
+          )}
+        </div>
+      </div>
+      {/* </Link> */}
 
       <ConfirmActivationModal
         isOpen={modalIsOpen}

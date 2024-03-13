@@ -485,6 +485,19 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     }
   };
 
+  const classes = {
+    body: 'max-w-[1215px] mx-auto',
+    stepLabel: 'md:mt-26 mt-28 sm:mt-32 md:mb-8 lg:mb-2 mx-auto',
+    userData: 'flex justify-center flex-col',
+    containerButton:
+      'flex flex-col md:flex-row lg:flex-row xl:flex-row gap-4 md:gap-0 lg:gap-0 xl:gap-0 items-center justify-between my-4 max-w-[1215px]',
+    button:
+      `cursor-pointer flex items-center flex-row justify-around w-44 h-14 text-tertiary rounded font-bold text-lg md:text-xl ${loading ?
+        'bg-gray-500' :
+        'bg-primary transition-colors duration-300 hover:bg-red-600 hover:text-white'
+      }`,
+  };
+
   return (
     <>
       <div className={classes.body}>
@@ -589,7 +602,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
               <button
                 className={classes.button}
                 onClick={handleSubmit}
-              //disabled={loading}
+                disabled={loading}
               >
                 <span className={`${loading ? 'ml-5' : ''}`}>Continuar</span>
                 {loading && <Loading />}
@@ -649,13 +662,3 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     },
   };
 }
-
-const classes = {
-  body: 'max-w-[1215px] mx-auto',
-  stepLabel: 'md:mt-26 mt-28 sm:mt-32 md:mb-8 lg:mb-2 mx-auto',
-  userData: 'flex justify-center flex-col',
-  containerButton:
-    'flex flex-col md:flex-row lg:flex-row xl:flex-row gap-4 md:gap-0 lg:gap-0 xl:gap-0 items-center justify-between my-4 max-w-[1215px]',
-  button:
-    'active:bg-gray-500 cursor-pointer flex items-center flex-row justify-around bg-primary w-44 h-14 text-tertiary rounded transition-colors duration-300 font-bold text-lg md:text-xl hover:bg-red-600 hover:text-white',
-};
