@@ -6,9 +6,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import { IMessage } from '../common/interfaces/message/messages';
 import { IOwnerProperties } from '../common/interfaces/properties/propertiesList';
 import { IData } from '../common/interfaces/property/propertyData';
+import { fetchJson } from '../common/utils/fetchJson';
 import Pagination from '../components/atoms/pagination/pagination';
 import { AdminPropertyCard } from '../components/molecules';
-import { SideMenu } from '../components/organisms';
+import { AdminHeader, SideMenu } from '../components/organisms';
 import useDeviceSize from '../hooks/deviceSize';
 import { NextPageWithLayout } from './page';
 
@@ -62,7 +63,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
 
   return (
     <div>
-      {/* <AdminHeader isOwnerProp={isOwner} /> */}
+      <AdminHeader isOwnerProp={isOwner} />
       <div className="flex flex-row items-center justify-evenly w-fit max-w-full">
         <div className={classes.sideMenu}>
           <SideMenu isOwnerProp={isOwner} notifications={notifications} />
@@ -118,182 +119,8 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
 
 export default AdminPage;
 
-// export async function getServerSideProps(context: GetServerSidePropsContext) {
-//   const session = (await getSession(context)) as any;
-//   const userId =
-//     session?.user.data._id !== undefined
-//       ? session?.user.data._id
-//       : session?.user.id;
-//   let token;
-//   let refreshToken;
-//   const { query } = context;
-//   const page = query.page;
-//   let ownerProperties;
-
-//   if (!session) {
-//     return {
-//       redirect: {
-//         destination: '/login',
-//         permanent: false,
-//       },
-//     };
-//   } else {
-//     token = session?.user?.data.access_token!!;
-//     refreshToken = session?.user?.data.refresh_token;
-//     const decodedToken = jwt.decode(token) as JwtPayload;
-//     const isTokenExpired = decodedToken?.exp
-//       ? decodedToken?.exp <= Math.floor(Date.now() / 1000)
-//       : false;
-
-//     if (isTokenExpired) {
-//       const decodedRefreshToken = jwt.decode(refreshToken) as JwtPayload;
-//       const isRefreshTokenExpired = decodedRefreshToken?.exp
-//         ? decodedRefreshToken?.exp <= Math.floor(Date.now() / 1000)
-//         : false;
-
-//       if (isRefreshTokenExpired) {
-//         destroyCookie(context, 'next-auth.session-token');
-//         destroyCookie(context, 'next-auth.csrf-token');
-
-//         return {
-//           redirect: {
-//             destination: '/login',
-//             permanent: false,
-//           },
-//         };
-//       } else {
-//         try {
-//           const response = await fetch(
-//             `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/refresh`,
-//             {
-//               method: 'POST',
-//               headers: {
-//                 'Content-Type': 'application/json',
-//               },
-//               body: JSON.stringify({
-//                 refresh_token: refreshToken,
-//               }),
-//             }
-//           );
-
-//           if (response.ok) {
-//             const data = await response.json();
-//             const newToken = data.access_token;
-//             const newRefreshToken = data.refresh_token;
-//             refreshToken = newRefreshToken;
-//             token = newToken;
-//             session.user.data.refresh_token = newRefreshToken;
-//             token = newToken;
-//             session.user.data.access_token = newToken;
-//           } else {
-//             console.log('Não foi possível atualizar o token.');
-//           }
-//         } catch (error) {
-//           console.log(error);
-//         }
-//       }
-//     }
-
-//     const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
-//     let ownerId;
-
-//     try {
-//       const ownerIdResponse = await fetch(
-//         `${baseUrl}/user/find-owner-by-user`,
-//         {
-//           method: 'POST',
-//           headers: {
-//             'Content-Type': 'application/json',
-//           },
-//           body: JSON.stringify({ userId }),
-//         }
-//       );
-
-//       if (ownerIdResponse.ok) {
-//         const ownerData = await ownerIdResponse.json();
-//         if (ownerData?.owner?._id) {
-//           ownerId = ownerData?.owner?._id;
-//         } else {
-//           return {
-//             redirect: {
-//               destination: '/adminFavProperties?page=1',
-//               permanent: false,
-//             },
-//           };
-//         }
-//       } else {
-//         console.log('erro - find-owner-by-user:', ownerIdResponse);
-//       }
-//     } catch (error) {
-//       console.error(error);
-//     }
-
-//     const [ownerProperties] = await Promise.all([
-//       fetch(`${baseUrl}/property/owner-properties`, {
-//         method: 'POST',
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify({
-//           ownerId,
-//           page,
-//         }),
-//       })
-//         .then((res) => res.json())
-//         .catch(() => []),
-//       fetchJson(`${baseUrl}/property/owner-properties`),
-//     ]);
-
-//     const notifications = await fetch(
-//       `${process.env.NEXT_PUBLIC_BASE_API_URL}/notification/user/${userId}`,
-//       {
-//         method: 'GET',
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-//       }
-//     )
-//       .then((res) => res.json())
-//       .catch(() => []);
-
-
-//     if (ownerId) {
-//       const [ownerProperties] = await Promise.all([
-//         fetch(`${baseUrl}/property/owner-properties`, {
-//           method: 'POST',
-//           headers: {
-//             'Content-Type': 'application/json',
-//           },
-//           body: JSON.stringify({
-//             ownerId,
-//             page: Number(page),
-//           }),
-//         })
-//           .then((res) => res.json())
-//           .catch(() => []),
-//         fetchJson(`${baseUrl}/property/owner-properties`),
-//       ]);
-//       console.log("🚀 ~ getServerSideProps ~ ownerProperties:", ownerProperties)
-
-//       return {
-//         props: {
-//           ownerProperties,
-//           notifications,
-//         },
-//       };
-//     }
-
-//     return {
-//       props: {
-//         notifications,
-//       },
-//     };
-//   }
-// }
-
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = (await getSession(context)) as any;
-  console.log("🚀 ~ getServerSideProps ~ session:", session)
 
   if (!session) {
     return {
@@ -304,76 +131,74 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     };
   }
 
-  // const userId = session?.user.data._id || session?.user.id;
-  // const page = context.query.page;
-  // const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
-  // let ownerId;
+  const userId = session?.user.data._id || session?.user.id;
+  const page = Number(context.query.page);
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+  let ownerId;
 
-  // try {
-  //   const ownerIdResponse = await fetch(
-  //     `${baseUrl}/user/find-owner-by-user`,
-  //     {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify({ userId }),
-  //     }
-  //   );
+  try {
+    const ownerIdResponse = await fetch(
+      `${baseUrl}/user/find-owner-by-user`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId }),
+      }
+    );
 
-  //   if (ownerIdResponse.ok) {
-  //     const ownerData = await ownerIdResponse.json();
-  //     if (ownerData?.owner?._id) {
-  //       ownerId = ownerData?.owner?._id;
-  //     } else {
-  //       return {
-  //         redirect: {
-  //           destination: '/adminFavProperties?page=1',
-  //           permanent: false,
-  //         },
-  //       };
-  //     }
-  //   } else {
-  //     console.log('erro - find-owner-by-user:', ownerIdResponse);
-  //   }
-  // } catch (error) {
-  //   console.error(error);
-  // }
+    if (ownerIdResponse.ok) {
+      const ownerData = await ownerIdResponse.json();
+      if (ownerData?.owner?._id) {
+        ownerId = ownerData?.owner?._id;
+      } else {
+        return {
+          redirect: {
+            destination: '/adminFavProperties?page=1',
+            permanent: false,
+          },
+        };
+      }
+    } else {
+      console.log('erro - find-owner-by-user:', ownerIdResponse);
+    }
+  } catch (error) {
+    console.error(error);
+  }
 
-  // const [ownerProperties, notifications] = await Promise.all([
-  //   fetch(`${baseUrl}/property/owner-properties`, {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify({
-  //       ownerId,
-  //       page,
-  //     }),
-  //   })
-  //     .then((res) => res.json())
-  //     .catch(() => []),
-  //   fetch(
-  //     `${process.env.NEXT_PUBLIC_BASE_API_URL}/notification/user/${userId}`,
-  //     {
-  //       method: 'GET',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //     }
-  //   )
-  //     .then((res) => res.json())
-  //     .catch(() => []),
-  //   fetchJson(`${baseUrl}/property/owner-properties`),
-  //   fetchJson(`${process.env.NEXT_PUBLIC_BASE_API_URL}/notification/user/${userId}`)
-  // ]);
-
-  // Remova a lógica de verificação de tokens e demais chamadas da API daqui
+  const [ownerProperties, notifications] = await Promise.all([
+    fetch(`${baseUrl}/property/owner-properties`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        ownerId,
+        page,
+      }),
+    })
+      .then((res) => res.json())
+      .catch(() => []),
+    fetch(
+      `${baseUrl}/notification/${userId}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+      .then((res) => res.json())
+      .catch(() => []),
+    fetchJson(`${baseUrl}/property/owner-properties`),
+    fetchJson(`${process.env.NEXT_PUBLIC_BASE_API_URL}/notification/user/${userId}`)
+  ]);
 
   return {
     props: {
-      // ownerProperties,
-      // notifications,
+      ownerProperties,
+      notifications,
     },
   };
 }

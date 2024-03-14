@@ -20,9 +20,6 @@ const LoginPage: NextPageWithLayout = () => {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = (await getSession(context)) as any;
 
-  let token;
-  let refreshToken;
-
   if (!session) {
     return {
       props: {},

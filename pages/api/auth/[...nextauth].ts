@@ -1,4 +1,3 @@
-import jwt, { JwtPayload } from 'jsonwebtoken';
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import FacebookProvider from 'next-auth/providers/facebook';
@@ -54,7 +53,7 @@ export const authOptions = {
         if (response.ok) {
           const data = await response.json();
           const user = {
-            ...data,
+            data: data,
           };
 
           if (data) {
@@ -93,78 +92,23 @@ export const authOptions = {
 
         const data = await response.json();
 
-        user = {
-          ...user,
-          ...data
-        };
+        user.data = data;
         user.provider = provider;
 
-        return user;
+        return true;
       } else {
         if (!user) {
           return false;
         } else {
-          return user;
+          return true;
         }
       }
     },
-    // async jwt({ token, user }: any) {
-    //   user && (token.user = user);
-    //   return token;
-    // },
     async jwt({ token, user }: any) {
-      console.log("🚀 ~ jwt ~ user:", user)
-      console.log("🚀 ~ jwt ~ token:", token)
-
-      //Tentar colocar os dados no token
-
-      token.sub = user.access_token;
-      if (user) {
-        const decodedToken = jwt.decode(user.access_token) as JwtPayload;
-        const isTokenExpired = decodedToken?.exp
-          ? decodedToken?.exp <= Math.floor(Date.now() / 1000)
-          : false;
-
-        if (isTokenExpired) {
-          try {
-            // Faça a renovação do token aqui e atualize o token e o refreshToken no token JWT
-            const response = await fetch(
-              `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/refresh`,
-              {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                  refresh_token: token.user.data.refresh_token,
-                }),
-              }
-            );
-
-            if (response.ok) {
-              const data = await response.json();
-              const newToken = data.access_token;
-              const newRefreshToken = data.refresh_token;
-              user.data.refresh_token = newRefreshToken;
-              user.data.access_token = newToken;
-
-              console.log("🚀 ~ jwt ~ { ...token, user }:", { ...token, user })
-
-              return { ...token, user }; // Garanta que o objeto user seja passado junto com o token
-            } else {
-              console.log('Não foi possível atualizar o token.');
-            }
-          } catch (error) {
-            console.log(error);
-          }
-        }
-      }
-
+      user && (token.user = user);
       return token;
     },
     async session({ session, token }: any) {
-      // console.log("🚀 ~ session ~ token:", token)
-      // console.log("🚀 ~ session ~ session:", session)
       session.user = { ...session.user, ...token.user };
 
       return session;
