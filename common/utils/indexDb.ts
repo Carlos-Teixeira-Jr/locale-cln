@@ -102,7 +102,6 @@ export const removeImageFromDB = (id: string) => {
       const deleteRequest = objectStore.delete(id);
 
       deleteRequest.onsuccess = () => {
-        showSuccessToast(SuccessToastNames.RemoveImage)
         resolve();
       };
 
