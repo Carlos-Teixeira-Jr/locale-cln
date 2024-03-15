@@ -30,7 +30,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
   const [currentPage, setCurrentPage] = useState(1);
   const router = useRouter();
   const query = router.query as any;
-  const [width, height] = useDeviceSize();
+  const [width] = useDeviceSize();
 
   useEffect(() => {
     setIsOwner(ownerProperties?.docs?.length > 0 ? true : false);
@@ -59,19 +59,20 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
   }, [currentPage]);
 
   const classes = {
-    sideMenu: `${width < 1080 ? 'hidden' : 'flex'
-      } fixed left-0 top-7 md:hidden lg:flex xl:flex`,
+    sideMenu: `${width < 1080 ? 'hidden' : 'fixed left-0 top-7 lg:flex xl:flex md:hidden'
+      } `,
   };
 
   return (
     <div>
       <AdminHeader isOwnerProp={isOwner} />
-      <div className="flex flex-row items-center justify-evenly w-fit max-w-full">
+      <div className="flex flex-row items-center justify-evenly xl:w-fit w-full max-w-full">
         <div className={classes.sideMenu}>
           <SideMenu isOwnerProp={isOwner} notifications={notifications} />
         </div>
-        <div className="flex flex-col items-center mt-24 lg:ml-[26rem]">
-          <div className="flex flex-col items-center">
+        <div className={`flex flex-col items-center mt-24 ${width < 1080 ? 'justify-center' : 'lg:ml-[26rem]'}`}>
+
+          <div className="mb-10 md:px-5 lg:px-0">
             <h1 className="font-extrabold text-xl md:text-3xl text-quaternary md:mb-5 md:mr-20. text-center">
               Bem vindo
               {session?.username !== undefined ? session?.username : ''}!
@@ -83,9 +84,6 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
                 currentPage={currentPage}
               />
             )}
-          </div>
-
-          <div className="mb-10 md:px-5 lg:px-0">
             {isOwner &&
               ownerProperties?.docs?.map(
                 ({
@@ -276,7 +274,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           .catch(() => []),
         fetchJson(`${baseUrl}/property/owner-properties`),
       ]);
-      console.log("🚀 ~ getServerSideProps ~ ownerProperties:", ownerProperties)
 
       return {
         props: {

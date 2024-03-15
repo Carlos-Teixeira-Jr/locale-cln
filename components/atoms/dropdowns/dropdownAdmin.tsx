@@ -28,21 +28,21 @@ export default function DropdownAdmin({ isOwnerProp }: IDropdownAdmin) {
     {
       key: 'myFavourites',
       title: 'Favoritos',
-      ref: '/adminFavProperties',
+      ref: '/adminFavProperties?page=1',
       className: optionsClassname,
       ownerOption: false,
     },
     {
       key: 'myMessages',
       title: 'Mensagens',
-      ref: '/adminMessages',
+      ref: '/adminMessages?page=1',
       className: optionsClassname,
-      ownerOption: true,
+      ownerOption: false,
     },
     {
       key: 'myNotifications',
       title: 'Notificações',
-      ref: '/adminNotifications',
+      ref: '/adminNotifications?page=1',
       className: optionsClassname,
       ownerOption: false,
     },
@@ -67,38 +67,14 @@ export default function DropdownAdmin({ isOwnerProp }: IDropdownAdmin) {
       <div className="flex flex-col text-center font-medium text-md text-quaternary leading-5">
         {!isOwner
           ? option.map((option, index) => {
-              if (!option.ownerOption) {
-                return option.key !== 'logOut' ? (
-                  <Link
-                    key={option.key}
-                    href={option.ref}
-                    className={
-                      index === 0
-                        ? option.className + ' rounded-t-xl'
-                        : option.className
-                    }
-                  >
-                    {option.title}
-                  </Link>
-                ) : (
-                  <button
-                    key={option.key}
-                    className={option.className}
-                    onClick={() => signOut()}
-                  >
-                    Sair
-                  </button>
-                );
-              }
-            })
-          : option.map((option, index) => {
+            if (!option.ownerOption) {
               return option.key !== 'logOut' ? (
                 <Link
                   key={option.key}
                   href={option.ref}
                   className={
                     index === 0
-                      ? option.className + 'rounded-t-xl'
+                      ? option.className + ' rounded-t-xl'
                       : option.className
                   }
                 >
@@ -113,7 +89,31 @@ export default function DropdownAdmin({ isOwnerProp }: IDropdownAdmin) {
                   Sair
                 </button>
               );
-            })}
+            }
+          })
+          : option.map((option, index) => {
+            return option.key !== 'logOut' ? (
+              <Link
+                key={option.key}
+                href={option.ref}
+                className={
+                  index === 0
+                    ? option.className + 'rounded-t-xl'
+                    : option.className
+                }
+              >
+                {option.title}
+              </Link>
+            ) : (
+              <button
+                key={option.key}
+                className={option.className}
+                onClick={() => signOut()}
+              >
+                Sair
+              </button>
+            );
+          })}
       </div>
     </div>
   );
