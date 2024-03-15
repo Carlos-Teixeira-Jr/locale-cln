@@ -97,9 +97,8 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
     <>
       <Link href={href}>
         <div
-          className={` bg-tertiary md:grid md:grid-cols-3 rounded-[30px] overflow-hidden drop-shadow-lg my-7 md:mx-9 mx-2 flex flex-col ${
-            expanded ? 'lg:h-fit' : 'lg:h-[255px]'
-          }`}
+          className={` bg-tertiary md:grid md:grid-cols-3 rounded-[30px] overflow-hidden drop-shadow-lg my-7 md:mx-9 mx-2 flex flex-col ${expanded ? 'lg:h-fit' : 'lg:h-[255px]'
+            }`}
         >
           <div className="group relative md:h-[200px]">
             <div className="flex flex-row w-full overflow-hidden scroll-smooth rounded-tl-[30px] md:h-[265px] h-[250px]">
@@ -154,9 +153,8 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
 
           <div className="md:flex justify-between md:flex-col md:gap-4 md:col-span-2 md:ml-11 my-auto mx-[17px] md:mx-4">
             <div
-              className={`${
-                prices.length > 10 ? 'md:w-[270px]' : 'md:w-[240px]'
-              } text-2xl pt-2 md:w-[240px] h-[44px] top-[17px] left-[336px] font-bold text-[#000000]`}
+              className={`${prices?.length > 10 ? 'md:w-[270px]' : 'md:w-[240px]'
+                } text-3xl md:w-[240px] h-[44px] top-[17px] left-[336px] font-bold text-[#000000]`}
             >
               {formattedPrice}
             </div>

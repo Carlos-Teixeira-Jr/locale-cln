@@ -168,6 +168,26 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     setAddressData(property ? property.address : '');
   }, []);
 
+  // Busca as coordenadas geográficas do endereço do imóvel;
+  useEffect(() => {
+    if (addressData.city && addressData.streetName && addressData.zipCode) {
+      const getGeocoordinates = async () => {
+        try {
+          const result = await geocodeAddress(addressData);
+
+          if (result) {
+            setCoordinates(result);
+          } else {
+            console.error('Não foi possível buscar as coordenadas geográficas do imóvel.')
+          }
+        } catch (error) {
+          console.error('Não foi possível buscar as coordenadas geográficas do imóvel:', error)
+        }
+      }
+      getGeocoordinates();
+    }
+  }, [addressData]);
+
   useEffect(() => {
     const url = router.pathname;
     if (url === '/adminUserData') {
@@ -298,7 +318,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
         uf: addressData.uf,
         streetName: addressData.streetName,
         geolocation: coordinates
-          ? [coordinates?.lat, coordinates?.lng]
+          ? [coordinates?.lng, coordinates?.lat]
           : [-52.1872864, -32.1013804],
         plan: selectedPlan !== '' ? selectedPlan : freePlan,
         isPlanFree,
@@ -487,6 +507,19 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     }
   };
 
+  const classes = {
+    body: 'max-w-[1215px] mx-auto',
+    stepLabel: 'md:mt-26 mt-28 sm:mt-32 md:mb-8 lg:mb-2 mx-auto',
+    userData: 'flex justify-center flex-col',
+    containerButton:
+      'flex flex-col md:flex-row lg:flex-row xl:flex-row gap-4 md:gap-0 lg:gap-0 xl:gap-0 items-center justify-between my-4 max-w-[1215px]',
+    button:
+      `flex items-center flex-row justify-around w-44 h-14 text-tertiary rounded font-bold text-lg md:text-xl ${loading ?
+        'bg-red-300 transition-colors duration-300' :
+        'bg-primary transition-colors duration-300 hover:bg-red-600 hover:text-white cursor-pointer'
+      }`,
+  };
+
   return (
     <>
       <div className={classes.body}>
@@ -651,13 +684,3 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     },
   };
 }
-
-const classes = {
-  body: 'max-w-[1215px] mx-auto',
-  stepLabel: 'md:mt-26 mt-28 sm:mt-32 md:mb-8 lg:mb-2 mx-auto',
-  userData: 'flex justify-center flex-col',
-  containerButton:
-    'flex flex-col md:flex-row lg:flex-row xl:flex-row gap-4 md:gap-0 lg:gap-0 xl:gap-0 items-center justify-between my-4 max-w-[1215px]',
-  button:
-    'active:bg-gray-500 cursor-pointer flex items-center flex-row justify-around bg-primary w-44 h-14 text-tertiary rounded transition-colors duration-300 font-bold text-lg md:text-xl hover:bg-red-600 hover:text-white',
-};

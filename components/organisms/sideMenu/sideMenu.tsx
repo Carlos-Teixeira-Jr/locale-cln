@@ -147,56 +147,54 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications }) => {
 
   return (
     <>
-      {!isMobile && (
-        <div className="w-fit h-screen bg-tertiary px-2 mt-10 drop-shadow-xl left-0">
-          {options.map(({ key, id, icon, title, link }: Options) => {
-            if (
-              isOwner ||
-              id === 'favourites-button' ||
-              id === 'notifications-button' ||
-              id === 'my-data-button'
-            ) {
-              return (
-                <div
-                  key={key}
-                  onClick={() => {
-                    router.push({
-                      pathname: link,
-                      query: {
-                        page: 1,
-                      },
-                    });
-                  }}
+      <div className="w-fit h-screen bg-tertiary px-2 mt-10 drop-shadow-xl left-0">
+        {options.map(({ key, id, icon, title, link }: Options) => {
+          if (
+            isOwner ||
+            id === 'favourites-button' ||
+            id === 'notifications-button' ||
+            id === 'my-data-button'
+          ) {
+            return (
+              <div
+                key={key}
+                onClick={() => {
+                  router.push({
+                    pathname: link,
+                    query: {
+                      page: 1,
+                    },
+                  });
+                }}
+              >
+                <button
+                  className="flex mx-5 py-1.5"
+                  onClick={() => setActiveButton(id)}
                 >
-                  <button
-                    className="flex mx-5 py-1.5"
-                    onClick={() => setActiveButton(id)}
+                  {icon}
+                  <h2
+                    className={`text-md font-bold leading-7 my-auto transition-colors duration-300 ${activeButton === id
+                      ? 'text-secondary hover:text-yellow'
+                      : 'text-quaternary hover:text-gray-700'
+                      }`}
                   >
-                    {icon}
-                    <h2
-                      className={`text-md font-bold leading-7 my-auto transition-colors duration-300 ${activeButton === id
-                          ? 'text-secondary hover:text-yellow'
-                          : 'text-quaternary hover:text-gray-700'
-                        }`}
-                    >
-                      {title}
-                    </h2>
-                  </button>
-                </div>
-              );
-            }
-            return null;
-          })}
+                    {title}
+                  </h2>
+                </button>
+              </div>
+            );
+          }
+          return null;
+        })}
 
-          <div className="flex justify-center mt-10">
-            <Link href={'/register'}>
-              <button className="bg-primary rounded-[30px] text-tertiary text-lg font-bold leading-6 px-10 py-2.5 transition-colors duration-300 hover:bg-red-600 hover:text-white">
-                {isOwner ? 'Novo Anúncio' : 'Anunciar'}
-              </button>
-            </Link>
-          </div>
+        <div className="flex justify-center mt-10">
+          <Link href={'/register'}>
+            <button className="bg-primary rounded-[30px] text-tertiary text-lg font-bold leading-6 px-10 py-2.5 transition-colors duration-300 hover:bg-red-600 hover:text-white">
+              {isOwner ? 'Novo Anúncio' : 'Anunciar'}
+            </button>
+          </Link>
         </div>
-      )}
+      </div>
     </>
   );
 };

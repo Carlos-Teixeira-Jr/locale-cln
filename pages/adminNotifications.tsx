@@ -27,7 +27,7 @@ const MessageNotifications = ({
 
   const isMobile = useIsMobile();
   const [isOwner, setIsOwner] = useState<boolean>(false);
-  const [showPagination, setShowPagination] = useState<boolean>(true);
+  const [showPagination, setShowPagination] = useState<boolean>(notifications.length > 0 ? true : false);
   const [userNotifications, setUserNotifications] = useState<INotification[]>(notifications);
   const adminNots = notifications as [];
 
@@ -43,7 +43,7 @@ const MessageNotifications = ({
 
   return (
     <main>
-      <AdminHeader />
+      <AdminHeader isOwnerProp={isOwner} />
       <div className={classes.body}>
         <div className={classes.sideMenu}>
           {!isMobile ? (
@@ -58,7 +58,7 @@ const MessageNotifications = ({
         <div className={classes.content}>
           <h1 className={classes.title}>Notificações</h1>
 
-          {!showPagination ? (
+          {showPagination ? (
             ''
           ) : (
             <div className=" md:mr-16">
@@ -104,7 +104,7 @@ const MessageNotifications = ({
             )}
         </div>
 
-        {!showPagination ? (
+        {showPagination ? (
           ''
         ) : (
           <div className=" md:mr-16">
@@ -278,9 +278,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 const classes = {
   sideMenu: 'fixed sm:hidden hidden md:hidden lg:flex xl:flex left-0 top-7',
   body: 'flex flex-row items-center justify-center lg:ml-72 xl:ml-72',
-  content: 'flex flex-col items-center justify-center mb-5 max-w-[1215px]',
+  content: 'flex flex-col mt-16 xl:mx-auto max-w-[1232px] justify-center md:mx-auto',
   title:
-    'font-extrabold text-lg md:text-2xl text-quaternary md:mb-5 text-center md:mr-16',
+    'font-extrabold text-lg md:text-2xl text-quaternary md:mb-5 text-center md:mx-auto',
   notFound:
-    'flex flex-col items-center align-middle mt-36 justify-center mr-0 lg:mr-20',
+    'flex flex-col items-center align-middle lg:mt-36 justify-center mr-0 lg:mx-auto',
 };
