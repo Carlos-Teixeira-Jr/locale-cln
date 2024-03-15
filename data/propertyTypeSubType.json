@@ -19,26 +19,21 @@
   {
     "type": "Casa",
     "key": 3,
-    "subTypes": [
-      "Casa de condomínio",
-      "Casa de bairro",
-      "Sobrado"
-    ]
+    "subTypes": ["Casa de condomínio", "Casa de bairro", "Sobrado"]
+  },
+  {
+    "type": "Comercial",
+    "key": 4,
+    "subTypes": ["Prédio", "Sala"]
   },
   {
     "type": "Fazenda/Sítio/Chácara",
-    "key": 4,
-    "subTypes": [
-      "Terreno grande",
-      "Terreno pequeno"
-    ]
+    "key": 5,
+    "subTypes": ["Terreno grande", "Terreno pequeno"]
   },
   {
     "type": "Lote/Terreno",
-    "key": 5,
-    "subTypes": [
-      "Terreno grande",
-      "Terreno pequeno"
-    ]
+    "key": 6,
+    "subTypes": ["Terreno grande", "Terreno pequeno"]
   }
 ]
