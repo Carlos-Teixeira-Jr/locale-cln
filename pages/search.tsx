@@ -144,7 +144,7 @@ const Search: NextPageWithLayout<ISearch> = ({
     h2: 'text-quaternary text-sm md:text-base lg:text-lg leading-5 font-bold md:ml-4 text-justify px-5',
     h3: 'text-quaternary text-sm lg:text-md leading-5 font-bold text-justify ml-2',
     gridContainer:
-      'sm:grid sm:grid-cols-1 md:grid. md:grid-cols-2. md:flex flex-wrap justify-between gap-2 lg:gap-5 mx-2 lg:mx-10',
+      'sm:grid sm:grid-cols-1 md:flex flex-wrap justify-between gap-2 lg:gap-5 mx-2 lg:mx-10',
   };
 
   return (
@@ -260,9 +260,7 @@ const Search: NextPageWithLayout<ISearch> = ({
 
               {grid ? (
                 <div
-                  className={
-                    (classes.gridContainer, mobileFilterIsOpen ? 'hidden' : '')
-                  }
+                  className={`${classes.gridContainer} ${mobileFilterIsOpen ? 'hidden' : ''}`}
                 >
                   {propertyInfo.docs &&
                     propertyInfo?.docs.map(

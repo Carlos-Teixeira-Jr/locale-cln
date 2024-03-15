@@ -114,9 +114,8 @@ const Gallery: React.FC<IGallery> = ({
             {/* Tiny 4 images */}
             <div className="hidden md:grid grid-cols-2 gap-1">
               <div
-                className={`max-w-[328px] max-h-[260px] bg-[#434343] ${
-                  isModalOpen ? '' : 'z-30'
-                }`}
+                className={`max-w-[328px] max-h-[260px] bg-[#434343] ${isModalOpen ? '' : 'z-30'
+                  }`}
               >
                 <Image
                   src={propertyID.images[1]}
@@ -138,9 +137,8 @@ const Gallery: React.FC<IGallery> = ({
                 </span>
               </div>
               <div
-                className={`max-w-[328px] max-h-[260px] bg-[#434343] rounded-tr-3xl ${
-                  isModalOpen ? '' : 'z-30'
-                }`}
+                className={`max-w-[328px] max-h-[260px] bg-[#434343] rounded-tr-3xl ${isModalOpen ? '' : 'z-30'
+                  }`}
               >
                 <Image
                   src={propertyID.images[2]}
@@ -163,9 +161,8 @@ const Gallery: React.FC<IGallery> = ({
               </div>
 
               <div
-                className={`max-w-[328px] max-h-[260px] bg-[#434343] ${
-                  isModalOpen ? '' : 'z-30'
-                }`}
+                className={`max-w-[328px] max-h-[260px] bg-[#434343] ${isModalOpen ? '' : 'z-30'
+                  }`}
               >
                 {!propertyID.images[3] ? (
                   <Image
@@ -206,9 +203,8 @@ const Gallery: React.FC<IGallery> = ({
               </div>
 
               <div
-                className={`max-w-[328px] max-h-[260px] bg-[#434343] ${
-                  isModalOpen ? '' : 'z-30'
-                }`}
+                className={`max-w-[328px] max-h-[260px] bg-[#434343] ${isModalOpen ? '' : 'z-30'
+                  }`}
               >
                 {!propertyID.images[4] ? (
                   <Image
@@ -253,19 +249,19 @@ const Gallery: React.FC<IGallery> = ({
       ) : (
         <>
           <Header />
-          <div className="group relative h-[200px]">
+          <div className="group relative md:h-[200px]">
             {/* Images */}
             <div className="flex flex-row w-full max-w-max overflow-hidden scroll-smooth h-[350px]">
               <Image
                 src={propertyID.images[currentIndex]}
                 key={currentIndex}
                 alt={'Property Image'}
-                width="405"
-                height="350"
+                width={405}
+                height={350}
               />
             </div>
             {/* Index */}
-            <div className="flex relative -top-8 left-[300px] w-9 rounded-lg bg-black opacity-50">
+            <div className="flex relative -top-8 left-[17rem] w-9 rounded-lg bg-black opacity-50">
               <span className="text-sm font-normal text-tertiary ml-[7px] z-50">
                 {currentIndex + 1}/{propertyID.images.length}
               </span>

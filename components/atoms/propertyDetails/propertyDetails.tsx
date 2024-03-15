@@ -12,7 +12,7 @@ const PropertyDetails = ({ icon, value, description }: IDetails) => {
       <div className="flex flex-col lg:flex-row md:mr-2 lg:items-end items-center">
         <span className="text-[#6B7280] mr-1">{icon}</span>
         <p
-          className={`md:mr-2 flex   {${value?.length > 3 ? 'text-xs' : 'text-sm'
+          className={`md:mr-2 flex text-center {${value?.length > 3 ? 'text-xs' : 'text-sm'
             }`}
         >
           {value}{' '}

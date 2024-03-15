@@ -42,7 +42,8 @@ export enum ErrorToastNames {
   ImageUploadError = 'imageUploadError',
   SendImages = 'sendImages',
   ImagesTotalSizeLimit = 'imagesTotalSizeLimit',
-  ImagesUploadError = 'imagesUpload'
+  ImagesUploadError = 'imagesUpload',
+  UserNotFound = 'Nenhum usuário encontrado com o email ou senha informados.'
 }
 
 const successToastMessages: Record<SuccessToastNames, ToastMessage> = {
@@ -237,6 +238,12 @@ const errorToastMessages: Record<ErrorToastNames, ToastMessage> = {
   },
   [ErrorToastNames.EmptyCredits]: {
     message: 'Você não tem mais créditos para destacar este anúncio.',
+    options: {
+      autoClose: 7000,
+    },
+  },
+  [ErrorToastNames.UserNotFound]: {
+    message: 'Nenehum usuário encontrado com o e-mail ou senha informados..',
     options: {
       autoClose: 7000,
     },

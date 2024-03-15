@@ -40,7 +40,6 @@ interface IEditAnnouncement {
 const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
   property,
 }) => {
-  console.log("🚀 ~ property:", property)
   const [rotate1, setRotate1] = useState(false);
   const [rotate2, setRotate2] = useState(false);
   const [rotate3, setRotate3] = useState(false);

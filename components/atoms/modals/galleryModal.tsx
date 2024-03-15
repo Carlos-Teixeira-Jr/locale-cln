@@ -47,8 +47,8 @@ const GalleryModal: React.FC<IGalleryModal> = ({
         <Image
           src={property.images[currentIndex]}
           alt={''}
-          width={900}
-          height={900}
+          width={400}
+          height={400}
           className=" rounded-3xl"
         />
       </div>
