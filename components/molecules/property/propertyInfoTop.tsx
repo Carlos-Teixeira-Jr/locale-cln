@@ -42,8 +42,8 @@ const PropertyInfoTop = ({ propertyID }: any) => {
   const iptuValue: [] = propertyID?.prices[2]?.value;
 
   return (
-    <div className="m-5 lg:mx-auto md:w-2/3">
-      <div className="md:m-5 lg:mx-auto">
+    <div className="mx-5 lg:m-5 lg:mx-auto md:w-2/3">
+      <div className="md:m-5 lg:mx-auto lg:mt-0">
         <div className="lg:w-fit font-normal text-xs md:text-sm text-quaternary mb-2 md:mb-0">
           <div className="grid grid-flow-col justify-start">
             <p className="mr-2">
@@ -58,7 +58,7 @@ const PropertyInfoTop = ({ propertyID }: any) => {
           </div>
         </div>
         <div className="flex flex-col">
-          <h3 className="md:text-xl font-bold text-quaternary mt-2 md:mb-12 lg:mb-0">
+          <h3 className="md:text-xl font-bold text-quaternary mt-2 lg:mb-0">
             {propertyID.propertyType},{' '}
             {capitalizeFirstLetter(propertyID.address.streetName)},{' '}
             {capitalizeFirstLetter(propertyID.address.streetNumber)} -{' '}

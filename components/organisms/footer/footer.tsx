@@ -21,15 +21,14 @@ const Footer = () => {
     }
   }, [height]);
 
-  const footerPositionCSS = `bg-tertiary block w-full ${
-    desktop
-      ? 'fixed bottom-0 mt-5'
-      : mobile
+  const footerPositionCSS = `bg-tertiary block w-full ${desktop
+    ? 'fixed. bottom-0 mt-5'
+    : mobile
       ? 'absolute mt-36'
       : notebook
-      ? 'fixed mt-36'
-      : 'absolute mt-36'
-  }`;
+        ? 'fixed. mt-36'
+        : 'absolute mt-36'
+    }`;
 
   return (
     <footer className={footerPositionCSS}>
@@ -76,7 +75,7 @@ const Footer = () => {
 
             <ul className="list-none mb-0 text-center">
               <li className="transition duration-300 ease-in-out transform hover:scale-125">
-                <Link href="/announcement" className="text-gray-800 text-md">
+                <Link href="/announcement#plans" className="text-gray-800 text-md">
                   Locale PRO
                 </Link>
               </li>
@@ -86,7 +85,7 @@ const Footer = () => {
                 </Link>
               </li>
               <li className="transition duration-300 ease-in-out transform hover:scale-125">
-                <Link href="/announcement" className="text-gray-800 text-md">
+                <Link href="/announcement#plans" className="text-gray-800 text-md">
                   Venda seu imóvel
                 </Link>
               </li>

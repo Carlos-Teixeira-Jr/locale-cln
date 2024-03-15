@@ -6,9 +6,11 @@ interface DynamicMapProps {
   geolocation: IGeolocation
 }
 
-const DynamicMap: FC<DynamicMapProps> = ({ 
-  geolocation 
+const DynamicMap: FC<DynamicMapProps> = ({
+  geolocation
 }) => {
+
+  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
   const center = {
     lat: geolocation.coordinates[1],
@@ -22,13 +24,13 @@ const DynamicMap: FC<DynamicMapProps> = ({
 
   return (
     <div>
-      <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? ""}>
+      <LoadScript googleMapsApiKey={apiKey ?? ""}>
         <GoogleMap mapContainerClassName='w-full h-[200px] md:h-96' center={center} zoom={15}>
           <MarkerF position={markerPosition} />
         </GoogleMap>
       </LoadScript>
     </div>
-    
+
   );
 };
 

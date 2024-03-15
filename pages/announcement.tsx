@@ -37,7 +37,7 @@ const AnnouncementPage: NextPageWithLayout = ({ plans }: any) => {
           nosso site hoje mesmo e encontre a propriedade dos seus sonhos!
         </h1>
 
-        <div className={classes.plans}>
+        <div id='plans' className={classes.plans}>
           {reversedCards.map(
             ({ _id, name, price, highlightAd, commonAd, smartAd }: any) => (
               <PlansCards

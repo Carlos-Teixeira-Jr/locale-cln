@@ -9,6 +9,7 @@ import { sendRequest } from '../../../../hooks/sendRequest';
 import { useIsMobile } from '../../../../hooks/useIsMobile';
 import EyeIcon from '../../../atoms/icons/eyeIcon';
 import TurnedOffEyeIcon from '../../../atoms/icons/turnedOffEyeIcon';
+import Loading from '../../../atoms/loading';
 import ForgotPasswordModal from '../../../atoms/modals/forgotPasswordModal';
 import VerifyEmailModal from '../../../atoms/modals/verifyEmailModal';
 import SocialAuthButton from '../../buttons/socialAuthButtons';
@@ -33,6 +34,8 @@ const LoginCard: React.FC = () => {
   const [showPasswordConfirmation, setShowPasswordConfirmation] =
     useState(false);
   const [isRegister, setIsRegister] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
 
   const [emailVerificationData, setEmailVerificationData] = useState({
     email: queryEmail ? queryEmail : email,
@@ -70,6 +73,8 @@ const LoginCard: React.FC = () => {
 
   const handleSubmit = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
+
+    setLoading(true);
 
     setEmailError('');
     setPasswordError('');
@@ -131,7 +136,7 @@ const LoginCard: React.FC = () => {
       ) {
         try {
           const data = await sendRequest(
-            `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/register`,
+            `${baseUrl}/auth/register`,
             'POST',
             {
               email,
@@ -151,18 +156,21 @@ const LoginCard: React.FC = () => {
             setVerifyEmailModalIsOpen(true);
           } else {
             showErrorToast(ErrorToastNames.EmailAlreadyInUse)
+            setLoading(false)
           }
         } catch (error) {
           console.error(error);
+          setLoading(false)
         }
       } else {
         toast.error('Alguma informação está faltando.');
+        setLoading(false)
       }
     } else {
       if (email && password) {
         try {
           const data = await sendRequest(
-            `${process.env.NEXT_PUBLIC_BASE_API_URL}/user/find-by-email`,
+            `${baseUrl}/user/find-by-email`,
             'POST',
             { email }
           );
@@ -182,43 +190,40 @@ const LoginCard: React.FC = () => {
                   } else {
                     console.error(error);
                     toast.dismiss();
-                    toast.warning('Email ou senha inválidos.', {
-                      type: 'error',
-                    });
+                    showErrorToast(ErrorToastNames.UserNotFound)
                   }
                 });
 
                 if (signInResponse === null) {
-                  toast.warn(
-                    'Dados de login inválidos ou usuário não encontrado'
-                  );
+                  setLoading(false);
+                  showErrorToast(ErrorToastNames.UserNotFound)
                 }
               } catch (error) {
                 toast.dismiss();
+                setLoading(false)
                 console.error(error);
-                toast.warn('Erro ao fazer login');
+                showErrorToast(ErrorToastNames.ServerConnection);
               }
             } else {
-              toast.warn(
-                'Por favor, verifique a autenticidade de sua conta informando o código de verificação enviado para o seu e-mail.'
-              );
+              setLoading(false);
+              showErrorToast(ErrorToastNames.VerificationCode);
               setVerifyEmailModalIsOpen(true);
             }
           } else {
             toast.dismiss();
-            toast.error(
-              'Não há nenhum usuário cadastrado com o e-mail informado.'
-            );
+            setLoading(false)
+            showErrorToast(ErrorToastNames.EmailNotFound)
           }
         } catch (error) {
           toast.dismiss();
-          toast.error(
-            'Ocorreu um erro ao tentar se conectar com o servidor, por favor tente novamente mais tarde.'
-          );
+          setLoading(false);
+          showErrorToast(ErrorToastNames.ServerConnection);
           console.error(error);
         }
       } else {
         toast.warn('alguma informação está faltando');
+        showErrorToast(ErrorToastNames.EmptyFields);
+        setLoading(false)
       }
     }
   };
@@ -239,9 +244,8 @@ const LoginCard: React.FC = () => {
           E-mail
         </label>
         <input
-          className={`w-full h-fit md:h-12 rounded-[10px] border-[1px] border-quaternary drop-shadow-xl bg-tertiary text-quaternary p-2 md:text-xl font-semibold ${
-            emailError === '' ? '' : 'border-[2px] border-red-500'
-          }`}
+          className={`w-full h-fit md:h-12 rounded-[10px] border-[1px] border-quaternary drop-shadow-xl bg-tertiary text-quaternary p-2 md:text-xl font-semibold ${emailError === '' ? '' : 'border-[2px] border-red-500'
+            }`}
           type="email"
           value={email}
           maxLength={80}
@@ -259,9 +263,8 @@ const LoginCard: React.FC = () => {
         <div className="flex flex-col">
           <div className="flex">
             <input
-              className={`w-full h-fit md:h-12 rounded-[10px] border-[1px] border-quaternary drop-shadow-xl bg-tertiary text-quaternary p-2 md:text-xl font-semibold ${
-                passwordError === '' ? '' : 'border-[2px] border-red-500'
-              }`}
+              className={`w-full h-fit md:h-12 rounded-[10px] border-[1px] border-quaternary drop-shadow-xl bg-tertiary text-quaternary p-2 md:text-xl font-semibold ${passwordError === '' ? '' : 'border-[2px] border-red-500'
+                }`}
               type={showPassword ? 'text' : 'password'}
               value={password}
               onChange={(e) => {
@@ -308,11 +311,10 @@ const LoginCard: React.FC = () => {
             <div className="flex flex-col">
               <div className="flex">
                 <input
-                  className={`w-full h-fit md:h-12 rounded-[10px] border-[1px] border-quaternary drop-shadow-xl bg-tertiary text-quaternary p-2 md:text-xl font-semibold  ${
-                    passwordConfirmationError === ''
-                      ? ''
-                      : 'border-[2px] border-red-500'
-                  }`}
+                  className={`w-full h-fit md:h-12 rounded-[10px] border-[1px] border-quaternary drop-shadow-xl bg-tertiary text-quaternary p-2 md:text-xl font-semibold  ${passwordConfirmationError === ''
+                    ? ''
+                    : 'border-[2px] border-red-500'
+                    }`}
                   type={showPasswordConfirmation ? 'text' : 'password'}
                   value={passwordConfirmation}
                   onChange={(e) => setPasswordConfirmation(e.target.value)}
@@ -354,10 +356,15 @@ const LoginCard: React.FC = () => {
 
       <div>
         <button
-          className="md:w-[400px] w-full px-10 md:h-fit bg-primary p-2.5 gap-2.5 rounded-[50px] font-normal text-xl text-tertiary leading-6 my-5 transition-colors duration-300 hover:bg-red-600 hover:text-white"
+          className={`md:w-[400px] w-full px-10 md:h-14 bg-primary p-2.5 gap-2.5 rounded-[50px] font-normal text-xl text-tertiary my-5  ${loading ?
+            'flex justify-center bg-red-300 transition-colors duration-300 text' :
+            'transition-colors duration-300 hover:bg-red-600 hover:text-white'
+            }`}
+          disabled={loading}
           onClick={handleSubmit}
         >
           {isRegister ? 'Cadastrar' : 'Entrar'}
+          {loading && <Loading />}
         </button>
       </div>
 

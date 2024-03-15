@@ -3,6 +3,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import React, { MouseEvent, useEffect, useState } from 'react';
 import 'react-tooltip/dist/react-tooltip.css';
+import { IOwnerData } from '../../../common/interfaces/owner/owner';
 import {
   IData,
   IMetadata,
@@ -19,7 +20,6 @@ import UnfavouritedIcon from '../../atoms/icons/unfavouritedIcon';
 import CalculatorModal from '../../atoms/modals/calculatorModal';
 import LinkCopiedTooltip from '../../atoms/tooltip/Tooltip';
 import FavouritePropertyTooltip from '../../atoms/tooltip/favouritePropertyTooltip';
-import { IOwnerData } from '../../../common/interfaces/owner/owner';
 
 export interface ITooltip {
   globalEventOff: string;
@@ -31,10 +31,10 @@ export interface IPropertyInfo {
   owner: IOwnerData
 }
 
-const PropertyInfo: React.FC<IPropertyInfo> = ({ 
-  property, 
+const PropertyInfo: React.FC<IPropertyInfo> = ({
+  property,
   isFavourite,
-  owner 
+  owner
 }) => {
 
   const session = useSession() as any;
@@ -43,12 +43,37 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
   const userIsLogged = status === 'authenticated' ? true : false;
   const userId = session?.data?.user?.data?._id;
   const ownerId = owner?.owner?._id;
-  const isOwnProperty = property.owner === ownerId ? true : false;
+  const isOwnProperty = ownerId === userId ? true : false;
   const [tooltipIsVisible, setTooltipIsVisible] = useState(false);
   const [favPropTooltipIsVisible, setFavPropTooltipIsVisible] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [favourited, setFavourited] = useState(isFavourite);
   const [haveTags, setHaveTags] = useState<boolean>(false);
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+
+  useEffect(() => {
+    if (userId) {
+      const response = async () => {
+        const res = await fetch(`${baseUrl}/user/favourite`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: userId,
+            page: 1
+          }),
+        })
+
+        if (res.ok) {
+          const favourites = await res.json();
+          const isFavourite = favourites?.docs?.some((fav: { _id: string }) => fav._id === property?._id);
+          setFavourited(isFavourite);
+        }
+      }
+      response();
+    }
+  }, [userId])
 
   const handleCopy = async () => {
     setTooltipIsVisible(true);
@@ -130,7 +155,7 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
   };
 
   useEffect(() => {
-    if (property.tags) {
+    if (property.tags.length > 0) {
       setHaveTags(true);
     }
     console.log(property.prices[1].type);
@@ -144,7 +169,7 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
 
   return (
     <>
-      <div className="flex flex-row py-1 md:py-5 px-4 lg:w-full bg-tertiary drop-shadow-lg">
+      <div className="flex flex-col md:flex-row justify-between py-1 md:py-5 px-4 lg:w-full bg-tertiary drop-shadow-lg">
         <div className="flex flex-col">
           <h1 className="font-extrabold text-quaternary md:text-2xl text-lg">
             Características do imóvel
@@ -186,7 +211,7 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
               </div>
             ))}
           {property.prices[1].type == 'IPTU' &&
-          property.prices[1].value !== null ? (
+            property.prices[1].value !== null ? (
             <div className="flex flex-col items-start">
               <div className="flex flex-col">
                 <div className={classes.tagContainer}>
@@ -220,7 +245,7 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
             </p>
           </div>
         </div>
-        <div className="flex flex-col mt-10 md:my-auto lg:mx-2 justify-items-center gap-5 md:gap-0">
+        <div className="flex flex-col mt-10 md:my-auto md:w-[40%] lg:mx-2 justify-items-center gap-5 md:gap-0">
           <LinkCopiedTooltip
             open={tooltipIsVisible}
             onRequestClose={hideTooltip}
@@ -228,7 +253,7 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
           />
           <button
             id="tooltip"
-            className="lg:w-[320px] w-40 h-12 md:h-[67px] md:w-full bg-primary p-2.5 rounded-[10px] text-tertiary text-lg font-extrabold mb-6"
+            className="lg:w-[320px] mx-auto w-40 h-12 md:h-[67px] md:w-full bg-primary p-2.5 rounded-[10px] text-tertiary text-lg font-extrabold mb-6 transition-colors hover:bg-red-600 duration-300"
             onClick={handleCopy}
           >
             Compartilhar
@@ -254,9 +279,8 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
           {!isOwnProperty && (
             <button
               id="fav-property-tooltip"
-              className={`lg:w-80 w-40 md:w-full h-12 md:h-16 bg-primary p-2.5 rounded-[10px] text-tertiary text-lg font-extrabold flex justify-center items-center mb-5 ${
-                userIsLogged ? 'opacity opacity-100 cursor-pointer' : 'opacity-50'
-              }`}
+              className={`lg:w-80 w-40 mx-auto md:w-full h-12 md:h-16 bg-primary p-2.5 rounded-[10px] text-tertiary text-lg font-extrabold flex justify-center items-center mb-5 ${userIsLogged ? 'opacity opacity-100 cursor-pointer' : 'opacity-50'
+                }`}
               onClick={handleFavouriteBtnClick}
             >
               <p className="my-auto pr-4">Favoritar</p>
@@ -271,7 +295,7 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
               )}
             </button>
           )}
-            
+
         </div>
 
         {modalIsOpen && (

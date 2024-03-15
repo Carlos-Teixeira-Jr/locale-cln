@@ -244,7 +244,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
 
   return (
     <div className="mx-5">
-      <h1 className="md:text-2xl text-lg leading-10 text-quaternary font-bold md:mb-10">
+      <h1 className="md:text-2xl text-lg leading-10 text-quaternary font-bold md:mb-10 text-center">
         {isEdit ? 'Dados Pessoais' : 'Informações para contratação'}
       </h1>
       <div className="my-5">

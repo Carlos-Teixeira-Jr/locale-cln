@@ -1,7 +1,6 @@
 import { useRouter } from 'next/router';
 import { MouseEvent, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
-import store from 'store';
 import useProgressRedirect from '../common/utils/stepProgressHandler';
 import Loading from '../components/atoms/loading';
 import LinearStepper from '../components/atoms/stepper/stepper';
@@ -10,6 +9,7 @@ import { Footer, Header } from '../components/organisms';
 import PropertyDifferentials from '../components/organisms/register/propertyDifferential';
 import { useProgress } from '../context/registerProgress';
 import { NextPageWithLayout } from './page';
+var store = require('store')
 
 const RegisterStep2: NextPageWithLayout = () => {
   const imagesInputRef = useRef<HTMLElement>(null);

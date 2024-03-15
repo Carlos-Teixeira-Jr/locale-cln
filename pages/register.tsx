@@ -1,7 +1,6 @@
 import { useRouter } from 'next/router';
 import { MouseEvent, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
-import store from 'store';
 import {
   IAddress,
   PricesType,
@@ -17,6 +16,7 @@ import AreaCalculatorModal from '../components/molecules/areaModal/areaModal';
 import { Footer, Header } from '../components/organisms';
 import MainFeatures from '../components/organisms/mainFeatures/mainFeatures';
 import { useProgress } from '../context/registerProgress';
+var store = require('store')
 
 const Register = () => {
   const router = useRouter();
