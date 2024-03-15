@@ -33,7 +33,8 @@ type Owner = {
   isNewCreditCard: boolean;
   newCreditCardData: any;
   picture: string;
-  paymentData: OwnerPaymentData
+  paymentData: OwnerPaymentData;
+  userId: string
 };
 
 export interface IOwnerData {

@@ -63,7 +63,7 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
     setMapIsActive(false);
   }, [dynamicRoute]);
 
-  const galeryModalCSS = `lg:mx-auto m-5 mb-36 md:mb-5 md:mt-0 lg:mt-5  ${isModalOpen ? 'z-50' : 'z-30'
+  const galeryModalCSS = `lg:mx-auto m-5 mb-0 lg:mb-36. md:mb-5 md:mt-0 lg:mt-5  ${isModalOpen ? 'z-50' : 'z-30'
     }`;
 
   return (
@@ -158,7 +158,7 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps({ params }: any) {
+export async function getStaticProps(context: any) {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
   let property;
   let isFavourite: boolean = false;
@@ -167,7 +167,7 @@ export async function getStaticProps({ params }: any) {
 
   try {
     const propertyResponse = await fetch(
-      `${baseUrl}/property/${params.id}?isEdit=false`
+      `${baseUrl}/property/${context.params.id}?isEdit=false`
     );
 
     if (propertyResponse.ok) {
@@ -222,7 +222,7 @@ export async function getStaticProps({ params }: any) {
 
             if (favourites.docs.length > 0) {
               isFavourite = favourites.docs.some(
-                (prop: IData) => prop._id === params.id
+                (prop: IData) => prop._id === context.params.id
               );
             } else {
               isFavourite = false;

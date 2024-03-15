@@ -64,7 +64,7 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
   }, [currentPage]);
 
   return (
-    <>
+    <div className='my-5'>
       <AdminHeader isOwnerProp={isOwner} />
       <div className={classes.content}>
         <div className={classes.sideMenu}>
@@ -119,7 +119,7 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
@@ -215,7 +215,7 @@ const classes = {
   content: 'flex flex-col mt-16 xl:ml-80 max-w-[1232px] justify-center md:mx-5',
   sideMenu: 'fixed left-0 top-7 sm:hidden hidden md:hidden lg:flex',
   title:
-    'font-extrabold text-lg md:text-2xl text-quaternary md:mb-5 text-center md:mx-auto',
+    'font-extrabold text-lg md:text-2xl text-quaternary md:my-5 text-center md:mx-auto',
   h1: 'text-2xl text-quaternary mt-2',
   favPropertiesContainer:
     'flex flex-col items-center justify-center mb-5 max-w-[1215px]',

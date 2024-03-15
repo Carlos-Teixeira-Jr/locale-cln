@@ -218,7 +218,7 @@ const classes = {
   sideMenu: 'fixed sm:hidden hidden md:hidden lg:flex xl:flex left-0 top-7',
   content: 'flex flex-col mt-16 xl:mx-auto max-w-[1232px] justify-center md:mx-auto',
   title:
-    'font-extrabold text-lg md:text-2xl text-quaternary md:mb-5 text-center md:mx-auto',
+    'font-extrabold text-lg md:text-2xl text-quaternary md:my-5 text-center md:mx-auto',
   notFound:
     'flex flex-col items-center align-middle lg:mt-36 justify-center mr-0 lg:mx-auto',
   cardContainer:

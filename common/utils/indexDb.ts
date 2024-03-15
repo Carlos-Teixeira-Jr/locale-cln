@@ -1,4 +1,4 @@
-import { ErrorToastNames, SuccessToastNames, showErrorToast, showSuccessToast } from "./toasts";
+import { ErrorToastNames, showErrorToast } from "./toasts";
 
 export type ImageData = {
   id: string;
@@ -61,7 +61,7 @@ export const addImageToDB = (file: File, src: string, id: string) => {
     });
 
     request.onsuccess = () => {
-      showSuccessToast(SuccessToastNames.UploadedImage)
+      console.log('Imagem adicionada com sucesso.')
     };
 
     request.onerror = (event) => {

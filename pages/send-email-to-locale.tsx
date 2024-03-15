@@ -1,9 +1,9 @@
+import Link from 'next/link';
 import { useState } from 'react';
 import validator from 'validator';
+import { ErrorToastNames, SuccessToastNames, showErrorToast, showSuccessToast } from '../common/utils/toasts';
 import PhoneInput from '../components/atoms/masks/masks';
 import { NextPageWithLayout } from './page';
-import { ErrorToastNames, SuccessToastNames, showErrorToast, showSuccessToast } from '../common/utils/toasts';
-import Link from 'next/link';
 
 interface ILocaleContact {
   name: string;
@@ -31,12 +31,12 @@ const LocaleContact: NextPageWithLayout = () => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const onlyLetters = /^[a-zA-Z\s]+$/;
-  
+
     if (event.target.value === '' || onlyLetters.test(event.target.value)) {
       setFormData({ ...formData, name: event.target.value });
     }
   };
-  
+
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const email = event.target.value;
     setFormData({ ...formData, email: email });
@@ -200,7 +200,7 @@ const LocaleContact: NextPageWithLayout = () => {
         <div className="flex justify-between w-full md:mb-2 lg:mb-auto">
           <Link href={'/'}>
             <button
-              className="w-[250px] h-[40px] bg-primary rounded-[50px] p-[10px] gap-2.5 mt-3 lg:float-right hover:bg-red-600 hover:text-tertiary hover:shadow-lg transition-all duration-200"
+              className="w-60 h-10 bg-primary rounded-[50px] p-[10px] gap-2.5 mt-3 lg:float-right hover:bg-red-600 hover:text-tertiary hover:shadow-lg transition-all duration-200"
             >
               <p className="font-normal text-xl text-tertiary leading-6 align-middle">
                 Voltar
@@ -209,13 +209,13 @@ const LocaleContact: NextPageWithLayout = () => {
           </Link>
           <button
             onClick={handleContactField}
-            className="w-[250px] h-[40px] bg-primary rounded-[50px] p-[10px] gap-2.5 mt-3 lg:float-right hover:bg-red-600 hover:text-tertiary hover:shadow-lg transition-all duration-200"
+            className="w-60 bg-primary rounded-[50px] p-[10px] gap-2.5 mt-3 lg:float-right hover:bg-red-600 hover:text-tertiary hover:shadow-lg transition-all duration-200"
           >
             <p className="font-normal text-xl text-tertiary leading-6 align-middle">
               Enviar
             </p>
           </button>
-          
+
         </div>
       </div>
     </div>

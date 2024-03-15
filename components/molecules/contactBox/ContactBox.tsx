@@ -45,15 +45,14 @@ const ContactBox: React.FC<IContactBox> = ({ ownerInfo, property }: IContactBox)
       console.log('announcementCode', announcementCode);
     }
   }, []);
-  
+
   const handleWhatsappBtnClick = () => {
     if (fullMessage) {
       const fullMsg = `https://api.whatsapp.com/send/?pFhone=${ownerWhatsapp}&text=${encodeURIComponent(`
       🏡📱 Olá! Encontrei o seu imóvel na Locale Imóveis e me interessei! 📱🏡
         
-      ${propertyType !== 'todos' ? `🏠Imóvel: ${propertyType}` : '🏠Imóvel'} ${
-        city && `na cidade de ${city}`
-      }${uf && `, ${uf}`}.
+      ${propertyType !== 'todos' ? `🏠Imóvel: ${propertyType}` : '🏠Imóvel'} ${city && `na cidade de ${city}`
+        }${uf && `, ${uf}`}.
       ${formattedPrice && `💰 Valor: ${formattedPrice}`}
       ${announcementCode && `🔗 Código do imóvel: ${announcementCode}`}
             
@@ -66,7 +65,7 @@ const ContactBox: React.FC<IContactBox> = ({ ownerInfo, property }: IContactBox)
       🏡📱 Olá! Encontrei o seu imóvel na Locale Imóveis e me interessei! 
       Gostaria de mais informações e talvez agendar uma visita. 📱🏡
       Quando você estiver disponível, podemos conversar?`)}&type=phone_number&app_absent=0`;
-      
+
       window.open(basicMsg, '_blank');
     }
   };
@@ -90,7 +89,7 @@ const ContactBox: React.FC<IContactBox> = ({ ownerInfo, property }: IContactBox)
 
   return (
     <>
-      <div className="lg:w-fit md:h-10 md:pt-0 flex flex-col md:flex-row md:grid items-center justify-items-center align-middle justify lg:ml-2 m-5 lg:m-0">
+      <div className="lg:w-fit md:h-10 md:pt-0 flex flex-col md:flex-row md:grid items-center justify-items-center align-middle justify lg:ml-2 mx-5 lg:m-0">
         <div className="flex flex-col md:flex-row md:w-full lg:w-72 justify-between items-center">
           {picture ? (
             <Image
@@ -110,9 +109,8 @@ const ContactBox: React.FC<IContactBox> = ({ ownerInfo, property }: IContactBox)
           )}
 
           <p
-            className={`${
-              owner?.length > 25 ? 'text-lg' : 'text-xl'
-            } w-48 md:w-full h-fit text-quaternary font-extrabold text-center pt-3 md:pt-0 drop-shadow-lg`}
+            className={`${owner?.length > 25 ? 'text-lg' : 'text-xl'
+              } w-48 md:w-full h-fit text-quaternary font-extrabold text-center pt-3 md:pt-0 drop-shadow-lg`}
           >
             {owner}
           </p>
@@ -121,9 +119,8 @@ const ContactBox: React.FC<IContactBox> = ({ ownerInfo, property }: IContactBox)
           {buttons.map((btn) => (
             <div
               onClick={() => btn.onClick()}
-              className={`md:w-full w-36 h-12 text-tertiary font-extrabold text-lg rounded-[10px] p-2.5 top-[861px] left-[999px] gap-y-1.5 md:grid flex drop-shadow-lg md:m-2 align-middle my-auto justify-center mr-2 cursor-pointer ${
-                btn.key === 'contact' ? 'bg-secondary' : 'bg-[#25D366]'
-              }`}
+              className={`md:w-full w-36 h-12 text-tertiary font-extrabold text-lg rounded-[10px] p-2.5 top-[861px] left-[999px] gap-y-1.5 md:grid flex drop-shadow-lg md:m-2 align-middle my-auto justify-center mr-2 cursor-pointer ${btn.key === 'contact' ? 'bg-secondary' : 'bg-[#25D366]'
+                }`}
               key={btn.key}
             >
               {btn.label}
