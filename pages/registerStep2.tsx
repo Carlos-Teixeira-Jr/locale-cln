@@ -42,9 +42,8 @@ const RegisterStep2: NextPageWithLayout = () => {
     event.preventDefault();
     setLoading(true);
 
-    const imagesError = `Você precisa adicionar pelo menos mais ${
-      5 - images.length
-    } ${5 - images.length === 1 ? 'foto' : 'fotos'}.`;
+    const imagesError = `Você precisa adicionar pelo menos mais ${5 - images.length
+      } ${5 - images.length === 1 ? 'foto' : 'fotos'}.`;
 
     setErrorInfo({
       prop: '',
@@ -99,6 +98,20 @@ const RegisterStep2: NextPageWithLayout = () => {
     router.back();
   };
 
+  const classes = {
+    body: 'flex flex-col mx-auto max-w-[1215px]',
+    propertyDifferentials: 'mb-10 mx-2 max-w-[1232px] justify-center',
+    buttonContainer:
+      'flex flex-col md:flex-row lg:flex-row xl:flex-row gap-4 md:gap-0 lg:gap-0 xl:gap-0 items-center justify-between my-4 max-w-[1215px]',
+    button:
+      `flex items-center flex-row justify-around w-44 h-14 text-tertiary rounded font-bold text-lg md:text-xl ${loading ?
+        'bg-red-300 transition-colors duration-300' :
+        'bg-primary transition-colors duration-300 hover:bg-red-600 hover:text-white cursor-pointer'
+      }`,
+    stepLabel:
+      'md:mt-26 mt-28 sm:mt-32 md:mb-8 lg:mb-2 w-full mx-auto xl:mx-auto',
+  };
+
   return (
     <>
       <Header />
@@ -151,14 +164,3 @@ const RegisterStep2: NextPageWithLayout = () => {
 };
 
 export default RegisterStep2;
-
-const classes = {
-  body: 'flex flex-col mx-auto max-w-[1215px]',
-  propertyDifferentials: 'mb-10 mx-2 max-w-[1232px] justify-center',
-  buttonContainer:
-    'flex flex-col md:flex-row lg:flex-row xl:flex-row gap-4 md:gap-0 lg:gap-0 xl:gap-0 items-center justify-between my-4 max-w-[1215px]',
-  button:
-    'active:bg-gray-500 cursor-pointer flex items-center flex-row justify-around bg-primary w-44 h-14 text-tertiary rounded transition-colors duration-300 font-bold text-lg md:text-xl hover:bg-red-600 hover:text-white',
-  stepLabel:
-    'md:mt-26 mt-28 sm:mt-32 md:mb-8 lg:mb-2 w-full mx-auto xl:mx-auto',
-};

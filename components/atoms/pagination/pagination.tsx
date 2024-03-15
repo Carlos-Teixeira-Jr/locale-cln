@@ -15,7 +15,7 @@ export interface IPagination {
 const Pagination: React.FC<IPagination> = ({
   totalPages = 0,
   currentPage = 0,
-  setCurrentPage = () => {},
+  setCurrentPage = () => { },
 }) => {
   const router = useRouter();
   const query = router.query;
@@ -27,7 +27,7 @@ const Pagination: React.FC<IPagination> = ({
   }, [totalPages]);
 
   return (
-    <div className="flex flex-row items-center gap-2 my-2 h-10">
+    <div className="flex flex-row items-center justify-center gap-2 my-2 h-10">
       {!isMobile ? (
         <>
           <div
@@ -72,12 +72,11 @@ const Pagination: React.FC<IPagination> = ({
         <div
           onClick={() => setCurrentPage(i + 1)}
           key={i}
-          className={`w-[2.2rem] h-[2.1rem] bg-[#F7F7F6] cursor-pointer rounded-full shrink-0 border-quaternary text-[#6B7280] font-extrabold text-lg py-[0.1rem] text-center hover:text-[#F7F7F6] hover:bg-[#F5BF5D] hover:text-2xl hover:border-none hover:w-[40px] hover:h-[38px] ${
-            query.page !== undefined &&
-            i === parseInt(query?.page?.toString()) - 1
+          className={`w-[2.2rem] h-[2.1rem] bg-[#F7F7F6] cursor-pointer rounded-full shrink-0 border-quaternary text-[#6B7280] font-extrabold text-lg py-[0.1rem] text-center hover:text-[#F7F7F6] hover:bg-[#F5BF5D] hover:text-2xl hover:border-none hover:w-[40px] hover:h-[38px] ${query.page !== undefined &&
+              i === parseInt(query?.page?.toString()) - 1
               ? 'bg-[#F5BF5D] text-2xl border-none w-[38px] h-[38px] py-1'
               : 'border'
-          }`}
+            }`}
         >
           {i + 1}
         </div>

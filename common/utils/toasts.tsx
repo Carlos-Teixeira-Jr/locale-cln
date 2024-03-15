@@ -29,6 +29,7 @@ export enum ErrorToastNames {
   CreditCardUpdate = 'creditCardUpdate',
   HighlightProperty = 'highlightProperty',
   ActivateProperty = 'activateProperty',
+  EmptyCredits = 'empotyCredits',
   FavouriteProperty = 'favouriteProperty',
   UserDataUpdate = 'userDataUpdate',
   PropertyUpdate = 'propertyUpdate',
@@ -230,6 +231,12 @@ const errorToastMessages: Record<ErrorToastNames, ToastMessage> = {
   },
   [ErrorToastNames.ImagesUploadError]: {
     message: 'Houve um erro ao fazer o upload das imagens. Por favor, tente novamente.',
+    options: {
+      autoClose: 7000,
+    },
+  },
+  [ErrorToastNames.EmptyCredits]: {
+    message: 'Você não tem mais créditos para destacar este anúncio.',
     options: {
       autoClose: 7000,
     },
