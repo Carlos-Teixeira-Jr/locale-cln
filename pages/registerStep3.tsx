@@ -174,7 +174,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
       const getGeocoordinates = async () => {
         try {
           const result = await geocodeAddress(addressData);
-  
+
           if (result) {
             setCoordinates(result);
           } else {
@@ -186,7 +186,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
       }
       getGeocoordinates();
     }
-  }, [addressData]);  
+  }, [addressData]);
 
   useEffect(() => {
     const url = router.pathname;
@@ -286,6 +286,21 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     );
 
     if (!hasErrors && termsAreRead) {
+      try {
+
+        const result = await geocodeAddress(addressData);
+
+        if (result !== null) {
+          setCoordinates(result);
+        } else {
+          console.log(
+            'Não foi possível buscar as coordenadas geográficas do imóvel'
+          );
+        }
+      } catch (error) {
+        console.error(error);
+      }
+
       const storedData = store.get('propertyData');
 
       const propertyDataStep3: IRegisterPropertyData_Step3 = {
@@ -351,6 +366,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
         },
         highlighted: false,
       };
+
 
       try {
         toast.loading('Enviando...');
