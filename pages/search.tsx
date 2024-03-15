@@ -40,6 +40,7 @@ const Search: NextPageWithLayout<ISearch> = ({
   locations,
   tagsData,
 }) => {
+  console.log("🚀 ~ propertyInfo:", propertyInfo)
 
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -219,7 +220,7 @@ const Search: NextPageWithLayout<ISearch> = ({
                 )}
 
               {propertyInfo?.docs?.length === 0 && (
-                <div className="flex flex-col mt-5">
+                <div className="flex flex-col my-5 mx-8">
                   <h2 className={classes.h2}>
                     Oops! Não encontramos nenhum resultado para essa busca.
                   </h2>
