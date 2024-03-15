@@ -29,7 +29,7 @@ const PaymentBoard_Step3_5 = ({
   storedData,
   plans,
 }: IPaymentBoard_Step3_5) => {
-  const [cardFlag, setardFlag] = useState<string>(
+  const [cardFlag, setCardFlag] = useState<string>(
     storedData ? storedData.paymentData.cardBrand : ''
   );
   const [plan, setPlan] = useState<IPlan | undefined>(
@@ -64,9 +64,9 @@ const PaymentBoard_Step3_5 = ({
             ) : (
               <div className="flex flex-row items-center justify-between">
                 <h2 className="text-quaternary text-lg mr-2 md:text-2xl font-medium mb-4">
-                  {cardFlag === 'Free' ? '---' : 'Cartão de crédito'}
+                  {plan?.price == 0 ? '---' : 'Cartão de crédito'}
                 </h2>
-                {cardFlag === 'MASTERCARD' && (
+                {cardFlag === 'MASTERCARD' && plan?.price != 0 && (
                   <MastercardIcon viewBox="0 5 48 48" />
                 )}
                 {cardFlag === 'VISA' && <VisaIcon viewBox="0 5 48 48" />}

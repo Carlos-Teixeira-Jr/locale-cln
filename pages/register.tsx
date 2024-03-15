@@ -229,6 +229,18 @@ const Register = () => {
     }
   };
 
+  const classes = {
+    stepLabel:
+      'md:mt-[150px] mt-[120px] md:mb-10 lg:mb-2 w-full mx-auto lg:mx-24 xl:mx-auto',
+    buttonContainer:
+      'flex md:justify-end justify-center lg:justify-end xl:justify-end px-5 max-w-[1215px]',
+    button:
+      `flex items-center flex-row justify-around w-44 h-14 text-tertiary rounded font-bold text-lg md:text-xl ${loading ?
+        'bg-red-300 transition-colors duration-300' :
+        'bg-primary transition-colors duration-300 hover:bg-red-600 hover:text-white cursor-pointer'
+      }`,
+  };
+
   return (
     <>
       <div>
@@ -305,12 +317,3 @@ const Register = () => {
 };
 
 export default Register;
-
-const classes = {
-  stepLabel:
-    'md:mt-[150px] mt-[120px] md:mb-10 lg:mb-2 w-full mx-auto lg:mx-24 xl:mx-auto',
-  buttonContainer:
-    'flex md:justify-end justify-center lg:justify-end xl:justify-end px-5 max-w-[1215px]',
-  button:
-    'active:bg-gray-500 cursor-pointer flex items-center flex-row justify-around bg-primary w-44 h-14 text-tertiary rounded transition-colors duration-300 font-bold text-lg md:text-xl hover:bg-red-600 hover:text-white',
-};

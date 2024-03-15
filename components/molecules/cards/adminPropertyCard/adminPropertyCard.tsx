@@ -79,9 +79,15 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
         showSuccessToast(SuccessToastNames.HighlightProperty);
         window.location.reload();
       } else {
-        showErrorToast(ErrorToastNames.ActivateProperty);
+        toast.dismiss();
+        if (response.status === 400) {
+          showErrorToast(ErrorToastNames.EmptyCredits);
+        } else {
+          showErrorToast(ErrorToastNames.HighlightProperty);
+        }
       }
     } catch (error) {
+      toast.dismiss();
       showErrorToast(ErrorToastNames.ServerConnection);
     }
   };
@@ -113,7 +119,7 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
     {
       key: 'highlight',
       title: 'Destacar',
-      link: '',
+      link: '/admin?page=1',
       className:
         'flex flex-row items-center justify-center bg-primary w-full h-12 px-10 rounded-md font-bold text-secondary text-xl shadow-sm mb-6 md:mb-0 md:mr-6 transition-colors duration-300 hover:bg-red-500 hover:text-yellow-300',
       onClick: handleHighlight,
@@ -122,7 +128,7 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
 
   return (
     <div className="flex flex-col items-center mb-10 justify-between">
-      <Link href={`/property/${_id}?isEdit=true`}>
+      <Link href={`/property/${_id}`}>
         <div
           className={`flex flex-col md:flex-row bg-tertiary h-fit md:h-64 w-full lg:w-[777px] shadow-lg ${isActive ? '' : 'opacity-100'
             }`}
