@@ -6,7 +6,8 @@ import { ILocation } from '../common/interfaces/locationDropdown';
 import { IData } from '../common/interfaces/property/propertyData';
 import { ITagsData } from '../common/interfaces/tagsData';
 import { handleClickOutside } from '../common/utils/clickOutsideDropdownHandler';
-import { removeQueryParam } from '../common/utils/removeQueryParams';
+import updateGeolocationQueryParam from '../common/utils/search/updateGeolocationQueryParam';
+import updateLocationQueryParam from '../common/utils/search/updateLocationQueryParam';
 import DropdownOrderBy from '../components/atoms/dropdowns/dropdownOrderBy';
 import ArrowDropdownIcon from '../components/atoms/icons/arrowDropdownIcon';
 import GridIcon from '../components/atoms/icons/gridIcon';
@@ -17,6 +18,7 @@ import FilterList from '../components/molecules/filterList/FilterList';
 import SearchShortcut from '../components/molecules/searchShortcut/searchShortcut';
 import Footer from '../components/organisms/footer/footer';
 import Header from '../components/organisms/header/header';
+import useTrackLocation from '../hooks/trackLocation';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { NextPageWithLayout } from './page';
 
@@ -38,30 +40,28 @@ const Search: NextPageWithLayout<ISearch> = ({
   locations,
   tagsData,
 }) => {
+
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const isMobile = useIsMobile();
+  const query = router.query as any;
   const [currentPage, setCurrentPage] = useState(1);
+  const isCodeSearch = query.code ? true : false;
+  const { latitude, longitude, location: geolocation } = useTrackLocation();
+
+  const defaultPropertyPhoto = "/images/property-not-found.png";
+
+  // mobile
   const [open, setOpen] = useState(false);
+  const isMobile = useIsMobile();
   const [mobileFilterIsOpen, setMobileFilterIsOpen] = useState<boolean>(false);
   const [isSearchBtnClicked, setIsSearchBtnClicked] = useState(false);
   const [grid, setGrid] = useState(false);
   const [list, setList] = useState(true);
-  const query = router.query as any;
   const queryParsed = query.location ? JSON.parse(query.location) : [];
   const [location, setLocation] = useState<any>(queryParsed);
-  const isCodeSearch = query.code ? true : false;
 
   useEffect(() => {
-    if (location.length > 0) {
-      const queryParams = {
-        ...query,
-        location: JSON.stringify(location),
-      };
-      router.push({ query: queryParams }, undefined, { scroll: false });
-    } else {
-      removeQueryParam('location', router, query);
-    }
+    updateLocationQueryParam(location, query, router);
   }, [location]);
 
   useEffect(() => {
@@ -85,6 +85,20 @@ const Search: NextPageWithLayout<ISearch> = ({
       router.push({ query: queryParams }, undefined, { scroll: false });
     }
   }, [currentPage]);
+
+  //// GEOLOCATION SEARCH ////
+
+  // Insere as coordenadas geográficas do usuário na url para buscar os imóveis mais próximos
+  useEffect(() => {
+    const isFirstRender = true;
+    if (isFirstRender) {
+      setTimeout(() => {
+        updateGeolocationQueryParam(geolocation, router, latitude, longitude);
+      }, 2000);
+    }
+  }, [geolocation]);
+
+  //// FILTER ON MOBILE ////
 
   useEffect(() => {
     if (isSearchBtnClicked) {
@@ -114,19 +128,16 @@ const Search: NextPageWithLayout<ISearch> = ({
     bodyContainer: 'lg:flex justify-center lg:max-w-[1232px]',
     body: 'flex flex-col lg:flex-row md:mt-0',
     content: 'flex flex-row items-center justify-between gap-7 ml-0 xl:ml-20',
-    filterList: 'mx-auto md:w-fit lg:w-[25%] hidden lg:flex',
-    searchShortcut: `justify-center ${
-      mobileFilterIsOpen ? 'hidden' : ''
-    } flex w-screen px-2 md:w-full itens-center md:px-0`,
+    filterList: `mx-auto md:w-fit lg:w-[25%] lg:flex ${mobileFilterIsOpen ? '' : 'hidden'}`,
+    searchShortcut: `justify-center ${mobileFilterIsOpen ? 'hidden' : ''
+      } flex w-screen px-2 md:w-full itens-center md:px-0`,
     propertiesGridListOrderBy:
       'flex flex-row items-center justify-around mt-2 md:my-3 mr-0',
     listGridContainer: 'flex flex-row items-center gap-1 mr-[-30px] w-fit',
-    list: `w-[47px] h-[44px] border border-[#6B7280] rounded-[10px] ${
-      list && 'border-[#F5BF5D] shadow-inner'
-    }`,
-    grid: `w-[47px] h-[44px] border border-[#6B7280] rounded-[10px] ${
-      grid && 'border-[#F5BF5D] shadow-inner'
-    }`,
+    list: `w-[47px] h-[44px] border border-[#6B7280] rounded-[10px] ${list && 'border-[#F5BF5D] shadow-inner'
+      }`,
+    grid: `w-[47px] h-[44px] border border-[#6B7280] rounded-[10px] ${grid && 'border-[#F5BF5D] shadow-inner'
+      }`,
     propertyNotFound: 'flex flex-col mx-auto justify-center my-5',
     orderBy:
       'flex flex-row items-center justify-around cursor-pointer md:my-auto bg-tertiary sm:max-w-[188px] md:w-[180px] h-[44px] font-bold text-sm md:text-md text-quaternary leading-5 shadow-lg p-[10px] border border-quaternary rounded-[30px] mt-7 md:mr-4 ml-2',
@@ -263,13 +274,14 @@ const Search: NextPageWithLayout<ISearch> = ({
                         images,
                         metadata,
                         highlighted,
+                        owner
                       }: IData) => (
                         <div className="md:w-60 lg:w-64" key={_id}>
                           <PropertyCard
                             key={_id}
                             prices={prices}
                             description={description}
-                            images={images}
+                            images={images.length > 0 ? images : [defaultPropertyPhoto]}
                             location={address.streetName}
                             bedrooms={metadata[0].amount}
                             bathrooms={metadata[1].amount}
@@ -283,9 +295,8 @@ const Search: NextPageWithLayout<ISearch> = ({
                 </div>
               ) : (
                 <div
-                  className={`lg:float-right${
-                    mobileFilterIsOpen ? 'hidden' : ''
-                  }`}
+                  className={`lg:float-right${mobileFilterIsOpen ? 'hidden' : ''
+                    }`}
                 >
                   {propertyInfo?.docs?.map(
                     (
@@ -304,13 +315,13 @@ const Search: NextPageWithLayout<ISearch> = ({
                         _id={_id}
                         key={_id}
                         href={`/property/${_id}`}
-                        prices={prices[0].value.toString()}
+                        prices={prices[0]?.value.toString()}
                         description={description}
-                        images={images}
-                        location={address.streetName}
-                        bedrooms={metadata[0].amount}
-                        bathrooms={metadata[1].amount}
-                        parking_spaces={metadata[2].amount}
+                        images={images?.length > 0 ? images : [defaultPropertyPhoto]}
+                        location={address?.streetName}
+                        bedrooms={metadata[0]?.amount}
+                        bathrooms={metadata[1]?.amount}
+                        parking_spaces={metadata[2]?.amount}
                         highlighted={highlighted}
                         propertyInfo={propertyInfo?.docs[index]}
                       />
@@ -379,6 +390,15 @@ export async function getServerSideProps(context: NextPageContext) {
       filter.push({ locationFilter: parsedLocation });
     }
   }
+  if (query.longitude && query.latitude) {
+    const geoQuery = {
+      geolocation: {
+        longitude: query.longitude,
+        latitude: query.latitude
+      }
+    }
+    filter.push(geoQuery)
+  }
 
   const encodedFilter = decodeURIComponent(JSON.stringify(filter));
 
@@ -420,9 +440,8 @@ export async function getServerSideProps(context: NextPageContext) {
       );
     }
   } else {
-    const url = `${baseUrl}/property/filter/?page=${currentPage}&limit=15&filter=${encodedFilter}${
-      encodedSort ? `&sort=${encodedSort}` : ``
-    }&need_count=true`;
+    const url = `${baseUrl}/property/filter/?page=${currentPage}&limit=15&filter=${encodedFilter}${encodedSort ? `&sort=${encodedSort}` : ``
+      }&need_count=true`;
 
     propertyInfo = await fetch(url)
       .then((res) => res.json())

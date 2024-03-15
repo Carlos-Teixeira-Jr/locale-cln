@@ -1,8 +1,6 @@
-import jwt, { JwtPayload } from 'jsonwebtoken';
 import { GetServerSidePropsContext } from 'next';
 import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { destroyCookie } from 'nookies';
 import { useEffect, useState } from 'react';
 import { IFavProperties } from '../common/interfaces/properties/favouriteProperties';
 import {
@@ -129,16 +127,6 @@ export default AdminFavProperties;
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = (await getSession(context)) as any;
-  const userId =
-    session?.user.data._id !== undefined
-      ? session?.user.data._id
-      : session?.user.id;
-  let token;
-  let refreshToken;
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
-  let ownerId;
-  const { query } = context;
-  const page = query.page;
 
   if (!session) {
     return {
@@ -147,142 +135,92 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         permanent: false,
       },
     };
-  } else {
-    token = session?.user.data.access_token!!;
-    refreshToken = session.user?.data.refresh_token;
-    const decodedToken = jwt.decode(token) as JwtPayload;
-    const isTokenExpired = decodedToken?.exp
-      ? decodedToken?.exp <= Math.floor(Date.now() / 1000)
-      : false;
-
-    if (isTokenExpired) {
-      const decodedRefreshToken = jwt.decode(refreshToken) as JwtPayload;
-      const isRefreshTokenExpired = decodedRefreshToken?.exp
-        ? decodedRefreshToken?.exp <= Math.floor(Date.now() / 1000)
-        : false;
-
-      if (isRefreshTokenExpired) {
-        destroyCookie(context, 'next-auth.session-token');
-        destroyCookie(context, 'next-auth.csrf-token');
-
-        return {
-          redirect: {
-            destination: '/login',
-            permanent: false,
-          },
-        };
-      } else {
-        try {
-          const response = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/refresh`,
-            {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                refresh_token: refreshToken,
-              }),
-            }
-          );
-
-          if (response.ok) {
-            const data = await response.json();
-            const newToken = data.access_token;
-            const newRefreshToken = data.refresh_token;
-            refreshToken = newRefreshToken;
-            token = newToken;
-            session.user.data.refresh_token = newRefreshToken;
-            token = newToken;
-            session.user.data.access_token = newToken;
-          } else {
-            console.log('Não foi possível atualizar o token.');
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      }
-    }
-
-    try {
-      const ownerIdResponse = await fetch(
-        `${baseUrl}/user/find-owner-by-user`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ userId }),
-        }
-      );
-
-      if (ownerIdResponse.ok) {
-        const ownerData = await ownerIdResponse.json();
-        ownerId = ownerData?.owner?._id;
-      }
-    } catch (error) {
-      console.error(error);
-    }
-
-    const [notifications, favouriteProperties, ownerProperties] =
-      await Promise.all([
-        fetch(`${baseUrl}/notification/user/${userId}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-          .then((res) => res.json())
-          .catch(() => []),
-        fetch(`${baseUrl}/user/favourite`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            id: userId,
-            page: Number(page),
-          }),
-        })
-          .then((res) => res.json())
-          .catch(() => []),
-        fetch(`${baseUrl}/property/owner-properties`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            ownerId,
-            page: 1,
-          }),
-        })
-          .then((res) => res.json())
-          .catch(() => []),
-        fetchJson(`${baseUrl}/notification/user/${userId}`),
-        fetchJson(`${baseUrl}/user/favourite`),
-        fetchJson(`${baseUrl}/property/owner-properties`),
-      ]);
-
-    return {
-      props: {
-        favouriteProperties,
-        ownerProperties,
-        notifications,
-      },
-    };
   }
+
+  const userId = session?.user.data._id || session?.user.id;
+  const page = Number(context.query.page);
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+  let ownerId;
+
+
+  try {
+    const ownerIdResponse = await fetch(
+      `${baseUrl}/user/find-owner-by-user`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId }),
+      }
+    );
+
+    if (ownerIdResponse.ok) {
+      const ownerData = await ownerIdResponse.json();
+      ownerId = ownerData?.owner?._id;
+    }
+  } catch (error) {
+    console.error(error);
+  }
+
+  const [notifications, favouriteProperties, ownerProperties] =
+    await Promise.all([
+      fetch(`${baseUrl}/notification/user/${userId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then((res) => res.json())
+        .catch(() => []),
+      fetch(`${baseUrl}/user/favourite`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: userId,
+          page: Number(page),
+        }),
+      })
+        .then((res) => res.json())
+        .catch(() => []),
+      fetch(`${baseUrl}/property/owner-properties`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ownerId,
+          page: 1,
+        }),
+      })
+        .then((res) => res.json())
+        .catch(() => []),
+      fetchJson(`${baseUrl}/notification/user/${userId}`),
+      fetchJson(`${baseUrl}/user/favourite`),
+      fetchJson(`${baseUrl}/property/owner-properties`),
+    ]);
+
+  return {
+    props: {
+      favouriteProperties,
+      ownerProperties,
+      notifications,
+    },
+  };
 }
 
 const classes = {
-  content: 'flex flex-row items-center justify-center lg:ml-96 xl:ml-96',
+  content: 'flex flex-col mt-16 xl:ml-80 max-w-[1232px] justify-center md:mx-5',
   sideMenu: 'fixed left-0 top-7 sm:hidden hidden md:hidden lg:flex',
   title:
-    'font-extrabold text-lg md:text-2xl text-quaternary md:mb-5 text-center md:mr-16',
+    'font-extrabold text-lg md:text-2xl text-quaternary md:mb-5 text-center md:mx-auto',
   h1: 'text-2xl text-quaternary mt-2',
   favPropertiesContainer:
     'flex flex-col items-center justify-center mb-5 max-w-[1215px]',
   notFound:
-    'flex flex-col items-center align-middle mt-36 justify-center mr-0 lg:mr-40',
+    'flex flex-col items-center text-center align-middle lg:mt-36 justify-center mr-0 lg:mx-auto',
   favProperties:
     'grid sm:grid-cols-1 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 my-5 gap-10 lg:justify-start',
 };
