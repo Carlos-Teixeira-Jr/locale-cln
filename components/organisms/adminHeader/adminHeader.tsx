@@ -22,6 +22,7 @@ const AdminHeader: React.FC<IAdminHeader> = ({ isOwnerProp }) => {
   const isOwner = isOwnerProp ? isOwnerProp : false;
 
   const { data: session } = useSession() as any;
+  const userPicture = session?.user?.data?.picture;
 
   return (
     <div className="flex flex-row fixed top-0 w-full z-50 justify-between bg-tertiary h-16 drop-shadow-md">
@@ -42,9 +43,9 @@ const AdminHeader: React.FC<IAdminHeader> = ({ isOwnerProp }) => {
             className="flex items-center justify-center max-w-[50px] max-h-[50px] cursor-pointer shrink-0"
             onClick={() => setOpen(!isMobile ? !open : false)}
           >
-            {session?.user?.image ? (
+            {userPicture ? (
               <Image
-                src={session?.user?.image}
+                src={userPicture}
                 alt={'User profile picture'}
                 width={50}
                 height={50}
