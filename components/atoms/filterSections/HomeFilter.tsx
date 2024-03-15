@@ -13,6 +13,7 @@ import {
   translateLocations,
 } from '../../../common/utils/translateLocations';
 import propertyTypeSubtype from '../../../data/propertyTypeSubType.json';
+import useTrackLocation from '../../../hooks/trackLocation';
 import ArrowDownIcon from '../icons/arrowDownIcon';
 import CheckIcon from '../icons/checkIcon';
 
@@ -30,6 +31,16 @@ export interface Iquery extends ParsedUrlQueryInput {
   propertyType?: string;
   location?: string;
   category?: string;
+}
+
+type HomeQuery = {
+  adType: string | undefined,
+  page: number,
+  location?: any,
+  propertyType?: any,
+  propertySubtype?: any,
+  longitude?: string,
+  latitude?: string
 }
 
 const HomeFilter: React.FC<IHomeFilter> = ({
@@ -55,6 +66,7 @@ const HomeFilter: React.FC<IHomeFilter> = ({
   const [filteredLocations, setFilteredLocations] = useState<ILocation[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [allLocations, setAllLocations] = useState(false);
+  const { longitude, latitude, location: geolocation } = useTrackLocation();
 
   const handleBuy = () => {
     setIsBuy(true);
@@ -70,17 +82,15 @@ const HomeFilter: React.FC<IHomeFilter> = ({
     setRentProp(true);
   };
 
-  const buyBtnClassName = `w-full h-[34px] md:h-fit lg:h-[33px] rounded-full border-black text-quaternary font-bold lg:text-md transition-all ${
-    isBuy
+  const buyBtnClassName = `w-full h-[34px] md:h-fit lg:h-[33px] rounded-full border-black text-quaternary font-bold lg:text-md transition-all ${isBuy
       ? 'bg-secondary text-quinary border border-secondary'
       : 'bg-tertiary  text-quaternary'
-  }`;
+    }`;
 
-  const rentBtnClassName = `w-full h-[34px] md:h-fit lg:h-[33px] rounded-full border-black text-quaternary font-bold lg:text-md transition-all ${
-    isRent
+  const rentBtnClassName = `w-full h-[34px] md:h-fit lg:h-[33px] rounded-full border-black text-quaternary font-bold lg:text-md transition-all ${isRent
       ? 'bg-secondary text-quinary border border-secondary'
       : 'bg-tertiary text-quaternary'
-  }`;
+    }`;
 
   const filterLocation = (value: string) => {
     const filtered: ILocation[] = locationProp.filter((location) =>
@@ -156,7 +166,7 @@ const HomeFilter: React.FC<IHomeFilter> = ({
   const handleFindBtnClick = () => {
     const adType = isBuy ? 'comprar' : isRent ? 'alugar' : undefined;
 
-    const query = {
+    const query: HomeQuery = {
       adType,
       page: 1,
       location: translateLocations(location, allLocations, categoryMappings),
@@ -169,6 +179,11 @@ const HomeFilter: React.FC<IHomeFilter> = ({
           ? JSON.stringify(propertyType.propertySubtype)
           : JSON.stringify('todos'),
     };
+
+    if (geolocation) {
+      query.longitude = longitude,
+        query.latitude = latitude
+    }
 
     router.push(
       {
@@ -239,17 +254,15 @@ const HomeFilter: React.FC<IHomeFilter> = ({
                       : `Tipo de imóvel`}
                   </p>
                   <ArrowDownIcon
-                    className={`my-auto cursor-pointer ${
-                      propTypeDropdownIsOpen
+                    className={`my-auto cursor-pointer ${propTypeDropdownIsOpen
                         ? 'transform rotate-360 transition-transform duration-300 ease-in-out'
                         : 'transform rotate-180 transition-transform duration-300 ease-in-out'
-                    }`}
+                      }`}
                   />
                 </div>
                 <div
-                  className={`z-50 md:w-fit w-full h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md mt-20 ${
-                    !propTypeDropdownIsOpen ? 'hidden ' : 'absolute'
-                  }`}
+                  className={`z-50 md:w-fit w-full h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md mt-20 ${!propTypeDropdownIsOpen ? 'hidden ' : 'absolute'
+                    }`}
                 >
                   {propertyTypeSubtype.map((prop, index) => (
                     <div className="w-full rounded-t-8 bg-tertiary" key={index}>
@@ -303,9 +316,8 @@ const HomeFilter: React.FC<IHomeFilter> = ({
                   value={location.length > 0 ? location[0].name[0] : inputValue}
                 />
                 <div
-                  className={`z-50 w-full md:w-48 mt-20 h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md ${
-                    openLocationDropdown ? 'absolute' : 'hidden'
-                  }`}
+                  className={`z-50 w-full md:w-48 mt-20 h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md ${openLocationDropdown ? 'absolute' : 'hidden'
+                    }`}
                   ref={ref}
                 >
                   <div className="flex flex-col w-full text-center font-normal text-base text-quaternary leading-5">
@@ -362,13 +374,13 @@ const HomeFilter: React.FC<IHomeFilter> = ({
                                           obj.name.includes(option)
                                         ) ||
                                           allLocations) && (
-                                          <CheckIcon
-                                            width="20"
-                                            height="20"
-                                            fill="#F5BF5D"
-                                            viewBox="40 126 960 960"
-                                          />
-                                        )}
+                                            <CheckIcon
+                                              width="20"
+                                              height="20"
+                                              fill="#F5BF5D"
+                                              viewBox="40 126 960 960"
+                                            />
+                                          )}
                                       </div>
                                       <span
                                         id={option}
@@ -391,13 +403,13 @@ const HomeFilter: React.FC<IHomeFilter> = ({
                                         obj.name.includes(name)
                                       ) ||
                                         allLocations) && (
-                                        <CheckIcon
-                                          width="20"
-                                          height="20"
-                                          fill="#F5BF5D"
-                                          viewBox="40 126 960 960"
-                                        />
-                                      )}
+                                          <CheckIcon
+                                            width="20"
+                                            height="20"
+                                            fill="#F5BF5D"
+                                            viewBox="40 126 960 960"
+                                          />
+                                        )}
                                     </div>
                                     <span
                                       id={name}

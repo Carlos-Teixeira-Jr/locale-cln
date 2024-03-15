@@ -168,6 +168,26 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     setAddressData(property ? property.address : '');
   }, []);
 
+  // Busca as coordenadas geográficas do endereço do imóvel;
+  useEffect(() => {
+    if (addressData.city && addressData.streetName && addressData.zipCode) {
+      const getGeocoordinates = async () => {
+        try {
+          const result = await geocodeAddress(addressData);
+  
+          if (result) {
+            setCoordinates(result);
+          } else {
+            console.error('Não foi possível buscar as coordenadas geográficas do imóvel.')
+          }
+        } catch (error) {
+          console.error('Não foi possível buscar as coordenadas geográficas do imóvel:', error)
+        }
+      }
+      getGeocoordinates();
+    }
+  }, [addressData]);  
+
   useEffect(() => {
     const url = router.pathname;
     if (url === '/adminUserData') {
@@ -266,20 +286,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     );
 
     if (!hasErrors && termsAreRead) {
-      try {
-        const result = await geocodeAddress(addressData);
-
-        if (result !== null) {
-          setCoordinates(result);
-        } else {
-          console.log(
-            'Não foi possível buscar as coordenadas geográficas do imóvel'
-          );
-        }
-      } catch (error) {
-        console.error(error);
-      }
-
       const storedData = store.get('propertyData');
 
       const propertyDataStep3: IRegisterPropertyData_Step3 = {
@@ -297,7 +303,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
         uf: addressData.uf,
         streetName: addressData.streetName,
         geolocation: coordinates
-          ? [coordinates?.lat, coordinates?.lng]
+          ? [coordinates?.lng, coordinates?.lat]
           : [-52.1872864, -32.1013804],
         plan: selectedPlan !== '' ? selectedPlan : freePlan,
         isPlanFree,
