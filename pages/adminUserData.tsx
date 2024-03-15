@@ -136,13 +136,13 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   };
 
   const [address, setAddress] = useState<IAddress>({
-    zipCode: userData ? userData.address.zipCode : '',
-    city: userData ? userData.address.city : '',
-    streetName: userData ? userData.address.streetName : '',
-    streetNumber: userData ? userData.address.streetNumber : '',
-    complement: userData ? userData.address.complement : '',
-    neighborhood: userData ? userData.address.neighborhood : '',
-    uf: userData ? userData.address.uf : '',
+    zipCode: userData ? userData.address?.zipCode : '',
+    city: userData ? userData.address?.city : '',
+    streetName: userData ? userData.address?.streetName : '',
+    streetNumber: userData ? userData.address?.streetNumber : '',
+    complement: userData ? userData.address?.complement : '',
+    neighborhood: userData ? userData.address?.neighborhood : '',
+    uf: userData ? userData.address?.uf : '',
   });
 
   const [addressErrors, setAddressErrors] = useState<AddressErrors>({

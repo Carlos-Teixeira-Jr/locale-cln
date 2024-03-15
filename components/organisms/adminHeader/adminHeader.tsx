@@ -22,7 +22,9 @@ const AdminHeader: React.FC<IAdminHeader> = ({ isOwnerProp }) => {
   const isOwner = isOwnerProp ? isOwnerProp : false;
 
   const { data: session } = useSession() as any;
+  console.log("🚀 ~ session:", session)
   const userPicture = session?.user?.data?.picture;
+  console.log("🚀 ~ userPicture:", userPicture)
 
   return (
     <div className="flex flex-row fixed top-0 w-full z-50 justify-between bg-tertiary h-16 drop-shadow-md">

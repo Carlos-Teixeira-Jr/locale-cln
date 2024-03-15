@@ -229,7 +229,7 @@ const PropertyCard: React.FC<IPropertyCard> = ({
               WebkitLineClamp: expanded ? 'unset' : 2,
               WebkitBoxOrient: 'vertical',
             }}
-            className="font-medium text-xs text-quaternary mt-4 max-w-[350px] text-justify"
+            className="font-medium text-xs text-quaternary mt-4 max-w-[350px]"
           >
             {memoizedCardInfos.description}
           </p>
