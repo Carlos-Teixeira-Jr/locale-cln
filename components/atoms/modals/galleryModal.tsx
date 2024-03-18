@@ -22,10 +22,10 @@ const GalleryModal: React.FC<IGalleryModal> = ({
   // Função para carregar a imagem e obter suas dimensões
   useEffect(() => {
     const loadImage = async () => {
-      const img = new Image(); // Cria um novo objeto Image
-      img.src = property.images[currentIndex]; // Define o src da imagem
-      img.onload = () => { // Define a função a ser executada quando a imagem carregar
-        setImageDimensions({ width: img.width, height: img.height }); // Atualiza as dimensões da imagem no estado
+      const img = new Image();
+      img.src = property.images[currentIndex];
+      img.onload = () => {
+        setImageDimensions({ width: img.width, height: img.height });
       };
     };
     loadImage();

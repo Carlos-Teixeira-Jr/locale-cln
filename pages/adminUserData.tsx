@@ -16,8 +16,8 @@ import {
   IPropertyInfo,
 } from '../common/interfaces/property/propertyData';
 import { IUser, IUserDataComponent } from '../common/interfaces/user/user';
-import { defaultProfileImage } from '../common/utils/defaultImage/defaultImage';
 import { fetchJson } from '../common/utils/fetchJson';
+import { defaultProfileImage } from '../common/utils/images/defaultImage/defaultImage';
 import { clearIndexDB, getAllImagesFromDB } from '../common/utils/indexDb';
 import {
   ErrorToastNames,

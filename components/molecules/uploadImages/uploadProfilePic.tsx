@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { useEffect, useRef, useState } from 'react';
-import { defaultProfileImage } from '../../../common/utils/defaultImage/defaultImage';
+import { defaultProfileImage } from '../../../common/utils/images/defaultImage/defaultImage';
 import TrashIcon from '../../atoms/icons/trashIcon';
 
 interface ImageProps {
