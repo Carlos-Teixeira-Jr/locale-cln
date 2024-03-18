@@ -36,7 +36,6 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
   isFavourite,
   owner
 }) => {
-  console.log("🚀 ~ owner:", owner)
 
   const session = useSession() as any;
   const status = session.status;
@@ -44,7 +43,6 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
   const userIsLogged = status === 'authenticated' ? true : false;
   const userId = session?.data?.user?.data?._id;
   const isOwnProperty = owner?.owner?.userId === userId ? true : false;
-  console.log("🚀 ~ isOwnProperty:", isOwnProperty)
   const [tooltipIsVisible, setTooltipIsVisible] = useState(false);
   const [favPropTooltipIsVisible, setFavPropTooltipIsVisible] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);

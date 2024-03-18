@@ -109,6 +109,7 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
                 width="312"
                 height="265"
                 className="w-full"
+                style={{ objectFit: 'cover' }}
               />
               {highlighted && (
                 <div className="bg-black absolute m-5 rounded-lg bg-opacity-50">
