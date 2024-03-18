@@ -29,7 +29,6 @@ const GalleryModal: React.FC<IGalleryModal> = ({
       };
     };
     loadImage();
-    console.log("🚀 ~ imageDimensions:", imageDimensions)
 
   }, [property.images, currentIndex]);
 
