@@ -41,6 +41,12 @@ export default function modifyString(str: string) {
   if (str === '/announcement') {
     str = '/planos de Anúncio'
   }
+  if (str === '/search') {
+    str = '/buscar'
+  }
+  if (str === '/admin') {
+    str = `/anúncios`
+  }
 
 
   const firstCharRemoved = str.substring(1);
