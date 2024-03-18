@@ -103,6 +103,7 @@ const Gallery: React.FC<IGallery> = ({
                     ?.addEventListener('click', desabilitarScroll);
                 }}
                 className="cursor-pointer rounded-l-3xl md:rounded-l-3xl w-[653px] h-[300px] md:h-[520px] hover:opacity-25 group"
+                style={{ objectFit: 'cover' }}
               />
               <span
                 className="hidden group-hover:relative group-hover:z-50 top-[-270px] font-normal text-2xl text-tertiary"
@@ -123,6 +124,7 @@ const Gallery: React.FC<IGallery> = ({
                   width={328}
                   height={260}
                   className="cursor-pointer w-[328px] h-[260px] hover:opacity-25 group"
+                  style={{ objectFit: 'cover' }}
                   id="desabilitarScrollBtn6"
                   onClick={() => {
                     setModalIsOpen(true);
@@ -146,6 +148,7 @@ const Gallery: React.FC<IGallery> = ({
                   width={328}
                   height={260}
                   className="group cursor-pointer rounded-tr-3xl w-[328px] h-[260px] hover:opacity-25 group"
+                  style={{ objectFit: 'cover' }}
                   id="desabilitarScrollBtn7"
                   onClick={() => {
                     setModalIsOpen(true);
@@ -171,6 +174,7 @@ const Gallery: React.FC<IGallery> = ({
                     width={328}
                     height={260}
                     className="cursor-pointer w-[328px] h-[260px] hover:opacity-25 group"
+                    style={{ objectFit: 'cover' }}
                     id="desabilitarScrollBtn2"
                     onClick={() => {
                       setModalIsOpen(true);
@@ -187,6 +191,7 @@ const Gallery: React.FC<IGallery> = ({
                     width={328}
                     height={260}
                     className="cursor-pointer w-[328px] h-[260px] hover:opacity-25 group"
+                    style={{ objectFit: 'cover' }}
                     id="desabilitarScrollBtn3"
                     onClick={() => {
                       setModalIsOpen(true);
@@ -213,6 +218,7 @@ const Gallery: React.FC<IGallery> = ({
                     width={328}
                     height={260}
                     className="cursor-pointer w-[328px] h-[260px] hover:opacity-25 group"
+                    style={{ objectFit: 'cover' }}
                     id="desabilitarScrollBtn4"
                     onClick={() => {
                       setModalIsOpen(true);
@@ -229,6 +235,7 @@ const Gallery: React.FC<IGallery> = ({
                     width={328}
                     height={260}
                     className="cursor-pointer w-[328px] h-[260px] hover:opacity-25 group"
+                    style={{ objectFit: 'cover' }}
                     id="desabilitarScrollBtn5"
                     onClick={() => {
                       setModalIsOpen(true);
@@ -258,10 +265,11 @@ const Gallery: React.FC<IGallery> = ({
                 alt={'Property Image'}
                 width={405}
                 height={350}
+                style={{ objectFit: 'cover' }}
               />
             </div>
             {/* Index */}
-            <div className="flex relative -top-8 left-[17rem] w-9 rounded-lg bg-black opacity-50">
+            <div className="flex relative -top-8 left-4 w-9 rounded-lg bg-black opacity-50">
               <span className="text-sm font-normal text-tertiary ml-[7px] z-50">
                 {currentIndex + 1}/{propertyID.images.length}
               </span>

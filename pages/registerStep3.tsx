@@ -13,9 +13,9 @@ import {
   IRegisterPropertyData_Step3,
 } from '../common/interfaces/property/register/register';
 import { IUserDataComponent } from '../common/interfaces/user/user';
-import { defaultProfileImage } from '../common/utils/defaultImage/defaultImage';
 import { fetchJson } from '../common/utils/fetchJson';
 import { geocodeAddress } from '../common/utils/geocodeAddress';
+import { defaultProfileImage } from '../common/utils/images/defaultImage/defaultImage';
 import { clearIndexDB, getAllImagesFromDB } from '../common/utils/indexDb';
 import useProgressRedirect from '../common/utils/stepProgressHandler';
 import { ErrorToastNames, showErrorToast } from '../common/utils/toasts';
