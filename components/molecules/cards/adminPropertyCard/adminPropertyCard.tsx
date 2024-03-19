@@ -137,7 +137,7 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
             src={image}
             alt={'Admin property image'}
             className={`md:max-w-xs md:min-w-[250px] ${!isActive ? 'opacity-30' : ''
-              } overflow-x-visible object-cover.`}
+              } object-cover`}
             width={350}
             height={265}
           />

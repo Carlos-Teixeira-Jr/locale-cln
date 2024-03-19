@@ -53,6 +53,7 @@ type BodyReq = {
 };
 
 const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerData }) => {
+  console.log("🚀 ~ ownerData:", ownerData)
   const router = useRouter();
   const { progress, updateProgress } = useProgress();
   const query = router.query;
@@ -63,6 +64,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
   const propertyAddress = storedData?.address ? storedData.address : {};
   const [paymentError, setPaymentError] = useState('');
   const [loading, setLoading] = useState(false);
+
 
   const userDataInputRefs = {
     username: useRef<HTMLElement>(null),
@@ -209,10 +211,10 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     event.preventDefault();
 
     const error = `Este campo é obrigatório.`;
-    const planObj: IPlan | undefined = plans.find(
+    const planData: IPlan | undefined = plans.find(
       (plan) => plan._id === selectedPlan
     );
-    const isPlanFree = planObj === undefined || planObj.name === 'Free';
+    const isPlanFree = planData === undefined || planData.name === 'Free';
 
     setUserDataErrors({
       username: '',
@@ -266,8 +268,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     if (!addressData.uf) newAddressErrors.uf = error;
     if (!termsAreRead) setTermsError(error);
     if (selectedPlan !== '') {
-      const planObj = plans.find((plan) => plan._id === selectedPlan);
-      if (planObj && planObj.name !== 'Free') {
+      const planData = plans.find((plan) => plan._id === selectedPlan);
+      if (planData && planData.name !== 'Free') {
         if (!creditCard.cardName) newCreditCardErrors.cardName = error;
         if (!creditCard.cardNumber) newCreditCardErrors.cardNumber = error;
         if (!creditCard.expiry) newCreditCardErrors.expiry = error;
@@ -503,6 +505,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
         }
       } catch (error) {
         toast.dismiss();
+        setLoading(false);
         toast.error(
           'Não foi possivel se conectar ao servidor. Por favor, tente novamente mais tarde.'
         );
@@ -510,6 +513,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
       }
     } else {
       toast.error(`Algum campo obrigatório não foi preenchido.`);
+      setLoading(false)
     }
   };
 
@@ -543,10 +547,10 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
                   selectedPlanCard={selectedPlan}
                   setSelectedPlanCard={(selectedCard: string) => {
                     setSelectedPlan(selectedCard);
-                    const planObj = plans.find(
+                    const planData = plans.find(
                       (plan) => plan._id === selectedCard
                     );
-                    if (planObj && planObj?.name === 'Free') {
+                    if (planData && planData?.name === 'Free') {
                       setIsFreePlan(true);
                     } else {
                       setIsFreePlan(false);
@@ -599,11 +603,12 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
 
             {selectedPlan !== '' &&
               (() => {
-                const planObj = plans.find((plan) => plan._id === selectedPlan);
-                if (planObj && planObj.name !== 'Free') {
+                const planData = plans.find((plan) => plan._id === selectedPlan);
+                if (planData && planData.name !== 'Free') {
                   return (
                     <CreditCard
                       isEdit={false}
+                      creditCardInfo={ownerData?.owner?.paymentData?.creditCardInfo}
                       onCreditCardUpdate={(creditCard) => {
                         if (!isFreePlan) {
                           setCreditCard(creditCard);
@@ -662,7 +667,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     session?.user.data._id !== undefined
       ? session?.user.data._id
       : session?.user.id;
-
 
   const [plans, ownerData] = await Promise.all([
     fetch(`${baseUrl}/plan`)

@@ -65,7 +65,7 @@ export interface IOwnerInfo {
   cellPhone: string
   creci?: string;
   email: string;
-  ownerPicture: string;
+  picture: string;
   cpf?: string;
   wppNumber?: string;
 }

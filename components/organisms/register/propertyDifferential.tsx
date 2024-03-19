@@ -36,7 +36,7 @@ const PropertyDifferentials = ({
     if (property && property.tags) {
       return property.tags;
     } else if (storedData && storedData.tags.length > 0) {
-      return ['garagem'];
+      return storedData.tags
     } else {
       return [];
     }
@@ -47,6 +47,26 @@ const PropertyDifferentials = ({
   >(property ? property.condominiumTags : []);
 
   const [updatedYouTubeLink, setUpdatedYouTubeLink] = useState<string>('');
+
+  const handleAddWithEnter = (event: React.KeyboardEvent<HTMLInputElement>, type: string) => {
+    if (event.key === 'Enter') {
+      if (type === 'condominiumTags') {
+        const newTag = firstInputValue.trim(); // Remove espaços em branco extras
+        if (newTag !== '') {
+          const newTagsArray = [...updatedTags, newTag];
+          setUpdatedTags(newTagsArray);
+          setFirstInputValue('');
+        }
+      } else if (type === 'tags') {
+        const newTag = secondInputValue.trim();
+        if (newTag !== '') {
+          const newTagsArray = [...updatedTags, newTag];
+          setUpdatedTags(newTagsArray);
+          setSecondInputValue('');
+        }
+      }
+    }
+  };
 
   useEffect(() => {
     if (property) {
@@ -135,6 +155,7 @@ const PropertyDifferentials = ({
           value={firstInputValue}
           maxLength={40}
           onChange={(event) => setFirstInputValue(event.target.value)}
+          onKeyUp={(event) => handleAddWithEnter(event, 'condominiumTags')}
         />
         <button
           className={classes.addButton}
@@ -143,6 +164,7 @@ const PropertyDifferentials = ({
             if (firstInputValue !== '') {
               const newTagsArray = [...updatedTags, newTag];
               setUpdatedTags(newTagsArray);
+              setFirstInputValue('');
             }
           }}
         >
@@ -289,6 +311,7 @@ const PropertyDifferentials = ({
                 value={secondInputValue}
                 maxLength={20}
                 onChange={(event) => setSecondInputValue(event.target.value)}
+                onKeyUp={(event) => handleAddWithEnter(event, 'tags')}
               />
               <button
                 className={classes.addButton}

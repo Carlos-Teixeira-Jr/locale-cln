@@ -560,7 +560,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
             <textarea
               className="bg-tertiary border border-quaternary rounded-[10px] h-32 min-h-fit drop-shadow-xl text-sm p-2 font-semibold text-quaternary"
               value={propertyFeaturesData.description}
-              maxLength={1000}
+              maxLength={2000}
               onChange={(e) => {
                 setPropertyFeaturesData({
                   ...propertyFeaturesData,

@@ -4,7 +4,7 @@ import { ProfilePicture } from '../../../common/interfaces/images/profilePicture
 import { IOwnerData } from '../../../common/interfaces/owner/owner';
 import {
   IUserDataComponent,
-  IUserDataComponentErrors,
+  IUserDataComponentErrors
 } from '../../../common/interfaces/user/user';
 import { scrollToError } from '../../../common/utils/errors/errorsAutoScrollUtil';
 import { addImageToDB, removeImageFromDB } from '../../../common/utils/indexDb';
@@ -52,6 +52,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
   userDataInputRefs,
   ownerData,
 }) => {
+  console.log("🚀 ~ ownerData:", ownerData)
 
   const userDataErrorScroll = {
     ...userDataInputRefs,
@@ -70,12 +71,13 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
       : '',
     cpf: ownerData?.user?.cpf ? ownerData?.user?.cpf : '',
     cellPhone: ownerData && ownerData.owner ? ownerData.owner.cellPhone : '',
-    picture: ownerData?.user?.picture
-      ? { id: uuidv4.toString(), src: ownerData?.user?.picture }
+    picture: ownerData?.owner?.picture
+      ? { id: uuidv4.toString(), src: ownerData?.owner?.picture }
       : image,
     phone: ownerData && ownerData.owner ? ownerData.owner.phone : '',
     wppNumber: ownerData?.owner?.wppNumber ? ownerData?.owner?.wppNumber : '',
   });
+
 
   useEffect(() => {
     onUserDataUpdate(formData);

@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable no-unused-vars */
 /* eslint-disable @next/next/no-img-element */
+import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
 import { DndProvider, DropTargetMonitor, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
@@ -32,8 +33,9 @@ const UploadImages = ({
   onErrorsInfo,
   imagesInputRef,
 }: IImages) => {
-  const imagesErrorScroll = useRef(imagesInputRef);
 
+  const imagesErrorScroll = useRef(imagesInputRef);
+  const router = useRouter();
   const [images, setImages] = useState<any[]>([]);
 
   useEffect(() => {
@@ -68,7 +70,7 @@ const UploadImages = ({
   }, [error, onErrorsInfo]);
 
   useEffect(() => {
-    if (editarImages?.length === 0) {
+    if (editarImages?.length === 0 || router.pathname === '/registerStep2') {
       const loadImagesFromDB = async () => {
         try {
           // Consulta o IndexedDB para recuperar as imagens salvas
@@ -83,6 +85,7 @@ const UploadImages = ({
       loadImagesFromDB();
     }
   }, []);
+
 
   const handleAddImage = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;

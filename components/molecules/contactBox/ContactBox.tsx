@@ -17,7 +17,7 @@ export interface IContactBox {
 
 const ContactBox: React.FC<IContactBox> = ({ ownerInfo, property }: IContactBox) => {
 
-  const picture = ownerInfo?.ownerPicture;
+  const picture = ownerInfo?.picture;
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [fullMessage, setFullMessage] = useState(false);
   const owner = ownerInfo?.name;
