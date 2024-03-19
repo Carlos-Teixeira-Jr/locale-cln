@@ -33,6 +33,7 @@ const Image: React.FC<ImageProps> = ({ id, src, onImageChange, alt }) => {
           }`}
         height={176}
         width={176}
+        style={{ objectFit: 'cover' }}
       />
       <div
         className="flex p-1 cursor-pointer bg-primary rounded-full ml-2"

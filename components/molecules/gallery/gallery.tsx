@@ -102,7 +102,7 @@ const Gallery: React.FC<IGallery> = ({
                     ?.getElementById('desabilitarScrollBtn')
                     ?.addEventListener('click', desabilitarScroll);
                 }}
-                className="cursor-pointer rounded-l-3xl md:rounded-l-3xl w-[653px] h-[300px] md:h-[520px] hover:opacity-25 group"
+                className="cursor-pointer rounded-l-3xl md:rounded-l-3xl w-[653px] h-[300px] md:h-[520px] hover:opacity-25 group object-cover"
               />
               <span
                 className="hidden group-hover:relative group-hover:z-50 top-[-270px] font-normal text-2xl text-tertiary"
@@ -122,7 +122,7 @@ const Gallery: React.FC<IGallery> = ({
                   alt={'Property image'}
                   width={328}
                   height={260}
-                  className="cursor-pointer w-[328px] h-[260px] hover:opacity-25 group"
+                  className="cursor-pointer w-[328px] h-[260px] hover:opacity-25 group object-cover"
                   id="desabilitarScrollBtn6"
                   onClick={() => {
                     setModalIsOpen(true);
@@ -132,7 +132,7 @@ const Gallery: React.FC<IGallery> = ({
                       ?.addEventListener('click', desabilitarScroll);
                   }}
                 />
-                <span className="hidden group-hover:relative group-hover:z-50 cursor-pointer relative top-[-150px] left-[80px] font-normal text-3xl text-tertiary">
+                <span className="hidden group-hover:relative group-hover:z-50 cursor-pointer relative top-[-150px] left-[80px] font-normal text-3xl text-tertiary object-cover">
                   Abrir galeria
                 </span>
               </div>
@@ -145,7 +145,7 @@ const Gallery: React.FC<IGallery> = ({
                   alt={'Property image'}
                   width={328}
                   height={260}
-                  className="group cursor-pointer rounded-tr-3xl w-[328px] h-[260px] hover:opacity-25 group"
+                  className="group cursor-pointer rounded-tr-3xl w-[328px] h-[260px] hover:opacity-25 group object-cover"
                   id="desabilitarScrollBtn7"
                   onClick={() => {
                     setModalIsOpen(true);
@@ -170,7 +170,7 @@ const Gallery: React.FC<IGallery> = ({
                     alt={'Property image'}
                     width={328}
                     height={260}
-                    className="cursor-pointer w-[328px] h-[260px] hover:opacity-25 group"
+                    className="cursor-pointer w-[328px] h-[260px] hover:opacity-25 group object-cover"
                     id="desabilitarScrollBtn2"
                     onClick={() => {
                       setModalIsOpen(true);
@@ -186,7 +186,7 @@ const Gallery: React.FC<IGallery> = ({
                     alt={'Property image'}
                     width={328}
                     height={260}
-                    className="cursor-pointer w-[328px] h-[260px] hover:opacity-25 group"
+                    className="cursor-pointer w-[328px] h-[260px] hover:opacity-25 group object-cover"
                     id="desabilitarScrollBtn3"
                     onClick={() => {
                       setModalIsOpen(true);
@@ -212,7 +212,7 @@ const Gallery: React.FC<IGallery> = ({
                     alt={'Property image'}
                     width={328}
                     height={260}
-                    className="cursor-pointer w-[328px] h-[260px] hover:opacity-25 group"
+                    className="cursor-pointer w-[328px] h-[260px] hover:opacity-25 group object-cover"
                     id="desabilitarScrollBtn4"
                     onClick={() => {
                       setModalIsOpen(true);
@@ -228,7 +228,7 @@ const Gallery: React.FC<IGallery> = ({
                     alt={'Property image'}
                     width={328}
                     height={260}
-                    className="cursor-pointer w-[328px] h-[260px] hover:opacity-25 group"
+                    className="cursor-pointer w-[328px] h-[260px] hover:opacity-25 group object-cover"
                     id="desabilitarScrollBtn5"
                     onClick={() => {
                       setModalIsOpen(true);

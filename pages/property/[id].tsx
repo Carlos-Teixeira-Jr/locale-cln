@@ -80,7 +80,7 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
         <div className="md:flex w-full justify-between mb-4">
           <PropertyInfoTop propertyID={property} />
 
-          <ContactBox property={property} ownerInfo={property.ownerInfo} />
+          <ContactBox property={property} ownerInfo={ownerData?.owner} />
         </div>
 
         <div className="w-full h-fit">

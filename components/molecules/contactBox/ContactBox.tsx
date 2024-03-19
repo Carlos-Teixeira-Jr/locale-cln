@@ -18,12 +18,11 @@ export interface IContactBox {
 const ContactBox: React.FC<IContactBox> = ({ ownerInfo, property }: IContactBox) => {
   console.log("🚀 ~ ownerInfo:", ownerInfo)
 
-  const picture = ownerInfo?.picture;
+  const picture = ownerInfo?.ownerPicture;
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [fullMessage, setFullMessage] = useState(false);
-  const [message, setMessage] = useState('');
   const owner = ownerInfo?.name;
-  const ownerPropertyWpp = ownerInfo?.wppNumber;
+  const ownerPropertyWpp = ownerInfo?.wppNumber ? ownerInfo?.wppNumber : ownerInfo?.cellPhone;
   const ownerWhatsapp = ownerPropertyWpp?.replace(/[^0-9]+/g, '');
   const formattedPrice = monetaryFormat(String(property?.prices[0].value));
   const uf = property?.address.uf;

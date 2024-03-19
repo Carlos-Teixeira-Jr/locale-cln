@@ -348,7 +348,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
 
       try {
         const imagesResponse = await fetch(
-          `${baseUrl}/property/upload-profile-image`,
+          `${baseUrl}/property/upload-profile-image/user`,
           {
             method: 'POST',
             body: imagesForm,

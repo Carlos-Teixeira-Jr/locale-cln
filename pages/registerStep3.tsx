@@ -105,6 +105,10 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
   const [failPaymentModalIsOpen, setFailPaymentModalIsOpen] = useState(false);
   const [termsError, setTermsError] = useState('');
 
+  useEffect(() => {
+    setLoading(false)
+  }, []);
+
   const [userDataForm, setUserDataForm] = useState<IUserDataComponent>({
     username: '',
     email: '',
@@ -167,6 +171,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
   useEffect(() => {
     setAddressData(property ? property.address : '');
   }, []);
+
 
   // Busca as coordenadas geográficas do endereço do imóvel;
   useEffect(() => {
@@ -353,7 +358,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
             ? userDataForm.picture
             : { id: '1', src: defaultProfileImage },
           name: userDataForm.username,
-          phones: [`55 ${userDataForm.cellPhone}`, userDataForm.phone],
+          phones: [`${userDataForm.cellPhone}`, userDataForm.phone],
           wppNumber: userDataForm.wppNumber ? `55 ${userDataForm.wppNumber}` : ''
         },
         tags: storedData.tags,
@@ -377,7 +382,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
           plan: propertyDataStep3.plan,
           isPlanFree,
           phone: userDataForm.phone,
-          cellPhone: `55 ${userDataForm.cellPhone}`,
+          cellPhone: `${userDataForm.cellPhone}`,
         };
 
         if (!isPlanFree) {
@@ -453,7 +458,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
               profileImageFormData.append('userId', data.user._id);
 
               const profileImageResponse = await fetch(
-                `${baseUrl}/property/upload-profile-image`,
+                `${baseUrl}/property/upload-profile-image/user`,
                 {
                   method: 'POST',
                   body: profileImageFormData,
@@ -494,6 +499,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
           console.error(response);
           setPaymentError(error.message);
           setFailPaymentModalIsOpen(true);
+          setLoading(false)
         }
       } catch (error) {
         toast.dismiss();

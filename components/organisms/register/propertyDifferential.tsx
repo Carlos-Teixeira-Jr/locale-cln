@@ -133,7 +133,7 @@ const PropertyDifferentials = ({
           className="my-2 h-12 md:w-[500px] w-full border border-quaternary drop-shadow-xl rounded-[10px] bg-tertiary px-5 text-sm font-normal text-quaternary"
           id="first-input"
           value={firstInputValue}
-          maxLength={20}
+          maxLength={40}
           onChange={(event) => setFirstInputValue(event.target.value)}
         />
         <button
