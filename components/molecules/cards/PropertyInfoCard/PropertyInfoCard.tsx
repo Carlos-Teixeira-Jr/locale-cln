@@ -108,7 +108,7 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
                 alt={'Property Image'}
                 width="312"
                 height="265"
-                className="w-full"
+                className="w-full object-cover"
               />
               {highlighted && (
                 <div className="bg-black absolute m-5 rounded-lg bg-opacity-50">

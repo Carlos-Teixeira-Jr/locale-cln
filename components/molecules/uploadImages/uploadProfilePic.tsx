@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { useEffect, useRef, useState } from 'react';
-import { defaultProfileImage } from '../../../common/utils/defaultImage/defaultImage';
+import { defaultProfileImage } from '../../../common/utils/images/defaultImage/defaultImage';
 import TrashIcon from '../../atoms/icons/trashIcon';
 
 interface ImageProps {
@@ -27,13 +27,12 @@ const Image: React.FC<ImageProps> = ({ id, src, onImageChange, alt }) => {
       <img
         src={src ? src : defaultProfileImage}
         alt={alt}
-        className={`rounded-full mt-2 ml-10 ${isDefault ?
+        className={`rounded-full mt-2 ml-10 object-cover ${isDefault ?
           '' :
           'w-44 h-44'
           }`}
         height={176}
         width={176}
-        style={{ objectFit: 'cover' }}
       />
       <div
         className="flex p-1 cursor-pointer bg-primary rounded-full ml-2"
