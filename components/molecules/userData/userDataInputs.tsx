@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { ProfilePicture } from '../../../common/interfaces/images/profilePicture';
@@ -57,6 +58,9 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
     ...userDataInputRefs,
   };
 
+  const router = useRouter();
+  const pathname = router.pathname;
+
   const [image, setImage] = useState({ id: '', src: '' });
   const [isSameNumber, setIsSameNumber] = useState(true);
   const [errorModalIsOpen, setErrorModalIsOpen] = useState(false);
@@ -70,12 +74,18 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
       : '',
     cpf: ownerData?.user?.cpf ? ownerData?.user?.cpf : '',
     cellPhone: ownerData && ownerData.owner ? ownerData.owner.cellPhone : '',
-    picture: ownerData?.owner?.picture
-      ? { id: uuidv4.toString(), src: ownerData?.owner?.picture }
-      : image,
+    picture: { id: '', src: '' },
     phone: ownerData && ownerData.owner ? ownerData.owner.phone : '',
     wppNumber: ownerData?.owner?.wppNumber ? ownerData?.owner?.wppNumber : '',
   });
+
+  useEffect(() => {
+    if (pathname === '/registerStep3' && ownerData?.owner?.picture) {
+      setFormData({ ...formData, picture: { id: uuidv4.toString(), src: ownerData?.owner?.picture } })
+    } else if (pathname === '/adminUserData' && ownerData?.user?.picture) {
+      setFormData({ ...formData, picture: { id: uuidv4.toString(), src: ownerData?.user?.picture } })
+    }
+  }, [])
 
 
   useEffect(() => {
