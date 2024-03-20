@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { IAddress } from '../../../common/interfaces/property/propertyData';
+var store = require('store')
+
 
 export type AddressErrorsTypes = {
   zipCode: string;
@@ -38,6 +40,8 @@ const Address: React.FC<IAddressComponent> = ({
   };
 
   const [shouldExecuteEffect, setShouldExecuteEffect] = useState(false);
+  const [inputsDisabled, setInputsDisabled] = useState(true);
+  const storedData = store.get('proeprtyData')
 
   const [addressData, setAddressData] = useState<IAddress>({
     zipCode: isEdit ? address?.zipCode! : '',
@@ -48,6 +52,9 @@ const Address: React.FC<IAddressComponent> = ({
     neighborhood: isEdit ? address?.neighborhood! : '',
     uf: isEdit ? address?.uf! : '',
   });
+
+  console.log("🚀 ~ addressData:", addressData)
+
 
   const [addressErrors, setAddressErrors] = useState({
     zipCode: '',
@@ -69,6 +76,8 @@ const Address: React.FC<IAddressComponent> = ({
     numero: '',
     complemento: '',
   });
+
+  console.log("🚀 ~ viaZipCodeData:", viaZipCodeData)
 
   useEffect(() => {
     const scrollToError = (errorKey: keyof typeof addressErrors) => {
@@ -128,7 +137,10 @@ const Address: React.FC<IAddressComponent> = ({
             alert('CEP não encontrado.');
           }
         })
-        .catch((error) => console.error(error));
+        .catch((error) => {
+          console.error(error);
+          setInputsDisabled(false);
+        });
     } else {
       alert('Formato de CEP inválido.');
     }
@@ -197,9 +209,15 @@ const Address: React.FC<IAddressComponent> = ({
 
   const classes = {
     largeInput:
-      'border border-quaternary rounded-[10px] w-full h-12 text-quaternary md:text-md text-sm font-bold px-5 drop-shadow-lg bg-[#CACACA] mt-2',
+      `border border-quaternary rounded-[10px] w-full h-12 text-quaternary md:text-md text-sm font-bold px-5 drop-shadow-lg mt-2 ${inputsDisabled
+        ? 'bg-[#CACACA]'
+        : 'bg-tertiary'
+      }`,
     mediumInput:
-      'border border-quaternary rounded-[10px] h-12 text-quaternary md:text-md text-sm font-bold px-5 drop-shadow-lg bg-tertiary mt-2',
+      `border border-quaternary rounded-[10px] h-12 text-quaternary md:text-md text-sm font-bold px-5 drop-shadow-lg mt-2 ${inputsDisabled ?
+        'bg-[#CACACA]' :
+        'bg-tertiary'
+      }`,
     tinyInput:
       'border border-quaternary rounded-[10px] md:w-full w-[150px] h-12 text-quaternary md:text-nd text-sm font-bold px-5 drop-shadow-lg bg-tertiary mt-2',
     inputLabel: 'text-lg font-normal text-quaternary leading-7',
@@ -263,7 +281,7 @@ const Address: React.FC<IAddressComponent> = ({
               style={addressErrors.city ? { border: '1px solid red' } : {}}
               onChange={handleCityChange}
               maxLength={30}
-              readOnly
+              readOnly={inputsDisabled}
             />
             {addressErrors.city && (
               <span className={classes.errorLabel}>{addressErrors.city}</span>
@@ -305,7 +323,7 @@ const Address: React.FC<IAddressComponent> = ({
               }
               onChange={handleStreetChange}
               maxLength={30}
-              readOnly
+              readOnly={inputsDisabled}
             />
             {addressErrors.streetName && (
               <span className={classes.errorLabel}>
@@ -343,7 +361,7 @@ const Address: React.FC<IAddressComponent> = ({
           <div className="flex flex-col md:mr-5 md:w-full">
             <label className={classes.inputLabel}> Complemento</label>
             <input
-              className={classes.mediumInput}
+              className={`border border-quaternary rounded-[10px] h-12 text-quaternary md:text-md text-sm font-bold px-5 drop-shadow-lg bg-tertiary mt-2`}
               onChange={handleComplementChange}
               value={addressData.complement}
               maxLength={50}
@@ -360,7 +378,7 @@ const Address: React.FC<IAddressComponent> = ({
               }
               onChange={handleNeighborhoodChange}
               maxLength={30}
-              readOnly
+              readOnly={inputsDisabled}
             />
           </div>
         </div>

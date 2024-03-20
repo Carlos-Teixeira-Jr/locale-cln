@@ -42,9 +42,15 @@ const PropertyDifferentials = ({
     }
   });
 
-  const [updatedCondominiumTags, setUpdatedCondominiumTags] = useState<
-    string[]
-  >(property ? property.condominiumTags : []);
+  const [updatedCondominiumTags, setUpdatedCondominiumTags] = useState<string[]>(() => {
+    if (property && property.condominiumTags) {
+      return property.condominiumTags;
+    } else if (storedData && storedData?.condominiumTags?.length > 0) {
+      return storedData.condominiumTags
+    } else {
+      return [];
+    }
+  });
 
   const [updatedYouTubeLink, setUpdatedYouTubeLink] = useState<string>('');
 

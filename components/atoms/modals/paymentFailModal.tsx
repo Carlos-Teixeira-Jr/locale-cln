@@ -66,7 +66,7 @@ const PaymentFailModal: React.FC<IPaymentFailModal> = ({
             Falha no Pagamento
           </h1>
           <p className="font-bold text-xl leading-6 text-quaternary">
-            {paymentError ? resultString : 'Não foi possível efetuar o pagamento. Ocorreu um erro ou a compra não foi autorizada.'}
+            {'Não foi possível efetuar o pagamento. Ocorreu um erro ou a compra não foi autorizada.'}
           </p>
 
           <p className="font-bold text-xl leading-6 text-quaternary my-5">

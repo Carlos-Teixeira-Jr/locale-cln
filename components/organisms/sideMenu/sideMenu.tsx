@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { ReactNode, useEffect, useState } from 'react';
 
-import { useIsMobile } from '../../../hooks/useIsMobile';
 import BellIcon from '../../atoms/icons/bellIcon';
 import HeartIcon from '../../atoms/icons/heartIcon';
 import MailIcon from '../../atoms/icons/mailIcon';
@@ -29,8 +28,6 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications }) => {
   const [activeButton, setActiveButton] = useState('');
 
   const [notReadNots, setNotReadNots] = useState([]);
-
-  const isMobile = useIsMobile();
 
   const isOwner = isOwnerProp;
 

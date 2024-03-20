@@ -177,7 +177,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
 
   // Busca as coordenadas geográficas do endereço do imóvel;
   useEffect(() => {
-    if (addressData.city && addressData.streetName && addressData.zipCode) {
+    if (addressData?.city && addressData?.streetName && addressData?.zipCode) {
       const getGeocoordinates = async () => {
         try {
           const result = await geocodeAddress(addressData);
@@ -211,6 +211,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     event.preventDefault();
 
     const error = `Este campo é obrigatório.`;
+    const streetNumberError = `Número do imóvel é inválido.`
     const planData: IPlan | undefined = plans.find(
       (plan) => plan._id === selectedPlan
     );
@@ -264,6 +265,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     if (!addressData.zipCode) newAddressErrors.zipCode = error;
     if (!addressData.streetName) newAddressErrors.streetName = error;
     if (!addressData.streetNumber) newAddressErrors.streetNumber = error;
+    if (Number(addressData.streetNumber) < 1) newAddressErrors.streetNumber = streetNumberError;
     if (!addressData.city) newAddressErrors.city = error;
     if (!addressData.uf) newAddressErrors.uf = error;
     if (!termsAreRead) setTermsError(error);
@@ -460,7 +462,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
               profileImageFormData.append('userId', data.user._id);
 
               const profileImageResponse = await fetch(
-                `${baseUrl}/property/upload-profile-image/user`,
+                `${baseUrl}/property/upload-profile-image/owner`,
                 {
                   method: 'POST',
                   body: profileImageFormData,
