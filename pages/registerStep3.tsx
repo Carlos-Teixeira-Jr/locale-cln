@@ -64,6 +64,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
   const [paymentError, setPaymentError] = useState('');
   const [loading, setLoading] = useState(false);
 
+
   const userDataInputRefs = {
     username: useRef<HTMLElement>(null),
     email: useRef<HTMLElement>(null),
@@ -104,6 +105,10 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
   const [isFreePlan, setIsFreePlan] = useState(false);
   const [failPaymentModalIsOpen, setFailPaymentModalIsOpen] = useState(false);
   const [termsError, setTermsError] = useState('');
+
+  useEffect(() => {
+    setLoading(false)
+  }, []);
 
   const [userDataForm, setUserDataForm] = useState<IUserDataComponent>({
     username: '',
@@ -168,9 +173,10 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     setAddressData(property ? property.address : '');
   }, []);
 
+
   // Busca as coordenadas geográficas do endereço do imóvel;
   useEffect(() => {
-    if (addressData.city && addressData.streetName && addressData.zipCode) {
+    if (addressData?.city && addressData?.streetName && addressData?.zipCode) {
       const getGeocoordinates = async () => {
         try {
           const result = await geocodeAddress(addressData);
@@ -204,10 +210,11 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     event.preventDefault();
 
     const error = `Este campo é obrigatório.`;
-    const planObj: IPlan | undefined = plans.find(
+    const streetNumberError = `Número do imóvel é inválido.`
+    const planData: IPlan | undefined = plans.find(
       (plan) => plan._id === selectedPlan
     );
-    const isPlanFree = planObj === undefined || planObj.name === 'Free';
+    const isPlanFree = planData === undefined || planData.name === 'Free';
 
     setUserDataErrors({
       username: '',
@@ -257,12 +264,13 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     if (!addressData.zipCode) newAddressErrors.zipCode = error;
     if (!addressData.streetName) newAddressErrors.streetName = error;
     if (!addressData.streetNumber) newAddressErrors.streetNumber = error;
+    if (Number(addressData.streetNumber) < 1) newAddressErrors.streetNumber = streetNumberError;
     if (!addressData.city) newAddressErrors.city = error;
     if (!addressData.uf) newAddressErrors.uf = error;
     if (!termsAreRead) setTermsError(error);
     if (selectedPlan !== '') {
-      const planObj = plans.find((plan) => plan._id === selectedPlan);
-      if (planObj && planObj.name !== 'Free') {
+      const planData = plans.find((plan) => plan._id === selectedPlan);
+      if (planData && planData.name !== 'Free') {
         if (!creditCard.cardName) newCreditCardErrors.cardName = error;
         if (!creditCard.cardNumber) newCreditCardErrors.cardNumber = error;
         if (!creditCard.expiry) newCreditCardErrors.expiry = error;
@@ -353,7 +361,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
             ? userDataForm.picture
             : { id: '1', src: defaultProfileImage },
           name: userDataForm.username,
-          phones: [`55 ${userDataForm.cellPhone}`, userDataForm.phone],
+          phones: [`${userDataForm.cellPhone}`, userDataForm.phone],
           wppNumber: userDataForm.wppNumber ? `55 ${userDataForm.wppNumber}` : ''
         },
         tags: storedData.tags,
@@ -377,7 +385,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
           plan: propertyDataStep3.plan,
           isPlanFree,
           phone: userDataForm.phone,
-          cellPhone: `55 ${userDataForm.cellPhone}`,
+          cellPhone: `${userDataForm.cellPhone}`,
         };
 
         if (!isPlanFree) {
@@ -453,7 +461,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
               profileImageFormData.append('userId', data.user._id);
 
               const profileImageResponse = await fetch(
-                `${baseUrl}/property/upload-profile-image`,
+                `${baseUrl}/property/upload-profile-image/owner`,
                 {
                   method: 'POST',
                   body: profileImageFormData,
@@ -494,9 +502,11 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
           console.error(response);
           setPaymentError(error.message);
           setFailPaymentModalIsOpen(true);
+          setLoading(false)
         }
       } catch (error) {
         toast.dismiss();
+        setLoading(false);
         toast.error(
           'Não foi possivel se conectar ao servidor. Por favor, tente novamente mais tarde.'
         );
@@ -504,6 +514,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
       }
     } else {
       toast.error(`Algum campo obrigatório não foi preenchido.`);
+      setLoading(false)
     }
   };
 
@@ -537,10 +548,10 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
                   selectedPlanCard={selectedPlan}
                   setSelectedPlanCard={(selectedCard: string) => {
                     setSelectedPlan(selectedCard);
-                    const planObj = plans.find(
+                    const planData = plans.find(
                       (plan) => plan._id === selectedCard
                     );
-                    if (planObj && planObj?.name === 'Free') {
+                    if (planData && planData?.name === 'Free') {
                       setIsFreePlan(true);
                     } else {
                       setIsFreePlan(false);
@@ -593,11 +604,12 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
 
             {selectedPlan !== '' &&
               (() => {
-                const planObj = plans.find((plan) => plan._id === selectedPlan);
-                if (planObj && planObj.name !== 'Free') {
+                const planData = plans.find((plan) => plan._id === selectedPlan);
+                if (planData && planData.name !== 'Free') {
                   return (
                     <CreditCard
                       isEdit={false}
+                      creditCardInfo={ownerData?.owner?.paymentData?.creditCardInfo}
                       onCreditCardUpdate={(creditCard) => {
                         if (!isFreePlan) {
                           setCreditCard(creditCard);
@@ -656,7 +668,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     session?.user.data._id !== undefined
       ? session?.user.data._id
       : session?.user.id;
-
 
   const [plans, ownerData] = await Promise.all([
     fetch(`${baseUrl}/plan`)

@@ -61,7 +61,8 @@ export interface IGeolocation {
 
 export interface IOwnerInfo {
   name: string;
-  phones: string[];
+  phone: string;
+  cellPhone: string
   creci?: string;
   email: string;
   picture: string;

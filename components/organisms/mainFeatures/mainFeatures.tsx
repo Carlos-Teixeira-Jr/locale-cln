@@ -1,13 +1,15 @@
 /* eslint-disable no-unused-vars */
 import { useRouter } from 'next/router';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import store from 'store';
 import { IEditPropertyMainFeatures } from '../../../common/interfaces/property/editPropertyData';
 import {
+  IMetadata,
   ISize,
   announcementSubtype,
   announcementType,
   propSubtype,
-  propType,
+  propType
 } from '../../../common/interfaces/property/propertyData';
 import { PropertyFeaturesErrors } from '../../../common/interfaces/property/propertyFeaturesErrors';
 import { scrollToError } from '../../../common/utils/errors/errorsAutoScrollUtil';
@@ -78,10 +80,17 @@ const MainFeatures: React.FC<IMainFeatures> = ({
   };
 
   const router = useRouter();
+  const data = store.get('propertyData');
+  const storedData = data?.storedData ? data?.storedData : data;
+
+  // const [isBuy, setIsBuy] = useState(
+  //   !isEdit ? true : editarAdType === 'comprar' ? true : false
+  // );
 
   const [isBuy, setIsBuy] = useState(
-    !isEdit ? true : editarAdType === 'comprar' ? true : false
+    editarAdType && editarAdType === 'comprar' ? true : false
   );
+
   const [isRent, setIsRent] = useState(
     !isEdit ? false : editarAdType === 'alugar' ? true : false
   );
@@ -154,6 +163,22 @@ const MainFeatures: React.FC<IMainFeatures> = ({
         },
       ],
     });
+
+  useEffect(() => {
+    if (storedData) {
+      setIsBuy(storedData?.adType === 'comprar');
+      setIsRent(storedData?.adType === 'alugar');
+      setIsResidential(storedData?.adSubtype === 'residencial');
+      setIsCommercial(storedData?.adSubtype === 'comercial');
+      setPropertyFeaturesData({ ...propertyFeaturesData, adSubtype: storedData?.adSubtype })
+      setBathroomNumCount(storedData?.metadata?.find((metadata: IMetadata) => metadata.type === 'bathroom').amount);
+      setBedroomNumCount(storedData?.metadata?.find((metadata: IMetadata) => metadata.type === 'bedroom').amount);
+      setGarageNumCount(storedData?.metadata?.find((metadata: IMetadata) => metadata.type === 'garage').amount);
+      setDependenciesNumCount(storedData?.metadata?.find((metadata: IMetadata) => metadata.type === 'dependencies').amount);
+      setSuitesNumCount(storedData?.metadata?.find((metadata: IMetadata) => metadata.type === 'suites').amount);
+      setPropertyFeaturesData({ ...propertyFeaturesData, ...storedData });
+    }
+  }, []);
 
   useEffect(() => {
     onMainFeaturesUpdate!(propertyFeaturesData);
@@ -560,7 +585,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
             <textarea
               className="bg-tertiary border border-quaternary rounded-[10px] h-32 min-h-fit drop-shadow-xl text-sm p-2 font-semibold text-quaternary"
               value={propertyFeaturesData.description}
-              maxLength={1000}
+              maxLength={2000}
               onChange={(e) => {
                 setPropertyFeaturesData({
                   ...propertyFeaturesData,

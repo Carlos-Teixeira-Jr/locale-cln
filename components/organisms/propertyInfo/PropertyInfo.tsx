@@ -244,7 +244,7 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
             </p>
           </div>
         </div>
-        <div className="flex flex-col mt-10 md:my-auto md:w-[40%] lg:mx-2 justify-items-center gap-5 md:gap-0">
+        <div className="flex flex-col mt-10 md:w-[40%] lg:mx-2 justify-items-center gap-5 md:gap-0">
           <LinkCopiedTooltip
             open={tooltipIsVisible}
             onRequestClose={hideTooltip}

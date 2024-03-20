@@ -27,7 +27,7 @@ const Image: React.FC<ImageProps> = ({ id, src, onImageChange, alt }) => {
       <img
         src={src ? src : defaultProfileImage}
         alt={alt}
-        className={`rounded-full mt-2 ml-10 ${isDefault ?
+        className={`rounded-full mt-2 ml-10 object-cover ${isDefault ?
           '' :
           'w-44 h-44'
           }`}
