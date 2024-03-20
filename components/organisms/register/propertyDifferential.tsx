@@ -36,17 +36,43 @@ const PropertyDifferentials = ({
     if (property && property.tags) {
       return property.tags;
     } else if (storedData && storedData.tags.length > 0) {
-      return ['garagem'];
+      return storedData.tags
     } else {
       return [];
     }
   });
 
-  const [updatedCondominiumTags, setUpdatedCondominiumTags] = useState<
-    string[]
-  >(property ? property.condominiumTags : []);
+  const [updatedCondominiumTags, setUpdatedCondominiumTags] = useState<string[]>(() => {
+    if (property && property.condominiumTags) {
+      return property.condominiumTags;
+    } else if (storedData && storedData?.condominiumTags?.length > 0) {
+      return storedData.condominiumTags
+    } else {
+      return [];
+    }
+  });
 
   const [updatedYouTubeLink, setUpdatedYouTubeLink] = useState<string>('');
+
+  const handleAddWithEnter = (event: React.KeyboardEvent<HTMLInputElement>, type: string) => {
+    if (event.key === 'Enter') {
+      if (type === 'condominiumTags') {
+        const newTag = firstInputValue.trim(); // Remove espaços em branco extras
+        if (newTag !== '') {
+          const newTagsArray = [...updatedTags, newTag];
+          setUpdatedTags(newTagsArray);
+          setFirstInputValue('');
+        }
+      } else if (type === 'tags') {
+        const newTag = secondInputValue.trim();
+        if (newTag !== '') {
+          const newTagsArray = [...updatedTags, newTag];
+          setUpdatedTags(newTagsArray);
+          setSecondInputValue('');
+        }
+      }
+    }
+  };
 
   useEffect(() => {
     if (property) {
@@ -133,8 +159,9 @@ const PropertyDifferentials = ({
           className="my-2 h-12 md:w-[500px] w-full border border-quaternary drop-shadow-xl rounded-[10px] bg-tertiary px-5 text-sm font-normal text-quaternary"
           id="first-input"
           value={firstInputValue}
-          maxLength={20}
+          maxLength={40}
           onChange={(event) => setFirstInputValue(event.target.value)}
+          onKeyUp={(event) => handleAddWithEnter(event, 'condominiumTags')}
         />
         <button
           className={classes.addButton}
@@ -143,6 +170,7 @@ const PropertyDifferentials = ({
             if (firstInputValue !== '') {
               const newTagsArray = [...updatedTags, newTag];
               setUpdatedTags(newTagsArray);
+              setFirstInputValue('');
             }
           }}
         >
@@ -289,6 +317,7 @@ const PropertyDifferentials = ({
                 value={secondInputValue}
                 maxLength={20}
                 onChange={(event) => setSecondInputValue(event.target.value)}
+                onKeyUp={(event) => handleAddWithEnter(event, 'tags')}
               />
               <button
                 className={classes.addButton}

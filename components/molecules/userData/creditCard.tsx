@@ -323,12 +323,12 @@ const CreditCard = ({
                 value={
                   input.key === 'expiry'
                     ? creditCardFormData[input.name].replace(
-                        /^(\d{2})(\d{2})$/,
-                        '$1/$2'
-                      )
+                      /^(\d{2})(\d{2})$/,
+                      '$1/$2'
+                    )
                     : input.key !== 'cardNumber'
-                    ? creditCardFormData[input.name]
-                    : creditCardFormData[input.name].replace(/[^\d- ]/g, '')
+                      ? creditCardFormData[input.name]
+                      : creditCardFormData[input.name].replace(/[^\d- ]/g, '')
                 }
                 className={`border border-quaternary rounded-[10px] h-12 text-quaternary md:text-base text-sm font-bold px-5 drop-shadow-lg bg-tertiary mt-5 lg:ml-5 w-full mr-1`}
                 style={

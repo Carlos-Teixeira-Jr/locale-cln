@@ -28,6 +28,36 @@ const MessageNotifications = ({
   const [showPagination, setShowPagination] = useState<boolean>(notifications.length > 0 ? true : false);
   const [userNotifications, setUserNotifications] = useState<INotification[]>(notifications);
   const adminNots = notifications as [];
+  const apiBaseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+
+  useEffect(() => {
+    // Função a ser executada quando o componente for desmontado
+    const updateNotification = async () => {
+      try {
+        const response = await fetch(`${apiBaseUrl}/notification/update-notifications`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-type': 'application/json',
+            },
+            body: JSON.stringify(notifications),
+          })
+
+        if (response.ok) {
+          console.log('Notificações visualizadas')
+        } else {
+          console.error('Houve um erro ao atualizar as notificações visualizadas.')
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    }
+
+    return () => {
+      console.log('Componente desmontado. Execute sua lógica aqui.');
+      updateNotification();
+    };
+  }, []);
 
   useEffect(() => {
     setIsOwner(ownerProperties?.docs?.length > 0 ? true : false);

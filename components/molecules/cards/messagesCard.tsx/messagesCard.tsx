@@ -1,9 +1,8 @@
 import Image from 'next/image';
-import React from 'react';
-import MessageBalloonIcon from '../../../atoms/icons/messageBalloonIcon';
-import { IAddress } from '../../../../common/interfaces/property/propertyData';
-import { IMessage } from '../../../../common/interfaces/message/messages';
 import { useRouter } from 'next/router';
+import { IMessage } from '../../../../common/interfaces/message/messages';
+import { IAddress } from '../../../../common/interfaces/property/propertyData';
+import MessageBalloonIcon from '../../../atoms/icons/messageBalloonIcon';
 
 interface IMessageCard {
   image: string
@@ -22,16 +21,16 @@ const MessagesCard = ({
   const router = useRouter();
 
   return (
-    <div 
+    <div
       className="lg:flex justify-center cursor-pointer"
-      onClick={() =>{
+      onClick={() => {
         router.push({
           pathname: `/message/${propertyId}`,
           query: { page: 1 }
         })
       }}
     >
-      <div className="rounded-[30px] bg-tertiary w-fit m-2 drop-shadow-lg flex flex-col justify-between md:max-w-[225px]">
+      <div className="rounded-[30px] bg-tertiary md:w-fit m-2 drop-shadow-lg flex flex-col justify-between md:max-w-[225px]">
         <Image
           src={image}
           alt={'Property image'}
@@ -45,12 +44,12 @@ const MessagesCard = ({
           </h2>
           <p className="text-xs text-quaternary">{address.neighborhood}</p>
           <p className="text-xs text-quaternary">{`${address.city} - ${address.uf}`}</p>
-          <div 
-            className="pb-2 mt-2 flex" 
+          <div
+            className="pb-2 mt-2 flex"
 
           >
             <div className="mr-1">
-              <MessageBalloonIcon fill="#6B7280" viewBox="0 96 1200 1200" width='34'/>
+              <MessageBalloonIcon fill="#6B7280" viewBox="0 96 1200 1200" width='34' />
             </div>
             <p className="text-lg font-bold text-quaternary">{`${messages.length}`} {messages.length > 1 || messages.length === 0 ? 'Mensagens' : 'Mensagem'}</p>
           </div>

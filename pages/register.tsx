@@ -226,6 +226,7 @@ const Register = () => {
       }
     } else {
       toast.error(`Algum campo obrigatório não foi preenchido.`);
+      setLoading(false);
     }
   };
 
