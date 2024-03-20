@@ -382,7 +382,6 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
         if (response.ok) {
           toast.dismiss();
           showSuccessToast(SuccessToastNames.UserDataUpdate);
-
           router.push('/admin?page=1');
         } else {
           setLoading(false);
@@ -423,7 +422,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   return (
     <div className={classes.root}>
       <div className="fixed z-50 top-0 w-full inset-x-0">
-        <AdminHeader isOwnerProp={isOwner} />
+        <AdminHeader isOwnerProp={isOwner} ownerData={ownerData} />
       </div>
 
       <div className={classes.sideMenuContainer}>

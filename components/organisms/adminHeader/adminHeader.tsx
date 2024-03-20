@@ -1,7 +1,8 @@
-import { useSession } from 'next-auth/react';
+import { getSession, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { IOwnerData } from '../../../common/interfaces/owner/owner';
 import { useIsMobile } from '../../../hooks/useIsMobile';
 import DropdownAdmin from '../../atoms/dropdowns/dropdownAdmin';
 import MenuIcon from '../../atoms/icons/menuIcon';
@@ -10,9 +11,10 @@ import LocaleLogo from '../../atoms/logos/locale';
 
 interface IAdminHeader {
   isOwnerProp?: boolean;
+  ownerData?: IOwnerData
 }
 
-const AdminHeader: React.FC<IAdminHeader> = ({ isOwnerProp }) => {
+const AdminHeader: React.FC<IAdminHeader> = ({ isOwnerProp, ownerData }) => {
   const [open, setOpen] = useState(false);
 
   const ref = useRef<HTMLDivElement>(null);
@@ -22,7 +24,20 @@ const AdminHeader: React.FC<IAdminHeader> = ({ isOwnerProp }) => {
   const isOwner = isOwnerProp ? isOwnerProp : false;
 
   const { data: session } = useSession() as any;
-  const userPicture = session?.user?.data?.picture;
+  const [userPicture, setUserPicture] = useState(session?.user?.user?.data?.picture);
+
+  // Atualiza a foto do usuário caso ela seja alterada na tela de edição de dados do usuário
+  useEffect(() => {
+    if (ownerData?.user?.picture) {
+      const response = async () => {
+        const updatedSession = await getSession() as any;
+        if (updatedSession) {
+          setUserPicture(ownerData?.user?.picture);
+        }
+      }
+      response();
+    }
+  }, [ownerData])
 
   return (
     <div className="flex flex-row fixed top-0 w-full z-50 justify-between bg-tertiary h-16 drop-shadow-md">
@@ -49,7 +64,7 @@ const AdminHeader: React.FC<IAdminHeader> = ({ isOwnerProp }) => {
                 alt={'User profile picture'}
                 width={50}
                 height={50}
-                className="border border-primary rounded-full w-12 h-12"
+                className="border border-primary rounded-full w-12 h-12 object-cover"
               />
             ) : (
               <UserIcon

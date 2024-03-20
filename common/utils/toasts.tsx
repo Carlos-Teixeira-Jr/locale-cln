@@ -243,7 +243,7 @@ const errorToastMessages: Record<ErrorToastNames, ToastMessage> = {
     },
   },
   [ErrorToastNames.UserNotFound]: {
-    message: 'Nenehum usuário encontrado com o e-mail ou senha informados..',
+    message: 'Nenhum usuário encontrado com o e-mail ou senha informados..',
     options: {
       autoClose: 7000,
     },
