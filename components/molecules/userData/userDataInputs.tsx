@@ -52,7 +52,6 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
   userDataInputRefs,
   ownerData,
 }) => {
-  console.log("🚀 ~ ownerData:", ownerData)
 
   const userDataErrorScroll = {
     ...userDataInputRefs,

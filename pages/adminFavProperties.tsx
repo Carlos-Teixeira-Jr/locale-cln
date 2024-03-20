@@ -102,7 +102,7 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
                   highlighted,
                   description,
                 }: IData) => (
-                  <div className="w-60" key={_id}>
+                  <div className="w-full md:w-60" key={_id}>
                     <PropertyCard
                       key={_id}
                       description={description}
@@ -212,7 +212,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 }
 
 const classes = {
-  content: 'flex flex-col mt-16 xl:ml-80 max-w-[1232px] justify-center md:mx-5',
+  content: 'flex flex-col mt-16 xl:ml-80 xl:max-w-[1232px] 2xl:w-full 2xl:mx-auto justify-center md:mx-5',
   sideMenu: 'fixed left-0 top-7 sm:hidden hidden md:hidden lg:flex',
   title:
     'font-extrabold text-lg md:text-2xl text-quaternary md:my-5 text-center md:mx-auto',
@@ -222,5 +222,5 @@ const classes = {
   notFound:
     'flex flex-col items-center text-center align-middle lg:mt-36 justify-center mr-0 lg:mx-auto',
   favProperties:
-    'grid sm:grid-cols-1 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 my-5 gap-10 lg:justify-start',
+    'grid sm:grid-cols-1 grid-cols-1 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 my-5 gap-10 lg:justify-start',
 };

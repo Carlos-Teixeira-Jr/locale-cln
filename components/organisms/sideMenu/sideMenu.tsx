@@ -145,7 +145,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications }) => {
   return (
     <>
       <div className="w-fit h-screen bg-tertiary px-2 mt-10 drop-shadow-xl left-0">
-        {options.map(({ key, id, icon, title, link }: Options) => {
+        {isOwnerProp !== undefined && notifications !== undefined && options.map(({ key, id, icon, title, link }: Options) => {
           if (
             isOwner ||
             id === 'favourites-button' ||
@@ -184,13 +184,15 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications }) => {
           return null;
         })}
 
-        <div className="flex justify-center mt-10">
-          <Link href={'/register'}>
-            <button className="bg-primary rounded-[30px] text-tertiary text-lg font-bold leading-6 px-10 py-2.5 transition-colors duration-300 hover:bg-red-600 hover:text-white">
-              {isOwner ? 'Novo Anúncio' : 'Anunciar'}
-            </button>
-          </Link>
-        </div>
+        {isOwnerProp !== undefined && notifications !== undefined && (
+          <div className="flex justify-center mt-10">
+            <Link href={'/register'}>
+              <button className="bg-primary rounded-[30px] text-tertiary text-lg font-bold leading-6 px-10 py-2.5 transition-colors duration-300 hover:bg-red-600 hover:text-white">
+                {isOwner ? 'Novo Anúncio' : 'Anunciar'}
+              </button>
+            </Link>
+          </div>
+        )}
       </div>
     </>
   );

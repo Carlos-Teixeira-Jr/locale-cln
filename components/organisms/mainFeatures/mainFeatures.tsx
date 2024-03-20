@@ -82,7 +82,6 @@ const MainFeatures: React.FC<IMainFeatures> = ({
   const router = useRouter();
   const data = store.get('propertyData');
   const storedData = data?.storedData ? data?.storedData : data;
-  console.log("🚀 ~ storedData:", storedData)
 
   // const [isBuy, setIsBuy] = useState(
   //   !isEdit ? true : editarAdType === 'comprar' ? true : false

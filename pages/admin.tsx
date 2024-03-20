@@ -64,7 +64,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
   return (
     <div>
       <AdminHeader isOwnerProp={isOwner} />
-      <div className="flex flex-row items-center justify-evenly xl:w-fit w-full max-w-full">
+      <div className="flex flex-row items-center justify-evenly xl:w-fit 2xl:w-full w-full max-w-full">
         <div className={classes.sideMenu}>
           <SideMenu isOwnerProp={isOwner} notifications={notifications} />
         </div>

@@ -128,7 +128,7 @@ const PropertyCard: React.FC<IPropertyCard> = ({
 
   return (
     <div
-      className={`flex flex-col lg:max-w-[270px] md:max-w-[250px] bg-tertiary shadow-lg rounded-[30px] mt-2 cursor-pointer ${expanded ? `min-h-[470px] max-h-fit` : 'max-h-[470px]'
+      className={`flex flex-col lg:max-w-[270px] md:max-w-[250px] bg-tertiary shadow-lg rounded-[30px] mt-2 cursor-pointer w-full ${expanded ? `min-h-[470px] max-h-fit` : 'max-h-[470px]'
         }`}
     >
       <Link href={`/property/${id}`}>
@@ -191,7 +191,7 @@ const PropertyCard: React.FC<IPropertyCard> = ({
           </div>
         </div>
         <div
-          className={`flex flex-col px-4 mt-2 justify-between ${expanded ? 'h-fit' : 'h-36'
+          className={`flex flex-col mt-2 justify-between ${expanded ? 'h-fit' : 'h-36'
             }`}
         >
           {favorited ? (
@@ -215,7 +215,7 @@ const PropertyCard: React.FC<IPropertyCard> = ({
               </span>
             </div>
           ) : (
-            <h1 className="font-bold text-xl text-[#000000]">
+            <h1 className="font-bold text-xl text-[#000000] px-4">
               {formattedPrice}
             </h1>
           )}
@@ -229,20 +229,20 @@ const PropertyCard: React.FC<IPropertyCard> = ({
               WebkitLineClamp: expanded ? 'unset' : 2,
               WebkitBoxOrient: 'vertical',
             }}
-            className="font-medium text-xs text-quaternary mt-4 max-w-[350px]"
+            className="font-medium text-xs text-quaternary mt-4 max-w-[350px] px-4"
           >
             {memoizedCardInfos.description}
           </p>
           {descriptionRef.current && isExpandable && (
             <span
               onClick={toggleExpanded}
-              className="font-medium text-xs text-primary mt-1 max-w-[350px] text-justify"
+              className="font-medium text-xs text-primary mt-1 max-w-[350px] text-justify px-4"
             >
               {!expanded ? 'Ler mais...' : 'Ler menos...'}
             </span>
           )}
 
-          <h3 className="font-bold text-xs text-quaternary mt-4">
+          <h3 className="font-bold text-xs text-quaternary mt-4 px-4">
             {memoizedCardInfos.location}
           </h3>
         </div>

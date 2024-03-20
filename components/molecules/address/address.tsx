@@ -53,7 +53,6 @@ const Address: React.FC<IAddressComponent> = ({
     uf: isEdit ? address?.uf! : '',
   });
 
-  console.log("🚀 ~ addressData:", addressData)
 
 
   const [addressErrors, setAddressErrors] = useState({
@@ -76,8 +75,6 @@ const Address: React.FC<IAddressComponent> = ({
     numero: '',
     complemento: '',
   });
-
-  console.log("🚀 ~ viaZipCodeData:", viaZipCodeData)
 
   useEffect(() => {
     const scrollToError = (errorKey: keyof typeof addressErrors) => {
