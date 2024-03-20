@@ -45,6 +45,10 @@ const LoginCard: React.FC = () => {
   });
 
   useEffect(() => {
+    setLoading(false)
+  }, [loading]);
+
+  useEffect(() => {
     setEmailVerificationData({ ...emailVerificationData, email: email });
   }, [email]);
 
@@ -126,6 +130,7 @@ const LoginCard: React.FC = () => {
       }
     }
 
+
     if (isRegister) {
       if (
         email &&
@@ -190,7 +195,8 @@ const LoginCard: React.FC = () => {
                   } else {
                     console.error(error);
                     toast.dismiss();
-                    showErrorToast(ErrorToastNames.UserNotFound)
+                    showErrorToast(ErrorToastNames.UserNotFound);
+                    setLoading(false);
                   }
                 });
 
@@ -363,8 +369,11 @@ const LoginCard: React.FC = () => {
           disabled={loading}
           onClick={handleSubmit}
         >
-          {isRegister ? 'Cadastrar' : 'Entrar'}
-          {loading && <Loading />}
+          {!loading ? (
+            isRegister ? 'Cadastrar' : 'Entrar'
+          ) : (
+            <Loading />
+          )}
         </button>
       </div>
 
