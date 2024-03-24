@@ -22,34 +22,42 @@ const RegisterStep4: NextPageWithLayout = () => {
 
   return (
     <>
-      <Header />
-      <div className={classes.root}>
-        <div className={classes.stepLabel}>
-          <LinearStepper isSubmited={false} sharedActiveStep={3} />
-        </div>
+      {progress !== 4 ? (
+        <Loading />
+      ) : (
+        <>
+          <Header />
+          <div className={classes.root}>
+            <div className={classes.stepLabel}>
+              <LinearStepper isSubmited={false} sharedActiveStep={3} />
+            </div>
 
-        <div className={classes.body}>
-          <div className={classes.textContainer}>
-            <h1 className={classes.h1}>Parabéns!!</h1>
-            <p className={classes.p}>
-              O anúncio do seu imóvel está pronto e seu cadastro quase
-              finalizado! A senha da sua conta foi enviada para o seu e-mail.
-            </p>
+            <div className={classes.body}>
+              <div className={classes.textContainer}>
+                <h1 className={classes.h1}>Parabéns!!</h1>
+                <p className={classes.p}>
+                  O anúncio do seu imóvel está pronto e seu cadastro quase
+                  finalizado! A senha da sua conta foi enviada para o seu e-mail.
+                </p>
 
-            <div className={classes.buttonContainer}>
-              <button
-                className={classes.button}
-                disabled={loading}
-                onClick={() => handleSubmit()}
-              >
-                <span className={`${loading ? 'ml-5' : ''}`}>Acessar</span>
-                {loading && <Loading />}
-              </button>
+                <div className={classes.buttonContainer}>
+                  <button
+                    className={classes.button}
+                    disabled={loading}
+                    onClick={() => handleSubmit()}
+                  >
+                    <span className={`${loading ? 'ml-5' : ''}`}>Acessar</span>
+                    {loading && <Loading />}
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
-      <Footer />
+          <Footer />
+        </>
+
+      )}
+
     </>
   );
 };
