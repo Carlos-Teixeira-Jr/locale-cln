@@ -114,51 +114,59 @@ const RegisterStep2: NextPageWithLayout = () => {
 
   return (
     <>
-      <Header />
-      <div className={classes.body}>
-        <div className={classes.stepLabel}>
-          <LinearStepper isSubmited={false} sharedActiveStep={1} />
+      {progress !== 2 ? (
+        <div className='flex justify-center items-center h-screen'>
+          <Loading width='md:w-20' height='md:h-20' />
         </div>
-        <div className="max-w-[1232px]" id="upload-images">
-          <UploadImages
-            onImagesUpdate={(updatedImages: string[]) =>
-              setImages(updatedImages)
-            }
-            onErrorsInfo={errorInfo}
-            imagesInputRef={imagesInputRef}
-          />
-        </div>
+      ) : (
+        <>
+          <Header />
+          <div className={classes.body}>
+            <div className={classes.stepLabel}>
+              <LinearStepper isSubmited={false} sharedActiveStep={1} />
+            </div>
+            <div className="max-w-[1232px]" id="upload-images">
+              <UploadImages
+                onImagesUpdate={(updatedImages: string[]) =>
+                  setImages(updatedImages)
+                }
+                onErrorsInfo={errorInfo}
+                imagesInputRef={imagesInputRef}
+              />
+            </div>
 
-        <div className={classes.propertyDifferentials}>
-          <PropertyDifferentials
-            shouldRenderCondDiv={isCondominium}
-            isEdit={false}
-            onTagsUpdate={(updatedTags: string[]) => setTags(updatedTags)}
-            onCondominiumTagsUpdate={(updatedCondTags: string[]) =>
-              setCondominiumTags(updatedCondTags)
-            }
-            onVideoLinkUpdate={(updatedVideo: string) =>
-              setYoutubeLink(updatedVideo)
-            }
-          />
-        </div>
+            <div className={classes.propertyDifferentials}>
+              <PropertyDifferentials
+                shouldRenderCondDiv={isCondominium}
+                isEdit={false}
+                onTagsUpdate={(updatedTags: string[]) => setTags(updatedTags)}
+                onCondominiumTagsUpdate={(updatedCondTags: string[]) =>
+                  setCondominiumTags(updatedCondTags)
+                }
+                onVideoLinkUpdate={(updatedVideo: string) =>
+                  setYoutubeLink(updatedVideo)
+                }
+              />
+            </div>
 
-        <div className={classes.buttonContainer}>
-          <button className={classes.button} onClick={handlePreviousStep}>
-            Voltar
-          </button>
-          <button
-            className={classes.button}
-            onClick={handleSubmit}
-            disabled={loading}
-          >
-            <span className={`${loading ? 'ml-5' : ''}`}>Continuar</span>
-            {loading && <Loading />}
-          </button>
-        </div>
-      </div>
+            <div className={classes.buttonContainer}>
+              <button className={classes.button} onClick={handlePreviousStep}>
+                Voltar
+              </button>
+              <button
+                className={classes.button}
+                onClick={handleSubmit}
+                disabled={loading}
+              >
+                <span className={`${loading ? 'ml-5' : ''}`}>Continuar</span>
+                {loading && <Loading />}
+              </button>
+            </div>
+          </div>
 
-      <Footer />
+          <Footer />
+        </>
+      )}
     </>
   );
 };

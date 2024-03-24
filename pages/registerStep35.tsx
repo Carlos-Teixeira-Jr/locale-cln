@@ -55,47 +55,53 @@ const RegisterStep35: NextPageWithLayout<IRegisterStep35> = ({ plans }) => {
 
   return (
     <>
-      <Header />
-      <div className={classes.body}>
-        <div className="lg:mx-24">
-          <div className={classes.stepLabel}>
-            <LinearStepper isSubmited={false} sharedActiveStep={3} />
-          </div>
+      {progress !== 4 ? (
+        <Loading />
+      ) : (
+        <>
+          <Header />
+          <div className={classes.body}>
+            <div className="lg:mx-24">
+              <div className={classes.stepLabel}>
+                <LinearStepper isSubmited={false} sharedActiveStep={3} />
+              </div>
 
-          <div className={classes.card}>
-            <div className="flex flex-col p-4">
-              <h1 className={classes.h1}>
-                {!cardBrand || cardBrand === 'Free'
-                  ? 'Imóvel Cadastrado!'
-                  : 'Pagamento Confirmado!'}
-              </h1>
-              <p className={classes.p}>
-                {!cardBrand || cardBrand === 'Free'
-                  ? 'Seu imóvel foi cadastrado e agora falta bem pouco para o seu anúncio estar no ar!'
-                  : 'Seu pagamento foi confirmado e agora falta bem pouco para o seu anúncio estar no ar!'}
-              </p>
+              <div className={classes.card}>
+                <div className="flex flex-col p-4">
+                  <h1 className={classes.h1}>
+                    {!cardBrand || cardBrand === 'Free'
+                      ? 'Imóvel Cadastrado!'
+                      : 'Pagamento Confirmado!'}
+                  </h1>
+                  <p className={classes.p}>
+                    {!cardBrand || cardBrand === 'Free'
+                      ? 'Seu imóvel foi cadastrado e agora falta bem pouco para o seu anúncio estar no ar!'
+                      : 'Seu pagamento foi confirmado e agora falta bem pouco para o seu anúncio estar no ar!'}
+                  </p>
+                </div>
+                <div className={classes.checkIcon}>
+                  <CheckIcon fill="#F7F7F6" />
+                </div>
+              </div>
+
+              <PaymentBoard_Step3_5 storedData={storedData} plans={plans} />
+
+              <div className={classes.buttonContainer}>
+                <button
+                  className={classes.button}
+                  disabled={loading}
+                  onClick={handleSubmit}
+                >
+                  <span className={`${loading ? 'ml-5' : ''}`}>Continuar</span>
+                  {loading && <Loading />}
+                </button>
+              </div>
             </div>
-            <div className={classes.checkIcon}>
-              <CheckIcon fill="#F7F7F6" />
-            </div>
           </div>
 
-          <PaymentBoard_Step3_5 storedData={storedData} plans={plans} />
-
-          <div className={classes.buttonContainer}>
-            <button
-              className={classes.button}
-              disabled={loading}
-              onClick={handleSubmit}
-            >
-              <span className={`${loading ? 'ml-5' : ''}`}>Continuar</span>
-              {loading && <Loading />}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <Footer />
+          <Footer />
+        </>
+      )}
     </>
   );
 };

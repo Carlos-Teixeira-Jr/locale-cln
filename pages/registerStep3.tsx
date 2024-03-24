@@ -533,126 +533,132 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
 
   return (
     <>
-      <div className={classes.body}>
-        <Header />
-        <div className="justify-center">
-          <div className={classes.stepLabel}>
-            <LinearStepper isSubmited={false} sharedActiveStep={2} />
-          </div>
+      {progress !== 3 ? (
+        <Loading />
+      ) : (
+        <>
+          <div className={classes.body}>
+            <Header />
+            <div className="justify-center">
+              <div className={classes.stepLabel}>
+                <LinearStepper isSubmited={false} sharedActiveStep={2} />
+              </div>
 
-          <div className="md:flex">
-            {reversedCards.map(
-              ({ _id, name, price, highlightAd, commonAd, smartAd }: IPlan) => (
-                <PlansCardsHidden
-                  key={_id}
-                  selectedPlanCard={selectedPlan}
-                  setSelectedPlanCard={(selectedCard: string) => {
-                    setSelectedPlan(selectedCard);
-                    const planData = plans.find(
-                      (plan) => plan._id === selectedCard
-                    );
-                    if (planData && planData?.name === 'Free') {
-                      setIsFreePlan(true);
-                    } else {
-                      setIsFreePlan(false);
-                    }
-                  }}
-                  isAdminPage={isAdminPage}
-                  name={name}
-                  price={price}
-                  commonAd={commonAd}
-                  highlightAd={highlightAd}
-                  smartAd={smartAd}
-                  id={_id}
-                  isEdit={false}
-                />
-              )
-            )}
-          </div>
-
-          <div className="lg:mx-0">
-            <div className={classes.userData}>
-              <UserDataInputs
-                isEdit={false}
-                onUserDataUpdate={(updatedUserData: IUserDataComponent) =>
-                  setUserDataForm(updatedUserData)
-                }
-                urlEmail={urlEmail ? urlEmail : undefined}
-                error={userDataErrors}
-                userDataInputRefs={userDataInputRefs}
-                ownerData={ownerData}
-              />
-            </div>
-
-            <ChangeAddressCheckbox
-              onAddressCheckboxChange={(value: boolean) =>
-                setIsSameAddress(value)
-              }
-              userAddress={addressData}
-              propertyAddress={storedData}
-            />
-
-            {!isSameAddress && (
-              <Address
-                isEdit={false}
-                address={addressData}
-                onAddressUpdate={(address: IAddress) => setAddressData(address)}
-                errors={addressErrors}
-                addressInputRefs={addressInputRefs}
-              />
-            )}
-
-            {selectedPlan !== '' &&
-              (() => {
-                const planData = plans.find((plan) => plan._id === selectedPlan);
-                if (planData && planData.name !== 'Free') {
-                  return (
-                    <CreditCard
-                      isEdit={false}
-                      creditCardInfo={ownerData?.owner?.paymentData?.creditCardInfo}
-                      onCreditCardUpdate={(creditCard) => {
-                        if (!isFreePlan) {
-                          setCreditCard(creditCard);
+              <div className="md:flex">
+                {reversedCards.map(
+                  ({ _id, name, price, highlightAd, commonAd, smartAd }: IPlan) => (
+                    <PlansCardsHidden
+                      key={_id}
+                      selectedPlanCard={selectedPlan}
+                      setSelectedPlanCard={(selectedCard: string) => {
+                        setSelectedPlan(selectedCard);
+                        const planData = plans.find(
+                          (plan) => plan._id === selectedCard
+                        );
+                        if (planData && planData?.name === 'Free') {
+                          setIsFreePlan(true);
+                        } else {
+                          setIsFreePlan(false);
                         }
                       }}
-                      error={creditCardErrors}
-                      creditCardInputRefs={creditCardInputRefs}
+                      isAdminPage={isAdminPage}
+                      name={name}
+                      price={price}
+                      commonAd={commonAd}
+                      highlightAd={highlightAd}
+                      smartAd={smartAd}
+                      id={_id}
+                      isEdit={false}
                     />
-                  );
-                }
-              })()}
+                  )
+                )}
+              </div>
 
-            <PaymentBoard
-              onTermsChange={(value: boolean) => setTermsAreRead(value)}
-              selectedPlan={selectedPlan}
-              plans={plans}
-              termsError={termsError}
-            />
+              <div className="lg:mx-0">
+                <div className={classes.userData}>
+                  <UserDataInputs
+                    isEdit={false}
+                    onUserDataUpdate={(updatedUserData: IUserDataComponent) =>
+                      setUserDataForm(updatedUserData)
+                    }
+                    urlEmail={urlEmail ? urlEmail : undefined}
+                    error={userDataErrors}
+                    userDataInputRefs={userDataInputRefs}
+                    ownerData={ownerData}
+                  />
+                </div>
 
-            <div className={classes.containerButton}>
-              <button className={classes.button} onClick={handlePreviousStep}>
-                Voltar
-              </button>
-              <button
-                className={classes.button}
-                onClick={handleSubmit}
-                disabled={loading}
-              >
-                <span className={`${loading ? 'ml-5' : ''}`}>Continuar</span>
-                {loading && <Loading />}
-              </button>
+                <ChangeAddressCheckbox
+                  onAddressCheckboxChange={(value: boolean) =>
+                    setIsSameAddress(value)
+                  }
+                  userAddress={addressData}
+                  propertyAddress={storedData}
+                />
+
+                {!isSameAddress && (
+                  <Address
+                    isEdit={false}
+                    address={addressData}
+                    onAddressUpdate={(address: IAddress) => setAddressData(address)}
+                    errors={addressErrors}
+                    addressInputRefs={addressInputRefs}
+                  />
+                )}
+
+                {selectedPlan !== '' &&
+                  (() => {
+                    const planData = plans.find((plan) => plan._id === selectedPlan);
+                    if (planData && planData.name !== 'Free') {
+                      return (
+                        <CreditCard
+                          isEdit={false}
+                          creditCardInfo={ownerData?.owner?.paymentData?.creditCardInfo}
+                          onCreditCardUpdate={(creditCard) => {
+                            if (!isFreePlan) {
+                              setCreditCard(creditCard);
+                            }
+                          }}
+                          error={creditCardErrors}
+                          creditCardInputRefs={creditCardInputRefs}
+                        />
+                      );
+                    }
+                  })()}
+
+                <PaymentBoard
+                  onTermsChange={(value: boolean) => setTermsAreRead(value)}
+                  selectedPlan={selectedPlan}
+                  plans={plans}
+                  termsError={termsError}
+                />
+
+                <div className={classes.containerButton}>
+                  <button className={classes.button} onClick={handlePreviousStep}>
+                    Voltar
+                  </button>
+                  <button
+                    className={classes.button}
+                    onClick={handleSubmit}
+                    disabled={loading}
+                  >
+                    <span className={`${loading ? 'ml-5' : ''}`}>Continuar</span>
+                    {loading && <Loading />}
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
 
-        <PaymentFailModal
-          isOpen={failPaymentModalIsOpen}
-          setModalIsOpen={setFailPaymentModalIsOpen}
-          paymentError={paymentError}
-        />
-      </div>
+            <PaymentFailModal
+              isOpen={failPaymentModalIsOpen}
+              setModalIsOpen={setFailPaymentModalIsOpen}
+              paymentError={paymentError}
+            />
+          </div >
 
-      <Footer />
+          <Footer />
+        </>
+      )}
     </>
   );
 };

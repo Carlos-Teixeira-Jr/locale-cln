@@ -1,57 +1,29 @@
+// Changes the title based on the url pathname;
 
+export default function modifyString(pathname: string): string {
+  const pathMap: { [key: string]: string } = {
+    '/adminUserData': 'Dados do Usuário',
+    '/adminFavProperties': 'Favoritos',
+    '/property/[id]': 'Imóvel',
+    '/adminNotifications': 'Notificações',
+    '/adminMessages': 'Mensagens',
+    '/privacyPolicies': 'Políticas de Privacidade',
+    '/register': 'Anunciar - Etapa 1',
+    '/registerStep2': 'Anunciar - Etapa 2',
+    '/registerStep3': 'Anunciar - Etapa 3',
+    '/registerStep35': 'Anunciar',
+    '/registerStep4': 'Parabéns!',
+    '/announcement': 'Planos de Anúncio',
+    '/search': 'Buscar',
+    '/admin': 'Anúncios',
+  };
 
-export default function modifyString(str: string) {
-  if (str.length < 2) {
-    return 'Home';
-  }
+  const defaultTitle = 'Home';
+  const title = pathMap[pathname] || defaultTitle;
 
-  if (str === '/adminUserData') {
-    str = '/dados do Usuário'
-  }
-  if (str === '/adminFavProperties') {
-    str = '/favoritos'
-  }
-  if (str === '/property/[id]') {
-    str = '/Imóvel'
-  }
-  if (str === '/adminNotifications') {
-    str = '/notificações'
-  }
-  if (str === '/adminMessages') {
-    str = '/mensagens'
-  }
-  if (str === '/privacyPolicies') {
-    str = '/políticas de Privacidade'
-  }
-  if (str === '/register') {
-    str = '/anunciar - Etapa 1'
-  }
-  if (str === '/registerStep2') {
-    str = '/anunciar - Etapa 2'
-  }
-  if (str === '/registerStep3') {
-    str = '/anunciar - Etapa 3'
-  }
-  if (str === '/registerStep35') {
-    str = '/anunciar'
-  }
-  if (str === '/registerStep4') {
-    str = '/parabéns!'
-  }
-  if (str === '/announcement') {
-    str = '/planos de Anúncio'
-  }
-  if (str === '/search') {
-    str = '/buscar'
-  }
-  if (str === '/admin') {
-    str = `/anúncios`
-  }
+  return capitalizeFirstLetter(title);
+}
 
-
-  const firstCharRemoved = str.substring(1);
-  const secondCharCapitalized = firstCharRemoved.charAt(0).toUpperCase();
-  const restOfChars = firstCharRemoved.substring(1);
-
-  return secondCharCapitalized + restOfChars;
+function capitalizeFirstLetter(str: string): string {
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }
