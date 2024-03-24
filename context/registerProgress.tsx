@@ -1,26 +1,28 @@
-import { createContext, useContext, useState } from 'react';
+import React, { createContext, ReactNode, useContext, useState } from 'react';
 
 type RegisterProgress = {
-  progress: number
-  updateProgress: (newProgress: number) => void
-}
+  progress: number;
+  updateProgress: (newProgress: number) => void;
+};
 
-const ProgressContext = createContext({} as RegisterProgress);
+const ProgressContext = createContext<RegisterProgress | undefined>(undefined);
 
-export const ProgressProvider = ({ children }: any) => {
-  const [progress, setProgress] = useState(1);
+export const ProgressProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [progress, setProgress] = useState<number>(1);
 
   const updateProgress = (newProgress: number) => {
     setProgress(newProgress);
   };
 
-  return (
-    <ProgressContext.Provider value={{ progress, updateProgress }}>
-      {children}
-    </ProgressContext.Provider>
-  );
+  const value = { progress, updateProgress };
+
+  return <ProgressContext.Provider value={value}>{children}</ProgressContext.Provider>;
 };
 
-export const useProgress = () => {
-  return useContext(ProgressContext);
+export const useProgress = (): RegisterProgress => {
+  const context = useContext(ProgressContext);
+  if (!context) {
+    throw new Error('useProgress must be used within a ProgressProvider');
+  }
+  return context;
 };
