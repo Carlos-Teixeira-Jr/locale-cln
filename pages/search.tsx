@@ -40,6 +40,7 @@ const Search: NextPageWithLayout<ISearch> = ({
   locations,
   tagsData,
 }) => {
+  console.log("🚀 ~ propertyInfo:", propertyInfo)
 
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
