@@ -56,7 +56,9 @@ const RegisterStep35: NextPageWithLayout<IRegisterStep35> = ({ plans }) => {
   return (
     <>
       {progress !== 4 ? (
-        <Loading />
+        <div className='flex justify-center items-center h-screen'>
+          <Loading width='md:w-20' height='md:h-20' />
+        </div>
       ) : (
         <>
           <Header />
