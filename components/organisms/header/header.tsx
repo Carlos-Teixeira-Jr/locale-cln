@@ -55,8 +55,8 @@ const Header: React.FC<IHeader> = () => {
         <div className="hidden md:flex md:flex-row md:items-center justify-between space-x-2 text-md ml-5 md:ml-0 font-bold text-quaternary">
           <Link
             className={`cursor-pointer ${isBuy
-                ? 'border-b-4  border-red-400'
-                : 'hover:border-b-4  border-red-400'
+              ? 'border-b-4  border-red-400'
+              : 'hover:border-b-4  border-red-400'
               }`}
             href="/search?adType=comprar"
           >
@@ -64,8 +64,8 @@ const Header: React.FC<IHeader> = () => {
           </Link>
           <Link
             className={`cursor-pointer ${isRent
-                ? 'border-b-4  border-red-400'
-                : 'hover:border-b-4  border-red-400'
+              ? 'border-b-4  border-red-400'
+              : 'hover:border-b-4  border-red-400'
               }`}
             href="/search?adType=alugar"
           >
