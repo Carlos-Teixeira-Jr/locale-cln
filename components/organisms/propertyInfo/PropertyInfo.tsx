@@ -243,6 +243,10 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
               {capitalizeFirstLetter(property.description)}
             </p>
           </div>
+          <div className="pt-6">
+            <h3 className="font-extrabold text-quaternary text-2xl pb-2 md:pb-4">Código do Anúncio</h3>
+            <p className="font-normal text-md text-quaternary text-justify pr-5">{property.announcementCode}</p>
+          </div>
         </div>
         <div className="flex flex-col mt-10 md:w-[40%] lg:mx-2 justify-items-center gap-5 md:gap-0">
           <LinkCopiedTooltip

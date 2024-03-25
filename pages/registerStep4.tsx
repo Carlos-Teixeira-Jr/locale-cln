@@ -9,11 +9,11 @@ import { NextPageWithLayout } from './page';
 
 const RegisterStep4: NextPageWithLayout = () => {
   const router = useRouter();
-  const { progress, updateProgress } = useProgress();
+  const { progress } = useProgress();
   const [loading, setLoading] = useState(false);
 
   // Verifica se o estado progress que determina em qual step o usuário está corresponde ao step atual;
-  useProgressRedirect(progress, 4, '/register');
+  useProgressRedirect(progress, 5, '/register');
 
   const handleSubmit = () => {
     router.push('/login');
@@ -22,8 +22,10 @@ const RegisterStep4: NextPageWithLayout = () => {
 
   return (
     <>
-      {progress !== 4 ? (
-        <Loading />
+      {progress !== 5 ? (
+        <div className='flex justify-center items-center h-screen'>
+          <Loading width='md:w-20' height='md:h-20' />
+        </div>
       ) : (
         <>
           <Header />
@@ -55,9 +57,7 @@ const RegisterStep4: NextPageWithLayout = () => {
           </div>
           <Footer />
         </>
-
       )}
-
     </>
   );
 };

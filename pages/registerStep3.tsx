@@ -534,7 +534,9 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
   return (
     <>
       {progress !== 3 ? (
-        <Loading />
+        <div className='flex justify-center items-center h-screen'>
+          <Loading width='md:w-20' height='md:h-20' />
+        </div>
       ) : (
         <>
           <div className={classes.body}>
