@@ -126,10 +126,10 @@ const Search: NextPageWithLayout<ISearch> = ({
 
   const classes = {
     root: 'flex items-center justify-center mt-20',
-    bodyContainer: 'lg:flex justify-center lg:max-w-[1232px]',
+    bodyContainer: 'lg:flex justify-center lg:max-w-[1232px] w-full md:w-none',
     body: 'flex flex-col lg:flex-row md:mt-0',
     content: 'flex flex-row items-center justify-between gap-7 ml-0 xl:ml-20',
-    filterList: `mx-auto md:w-fit lg:w-[25%] lg:flex ${mobileFilterIsOpen ? '' : 'hidden'}`,
+    filterList: `mx-auto md:w-full lg:w-[25%] lg:flex ${mobileFilterIsOpen ? '' : 'hidden'}`,
     searchShortcut: `justify-center ${mobileFilterIsOpen ? 'hidden' : ''
       } flex w-screen px-2 md:w-full itens-center md:px-0`,
     propertiesGridListOrderBy:
