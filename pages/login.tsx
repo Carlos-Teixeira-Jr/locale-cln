@@ -8,11 +8,13 @@ import { NextPageWithLayout } from './page';
 const LoginPage: NextPageWithLayout = () => {
   return (
     <>
-      <Header />
-      <div className="flex justify-center items-center mt-40">
-        <LoginCard />
+      <div className='flex flex-col min-h-screen justify-between'>
+        <Header />
+        <div className="flex justify-center items-center mt-32 lg:mb-20">
+          <LoginCard />
+        </div>
+        <Footer />
       </div>
-      <Footer />
     </>
   );
 };
