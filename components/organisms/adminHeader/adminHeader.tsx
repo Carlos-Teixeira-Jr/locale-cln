@@ -24,7 +24,10 @@ const AdminHeader: React.FC<IAdminHeader> = ({ isOwnerProp, ownerData }) => {
   const isOwner = isOwnerProp ? isOwnerProp : false;
 
   const { data: session } = useSession() as any;
-  const [userPicture, setUserPicture] = useState(session?.user?.user?.data?.picture);
+  const [userPicture, setUserPicture] = useState(session?.user?.user?.data?.picture
+    ? session?.user?.user?.data?.picture
+    : session?.user?.data?.picture
+  );
 
   // Atualiza a foto do usuário caso ela seja alterada na tela de edição de dados do usuário
   useEffect(() => {

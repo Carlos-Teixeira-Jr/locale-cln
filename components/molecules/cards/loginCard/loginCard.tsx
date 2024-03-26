@@ -235,7 +235,7 @@ const LoginCard: React.FC = () => {
   };
 
   return (
-    <div className={`md:w-fit md:h-fit md:rounded-[30px] bg-tertiary drop-shadow-xl grid grid-flow-rows justify-items-center`}>
+    <div className={`lg:w-fit md:w-[60%] md:h-fit md:rounded-[30px] bg-tertiary drop-shadow-xl grid grid-flow-rows justify-items-center`}>
       <div className="md:m-2 w-[125px]">
         <Image
           src={'/images/logo-marker.png'}

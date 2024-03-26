@@ -84,17 +84,15 @@ const FilterList: React.FC<IFilterListProps> = ({
     router.push({ query: queryParams }, undefined, { scroll: false });
   };
 
-  const buyBtnClassName = `w-full h-[34px] md:h-fit lg:h-[33px] rounded-full border-black text-quaternary font-bold lg:text-md transition-all ${
-    isBuy
-      ? 'bg-secondary text-quinary border-secondary border'
-      : 'bg-tertiary  text-quaternary'
-  }`;
+  const buyBtnClassName = `w-full h-[34px] md:h-fit lg:h-[33px] rounded-full border-black text-quaternary font-bold lg:text-md transition-all ${isBuy
+    ? 'bg-secondary text-quinary border-secondary border'
+    : 'bg-tertiary  text-quaternary'
+    }`;
 
-  const rentBtnClassName = `w-full h-[34px] md:h-fit lg:h-[33px] rounded-full border-black text-quaternary font-bold lg:text-md transition-all ${
-    isRent
-      ? 'bg-secondary text-quinary border border-secondary'
-      : 'bg-tertiary text-quaternary'
-  }`;
+  const rentBtnClassName = `w-full h-[34px] md:h-fit lg:h-[33px] rounded-full border-black text-quaternary font-bold lg:text-md transition-all ${isRent
+    ? 'bg-secondary text-quinary border border-secondary'
+    : 'bg-tertiary text-quaternary'
+    }`;
 
   const handlePropertyTypeSelection = (type: string, subType: string) => {
     setPropertyType({
@@ -257,8 +255,8 @@ const FilterList: React.FC<IFilterListProps> = ({
     const tags: string[] = Array.isArray(query.tags)
       ? query.tags
       : query.tags
-      ? query.tags.split(',')
-      : [];
+        ? query.tags.split(',')
+        : [];
 
     let updatedTags: string[];
 
@@ -422,9 +420,8 @@ const FilterList: React.FC<IFilterListProps> = ({
 
   return (
     <div
-      className={`lg:block md:w-full lg:max-w-[400px] h-fit bg-tertiary shadow-md rounded-[30px] px-2 md:px-5 md:py-8 pt-8 pb-2 lg:ml-7 mt-12 ${
-        !mobileFilterIsOpen ? 'hidden' : ''
-      }`}
+      className={`lg:block md:w-full lg:max-w-[400px] h-fit bg-tertiary shadow-md rounded-[30px] px-2 md:px-5 md:py-8 pt-8 pb-2 lg:ml-7 mt-12 ${!mobileFilterIsOpen ? 'hidden' : ''
+        }`}
     >
       {mobileFilterIsOpen && (
         <div className="flex flex-col sticky top-0 z-10">
@@ -473,17 +470,15 @@ const FilterList: React.FC<IFilterListProps> = ({
                   : `todos`}
               </p>
               <ArrowDownIcon
-                className={`my-auto cursor-pointer ${
-                  propTypeDropdownIsOpen
-                    ? 'transform rotate-360 transition-transform duration-300 ease-in-out'
-                    : 'transform rotate-180 transition-transform duration-300 ease-in-out'
-                }`}
+                className={`my-auto cursor-pointer ${propTypeDropdownIsOpen
+                  ? 'transform rotate-360 transition-transform duration-300 ease-in-out'
+                  : 'transform rotate-180 transition-transform duration-300 ease-in-out'
+                  }`}
               />
             </div>
             <div
-              className={`z-50 w-full px-2 h-fit rounded-xl bg-tertiary overflow-hidden text-quaternary cursor-pointer shadow-md ${
-                !propTypeDropdownIsOpen ? 'hidden ' : 'absolute'
-              }`}
+              className={`z-50 w-full px-2 h-fit rounded-xl bg-tertiary overflow-hidden text-quaternary cursor-pointer shadow-md ${!propTypeDropdownIsOpen ? 'hidden ' : 'absolute'
+                }`}
             >
               <p
                 className="text-left lowercase px-3 pt-1 hover:bg-quaternary hover:text-tertiary text-quaternary font-bold text-md"
@@ -534,9 +529,8 @@ const FilterList: React.FC<IFilterListProps> = ({
               maxLength={30}
             />
             <div
-              className={`z-50 w-full h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md ${
-                openLocationDropdown ? 'md:flex' : 'hidden'
-              }`}
+              className={`z-50 w-full h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md ${openLocationDropdown ? 'md:flex' : 'hidden'
+                }`}
               ref={ref}
             >
               <div className="flex flex-col w-full text-center font-normal text-base text-quaternary leading-5">
@@ -592,13 +586,13 @@ const FilterList: React.FC<IFilterListProps> = ({
                                     obj.name.includes(option)
                                   ) ||
                                     allLocations) && (
-                                    <CheckIcon
-                                      width="20"
-                                      height="20"
-                                      fill="#F5BF5D"
-                                      viewBox="40 126 960 960"
-                                    />
-                                  )}
+                                      <CheckIcon
+                                        width="20"
+                                        height="20"
+                                        fill="#F5BF5D"
+                                        viewBox="40 126 960 960"
+                                      />
+                                    )}
                                 </div>
                                 <span
                                   id={option}
@@ -621,13 +615,13 @@ const FilterList: React.FC<IFilterListProps> = ({
                                   obj.name.includes(name)
                                 ) ||
                                   allLocations) && (
-                                  <CheckIcon
-                                    width="20"
-                                    height="20"
-                                    fill="#F5BF5D"
-                                    viewBox="40 126 960 960"
-                                  />
-                                )}
+                                    <CheckIcon
+                                      width="20"
+                                      height="20"
+                                      fill="#F5BF5D"
+                                      viewBox="40 126 960 960"
+                                    />
+                                  )}
                               </div>
                               <span
                                 id={name}
@@ -701,22 +695,22 @@ const FilterList: React.FC<IFilterListProps> = ({
         </div>
       </div>
 
-      <div className="md:flex lg:flex-col gap-2 justify-between md:mt-3">
+      <div className="md:flex lg:flex-col gap-2 justify-between md:w-full md:mt-3">
         <div className="-mb-5">
           <h3 className="font-normal text-base text-quaternary leading-[19px] mb-2">
             Quartos
           </h3>
-          <div className="flex justify-between gap-5">
+          <div className="flex justify-between gap-2">
             <button
               className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-5 md:mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
               onClick={() => setBedrooms(bedrooms != 1 ? 1 : 0)}
               style={
                 bedrooms === 1
                   ? {
-                      background: '#F5BF5D',
-                      border: '1px solid #F5BF5D',
-                      font: '#F7F7F6',
-                    }
+                    background: '#F5BF5D',
+                    border: '1px solid #F5BF5D',
+                    font: '#F7F7F6',
+                  }
                   : {}
               }
             >
@@ -728,10 +722,10 @@ const FilterList: React.FC<IFilterListProps> = ({
               style={
                 bedrooms === 2
                   ? {
-                      background: '#F5BF5D',
-                      border: '1px solid #F5BF5D',
-                      font: '#F7F7F6',
-                    }
+                    background: '#F5BF5D',
+                    border: '1px solid #F5BF5D',
+                    font: '#F7F7F6',
+                  }
                   : {}
               }
             >
@@ -743,10 +737,10 @@ const FilterList: React.FC<IFilterListProps> = ({
               style={
                 bedrooms === 3
                   ? {
-                      background: '#F5BF5D',
-                      border: '1px solid #F5BF5D',
-                      font: '#F7F7F6',
-                    }
+                    background: '#F5BF5D',
+                    border: '1px solid #F5BF5D',
+                    font: '#F7F7F6',
+                  }
                   : {}
               }
             >
@@ -760,10 +754,10 @@ const FilterList: React.FC<IFilterListProps> = ({
               style={
                 bedrooms === 4
                   ? {
-                      background: '#F5BF5D',
-                      border: '1px solid #F5BF5D',
-                      font: '#F7F7F6',
-                    }
+                    background: '#F5BF5D',
+                    border: '1px solid #F5BF5D',
+                    font: '#F7F7F6',
+                  }
                   : {}
               }
             >
@@ -785,10 +779,10 @@ const FilterList: React.FC<IFilterListProps> = ({
               style={
                 bathrooms === 1
                   ? {
-                      background: '#F5BF5D',
-                      border: '1px solid #F5BF5D',
-                      font: '#F7F7F6',
-                    }
+                    background: '#F5BF5D',
+                    border: '1px solid #F5BF5D',
+                    font: '#F7F7F6',
+                  }
                   : {}
               }
             >
@@ -800,10 +794,10 @@ const FilterList: React.FC<IFilterListProps> = ({
               style={
                 bathrooms === 2
                   ? {
-                      background: '#F5BF5D',
-                      border: '1px solid #F5BF5D',
-                      font: '#F7F7F6',
-                    }
+                    background: '#F5BF5D',
+                    border: '1px solid #F5BF5D',
+                    font: '#F7F7F6',
+                  }
                   : {}
               }
             >
@@ -815,10 +809,10 @@ const FilterList: React.FC<IFilterListProps> = ({
               style={
                 bathrooms === 3
                   ? {
-                      background: '#F5BF5D',
-                      border: '1px solid #F5BF5D',
-                      font: '#F7F7F6',
-                    }
+                    background: '#F5BF5D',
+                    border: '1px solid #F5BF5D',
+                    font: '#F7F7F6',
+                  }
                   : {}
               }
             >
@@ -830,10 +824,10 @@ const FilterList: React.FC<IFilterListProps> = ({
               style={
                 bathrooms === 4
                   ? {
-                      background: '#F5BF5D',
-                      border: '1px solid #F5BF5D',
-                      font: '#F7F7F6',
-                    }
+                    background: '#F5BF5D',
+                    border: '1px solid #F5BF5D',
+                    font: '#F7F7F6',
+                  }
                   : {}
               }
             >
@@ -855,10 +849,10 @@ const FilterList: React.FC<IFilterListProps> = ({
               style={
                 parkingSpaces === 1
                   ? {
-                      background: '#F5BF5D',
-                      border: '1px solid #F5BF5D',
-                      font: '#F7F7F6',
-                    }
+                    background: '#F5BF5D',
+                    border: '1px solid #F5BF5D',
+                    font: '#F7F7F6',
+                  }
                   : {}
               }
             >
@@ -870,10 +864,10 @@ const FilterList: React.FC<IFilterListProps> = ({
               style={
                 parkingSpaces === 2
                   ? {
-                      background: '#F5BF5D',
-                      border: '1px solid #F5BF5D',
-                      font: '#F7F7F6',
-                    }
+                    background: '#F5BF5D',
+                    border: '1px solid #F5BF5D',
+                    font: '#F7F7F6',
+                  }
                   : {}
               }
             >
@@ -885,10 +879,10 @@ const FilterList: React.FC<IFilterListProps> = ({
               style={
                 parkingSpaces === 3
                   ? {
-                      background: '#F5BF5D',
-                      border: '1px solid #F5BF5D',
-                      font: '#F7F7F6',
-                    }
+                    background: '#F5BF5D',
+                    border: '1px solid #F5BF5D',
+                    font: '#F7F7F6',
+                  }
                   : {}
               }
             >
@@ -900,10 +894,10 @@ const FilterList: React.FC<IFilterListProps> = ({
               style={
                 parkingSpaces === 4
                   ? {
-                      background: '#F5BF5D',
-                      border: '1px solid #F5BF5D',
-                      font: '#F7F7F6',
-                    }
+                    background: '#F5BF5D',
+                    border: '1px solid #F5BF5D',
+                    font: '#F7F7F6',
+                  }
                   : {}
               }
             >
@@ -926,11 +920,10 @@ const FilterList: React.FC<IFilterListProps> = ({
               <div className="flex flex-row items-center mb-3" key={name}>
                 <div
                   id={name}
-                  className={`w-[20px] h-[20px] border border-quaternary rounded-[3px] bg-tertiary ${
-                    query.tags?.toLowerCase().includes(name.toLowerCase())
-                      ? 'border-yellow-500'
-                      : ''
-                  }`}
+                  className={`w-[20px] h-[20px] border border-quaternary rounded-[3px] bg-tertiary ${query.tags?.toLowerCase().includes(name.toLowerCase())
+                    ? 'border-yellow-500'
+                    : ''
+                    }`}
                   onClick={() => toggleSelection(name)}
                 >
                   {query.tags?.toLowerCase().includes(name.toLowerCase()) && (

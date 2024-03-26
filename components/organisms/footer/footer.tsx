@@ -22,11 +22,11 @@ const Footer = () => {
   }, [height]);
 
   const footerPositionCSS = `bg-tertiary block w-full ${desktop
-    ? 'fixed. bottom-0 mt-5'
+    ? 'bottom-0 mt-5'
     : mobile
       ? 'absolute mt-36'
       : notebook
-        ? 'fixed. mt-36'
+        ? 'mt-36'
         : 'absolute mt-36'
     }`;
 
