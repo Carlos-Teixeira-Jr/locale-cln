@@ -83,13 +83,13 @@ const HomeFilter: React.FC<IHomeFilter> = ({
   };
 
   const buyBtnClassName = `w-full h-[34px] md:h-fit lg:h-[33px] rounded-full border-black text-quaternary font-bold lg:text-md transition-all ${isBuy
-      ? 'bg-secondary text-quinary border border-secondary'
-      : 'bg-tertiary  text-quaternary'
+    ? 'bg-secondary text-quinary border border-secondary'
+    : 'bg-tertiary  text-quaternary'
     }`;
 
   const rentBtnClassName = `w-full h-[34px] md:h-fit lg:h-[33px] rounded-full border-black text-quaternary font-bold lg:text-md transition-all ${isRent
-      ? 'bg-secondary text-quinary border border-secondary'
-      : 'bg-tertiary text-quaternary'
+    ? 'bg-secondary text-quinary border border-secondary'
+    : 'bg-tertiary text-quaternary'
     }`;
 
   const filterLocation = (value: string) => {
@@ -255,8 +255,8 @@ const HomeFilter: React.FC<IHomeFilter> = ({
                   </p>
                   <ArrowDownIcon
                     className={`my-auto cursor-pointer ${propTypeDropdownIsOpen
-                        ? 'transform rotate-360 transition-transform duration-300 ease-in-out'
-                        : 'transform rotate-180 transition-transform duration-300 ease-in-out'
+                      ? 'transform rotate-360 transition-transform duration-300 ease-in-out'
+                      : 'transform rotate-180 transition-transform duration-300 ease-in-out'
                       }`}
                   />
                 </div>

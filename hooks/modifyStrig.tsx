@@ -18,7 +18,7 @@ export default function modifyString(pathname: string): string {
     '/admin': 'Anúncios',
   };
 
-  const defaultTitle = 'Home';
+  const defaultTitle = 'Locale | Home';
   const title = pathMap[pathname] || defaultTitle;
 
   return capitalizeFirstLetter(title);
