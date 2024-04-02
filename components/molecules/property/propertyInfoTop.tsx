@@ -86,14 +86,16 @@ const PropertyInfoTop = ({ propertyID }: any) => {
           ),
           propertyID.metadata.find((item: IMetadata) => item.type === 'garage')
         ).map((section, key) => {
-          return (
-            <PropertyDetails
-              key={key}
-              icon={section.icon}
-              description={section.description}
-              value={section.value}
-            />
-          );
+          if (section.value > 0) {
+            return (
+              <PropertyDetails
+                key={key}
+                icon={section.icon}
+                description={section.description}
+                value={section.value}
+              />
+            );
+          }
         })}
       </div>
     </div>
