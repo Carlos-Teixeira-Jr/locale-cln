@@ -6,7 +6,7 @@ import {
   IPropertyInfo,
 } from '../common/interfaces/property/propertyData';
 import { IPropertyTypes } from '../common/interfaces/property/propertyTypes';
-import { fetchJson } from '../common/utils/fetchJson';
+import { fetchJson, handleResult } from '../common/utils/fetchJson';
 import HomeFilter from '../components/atoms/filterSections/HomeFilter';
 import { AccessCard, PropertyCard } from '../components/molecules/cards';
 import { Footer, Header } from '../components/organisms';
@@ -193,20 +193,21 @@ export default Home;
 export async function getStaticProps() {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
 
-  const [propertyInfo, propertyTypes, locations] = await Promise.all([
-    fetch(`${baseUrl}/property/filter/?page=1&limit=4`)
-      .then((res) => res.json())
-      .catch(() => []),
-    fetch(`${baseUrl}/property-type`)
-      .then((res) => res.json())
-      .catch(() => []),
-    fetch(`${baseUrl}/location`)
-      .then((res) => res.json())
-      .catch(() => []),
+  const promises = [
     fetchJson(`${baseUrl}/property/filter/?page=1&limit=4`),
     fetchJson(`${baseUrl}/property-type`),
     fetchJson(`${baseUrl}/location`),
-  ]);
+  ];
+
+  const results = await Promise.allSettled(promises);
+
+  const propertyInfoResult = results[0];
+  const propertyTypesResult = results[1];
+  const locationsResult = results[2];
+
+  const propertyInfo = handleResult(propertyInfoResult);
+  const propertyTypes = handleResult(propertyTypesResult);
+  const locations = handleResult(locationsResult);
 
   return {
     props: {

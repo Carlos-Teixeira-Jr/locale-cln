@@ -119,6 +119,10 @@ export default AdminPage;
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = (await getSession(context)) as any;
+  const userId = session?.user.data._id || session?.user.id;
+  const page = Number(context.query.page);
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+  let ownerId;
 
   if (!session) {
     return {
@@ -128,11 +132,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       },
     };
   }
-
-  const userId = session?.user.data._id || session?.user.id;
-  const page = Number(context.query.page);
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
-  let ownerId;
 
   try {
     const ownerIdResponse = await fetch(
