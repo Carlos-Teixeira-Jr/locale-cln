@@ -20,9 +20,7 @@ export interface IHome {
 }
 
 export enum TransactionType {
-  // eslint-disable-next-line no-unused-vars
   BUY = 'comprar',
-  // eslint-disable-next-line no-unused-vars
   RENT = 'alugar',
 }
 
