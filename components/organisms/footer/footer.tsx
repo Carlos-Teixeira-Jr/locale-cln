@@ -10,6 +10,7 @@ const Footer = () => {
   const [mobile, setMobile] = useState(false);
   const [notebook, setNotebook] = useState(false);
   const [desktop, setDesktop] = useState(false);
+  const [table, setTablet] = useState(false);
 
   useEffect(() => {
     if (height > 900) {
@@ -21,13 +22,13 @@ const Footer = () => {
     }
   }, [height]);
 
-  const footerPositionCSS = `bg-tertiary block w-full ${desktop
-    ? 'fixed. bottom-0 mt-5'
+  const footerPositionCSS = `bg-tertiary bottom-0 w-full ${desktop
+    ? 'mt-44'
     : mobile
-      ? 'absolute mt-36'
+      ? 'mt-36'
       : notebook
-        ? 'fixed. mt-36'
-        : 'absolute mt-36'
+        ? 'mt-36'
+        : 'mt-36'
     }`;
 
   return (

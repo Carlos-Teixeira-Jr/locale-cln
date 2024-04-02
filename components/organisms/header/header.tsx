@@ -89,7 +89,7 @@ const Header: React.FC<IHeader> = () => {
                     alt={'Admin image'}
                     width={50}
                     height={50}
-                    className="border border-primary rounded-full w-10 h-10"
+                    className="border border-primary rounded-full w-10 h-10 object-cover"
                   />
                 ) : (
                   <UserIcon

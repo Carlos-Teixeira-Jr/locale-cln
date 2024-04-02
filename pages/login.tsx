@@ -3,16 +3,22 @@ import { getSession } from 'next-auth/react';
 import LoginCard from '../components/molecules/cards/loginCard/loginCard';
 import Footer from '../components/organisms/footer/footer';
 import Header from '../components/organisms/header/header';
+import { useIsMobile } from '../hooks/useIsMobile';
 import { NextPageWithLayout } from './page';
 
 const LoginPage: NextPageWithLayout = () => {
+
+  const isMobile = useIsMobile()
+
   return (
     <>
-      <Header />
-      <div className="flex justify-center items-center mt-40">
-        <LoginCard />
+      <div className={isMobile ? `md:flex md:flex-col min-h-screen justify-between` : ''}>
+        <Header />
+        <div className="flex justify-center items-center mt-32 lg:mb-20">
+          <LoginCard />
+        </div>
+        <Footer />
       </div>
-      <Footer />
     </>
   );
 };
