@@ -59,7 +59,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
   const urlEmail = query.email as string;
   const storedData = store.get('propertyData');
   const storedPlan = store.get('plans');
-  const choosedPlan = storedPlan ? storedPlan : '';
+  const chosenPlan = storedPlan ? storedPlan : '';
   const propertyAddress = storedData?.address ? storedData.address : {};
   const [paymentError, setPaymentError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -95,8 +95,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     lng: number;
   } | null>(null);
 
-  const [selectedPlan, setSelectedPlan] = useState(choosedPlan);
-  const freePlan = '645a46d4388b9fbde84b6e8a';
+  const [selectedPlan, setSelectedPlan] = useState(chosenPlan);
+  const freePlan = plans?.find((plan) => plan.price === 0);
   const reversedCards = [...plans].reverse();
   const [isAdminPage, setIsAdminPage] = useState(false);
   const [isSameAddress, setIsSameAddress] = useState(false);
@@ -571,6 +571,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
                       smartAd={smartAd}
                       id={_id}
                       isEdit={false}
+                      ownerCredits={ownerData?.owner?.adCredits}
                     />
                   )
                 )}
