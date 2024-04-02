@@ -1,11 +1,13 @@
 import { useRouter } from 'next/router';
-import { ParsedUrlQueryInput } from 'querystring';
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, useRef, useState } from 'react';
 import {
   ILocation,
   ILocationProp,
 } from '../../../common/interfaces/locationDropdown';
 import { IPropertyTypes } from '../../../common/interfaces/property/propertyTypes';
+import { useOutsideClick } from '../../../common/utils/actions/clickOutside';
+import { toggleLocation } from '../../../common/utils/actions/toggleLocations';
+import { categorizeLocations } from '../../../common/utils/format/categorizedLocations';
 import { lowerLetters } from '../../../common/utils/strings/capitalizeFirstLetter';
 import {
   categoryMappings,
@@ -14,6 +16,9 @@ import {
 } from '../../../common/utils/translateLocations';
 import propertyTypeSubtype from '../../../data/propertyTypeSubType.json';
 import useTrackLocation from '../../../hooks/trackLocation';
+import { useIsMobile } from '../../../hooks/useIsMobile';
+import Button from '../../molecules/buttons/btn';
+import BuyRentSelector from '../../molecules/switchers/buyRentSelector';
 import ArrowDownIcon from '../icons/arrowDownIcon';
 import CheckIcon from '../icons/checkIcon';
 
@@ -26,19 +31,12 @@ export interface IHomeFilter extends React.ComponentPropsWithoutRef<'div'> {
   setRentProp: (value: boolean) => void;
 }
 
-export interface Iquery extends ParsedUrlQueryInput {
-  adType: string | undefined;
-  propertyType?: string;
-  location?: string;
-  category?: string;
-}
-
 type HomeQuery = {
   adType: string | undefined,
   page: number,
-  location?: any,
-  propertyType?: any,
-  propertySubtype?: any,
+  location?: string,
+  propertyType?: string,
+  propertySubtype?: string,
   longitude?: string,
   latitude?: string
 }
@@ -52,10 +50,13 @@ const HomeFilter: React.FC<IHomeFilter> = ({
   locationProp,
   ...homeFilterProps
 }) => {
+
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const [isBuy, setIsBuy] = useState(true);
-  const [isRent, setIsRent] = useState(false);
+  const [buyOrRentOptions, setBuyOrRentOptions] = useState({
+    isBuy: true,
+    isRent: false
+  });
   const [propertyType, setPropertyType] = useState({
     propertyType: '',
     propertySubtype: '',
@@ -67,30 +68,9 @@ const HomeFilter: React.FC<IHomeFilter> = ({
   const [inputValue, setInputValue] = useState('');
   const [allLocations, setAllLocations] = useState(false);
   const { longitude, latitude, location: geolocation } = useTrackLocation();
-
-  const handleBuy = () => {
-    setIsBuy(true);
-    setIsRent(false);
-    setBuyProp(true);
-    setRentProp(false);
-  };
-
-  const handleRent = () => {
-    setIsBuy(false);
-    setIsRent(true);
-    setBuyProp(false);
-    setRentProp(true);
-  };
-
-  const buyBtnClassName = `w-full h-[34px] md:h-fit lg:h-[33px] rounded-full border-black text-quaternary font-bold lg:text-md transition-all ${isBuy
-      ? 'bg-secondary text-quinary border border-secondary'
-      : 'bg-tertiary  text-quaternary'
-    }`;
-
-  const rentBtnClassName = `w-full h-[34px] md:h-fit lg:h-[33px] rounded-full border-black text-quaternary font-bold lg:text-md transition-all ${isRent
-      ? 'bg-secondary text-quinary border border-secondary'
-      : 'bg-tertiary text-quaternary'
-    }`;
+  const isMobile = useIsMobile();
+  useOutsideClick(ref, setOpenLocationDropdown);
+  useOutsideClick(ref, setPropTypeDropdownIsOpen);
 
   const filterLocation = (value: string) => {
     const filtered: ILocation[] = locationProp.filter((location) =>
@@ -99,72 +79,10 @@ const HomeFilter: React.FC<IHomeFilter> = ({
     setFilteredLocations(filtered);
   };
 
-  const categorizedLocations: Record<string, ILocation[]> =
-    filteredLocations.reduce(
-      (categories: Record<string, ILocation[]>, location) => {
-        const translatedCategory =
-          categoryTranslations[location.category] || location.category;
-        if (!categories[translatedCategory]) {
-          categories[translatedCategory] = [];
-        }
-        const index = categories[translatedCategory].findIndex(
-          (item) => item.category === location.category
-        );
-        if (index === -1) {
-          categories[translatedCategory].push({
-            name: [location.name],
-            category: location.category,
-          });
-        } else {
-          categories[translatedCategory].push({
-            name: location.name,
-            category: location.category,
-          });
-        }
-        return categories;
-      },
-      {}
-    );
-
-  const toggleLocation = (name: string, category: string) => {
-    const existingCategory = location.find(
-      (item) => item.category === category
-    );
-
-    if (existingCategory) {
-      const updatedLocation = location
-        .map((item) => {
-          if (item.category === category) {
-            if (item.name.includes(name)) {
-              const updatedName = item.name.filter(
-                (itemName: string) => itemName !== name
-              );
-              if (updatedName.length === 0) {
-                return null;
-              } else {
-                return {
-                  ...item,
-                  name: updatedName,
-                };
-              }
-            } else {
-              return {
-                ...item,
-                name: [...item.name, name],
-              };
-            }
-          }
-          return item;
-        })
-        .filter(Boolean) as ILocation[];
-      setLocation(updatedLocation);
-    } else {
-      setLocation([...location, { name: [name], category }]);
-    }
-  };
+  const categorizedLocations = categorizeLocations(filteredLocations, categoryTranslations);
 
   const handleFindBtnClick = () => {
-    const adType = isBuy ? 'comprar' : isRent ? 'alugar' : undefined;
+    const adType = buyOrRentOptions.isBuy ? 'comprar' : buyOrRentOptions.isRent ? 'alugar' : undefined;
 
     const query: HomeQuery = {
       adType,
@@ -197,19 +115,6 @@ const HomeFilter: React.FC<IHomeFilter> = ({
     );
   };
 
-  useEffect(() => {
-    document.addEventListener('click', handleClick);
-    return () => document.removeEventListener('click', handleClick);
-    function handleClick(event: MouseEvent) {
-      if (ref && ref.current) {
-        const myRef = ref.current;
-        if (!myRef.contains(event.target as Node)) {
-          setOpenLocationDropdown(false);
-        }
-      }
-    }
-  });
-
   return (
     <>
       <div
@@ -223,21 +128,12 @@ const HomeFilter: React.FC<IHomeFilter> = ({
 
           <div className="flex flex-col md:flex-row gap-5 justify-center">
             <div className="flex flex-col gap-5">
-              <div className="w-full mx-auto flex flex-col gap-2 md:gap-0">
-                <label className="text-base">O que procura?</label>
-                <div className="flex flex-row rounded-full border border-quaternary lg:h-9 w-full mx-auto md:mt-3 lg:mt-2 justify-center">
-                  <div className="w-full">
-                    <button className={buyBtnClassName} onClick={handleBuy}>
-                      Comprar
-                    </button>
-                  </div>
-                  <div className="w-full">
-                    <button className={rentBtnClassName} onClick={handleRent}>
-                      Alugar
-                    </button>
-                  </div>
-                </div>
-              </div>
+
+              <BuyRentSelector buyOrRent={buyOrRentOptions} onBuyRentChange={(buyOrRent) => setBuyOrRentOptions(buyOrRent)} />
+
+              {isMobile && (
+                <Button onClick={handleFindBtnClick} />
+              )}
 
               <div className="lg:w-56 w-full lg:mr-10 flex flex-col gap-2">
                 <label>Qual o tipo do imóvel?</label>
@@ -247,6 +143,7 @@ const HomeFilter: React.FC<IHomeFilter> = ({
                   onClick={() =>
                     setPropTypeDropdownIsOpen(!propTypeDropdownIsOpen)
                   }
+                  ref={ref}
                 >
                   <p className="self-center">
                     {propertyType.propertyType
@@ -255,17 +152,23 @@ const HomeFilter: React.FC<IHomeFilter> = ({
                   </p>
                   <ArrowDownIcon
                     className={`my-auto cursor-pointer ${propTypeDropdownIsOpen
-                        ? 'transform rotate-360 transition-transform duration-300 ease-in-out'
-                        : 'transform rotate-180 transition-transform duration-300 ease-in-out'
-                      }`}
+                      ? 'transform rotate-360 transition-transform duration-300 ease-in-out'
+                      : 'transform rotate-180 transition-transform duration-300 ease-in-out'
+                      }`
+                    }
                   />
                 </div>
                 <div
                   className={`z-50 md:w-fit w-full h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md mt-20 ${!propTypeDropdownIsOpen ? 'hidden ' : 'absolute'
-                    }`}
+                    }`
+                  }
                 >
                   {propertyTypeSubtype.map((prop, index) => (
-                    <div className="w-full rounded-t-8 bg-tertiary" key={index}>
+                    <div
+                      className="w-full rounded-t-8 bg-tertiary"
+                      key={index}
+                      ref={ref}
+                    >
                       <p className="text-quaternary lg:text-lg text-left px-6 font-bold ">
                         {lowerLetters(prop.type)}
                       </p>
@@ -292,14 +195,10 @@ const HomeFilter: React.FC<IHomeFilter> = ({
             </div>
 
             <div className="flex flex-col-reverse md:flex-col gap-5">
-              <div className="w-full">
-                <button
-                  className="bg-primary rounded-full w-full h-12 md:h-fit lg:h-[34px] md:mt-9 lg:mt-8 float-right text-tertiary text-lg shadow-md hover:bg-red-600 hover:text-tertiary hover:shadow-lg transition-all duration-200 active:bg-primary-dark active:text-tertiary active:shadow-none focus:outline-none"
-                  onClick={handleFindBtnClick}
-                >
-                  Buscar
-                </button>
-              </div>
+
+              {!isMobile && (
+                <Button onClick={handleFindBtnClick} />
+              )}
 
               <div className="flex flex-col lg:mt-0 gap-2">
                 <label className="text-base">Onde?</label>
@@ -366,7 +265,7 @@ const HomeFilter: React.FC<IHomeFilter> = ({
                                       key={`${option}-${idx}`}
                                       className={`flex h-[50px]`}
                                       onClick={() => {
-                                        toggleLocation(option, category);
+                                        toggleLocation(option, category, location, setLocation);
                                       }}
                                     >
                                       <div className="w-[20px] h-[20px] shrink-0 my-auto border border-quaternary rounded-[3px] bg-tertiary">
@@ -395,7 +294,7 @@ const HomeFilter: React.FC<IHomeFilter> = ({
                                   <div
                                     className="flex h-[50px]"
                                     onClick={() => {
-                                      toggleLocation(name, category);
+                                      toggleLocation(name, category, location, setLocation);
                                     }}
                                   >
                                     <div className="w-[20px] h-[20px] shrink-0 my-auto border border-quaternary rounded-[3px] bg-tertiary">

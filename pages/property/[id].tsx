@@ -177,7 +177,7 @@ export async function getStaticProps(context: any) {
       return {
         redirect: {
           destination: '/',
-          permanent: false, // Se for true, indica um redirecionamento permanente (HTTP 301)
+          permanent: false,
         },
       };
     }
@@ -186,7 +186,7 @@ export async function getStaticProps(context: any) {
     return {
       redirect: {
         destination: '/',
-        permanent: false, // Se for true, indica um redirecionamento permanente (HTTP 301)
+        permanent: false,
       },
     };
   }

@@ -104,7 +104,7 @@ export const authOptions = {
         }
       }
     },
-    async jwt({ token, user }: any) {
+    async jwt({ token, user, account }: any) {
       user && (token.user = user);
       return token;
     },
