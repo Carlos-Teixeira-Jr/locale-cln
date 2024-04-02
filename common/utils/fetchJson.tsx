@@ -18,7 +18,6 @@ export const handleResult = (result: PromiseResult) => {
   if (result.status === 'fulfilled') {
     return result.value;
   } else {
-    // Handle error for this specific request
     console.error(`Error fetching data: ${result.reason}`);
     return [];
   }

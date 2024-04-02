@@ -14,7 +14,6 @@ const GalleryModal: React.FC<IGalleryModal> = ({
   setModalIsOpen,
   property,
   selectedImage,
-  modalIsOpen,
 }) => {
   const [currentIndex, setCurrentIndex] = useState(selectedImage);
   const [imageDimensions, setImageDimensions] = useState({ width: 0, height: 0 });
@@ -47,7 +46,10 @@ const GalleryModal: React.FC<IGalleryModal> = ({
   };
 
   return (
-    <div className="h-fit w-full -translate-y-[53.2%]. top-0 pt-24 pb-12  bg-black/90 absolute z-[214748364] group inset-x-0 overflow-x-hidden overflow-y-hidden overflow-hidden">
+    <div className={`w-full. right-0 left-0 top-0 pt-24 pb-12 bg-black/90 absolute z-[214748364] group inset-x-0 overflow-x-hidden overflow-y-hidden overflow-hidden ${imageDimensions.height < 500 ?
+      'lg:bottom-[-21px] md:bottom-[360px] xl:bottom-[670px]' :
+      'h-fit'
+      }`}>
       <div>
         <AiOutlineClose
           className="hidden group-hover:block absolute top-[4%] md:top-[5%] -translate-x-0 -translate-y-[50%] right-2 text-2xl rounded-full p-2 bg-black/20 text-white cursor-pointer"
@@ -58,19 +60,10 @@ const GalleryModal: React.FC<IGalleryModal> = ({
         />
       </div>
       <div className="flex justify-center w-full items-center">
-        {/* <Image
-          src={property.images[currentIndex]}
-          alt={''}
-          layout='responsive'
-          width={555}
-          height={555}
-          className=" rounded-3xl"
-        /> */}
         {imageDimensions.width > 0 && imageDimensions.height > 0 && (
           <NextImage
             src={property.images[currentIndex]}
             alt={''}
-            //layout="responsive"
             width={imageDimensions.width}
             height={imageDimensions.height}
             className="rounded-3xl md:mx-5 lg:mx-0"
