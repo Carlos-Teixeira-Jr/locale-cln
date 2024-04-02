@@ -6,6 +6,7 @@ import {
   ILocationProp,
 } from '../../../common/interfaces/locationDropdown';
 import { ITagsData } from '../../../common/interfaces/tagsData';
+import { categorizeLocations } from '../../../common/utils/format/categorizedLocations';
 import propertyTypesData from '../../../data/propertyTypesData.json';
 import ArrowDownIcon from '../../atoms/icons/arrowDownIcon';
 import CheckIcon from '../../atoms/icons/checkIcon';
@@ -135,19 +136,7 @@ const FilterList: React.FC<IFilterListProps> = ({
     setFilteredLocations(filtered);
   };
 
-  const categorizedLocations: Record<string, ILocation[]> =
-    filteredLocations.reduce(
-      (categories: Record<string, ILocation[]>, location) => {
-        const translatedCategory =
-          categoryTranslations[location.category] || location.category;
-        if (!categories[translatedCategory]) {
-          categories[translatedCategory] = [];
-        }
-        categories[translatedCategory].push(location);
-        return categories;
-      },
-      {}
-    );
+  const categorizedLocations = categorizeLocations(filteredLocations, categoryTranslations);
 
   const toggleLocation = (name: string, category: string) => {
     const existingCategory = location.find(
