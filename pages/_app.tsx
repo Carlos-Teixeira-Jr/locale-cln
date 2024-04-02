@@ -29,7 +29,7 @@ export default function App({
     <>
       <SessionProvider session={session}>
         <Head>
-          <title>Locale | {modifyString(pathname)}</title>
+          <title>{modifyString(pathname)}</title>
           <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
         </Head>
         <ProgressProvider>
