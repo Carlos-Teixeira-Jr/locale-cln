@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, useRef, useState } from 'react';
 import {
   ILocation,
   ILocationProp,
@@ -34,9 +34,9 @@ export interface IHomeFilter extends React.ComponentPropsWithoutRef<'div'> {
 type HomeQuery = {
   adType: string | undefined,
   page: number,
-  location?: any,
-  propertyType?: any,
-  propertySubtype?: any,
+  location?: string,
+  propertyType?: string,
+  propertySubtype?: string,
   longitude?: string,
   latitude?: string
 }
@@ -50,10 +50,9 @@ const HomeFilter: React.FC<IHomeFilter> = ({
   locationProp,
   ...homeFilterProps
 }) => {
+
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  // const [isBuy, setIsBuy] = useState(true);
-  // const [isRent, setIsRent] = useState(false);
   const [buyOrRentOptions, setBuyOrRentOptions] = useState({
     isBuy: true,
     isRent: false
@@ -72,34 +71,6 @@ const HomeFilter: React.FC<IHomeFilter> = ({
   const isMobile = useIsMobile();
   useOutsideClick(ref, setOpenLocationDropdown);
   useOutsideClick(ref, setPropTypeDropdownIsOpen);
-
-  useEffect(() => {
-    console.log("🚀 ~ buyOrRentOptions:", buyOrRentOptions)
-  }, [buyOrRentOptions])
-
-  // const handleBuy = () => {
-  //   setIsBuy(true);
-  //   setIsRent(false);
-  //   setBuyProp(true);
-  //   setRentProp(false);
-  // };
-
-  // const handleRent = () => {
-  //   setIsBuy(false);
-  //   setIsRent(true);
-  //   setBuyProp(false);
-  //   setRentProp(true);
-  // };
-
-  // const buyBtnClassName = `w-full h-[34px] md:h-fit lg:h-[33px] rounded-full border-black text-quaternary font-bold lg:text-md transition-all ${isBuy
-  //   ? 'bg-secondary text-quinary border border-secondary'
-  //   : 'bg-tertiary  text-quaternary'
-  //   }`;
-
-  // const rentBtnClassName = `w-full h-[34px] md:h-fit lg:h-[33px] rounded-full border-black text-quaternary font-bold lg:text-md transition-all ${isRent
-  //   ? 'bg-secondary text-quinary border border-secondary'
-  //   : 'bg-tertiary text-quaternary'
-  //   }`;
 
   const filterLocation = (value: string) => {
     const filtered: ILocation[] = locationProp.filter((location) =>
@@ -157,22 +128,6 @@ const HomeFilter: React.FC<IHomeFilter> = ({
 
           <div className="flex flex-col md:flex-row gap-5 justify-center">
             <div className="flex flex-col gap-5">
-
-              {/* <div className="w-full mx-auto flex flex-col gap-2 md:gap-0">
-                <label className="text-base">O que procura?</label>
-                <div className="flex flex-row rounded-full border border-quaternary lg:h-9 w-full mx-auto md:mt-3 lg:mt-2 justify-center">
-                  <div className="w-full">
-                    <button className={buyBtnClassName} onClick={handleBuy}>
-                      Comprar
-                    </button>
-                  </div>
-                  <div className="w-full">
-                    <button className={rentBtnClassName} onClick={handleRent}>
-                      Alugar
-                    </button>
-                  </div>
-                </div>
-              </div> */}
 
               <BuyRentSelector buyOrRent={buyOrRentOptions} onBuyRentChange={(buyOrRent) => setBuyOrRentOptions(buyOrRent)} />
 

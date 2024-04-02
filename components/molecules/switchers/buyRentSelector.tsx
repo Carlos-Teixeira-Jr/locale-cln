@@ -15,7 +15,6 @@ const BuyRentSelector = ({
   onBuyRentChange
 }: BuyRentSelectorType) => {
 
-  console.log("🚀 ~ buyOrRent:", buyOrRent)
   const [buyOrRentOptions, setBuyOrRentOptions] = useState(buyOrRent);
 
   const handleBuy = () => {
