@@ -6,7 +6,9 @@ export interface IAdCreditsTooltip {
   open: boolean;
   anchorId: any;
   planName: string;
-  creditsLeft: number
+  creditsLeft: number;
+  userPlan: string;
+  selectedPlan: any
 }
 
 const AdCreditsTooltip: React.FC<IAdCreditsTooltip> = ({
@@ -14,7 +16,6 @@ const AdCreditsTooltip: React.FC<IAdCreditsTooltip> = ({
   planName,
   creditsLeft,
 }) => {
-  console.log("🚀 ~ anchorId:", anchorId)
 
   const plansInfo = {
     free: `Este é seu plano atual e você pode anunciar à vontade por ele, porém seu anúncio não aparecerá em destaque.`,

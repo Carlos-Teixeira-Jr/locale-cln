@@ -33,7 +33,6 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
   userPlan,
   ownerCredits
 }) => {
-  console.log("🚀 ~ userPlan:", userPlan)
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
   const [tooltipISOpen, setTooltipIsOpen] = useState(true);
 
@@ -198,7 +197,9 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
                 anchorId={`card-${id}`}
                 open={tooltipISOpen}
                 planName={name}
+                selectedPlan={selectedPlanCard}
                 creditsLeft={ownerCredits}
+                userPlan={userPlan}
               />
             </div>
           )}
