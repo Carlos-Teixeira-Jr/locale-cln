@@ -36,7 +36,7 @@ const BuyRentSelector = ({
   };
 
   const getButtonClassName = (selected: keyof BuyOrRent) =>
-    `w-full h-[34px] md:h-fit lg:h-[33px] rounded-full border-black text-quaternary font-bold lg:text-md transition-all ${buyOrRentOptions[selected]
+    `w-full h-[34px] md:h-fit lg:h-full rounded-full border-black text-quaternary font-bold lg:text-md transition-all ${buyOrRentOptions[selected]
       ? 'bg-secondary text-quinary border border-secondary'
       : 'bg-tertiary text-quaternary'
     }`;
