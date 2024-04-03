@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
 
 export interface IAdCreditsTooltip {
   open: boolean;
-  onRequestClose: any;
   anchorId: any;
   planName: string;
   creditsLeft: number
@@ -13,8 +12,9 @@ export interface IAdCreditsTooltip {
 const AdCreditsTooltip: React.FC<IAdCreditsTooltip> = ({
   anchorId,
   planName,
-  creditsLeft
+  creditsLeft,
 }) => {
+  console.log("🚀 ~ anchorId:", anchorId)
 
   const plansInfo = {
     free: `Este é seu plano atual e você pode anunciar à vontade por ele, porém seu anúncio não aparecerá em destaque.`,
@@ -26,26 +26,36 @@ const AdCreditsTooltip: React.FC<IAdCreditsTooltip> = ({
       `Este é seu plano atual e não há mais destaques disponíveis. Mas você ainda pode fazer quantos anúncios comuns desejar trocando seu plano para o grátis`,
   }
 
-  const [selectedContent, setSelectedContent] = useState(planName);
-  console.log("🚀 ~ selectedContent:", selectedContent)
+  const selectedContent = () => {
+    let content;
+    if (planName === 'Free') {
+      content = plansInfo.free;
+    } else if (planName === 'Básico') {
+      content = plansInfo.basic;
+    } else {
+      content = plansInfo.plus
+    }
 
-  useEffect(() => {
-    setSelectedContent(planName);
-  }, [])
+    return content;
+  };
 
   return (
     <Tooltip
       style={{
         backgroundColor: '#F7F7F6',
         color: '#6B7280',
-        border: '2px solid #6B7280'
+        border: '2px solid #6B7280',
+        width: '100%'
       }}
       border="2px solid #6B7280"
       anchorId={anchorId}
-      events={['click']}
-      content={selectedContent}
-      delayHide={5000}
+      openEvents={{ mouseenter: true }}
+      closeEvents={{ click: true, mouseleave: true }}
+      globalCloseEvents={{ scroll: true, clickOutsideAnchor: true }}
+      content={selectedContent()}
+      delayHide={4000}
       noArrow
+      place='bottom'
     />
   );
 };

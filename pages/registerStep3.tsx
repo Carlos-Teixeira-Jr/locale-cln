@@ -53,6 +53,7 @@ type BodyReq = {
 };
 
 const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerData }) => {
+  console.log("🚀 ~ ownerData:", ownerData)
   const router = useRouter();
   const { progress, updateProgress } = useProgress();
   const query = router.query;
@@ -571,6 +572,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
                       smartAd={smartAd}
                       id={_id}
                       isEdit={false}
+                      userPlan={ownerData.owner?.plan}
                       ownerCredits={ownerData?.owner?.adCredits}
                     />
                   )

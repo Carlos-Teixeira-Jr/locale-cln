@@ -3,6 +3,7 @@ import ArrowDownIcon from '../../../atoms/icons/arrowDownIcon';
 import LocationIcon from '../../../atoms/icons/location';
 import PlusIcon from '../../../atoms/icons/plusIcon';
 import LocaleLogo from '../../../atoms/logos/locale';
+import AdCreditsTooltip from '../../../atoms/tooltip/adCreditsTooltip';
 
 interface IPlansCardHidden {
   selectedPlanCard: string;
@@ -32,8 +33,9 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
   userPlan,
   ownerCredits
 }) => {
+  console.log("🚀 ~ userPlan:", userPlan)
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
-  const [tooltipIsOpen, setTooltipIsOpen] = useState(true);
+  const [tooltipISOpen, setTooltipIsOpen] = useState(true);
 
   const handleDropdown = (cardId: string) => {
     if (selectedCards.includes(cardId)) {
@@ -190,17 +192,18 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
               {selectedPlanCard === id ? 'Meu Plano' : 'Assinar'}
             </button>
           </div>
+          {ownerCredits !== undefined && userPlan === id && (
+            <div className='w-full'>
+              <AdCreditsTooltip
+                anchorId={`card-${id}`}
+                open={tooltipISOpen}
+                planName={name}
+                creditsLeft={ownerCredits}
+              />
+            </div>
+          )}
         </div>
       </div>
-      {/* {ownerCredits !== undefined && (
-        <AdCreditsTooltip
-          open={false}
-          onRequestClose={setTooltipIsOpen(false)}
-          anchorId={`card-${id}`}
-          planName={name}
-          creditsLeft={ownerCredits}
-        />
-      )} */}
     </div>
   );
 };
