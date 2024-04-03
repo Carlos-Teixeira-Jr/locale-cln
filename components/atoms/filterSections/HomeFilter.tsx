@@ -51,7 +51,8 @@ const HomeFilter: React.FC<IHomeFilter> = ({
   ...homeFilterProps
 }) => {
 
-  const ref = useRef<HTMLDivElement>(null);
+  const refPorpertyType = useRef<HTMLDivElement>(null);
+  const refLoation = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const [buyOrRentOptions, setBuyOrRentOptions] = useState({
     isBuy: true,
@@ -69,8 +70,11 @@ const HomeFilter: React.FC<IHomeFilter> = ({
   const [allLocations, setAllLocations] = useState(false);
   const { longitude, latitude, location: geolocation } = useTrackLocation();
   const isMobile = useIsMobile();
-  useOutsideClick(ref, setOpenLocationDropdown);
-  useOutsideClick(ref, setPropTypeDropdownIsOpen);
+  useOutsideClick(refLoation, setOpenLocationDropdown, openLocationDropdown);
+  useOutsideClick(refPorpertyType, setPropTypeDropdownIsOpen, propTypeDropdownIsOpen);
+
+  console.log("🚀 ~ propertyType:", propertyType)
+
 
   const filterLocation = (value: string) => {
     const filtered: ILocation[] = locationProp.filter((location) =>
@@ -143,7 +147,7 @@ const HomeFilter: React.FC<IHomeFilter> = ({
                   onClick={() =>
                     setPropTypeDropdownIsOpen(!propTypeDropdownIsOpen)
                   }
-                  ref={ref}
+                  ref={refPorpertyType}
                 >
                   <p className="self-center">
                     {propertyType.propertyType
@@ -167,7 +171,7 @@ const HomeFilter: React.FC<IHomeFilter> = ({
                     <div
                       className="w-full rounded-t-8 bg-tertiary"
                       key={index}
-                      ref={ref}
+                      ref={refLoation}
                     >
                       <p className="text-quaternary lg:text-lg text-left px-6 font-bold ">
                         {lowerLetters(prop.type)}
@@ -179,8 +183,8 @@ const HomeFilter: React.FC<IHomeFilter> = ({
                           onClick={() => {
                             setPropertyType({
                               ...propertyType,
-                              propertyType: prop.type,
-                              propertySubtype: type,
+                              propertyType: prop.type !== 'todos' ? prop.type : "todos",
+                              propertySubtype: type !== 'todos' ? type : "todos",
                             });
                             setPropTypeDropdownIsOpen(false);
                           }}
@@ -217,7 +221,7 @@ const HomeFilter: React.FC<IHomeFilter> = ({
                 <div
                   className={`z-50 w-full md:w-48 mt-20 h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md ${openLocationDropdown ? 'absolute' : 'hidden'
                     }`}
-                  ref={ref}
+                  ref={refLoation}
                 >
                   <div className="flex flex-col w-full text-center font-normal text-base text-quaternary leading-5">
                     <div
