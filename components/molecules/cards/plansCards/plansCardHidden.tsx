@@ -195,11 +195,8 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
             <div className='w-full'>
               <AdCreditsTooltip
                 anchorId={`card-${id}`}
-                open={tooltipISOpen}
                 planName={name}
-                selectedPlan={selectedPlanCard}
                 creditsLeft={ownerCredits}
-                userPlan={userPlan}
               />
             </div>
           )}
