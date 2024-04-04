@@ -1,7 +1,7 @@
 interface MenuIconProps {
   children?: React.ReactNode;
-  width?: string;
-  height?: string;
+  width?: number | string;
+  height?: number | string;
 }
 
 export default function MenuIcon({ children, width = "24", height = "24" }: MenuIconProps) {
