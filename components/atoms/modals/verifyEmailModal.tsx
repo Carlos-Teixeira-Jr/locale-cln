@@ -7,7 +7,7 @@ import { ErrorToastNames, SuccessToastNames, showErrorToast, showSuccessToast } 
 import CloseIcon from '../icons/closeIcon';
 
 export interface IEmailDataProp {
-  email: string | null,
+  email: string | null | string[],
   emailVerificationCode: string,
   password: string | null,
 }
