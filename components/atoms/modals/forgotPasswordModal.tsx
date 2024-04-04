@@ -2,15 +2,15 @@ import Image from 'next/image';
 import React, { MouseEvent, useState } from 'react';
 import Modal from 'react-modal';
 import { toast } from 'react-toastify';
+import { SuccessToastNames, showSuccessToast } from '../../../common/utils/toasts';
 import { sendRequest } from '../../../hooks/sendRequest';
 import { useIsMobile } from '../../../hooks/useIsMobile';
 import CloseIcon from '../icons/closeIcon';
-import { ErrorToastNames, SuccessToastNames, showErrorToast, showSuccessToast } from '../../../common/utils/toasts';
 Modal.setAppElement('#__next');
 
 export interface IForgotPasswordModal {
   isOpen: boolean;
-  setModalIsOpen: any;
+  setModalIsOpen: (isOpen: boolean) => void;
 }
 
 const ForgotPasswordModal: React.FC<IForgotPasswordModal> = ({

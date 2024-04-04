@@ -5,7 +5,7 @@ Modal.setAppElement('#__next');
 
 export interface IErrorOnUpdateModal {
   errorModalIsOpen: boolean;
-  setErrorModalIsOpen: any;
+  setErrorModalIsOpen: (isOpen: boolean) => void;
 }
 
 const ErrorOnUpdateModal: React.FC<IErrorOnUpdateModal> = ({

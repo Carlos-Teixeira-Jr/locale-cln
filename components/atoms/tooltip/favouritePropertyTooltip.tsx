@@ -2,9 +2,7 @@ import React from "react";
 import { Tooltip } from "react-tooltip";
 
 export interface IFavouritePropertyTooltip {
-  open: boolean;
-  onRequestClose: any;
-  anchorId: any;
+  anchorId: string | undefined;
 }
 
 const FavouritePropertyTooltip: React.FC<IFavouritePropertyTooltip> = ({

@@ -3,13 +3,19 @@ import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import { toast } from 'react-toastify';
-import CloseIcon from '../icons/closeIcon';
 import { ErrorToastNames, SuccessToastNames, showErrorToast, showSuccessToast } from '../../../common/utils/toasts';
+import CloseIcon from '../icons/closeIcon';
+
+export interface IEmailDataProp {
+  email: string | null | string[],
+  emailVerificationCode: string,
+  password: string | null,
+}
 
 export interface IVerifyEmailModal {
   isOpen: boolean;
-  setModalIsOpen: any;
-  emailVerificationDataProp: any;
+  setModalIsOpen: (isOpen: boolean) => void;
+  emailVerificationDataProp: IEmailDataProp;
 }
 
 const VerifyEmailModal: React.FC<IVerifyEmailModal> = ({
@@ -21,7 +27,7 @@ const VerifyEmailModal: React.FC<IVerifyEmailModal> = ({
   const [input, setInput] = useState('');
   const [verificationCodeError, setVerificationCodeError] = useState('');
   const [showResendMessage, setShowResendMessage] = useState(true);
-  const [emailVerificationData, setEmailVerificationData] = useState({
+  const [emailVerificationData, setEmailVerificationData] = useState<IEmailDataProp>({
     email: null,
     emailVerificationCode: '',
     password: null,
@@ -42,7 +48,7 @@ const VerifyEmailModal: React.FC<IVerifyEmailModal> = ({
     };
   }, []);
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async () => {
     try {
       toast.loading('Enviando');
       const response = await fetch(
@@ -84,7 +90,7 @@ const VerifyEmailModal: React.FC<IVerifyEmailModal> = ({
     }
   };
 
-  const handleResendVerifyEmailCode = async (e: any) => {
+  const handleResendVerifyEmailCode = async (e: React.MouseEvent<HTMLParagraphElement>) => {
     e.preventDefault();
     try {
       toast.loading('Enviando...');
@@ -189,9 +195,8 @@ const VerifyEmailModal: React.FC<IVerifyEmailModal> = ({
             Código de verificação
           </label>
           <input
-            className={`w-full h-fit md:h-12 rounded-[10px] border-[1px]  drop-shadow-xl bg-tertiary text-quaternary md:p-2 text-xl font-semibold ${
-              verificationCodeError ? 'border-red-500' : 'border-quaternary'
-            }`}
+            className={`w-full h-fit md:h-12 rounded-[10px] border-[1px]  drop-shadow-xl bg-tertiary text-quaternary md:p-2 text-xl font-semibold ${verificationCodeError ? 'border-red-500' : 'border-quaternary'
+              }`}
             type="text"
             value={input}
             onChange={(e) => {

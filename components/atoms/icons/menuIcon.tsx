@@ -1,4 +1,10 @@
-export default function MenuIcon({ children, width="24", height="24" }: any) {
+interface MenuIconProps {
+  children?: React.ReactNode;
+  width?: number | string;
+  height?: number | string;
+}
+
+export default function MenuIcon({ children, width = "24", height = "24" }: MenuIconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

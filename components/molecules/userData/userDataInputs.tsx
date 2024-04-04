@@ -42,7 +42,7 @@ interface IUserDataInputs {
   profilePicPropertyData?: string;
   ownerData?: IOwnerData;
   picture?: ProfilePicture;
-  firstProperty?: any;
+  firstProperty?: boolean;
 }
 
 const UserDataInputs: React.FC<IUserDataInputs> = ({

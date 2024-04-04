@@ -3,12 +3,9 @@ import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
 
 export interface IAdCreditsTooltip {
-  open: boolean;
-  anchorId: any;
+  anchorId: string | undefined;
   planName: string;
   creditsLeft: number;
-  userPlan: string;
-  selectedPlan: any
 }
 
 const AdCreditsTooltip: React.FC<IAdCreditsTooltip> = ({

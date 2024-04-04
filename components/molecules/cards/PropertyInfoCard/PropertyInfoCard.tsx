@@ -138,7 +138,7 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
                 </span>
               </button>
             </div>
-            <div className="flex top-4 justify-center mt-[-28px]">
+            <div className="flex top-4 justify-center mt-[-28px] md:mt-[-35px]">
               {images.map((images: string, imagesIndex: number) => (
                 <div
                   key={imagesIndex}

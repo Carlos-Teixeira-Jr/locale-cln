@@ -4,8 +4,8 @@ Modal.setAppElement('#__next');
 
 export interface ICookiesModal {
   isOpen: boolean;
-  setModalIsOpen: any;
-  onClose: any;
+  setModalIsOpen: (isOpen: boolean) => void;
+  onClose: () => void;
 }
 
 const CookiesModal: React.FC<ICookiesModal> = ({

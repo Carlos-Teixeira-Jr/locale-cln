@@ -1,4 +1,5 @@
 import {
+  IData,
   IMetadata,
 } from '../../../common/interfaces/property/propertyData';
 import { monetaryFormat } from '../../../common/utils/masks/monetaryFormat';
@@ -9,13 +10,17 @@ import BedroomIcon from '../../atoms/icons/bedroomIcon';
 import ParkingIcon from '../../atoms/icons/parkingIcon';
 import PropertyDetails from '../../atoms/propertyDetails/propertyDetails';
 
-const PropertyInfoTop = ({ propertyID }: any) => {
-  const formattedPrice = monetaryFormat(propertyID.prices[0].value);
+export interface IPropertyInfoTop {
+  propertyID: IData
+}
+
+const PropertyInfoTop = ({ propertyID }: IPropertyInfoTop) => {
+  const formattedPrice = monetaryFormat(propertyID.prices[0].value.toString());
   const getSections = (
     areaValue: any,
-    numBedrooms: IMetadata,
-    numBathrooms: IMetadata,
-    numGarage: any
+    numBedrooms: IMetadata | undefined,
+    numBathrooms: IMetadata | undefined,
+    numGarage: IMetadata | undefined
   ) => [
       {
         icon: <AreaIcon />,
@@ -39,7 +44,7 @@ const PropertyInfoTop = ({ propertyID }: any) => {
       },
     ];
 
-  const iptuValue: [] = propertyID?.prices[2]?.value;
+  const iptuValue = propertyID?.prices[2]?.value;
 
   return (
     <div className="mx-5 lg:m-5 lg:mx-auto md:w-2/3">
@@ -86,7 +91,7 @@ const PropertyInfoTop = ({ propertyID }: any) => {
           ),
           propertyID.metadata.find((item: IMetadata) => item.type === 'garage')
         ).map((section, key) => {
-          if (section.value > 0) {
+          if (section.value! > 0) {
             return (
               <PropertyDetails
                 key={key}

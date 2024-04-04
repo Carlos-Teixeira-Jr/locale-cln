@@ -1,15 +1,13 @@
 import Link from 'next/link';
 import React, { ChangeEvent, useState } from 'react';
 import Modal from 'react-modal';
-import { toast } from 'react-toastify';
 import { v4 as uuidv4 } from 'uuid';
 import validator from 'validator';
 import { IData } from '../../../common/interfaces/property/propertyData';
-import { capitalizeFirstLetter } from '../../../common/utils/strings/capitalizeFirstLetter';
-import { useIsMobile } from '../../../hooks/useIsMobile';
-import { showErrorToast, showSuccessToast } from '../../../common/utils/toasts';
 import { applyNumericMask } from '../../../common/utils/masks/numericMask';
-import { SuccessToastNames, ErrorToastNames } from '../../../common/utils/toasts';
+import { capitalizeFirstLetter } from '../../../common/utils/strings/capitalizeFirstLetter';
+import { ErrorToastNames, showErrorToast, showSuccessToast, SuccessToastNames } from '../../../common/utils/toasts';
+import { useIsMobile } from '../../../hooks/useIsMobile';
 
 Modal.setAppElement('#__next');
 
@@ -24,6 +22,16 @@ export interface IFormData {
   phone: string;
   email: string;
   message: string;
+}
+
+export interface IMessageInputs {
+  key: string,
+  label: string,
+  value: string,
+  error: string,
+  maxLength?: number,
+  type?: string,
+  onChange: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void,
 }
 
 const MessageModal: React.FC<IMessageModal> = ({
@@ -49,14 +57,14 @@ const MessageModal: React.FC<IMessageModal> = ({
     message: '',
   });
 
-  const inputs = [
+  const inputs: IMessageInputs[] = [
     {
       key: 'name',
       label: 'Nome',
       value: formData.name,
       error: errors.name,
       maxLength: 30,
-      onChange: (event: ChangeEvent<any>) => {
+      onChange: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const value = event.target.value;
         const maskedValue = value.replace(/[^A-Za-z\sÀ-ú]/g, '');
         setFormData({ ...formData, name: maskedValue });
@@ -124,8 +132,8 @@ const MessageModal: React.FC<IMessageModal> = ({
       email: !formData.email
         ? errorMessage
         : !validator.isEmail(formData.email)
-        ? invalidEmailError
-        : '',
+          ? invalidEmailError
+          : '',
       phone: !formData.phone.length ? errorMessage : '',
       message: !formData.message ? errorMessage : '',
     };
