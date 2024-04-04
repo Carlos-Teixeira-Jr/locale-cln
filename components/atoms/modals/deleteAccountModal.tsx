@@ -1,16 +1,16 @@
-import CloseIcon from "../icons/closeIcon";
-import { useIsMobile } from "../../../hooks/useIsMobile";
-import Image from 'next/image';
-import Modal from 'react-modal';
 import { signOut, useSession } from "next-auth/react";
+import Image from 'next/image';
+import { useRouter } from "next/router";
+import Modal from 'react-modal';
 import { toast } from "react-toastify";
 import { ErrorToastNames, SuccessToastNames, showErrorToast, showSuccessToast } from "../../../common/utils/toasts";
-import { useRouter } from "next/router";
+import { useIsMobile } from "../../../hooks/useIsMobile";
+import CloseIcon from "../icons/closeIcon";
 Modal.setAppElement('#__next');
 
 export interface IDeleteAccountModal {
   isOpen: boolean;
-  setModalIsOpen: any;
+  setModalIsOpen: (isOpen: boolean) => void;
 }
 
 const DeleteAccountModal = ({
@@ -22,7 +22,7 @@ const DeleteAccountModal = ({
   const { data: session } = useSession() as any;
   const userId = session?.user?.data?._id;
   const router = useRouter();
-  
+
   const handleDeleteAccount = async () => {
     try {
       toast.loading('Enviando');

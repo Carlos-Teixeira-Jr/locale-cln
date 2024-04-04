@@ -6,16 +6,13 @@ Modal.setAppElement('#__next');
 
 export interface ISuccessOnUpdateModal {
   successModalIsOpen: boolean;
-  setSuccessModalIsOpen: any;
+  setSuccessModalIsOpen: (isOpen: boolean) => void;
 }
 
 const SuccessOnUpdateModal: React.FC<ISuccessOnUpdateModal> = ({
   successModalIsOpen,
   setSuccessModalIsOpen,
 }) => {
-  const handleCloseModal = () => {
-    setSuccessModalIsOpen(false);
-  };
 
   return (
     <Modal

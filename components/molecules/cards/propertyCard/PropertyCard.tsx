@@ -140,6 +140,7 @@ const PropertyCard: React.FC<IPropertyCard> = ({
               alt={'Property Image'}
               width={350}
               height={350}
+              className='object-cover'
             />
             {highlighted && (
               <div className="bg-black absolute m-5 rounded-lg bg-opacity-50">
@@ -180,10 +181,11 @@ const PropertyCard: React.FC<IPropertyCard> = ({
               <div
                 key={imagesIndex}
                 onClick={() => goToImage(imagesIndex)}
-                className={`${imagesIndex === currentIndex
+                className={`overflow-x-hidden ${imagesIndex === currentIndex
                   ? 'text-tertiary'
                   : 'text-[#D9D9D9]/70'
-                  } cursor-pointer `}
+                  } cursor-pointer `
+                }
               >
                 <DotIcon />
               </div>

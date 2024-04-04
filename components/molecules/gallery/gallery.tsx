@@ -28,19 +28,6 @@ const Gallery: React.FC<IGallery> = ({
     onGalleryModalOpen(modalIsOpen);
   }, [modalIsOpen]);
 
-  // useEffect(() => {
-  //   document.addEventListener('click', handleClick);
-  //   return () => document.removeEventListener('click', handleClick);
-  //   function handleClick(event: any) {
-  //     if (ref && ref.current) {
-  //       const myRef: any = ref.current;
-  //       if (!myRef.contains(event.target)) {
-  //         setModalIsOpen(false);
-  //       }
-  //     }
-  //   }
-  // });
-
   const prevImage = () => {
     const isFirstImage = currentIndex === 0;
     const newIndex = isFirstImage

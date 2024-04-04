@@ -24,11 +24,11 @@ export type CreditCardForm = {
 interface ICreditCard {
   isEdit: boolean;
   onCreditCardUpdate?: (creditCard: CreditCardForm) => void;
-  error: any;
+  error: CreditCardForm;
   creditCardInputRefs?: any;
   creditCardInfo?: ICreditCardInfo;
   userInfo?: IUserDataComponent;
-  customerId?: any;
+  customerId?: string;
   selectedPlan?: IPlan;
   userAddress?: IAddress;
   ownerData?: IOwnerData;

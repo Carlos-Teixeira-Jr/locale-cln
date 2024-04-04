@@ -14,7 +14,7 @@ export function toggleLocation(
     const updatedLocations = locations.map((item) => {
       if (item.category === category) {
         if (item.name.includes(name)) {
-          const updatedName = item.name.filter((itemName: any) => itemName !== name);
+          const updatedName = item.name.filter((itemName: string) => itemName !== name);
           return updatedName.length === 0 ? null : { ...item, name: updatedName };
         } else {
           return { ...item, name: [...item.name, name] };

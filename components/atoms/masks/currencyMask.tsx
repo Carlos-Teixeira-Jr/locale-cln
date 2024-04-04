@@ -3,7 +3,7 @@ import MaskedInput from 'react-text-mask';
 import createNumberMask from 'text-mask-addons/dist/createNumberMask';
 
 type MoneyMaskProps = {
-  value: any;
+  value: string | number | string[] | undefined;
   className: string;
   onChange?: () => void;
 };

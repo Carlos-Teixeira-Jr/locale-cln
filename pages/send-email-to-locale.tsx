@@ -133,7 +133,7 @@ const LocaleContact: NextPageWithLayout = () => {
             name="name"
             value={formData.name}
             onChange={handleMessageNameMask}
-            className="lg:w-[770px] w-[250px] h-[44px] m-[10px] mb-0 rounded-[10px] border border-quaternary bg-tertiary p-2 required:border-red-500 md:mx-auto lg:mx-2 text-lg text-quaternary font-semibold"
+            className="lg:w-[770px] md:w-96 w-[250px] h-[44px] m-[10px] mb-0 rounded-[10px] border border-quaternary bg-tertiary p-2 required:border-red-500 md:mx-auto lg:mx-2 text-lg text-quaternary font-semibold"
             maxLength={30}
             style={error.name ? { border: '1px solid red' } : {}}
           />
@@ -151,7 +151,7 @@ const LocaleContact: NextPageWithLayout = () => {
             type="tel"
             name="telephone"
             value={formData.telephone}
-            className="lg:w-[770px] w-[250px] h-10 m-[10px] mb-0 rounded-[10px] border border-quaternary text-lg text-quaternary font-semibold bg-tertiary p-2 required:border-red-500 md:mx-auto lg:mx-2"
+            className="lg:w-[770px] md:w-96 w-[250px] h-10 m-[10px] mb-0 rounded-[10px] border border-quaternary text-lg text-quaternary font-semibold bg-tertiary p-2 required:border-red-500 md:mx-auto lg:mx-2"
             onChange={(event: any) =>
               setFormData({ ...formData, telephone: event.target.value })
             }
@@ -171,7 +171,7 @@ const LocaleContact: NextPageWithLayout = () => {
             value={formData.email}
             onChange={handleEmailChange}
             maxLength={30}
-            className="lg:w-[770px] w-[250px] h-[44px] m-[10px] mb-0 rounded-[10px] border border-quaternary bg-tertiary p-2 required:border-red-500 md:mx-auto lg:mx-2 text-lg text-quaternary font-semibold"
+            className="lg:w-[770px] md:w-96 w-[250px] h-[44px] m-[10px] mb-0 rounded-[10px] border border-quaternary bg-tertiary p-2 required:border-red-500 md:mx-auto lg:mx-2 text-lg text-quaternary font-semibold"
             style={error.email ? { border: '1px solid red' } : {}}
           />
           {error.email && (
@@ -183,7 +183,7 @@ const LocaleContact: NextPageWithLayout = () => {
             Deixe sua mensagem
           </label>
           <textarea
-            className="mx-2 mb-0 border border-quaternary mt-1 lg:w-[770px] w-[250px] lg:h-20 bg-tertiary rounded-[10px] p-2 required:border-red-500 text-lg text-quaternary font-semibold"
+            className="mx-2 mb-0 border border-quaternary mt-1 lg:w-[770px] md:w-96 w-[250px] md:h-40 lg:h-20 bg-tertiary rounded-[10px] p-2 required:border-red-500 text-lg text-quaternary font-semibold"
             name="message"
             maxLength={500}
             value={formData.message}
@@ -197,21 +197,21 @@ const LocaleContact: NextPageWithLayout = () => {
             <label className="mx-[10px] text-red-500">{error.message}</label>
           )}
         </div>
-        <div className="flex justify-between w-full md:mb-2 lg:mb-auto">
+        <div className="flex justify-between w-full md:mb-2 gap-5 lg:mb-auto">
           <Link href={'/'}>
             <button
-              className="w-60 h-10 bg-primary rounded-[50px] p-[10px] gap-2.5 mt-3 lg:float-right hover:bg-red-600 hover:text-tertiary hover:shadow-lg transition-all duration-200"
+              className="md:w-52 w-28 h-10 bg-primary rounded-[50px] gap-2.5 mt-3 lg:float-right hover:bg-red-600 hover:text-tertiary hover:shadow-lg transition-all duration-200"
             >
-              <p className="font-normal text-xl text-tertiary leading-6 align-middle">
+              <p className="font-normal text-xl text-tertiary align-middle">
                 Voltar
               </p>
             </button>
           </Link>
           <button
             onClick={handleContactField}
-            className="w-60 bg-primary rounded-[50px] p-[10px] gap-2.5 mt-3 lg:float-right hover:bg-red-600 hover:text-tertiary hover:shadow-lg transition-all duration-200"
+            className="md:w-52 w-28 h-10 bg-primary rounded-[50px] gap-2.5 mt-3 lg:float-right hover:bg-red-600 hover:text-tertiary hover:shadow-lg transition-all duration-200"
           >
-            <p className="font-normal text-xl text-tertiary leading-6 align-middle">
+            <p className="font-normal text-xl text-tertiary align-middle">
               Enviar
             </p>
           </button>

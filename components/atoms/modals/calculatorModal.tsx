@@ -8,8 +8,8 @@ Modal.setAppElement('#__next');
 
 export interface ICalculatorModal {
   isOpen: boolean;
-  setModalIsOpen: any;
-  props: any;
+  setModalIsOpen: (isOpen: boolean) => void;
+  props: string;
 }
 
 const CalculatorModal: React.FC<ICalculatorModal> = ({
@@ -72,7 +72,7 @@ const CalculatorModal: React.FC<ICalculatorModal> = ({
     const lastParcelOperation =
       amortization +
       (feePercentage / 12 / 100) *
-        (financedValue - (parcelNumberToNumber - 1) * amortization);
+      (financedValue - (parcelNumberToNumber - 1) * amortization);
 
     setFinancedValue(financedValue);
     setShowFirstParcel(firstParcelOperation.toFixed(2));

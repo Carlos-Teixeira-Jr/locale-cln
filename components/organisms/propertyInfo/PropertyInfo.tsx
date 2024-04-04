@@ -240,8 +240,6 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
         </div>
         <div className="flex flex-col mt-10 md:w-[40%] lg:mx-2 justify-items-center gap-5 md:gap-0">
           <LinkCopiedTooltip
-            open={tooltipIsVisible}
-            onRequestClose={hideTooltip}
             anchorId={'tooltip'}
           />
           <button
@@ -263,8 +261,6 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
 
           {!userIsLogged && (
             <FavouritePropertyTooltip
-              open={favPropTooltipIsVisible}
-              onRequestClose={hideFavTooltip}
               anchorId={'fav-property-tooltip'}
             />
           )}

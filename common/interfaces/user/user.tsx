@@ -30,15 +30,15 @@ export interface IUser {
   email: string;
   cpf: string;
   address: IAddress;
-  picture?: any;
+  picture?: string;
 }
 
 export type IUserDataComponentErrors = {
-  [key: string]: string;
+  [key: string]: string | undefined;
   username: string;
   email: string;
   cpf: string;
-  cellPhone?: any;
-  phone?: any;
-  picture?: any;
+  cellPhone?: string | undefined;
+  phone?: string | undefined;
+  picture?: string | undefined;
 }
