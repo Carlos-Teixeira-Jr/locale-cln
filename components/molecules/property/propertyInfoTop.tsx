@@ -10,7 +10,11 @@ import BedroomIcon from '../../atoms/icons/bedroomIcon';
 import ParkingIcon from '../../atoms/icons/parkingIcon';
 import PropertyDetails from '../../atoms/propertyDetails/propertyDetails';
 
-const PropertyInfoTop = (propertyID: IData) => {
+export interface IPropertyInfoTop {
+  propertyID: IData
+}
+
+const PropertyInfoTop = ({ propertyID }: IPropertyInfoTop) => {
   const formattedPrice = monetaryFormat(propertyID.prices[0].value.toString());
   const getSections = (
     areaValue: any,
