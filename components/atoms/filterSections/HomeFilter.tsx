@@ -73,9 +73,6 @@ const HomeFilter: React.FC<IHomeFilter> = ({
   useOutsideClick(refLoation, setOpenLocationDropdown, openLocationDropdown);
   useOutsideClick(refPorpertyType, setPropTypeDropdownIsOpen, propTypeDropdownIsOpen);
 
-  console.log("🚀 ~ propertyType:", propertyType)
-
-
   const filterLocation = (value: string) => {
     const filtered: ILocation[] = locationProp.filter((location) =>
       location.name.toLowerCase().startsWith(value.toLowerCase())
@@ -173,7 +170,18 @@ const HomeFilter: React.FC<IHomeFilter> = ({
                       key={index}
                       ref={refLoation}
                     >
-                      <p className="text-quaternary lg:text-lg text-left px-6 font-bold ">
+                      <p
+                        className="text-quaternary lg:text-lg text-left px-6 font-bold"
+                        onClick={() => {
+                          if (prop.type === 'todos') {
+                            setPropertyType({
+                              ...propertyType,
+                              propertyType: prop.type,
+                              propertySubtype: prop.type
+                            })
+                          }
+                        }}
+                      >
                         {lowerLetters(prop.type)}
                       </p>
                       {propertyTypeSubtype[index].subTypes.map((type) => (
@@ -183,8 +191,8 @@ const HomeFilter: React.FC<IHomeFilter> = ({
                           onClick={() => {
                             setPropertyType({
                               ...propertyType,
-                              propertyType: prop.type !== 'todos' ? prop.type : "todos",
-                              propertySubtype: type !== 'todos' ? type : "todos",
+                              propertyType: prop.type,
+                              propertySubtype: type,
                             });
                             setPropTypeDropdownIsOpen(false);
                           }}

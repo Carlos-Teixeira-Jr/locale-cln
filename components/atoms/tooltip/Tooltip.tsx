@@ -5,9 +5,7 @@ import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
 
 export interface ILinkCopiedTooltip {
-  open: boolean;
-  onRequestClose: any;
-  anchorId: any;
+  anchorId: string | undefined;
 }
 
 const LinkCopiedTooltip: React.FC<ILinkCopiedTooltip> = ({
@@ -15,8 +13,8 @@ const LinkCopiedTooltip: React.FC<ILinkCopiedTooltip> = ({
 }) => {
   return (
     <Tooltip
-      style={{ 
-        backgroundColor: '#F7F7F6', 
+      style={{
+        backgroundColor: '#F7F7F6',
         color: '#6B7280',
         border: '2px solid #6B7280'
       }}

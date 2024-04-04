@@ -1,4 +1,4 @@
-import React, { InputHTMLAttributes, useCallback } from 'react';
+import React, { InputHTMLAttributes, RefObject, useCallback } from 'react';
 import {
   areaMask,
   cardNumber,
@@ -14,19 +14,19 @@ import {
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   mask:
-    | 'cep'
-    | 'currency'
-    | 'cpf'
-    | 'area'
-    | 'cellPhone'
-    | 'phone'
-    | 'cardNumber'
-    | 'expiryDate'
-    | 'cvc'
-    | 'uf';
+  | 'cep'
+  | 'currency'
+  | 'cpf'
+  | 'area'
+  | 'cellPhone'
+  | 'phone'
+  | 'cardNumber'
+  | 'expiryDate'
+  | 'cvc'
+  | 'uf';
   prefix?: string;
   className: string;
-  ref?: any;
+  ref?: RefObject<HTMLInputElement>;
   setPropertyValue?: any;
   setUseableAreaValue?: any;
   spanClassName?: string;

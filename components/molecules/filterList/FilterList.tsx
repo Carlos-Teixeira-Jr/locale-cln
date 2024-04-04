@@ -6,6 +6,7 @@ import {
   ILocationProp,
 } from '../../../common/interfaces/locationDropdown';
 import { ITagsData } from '../../../common/interfaces/tagsData';
+import { useOutsideClick } from '../../../common/utils/actions/clickOutside';
 import { categorizeLocations } from '../../../common/utils/format/categorizedLocations';
 import propertyTypesData from '../../../data/propertyTypesData.json';
 import ArrowDownIcon from '../../atoms/icons/arrowDownIcon';
@@ -33,6 +34,7 @@ const FilterList: React.FC<IFilterListProps> = ({
   locationChangeProp,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
+  const refPropertyType = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const query = router.query as any;
   const [isBuy, setIsBuy] = useState(true);
@@ -64,6 +66,9 @@ const FilterList: React.FC<IFilterListProps> = ({
   const [mobileFilterIsOpen, setMobileFilterIsOpen] = useState<boolean>(false);
   const [firstRender, setFirstRender] = useState(true);
 
+  //Handles the behavior of dropdown close on click outside the element;
+  useOutsideClick(refPropertyType, setPropTypeDropdownIsOpen, propTypeDropdownIsOpen);
+
   useEffect(() => {
     if (query.adType === 'alugar') {
       setIsRent(true);
@@ -85,12 +90,12 @@ const FilterList: React.FC<IFilterListProps> = ({
     router.push({ query: queryParams }, undefined, { scroll: false });
   };
 
-  const buyBtnClassName = `w-full h-[34px] md:h-fit lg:h-[33px] rounded-full border-black text-quaternary font-bold lg:text-md transition-all ${isBuy
+  const buyBtnClassName = `w-full h-[34px] md:h-fit lg:h-full rounded-full border-black text-quaternary font-bold lg:text-md transition-all ${isBuy
     ? 'bg-secondary text-quinary border-secondary border'
     : 'bg-tertiary  text-quaternary'
     }`;
 
-  const rentBtnClassName = `w-full h-[34px] md:h-fit lg:h-[33px] rounded-full border-black text-quaternary font-bold lg:text-md transition-all ${isRent
+  const rentBtnClassName = `w-full h-[34px] md:h-fit lg:h-full rounded-full border-black text-quaternary font-bold lg:text-md transition-all ${isRent
     ? 'bg-secondary text-quinary border border-secondary'
     : 'bg-tertiary text-quaternary'
     }`;
@@ -452,6 +457,7 @@ const FilterList: React.FC<IFilterListProps> = ({
             <div
               className="drop-shadow-lg h-10 w-full lg:text-md rounded-xl p-2 text-gray-400 mb-1 border border-quaternary flex justify-between"
               onClick={() => setPropTypeDropdownIsOpen(!propTypeDropdownIsOpen)}
+              ref={refPropertyType}
             >
               <p className="text-gray-400 text-sm pl-1 font-normal">
                 {propertyType.propertyType !== 'todos'
@@ -913,7 +919,7 @@ const FilterList: React.FC<IFilterListProps> = ({
                     ? 'border-yellow-500'
                     : ''
                     }`}
-                  onClick={() => toggleSelection(name)}
+                  onClick={() => toggleSelection(name.toLowerCase())}
                 >
                   {query.tags?.toLowerCase().includes(name.toLowerCase()) && (
                     <CheckIcon

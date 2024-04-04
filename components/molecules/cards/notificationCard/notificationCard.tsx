@@ -41,7 +41,7 @@ const NotificationCard: React.FC<INotification> = ({
     expanded && setSeen(!seen);
   };
 
-  const handleDelete = async (_id: any) => {
+  const handleDelete = async (_id: string) => {
     try {
       if (notifications?.length == 0) {
         setShowPagination(!showPagination);
@@ -70,22 +70,20 @@ const NotificationCard: React.FC<INotification> = ({
     <div>
       {/** ! */}
       <div
-        className={`${
-          !seen && !deleteNot
+        className={`${!seen && !deleteNot
             ? 'relative top-7 left-[94%] w-10 h-10 bg-white border-2 border-secondary rounded-full text-primary font-bold text-3xl text-center'
             : 'hidden'
-        }`}
+          }`}
       >
         !
       </div>
 
       {!deleteNot && (
         <div
-          className={`${
-            !seen
+          className={`${!seen
               ? 'border-4 border-secondary bg-tertiary p-5'
               : 'border-4 border-quaternary bg-tertiary p-5 mt-10'
-          } `}
+            } `}
         >
           <div className="flex flex-col md:flex-row lg:flex-row xl:flex-row items-center justify-between sm:w-[250px] md:w-[500px] w-[250px] lg:w-[600px] xl:w-[600px] gap-5">
             {/** Text part */}

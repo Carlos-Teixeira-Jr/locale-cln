@@ -1,6 +1,5 @@
-/* eslint-disable no-unused-vars */
 import { useRouter } from 'next/router';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import store from 'store';
 import { IEditPropertyMainFeatures } from '../../../common/interfaces/property/editPropertyData';
 import {
@@ -12,6 +11,7 @@ import {
   propType
 } from '../../../common/interfaces/property/propertyData';
 import { PropertyFeaturesErrors } from '../../../common/interfaces/property/propertyFeaturesErrors';
+import { useOutsideClick } from '../../../common/utils/actions/clickOutside';
 import { scrollToError } from '../../../common/utils/errors/errorsAutoScrollUtil';
 import { lowerLetters } from '../../../common/utils/strings/capitalizeFirstLetter';
 import propertyTypesData from '../../../data/propertyTypesData.json';
@@ -32,8 +32,8 @@ interface IMainFeatures {
   propertyId?: string;
   editarAdType?: announcementType;
   editarSubType?: announcementSubtype;
-  editarPropertyType?: propType; //Apt, house..
-  editarPropertySubtype?: propSubtype; //Flat, kitnet...
+  editarPropertyType?: propType;
+  editarPropertySubtype?: propSubtype;
   editarSize?: ISize;
   editarNumBedroom?: number;
   editarNumBathroom?: number;
@@ -75,6 +75,8 @@ const MainFeatures: React.FC<IMainFeatures> = ({
   errors,
   mainFeaturesInputRefs,
 }: IMainFeatures) => {
+
+  //Handles the error auto scroll behavior;
   const mainFeaturesErrorScroll = {
     ...mainFeaturesInputRefs,
   };
@@ -82,10 +84,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
   const router = useRouter();
   const data = store.get('propertyData');
   const storedData = data?.storedData ? data?.storedData : data;
-
-  // const [isBuy, setIsBuy] = useState(
-  //   !isEdit ? true : editarAdType === 'comprar' ? true : false
-  // );
+  const refPropertyType = useRef<HTMLDivElement>(null);
 
   const [isBuy, setIsBuy] = useState(
     editarAdType && editarAdType === 'comprar' ? true : false
@@ -115,7 +114,10 @@ const MainFeatures: React.FC<IMainFeatures> = ({
   const [suitesNumCount, setSuitesNumCount] = useState(
     isEdit ? editarNumSuite! : 0
   );
-  const [propTypeDropdownIsOpen, setPropTypeDropdownIsOpen] = useState(true);
+
+  const [propTypeDropdownIsOpen, setPropTypeDropdownIsOpen] = useState(false);
+
+  useOutsideClick(refPropertyType, setPropTypeDropdownIsOpen, propTypeDropdownIsOpen);
 
   const [propertyFeaturesData, setPropertyFeaturesData] =
     useState<IEditPropertyMainFeatures>({
@@ -421,6 +423,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
         <div
           className="drop-shadow-lg lg:h-12 md:w-96 lg:text-lg rounded-lg p-2 border border-quaternary flex justify-between mt-10"
           onClick={() => setPropTypeDropdownIsOpen(!propTypeDropdownIsOpen)}
+          ref={refPropertyType}
         >
           <p className="text-quaternary text-sm py-1">
             {propertyFeaturesData.propertyType
@@ -428,14 +431,14 @@ const MainFeatures: React.FC<IMainFeatures> = ({
               : `Tipo de imóvel`}
           </p>
           <ArrowDownIcon
-            className={`my-auto cursor-pointer ${propTypeDropdownIsOpen
+            className={`my-auto cursor-pointer ${!propTypeDropdownIsOpen
               ? 'transform rotate-360 transition-transform duration-300 ease-in-out'
               : 'transform rotate-180 transition-transform duration-300 ease-in-out'
               }`}
           />
         </div>
         <div
-          className={` md:w-fit w-full h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md ${propTypeDropdownIsOpen ? 'hidden ' : ''
+          className={` md:w-fit w-full h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md ${!propTypeDropdownIsOpen ? 'hidden ' : ''
             }`}
         >
           {propertyTypesData.map((prop, index) => (

@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react"
-import CheckIcon from "../../atoms/icons/checkIcon";
+import React, { useEffect, useState } from "react";
 import { IPlan } from "../../../common/interfaces/plans/plans";
+import CheckIcon from "../../atoms/icons/checkIcon";
 
 interface IPaymentBoard {
   onTermsChange: (value: boolean) => void;
   selectedPlan: string
   plans: IPlan[]
-  termsError: any
+  termsError: string
 }
 
 const PaymentBoard: React.FC<IPaymentBoard> = ({
@@ -43,15 +43,15 @@ const PaymentBoard: React.FC<IPaymentBoard> = ({
             Plano Selecionado:
           </p>
           <span className="md:text-2xl text-xl font-semibold leading-7 text-quaternary">
-              Plano {selectedPlanCard ? selectedPlanCard?.name : defaultPlan?.name}
-            </span>
+            Plano {selectedPlanCard ? selectedPlanCard?.name : defaultPlan?.name}
+          </span>
         </div>
         <div className="flex justify-between mb-5">
           <p className="md:text-2xl text-xl font-semibold leading-7 text-quaternary">
             Valor do Plano:
           </p>
           <span className="md:text-2xl text-xl font-semibold leading-7 text-quaternary">
-            R$ {selectedPlanCard ? selectedPlanCard?.price : defaultPlan?.price},00 
+            R$ {selectedPlanCard ? selectedPlanCard?.price : defaultPlan?.price},00
           </span>
         </div>
         <hr className="border-b border-quaternary mb-5" />
@@ -60,7 +60,7 @@ const PaymentBoard: React.FC<IPaymentBoard> = ({
             Valor Total:
           </p>
           <span className="md:text-2xl text-xl font-semibold leading-7 text-quaternary">
-            R$ {selectedPlanCard ? selectedPlanCard?.price : defaultPlan?.price},00 
+            R$ {selectedPlanCard ? selectedPlanCard?.price : defaultPlan?.price},00
           </span>
         </div>
       </div>
@@ -75,9 +75,9 @@ const PaymentBoard: React.FC<IPaymentBoard> = ({
             style={errors ? { border: '1px solid red' } : {}}
           >
             {terms && (
-              <CheckIcon 
-                fill="#F5BF5D" 
-                viewBox="100 180 960 960" 
+              <CheckIcon
+                fill="#F5BF5D"
+                viewBox="100 180 960 960"
                 width="35"
                 className="pb-3"
               />

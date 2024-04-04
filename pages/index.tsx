@@ -228,7 +228,7 @@ const classes = {
   subTitle:
     'text-base lg:text-xl font-bold text-quaternary text-center md:text-left ml-5"',
   homeFilter:
-    'md:absolute flex flex-col md:flex-row justify-center md:justify-end lg:justify-end xl:justify-end xl:pl-[600px] md:mt-20 lg:pr-11 lg:top-20 md:top-[25px] lg:left-0 md:p-4 md:mx-auto w-full p-5 md:inset-x-0 lg:inset-x-10',
+    'md:absolute flex flex-col md:flex-row justify-center md:justify-end lg:justify-end xl:justify-end 2xl:justify-center xl:pl-[600px] md:mt-20 lg:pr-11 lg:top-20 md:top-[25px] lg:left-0 md:p-4 md:mx-auto w-full p-5 md:inset-x-0 lg:inset-x-10',
   propertiesByLocation:
     'sm:grid sm:grid-cols-1 md:flex md:flex-row md:flex-wrap lg:flex-nowrap justify-center md:gap-10',
 };

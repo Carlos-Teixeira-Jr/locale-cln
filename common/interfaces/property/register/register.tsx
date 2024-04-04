@@ -64,6 +64,10 @@ export interface IRegisterPropertyData_Step3 {
   plan: string;
   isPlanFree: boolean;
 }
+export interface IGeolocation {
+  type: string
+  coordinates: number[]
+}
 
 export interface ICreateProperty_propertyData {
   adType: announcementType;
@@ -73,7 +77,7 @@ export interface ICreateProperty_propertyData {
   address: IAddress;
   description: string;
   metadata: IMetadata[];
-  geolocation: any;
+  geolocation: IGeolocation;
   ownerInfo: {
     name: string;
     phones: string[];
