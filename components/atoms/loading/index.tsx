@@ -1,9 +1,11 @@
-const Loading = ({ width = 'w-8', height = 'h-8' }) => {
+const Loading = ({ width = 'w-8', height = 'h-8', className = 'text-gray-200 animate-spin dark:text-gray-600 fill-tertiary w-8 h-8' }) => {
   return (
     <div role="status">
       <svg
         aria-hidden="true"
-        className={`${width} ${height} text-gray-200 animate-spin dark:text-gray-600 fill-tertiary`}
+        className={className}
+        width={width}
+        height={height}
         viewBox="0 0 100 101"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
