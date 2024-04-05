@@ -3,6 +3,7 @@ import MaskedInput from 'react-input-mask';
 
 interface PhoneInputProps extends InputHTMLAttributes<HTMLInputElement> {
   mask: string;
+  inputRef: any
 }
 
 const PhoneInput: React.FC<PhoneInputProps> = ({ mask, ...props }) => {
