@@ -1,9 +1,7 @@
-import jwt, { JwtPayload } from 'jsonwebtoken';
 import { GetServerSidePropsContext } from 'next';
 import { getSession } from 'next-auth/react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { destroyCookie } from 'nookies';
 import { useEffect, useState } from 'react';
 import { IMessage } from '../../common/interfaces/message/messages';
 import { IOwnerProperties } from '../../common/interfaces/properties/propertiesList';
@@ -11,6 +9,7 @@ import { IData } from '../../common/interfaces/property/propertyData';
 import { fetchJson } from '../../common/utils/fetchJson';
 import Pagination from '../../components/atoms/pagination/pagination';
 import MessageInfoCard from '../../components/molecules/cards/messageInfoCard/messageInfoCard';
+import { INotification } from '../../components/molecules/cards/notificationCard/notificationCard';
 import AdminHeader from '../../components/organisms/adminHeader/adminHeader';
 import SideMenu from '../../components/organisms/sideMenu/sideMenu';
 
@@ -26,10 +25,12 @@ type Message = {
 interface IMessagePage {
   ownerProperties: IOwnerProperties;
   message: Message;
-  dataNot: [];
+  notifications: INotification[];
 }
 
-const MessagePage = ({ ownerProperties, message, dataNot }: IMessagePage) => {
+const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+
+const MessagePage = ({ ownerProperties, message, notifications }: IMessagePage) => {
   const router = useRouter();
   const query = router.query as any;
   const [isOwner, setIsOwner] = useState<boolean>(false);
@@ -70,7 +71,7 @@ const MessagePage = ({ ownerProperties, message, dataNot }: IMessagePage) => {
 
       <div className={classes.body}>
         <div className={classes.sideMenu}>
-          <SideMenu isOwnerProp={isOwner} notifications={dataNot} />
+          <SideMenu isOwnerProp={isOwner} notifications={notifications} />
         </div>
 
         <div className={classes.contentContainer}>
@@ -100,7 +101,7 @@ const MessagePage = ({ ownerProperties, message, dataNot }: IMessagePage) => {
               </div>
             </div>
 
-            <div className="flex justify-center md:block">
+            <div className="flex justify-center w-full md:block">
               <Pagination
                 totalPages={totalPages}
                 setCurrentPage={setCurrentPage}
@@ -132,9 +133,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const propertyId = context.query.id;
   const session = (await getSession(context)) as any;
   const userId = session?.user.data._id;
-  let token;
-  let refreshToken;
   const page = Number(context.query.page);
+  let ownerId;
 
   if (!session) {
     return {
@@ -143,137 +143,73 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         permanent: false,
       },
     };
-  } else {
-    token = session?.user.data.access_token!!;
-    refreshToken = session.user?.data.refresh_token;
-    const decodedToken = jwt.decode(token) as JwtPayload;
-    const isTokenExpired = decodedToken.exp
-      ? decodedToken.exp <= Math.floor(Date.now() / 1000)
-      : false;
-
-    if (isTokenExpired) {
-      const decodedRefreshToken = jwt.decode(refreshToken) as JwtPayload;
-      const isRefreshTokenExpired = decodedRefreshToken.exp
-        ? decodedRefreshToken.exp <= Math.floor(Date.now() / 1000)
-        : false;
-
-      if (isRefreshTokenExpired) {
-        destroyCookie(context, 'next-auth.session-token');
-        destroyCookie(context, 'next-auth.csrf-token');
-
-        return {
-          redirect: {
-            destination: '/login',
-            permanent: false,
-          },
-        };
-      } else {
-        try {
-          const response = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/refresh`,
-            {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                refresh_token: refreshToken,
-              }),
-            }
-          );
-
-          if (response.ok) {
-            const data = await response.json();
-            const newToken = data.access_token;
-            const newRefreshToken = data.refresh_token;
-            refreshToken = newRefreshToken;
-            token = newToken;
-            session.user.data.refresh_token = newRefreshToken;
-            token = newToken;
-            session.user.data.access_token = newToken;
-          } else {
-            console.log('Não foi possível atualizar o token.');
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      }
-    }
-
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
-    let ownerId;
-
-    try {
-      const ownerIdResponse = await fetch(
-        `${baseUrl}/user/find-owner-by-user`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ userId }),
-        }
-      );
-
-      if (ownerIdResponse.ok) {
-        const ownerData = await ownerIdResponse.json();
-        ownerId = ownerData?.owner?._id;
-      }
-    } catch (error) {
-      console.error(error);
-    }
-
-    const [ownerProperties, message] = await Promise.all([
-      fetch(`${baseUrl}/property/owner-properties`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ownerId,
-          page: 1,
-        }),
-      })
-        .then((res) => res.json())
-        .catch(() => []),
-      fetch(`${baseUrl}/message/find-by-propertyId`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          propertyId,
-          page,
-        }),
-      })
-        .then((res) => res.json())
-        .catch(() => []),
-      fetchJson(`${baseUrl}/property/owner-properties`),
-      fetchJson(`${baseUrl}/message/find-by-propertyId`),
-    ]);
-
-    const notifications = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API_URL}/notification/${ownerId}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    )
-      .then((res) => res.json())
-      .catch(() => []);
-
-    const dataNot = notifications;
-
-    return {
-      props: {
-        ownerProperties,
-        message,
-        dataNot,
-      },
-    };
   }
+
+  try {
+    const ownerIdResponse = await fetch(
+      `${baseUrl}/user/find-owner-by-user`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId }),
+      }
+    );
+
+    if (ownerIdResponse.ok) {
+      const ownerData = await ownerIdResponse.json();
+      ownerId = ownerData?.owner?._id;
+    }
+  } catch (error) {
+    console.error(error);
+  }
+
+  const [ownerProperties, message, notifications] = await Promise.all([
+    fetch(`${baseUrl}/property/owner-properties`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        ownerId,
+        page: 1,
+      }),
+    })
+      .then((res) => res.json())
+      .catch(() => []),
+    fetch(`${baseUrl}/message/find-by-propertyId`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        propertyId,
+        page,
+      }),
+    })
+      .then((res) => res.json())
+      .catch(() => []),
+    fetch(`${baseUrl}/notification/${ownerId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => res.json())
+      .catch(() => []),
+    fetchJson(`${baseUrl}/property/owner-properties`),
+    fetchJson(`${baseUrl}/message/find-by-propertyId`),
+    fetchJson(`${baseUrl}/notification/${ownerId}`),
+  ]);
+
+  return {
+    props: {
+      ownerProperties,
+      message,
+      notifications,
+    },
+  };
 }
 
 const classes = {

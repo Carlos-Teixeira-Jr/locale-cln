@@ -7,6 +7,7 @@ import HeartIcon from '../../atoms/icons/heartIcon';
 import MailIcon from '../../atoms/icons/mailIcon';
 import MyAnnouncesIcon from '../../atoms/icons/myAnnouncesIcon';
 import UserIcon from '../../atoms/icons/userIcon';
+import { INotification } from '../../molecules/cards/notificationCard/notificationCard';
 
 type Options = {
   key: string;
@@ -18,7 +19,7 @@ type Options = {
 
 type SideMenuProps = {
   isOwnerProp?: boolean;
-  notifications?: [];
+  notifications?: INotification[];
   isMobileProp?: boolean;
 };
 
@@ -27,7 +28,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications }) => {
 
   const [activeButton, setActiveButton] = useState('');
 
-  const [notReadNots, setNotReadNots] = useState([]);
+  const [notReadNots, setNotReadNots] = useState<INotification[]>([]);
 
   const isOwner = isOwnerProp;
 
