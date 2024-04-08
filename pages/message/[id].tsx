@@ -3,9 +3,8 @@ import { getSession } from 'next-auth/react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { IMessage } from '../../common/interfaces/message/messages';
+import { IMessage, IMessagesByProperty } from '../../common/interfaces/message/messages';
 import { IOwnerProperties } from '../../common/interfaces/properties/propertiesList';
-import { IData } from '../../common/interfaces/property/propertyData';
 import { fetchJson } from '../../common/utils/fetchJson';
 import Pagination from '../../components/atoms/pagination/pagination';
 import MessageInfoCard from '../../components/molecules/cards/messageInfoCard/messageInfoCard';
@@ -13,18 +12,9 @@ import { INotification } from '../../components/molecules/cards/notificationCard
 import AdminHeader from '../../components/organisms/adminHeader/adminHeader';
 import SideMenu from '../../components/organisms/sideMenu/sideMenu';
 
-type Message = {
-  messages: {
-    messagesDocs: any[];
-    count: number;
-    totalPages: number;
-  };
-  property: IData;
-};
-
 interface IMessagePage {
   ownerProperties: IOwnerProperties;
-  message: Message;
+  message: IMessagesByProperty;
   notifications: INotification[];
 }
 
@@ -35,7 +25,7 @@ const MessagePage = ({ ownerProperties, message, notifications }: IMessagePage) 
   const query = router.query as any;
   const [isOwner, setIsOwner] = useState<boolean>(false);
   const propertyData = message?.property;
-  const messagesDocs = message?.messages.messagesDocs;
+  const messagesDocs = message?.messages?.docs;
   const totalPages = message?.messages.totalPages;
   const [currentPage, setCurrentPage] = useState(1);
 

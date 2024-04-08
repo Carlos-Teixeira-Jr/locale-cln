@@ -39,6 +39,8 @@ const AdminMessages = ({
   const totalPages = messages?.totalPages;
   const [currentPage, setCurrentPage] = useState(1);
   const isMobile = useIsMobile();
+  const unreadMessages = messages?.docs?.length > 0 ? messages?.docs?.filter((e) => e.isRead === false) : [];
+  console.log("🚀 ~ unreadMessages:", unreadMessages)
 
   useEffect(() => {
     if (router.query.page !== undefined && typeof query.page === 'string') {
@@ -80,7 +82,7 @@ const AdminMessages = ({
       <div className={classes.body}>
         <div className={classes.sideMenu}>
           {!isMobile ? (
-            <SideMenu isOwnerProp={isOwner} notifications={notifications} />
+            <SideMenu isOwnerProp={isOwner} notifications={notifications} unreadMessages={unreadMessages} />
           ) : (
             ''
           )}
