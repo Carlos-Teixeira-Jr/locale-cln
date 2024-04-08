@@ -2,6 +2,7 @@ import { GetServerSidePropsContext } from 'next';
 import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import { IMessagesByOwner } from '../common/interfaces/message/messages';
 import { IFavProperties } from '../common/interfaces/properties/favouriteProperties';
 import {
   IData,
@@ -19,12 +20,14 @@ interface IAdminFavProperties {
   favouriteProperties: IFavProperties;
   ownerProperties: IPropertyInfo;
   notifications: [];
+  messages: IMessagesByOwner
 }
 
 const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
   favouriteProperties,
   ownerProperties,
   notifications,
+  messages
 }) => {
   const [isOwner, setIsOwner] = useState<boolean>(false);
   const [properties, _setProperties] = useState<IPropertyInfo>(ownerProperties);
@@ -32,6 +35,7 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
   const router = useRouter();
   const query = router.query as any;
   const isMobile = useIsMobile();
+  const unreadMessages = messages?.docs.length > 0 ? messages?.docs.filter((message) => !message.isRead) : [];
 
   useEffect(() => {
     setIsOwner(properties?.docs?.length > 0 ? true : false);
@@ -69,7 +73,11 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
       <div className={classes.content}>
         <div className={classes.sideMenu}>
           {!isMobile ? (
-            <SideMenu isOwnerProp={isOwner} notifications={notifications} />
+            <SideMenu
+              isOwnerProp={isOwner}
+              notifications={notifications}
+              unreadMessages={unreadMessages}
+            />
           ) : (
             ''
           )}
@@ -163,7 +171,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     console.error(error);
   }
 
-  const [notifications, favouriteProperties, ownerProperties] =
+  const [notifications, favouriteProperties, ownerProperties, messages] =
     await Promise.all([
       fetch(`${baseUrl}/notification/user/${userId}`, {
         method: 'GET',
@@ -197,9 +205,22 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       })
         .then((res) => res.json())
         .catch(() => []),
+      fetch(`${baseUrl}/message/find-all-by-ownerId`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ownerId,
+          page,
+        }),
+      })
+        .then((res) => res.json())
+        .catch(() => []),
       fetchJson(`${baseUrl}/notification/user/${userId}`),
       fetchJson(`${baseUrl}/user/favourite`),
       fetchJson(`${baseUrl}/property/owner-properties`),
+      fetchJson(`${baseUrl}/message/find-all-by-ownerId`),
     ]);
 
   return {
@@ -207,6 +228,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       favouriteProperties,
       ownerProperties,
       notifications,
+      messages
     },
   };
 }

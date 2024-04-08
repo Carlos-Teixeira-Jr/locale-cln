@@ -3,24 +3,27 @@ import { getSession, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
-import { IMessage } from '../common/interfaces/message/messages';
+import { IMessage, IMessagesByOwner } from '../common/interfaces/message/messages';
 import { IOwnerProperties } from '../common/interfaces/properties/propertiesList';
 import { IData } from '../common/interfaces/property/propertyData';
 import { fetchJson } from '../common/utils/fetchJson';
 import Pagination from '../components/atoms/pagination/pagination';
 import { AdminPropertyCard } from '../components/molecules';
+import { INotification } from '../components/molecules/cards/notificationCard/notificationCard';
 import { AdminHeader, SideMenu } from '../components/organisms';
 import useDeviceSize from '../hooks/deviceSize';
 import { NextPageWithLayout } from './page';
 
 interface AdminPageProps {
   ownerProperties: IOwnerProperties;
-  notifications: [];
+  notifications: INotification[];
+  messages: IMessagesByOwner
 }
 
 const AdminPage: NextPageWithLayout<AdminPageProps> = ({
   ownerProperties,
   notifications,
+  messages
 }) => {
 
   const { data: session } = useSession() as any;
@@ -29,6 +32,8 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
   const router = useRouter();
   const query = router.query as any;
   const [width] = useDeviceSize();
+  const unreadMessages = messages?.docs.length > 0 ? messages?.docs.filter((message) => !message.isRead) : [];
+  const userName = session?.user?.data?.name;
 
   useEffect(() => {
     setIsOwner(ownerProperties?.docs?.length > 0 ? true : false);
@@ -66,14 +71,13 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
       <AdminHeader isOwnerProp={isOwner} />
       <div className="flex flex-row items-center justify-evenly xl:w-fit 2xl:w-full w-full max-w-full">
         <div className={classes.sideMenu}>
-          <SideMenu isOwnerProp={isOwner} notifications={notifications} />
+          <SideMenu isOwnerProp={isOwner} notifications={notifications} unreadMessages={unreadMessages} />
         </div>
         <div className={`flex flex-col items-center mt-24 ${width < 1080 ? 'justify-center' : 'lg:ml-[26rem]'}`}>
 
           <div className="mb-10 md:px-5 lg:px-0">
             <h1 className="font-extrabold text-xl md:text-3xl text-quaternary md:mb-5 md:mr-20. text-center">
-              Bem vindo
-              {session?.username !== undefined ? session?.username : ''}!
+              {userName! ? `Bem vindo ${userName}` : 'Bem vindo'}
             </h1>
             {isOwner && ownerProperties?.docs && (
               <Pagination
@@ -164,7 +168,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     console.error(error);
   }
 
-  const [ownerProperties, notifications] = await Promise.all([
+  const [ownerProperties, notifications, messages] = await Promise.all([
     fetch(`${baseUrl}/property/owner-properties`, {
       method: 'POST',
       headers: {
@@ -188,14 +192,28 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     )
       .then((res) => res.json())
       .catch(() => []),
+    fetch(`${baseUrl}/message/find-all-by-ownerId`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        ownerId,
+        page,
+      }),
+    })
+      .then((res) => res.json())
+      .catch(() => []),
     fetchJson(`${baseUrl}/property/owner-properties`),
-    fetchJson(`${process.env.NEXT_PUBLIC_BASE_API_URL}/notification/user/${userId}`)
+    fetchJson(`${baseUrl}/notification/user/${userId}`),
+    fetchJson(`${baseUrl}/message/find-all-by-ownerId`),
   ]);
 
   return {
     props: {
       ownerProperties,
       notifications,
+      messages
     },
   };
 }

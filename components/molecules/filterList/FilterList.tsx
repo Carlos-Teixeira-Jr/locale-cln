@@ -6,6 +6,7 @@ import {
   ILocationProp,
 } from '../../../common/interfaces/locationDropdown';
 import { ITagsData } from '../../../common/interfaces/tagsData';
+import { chunkArray } from '../../../common/utils/actions/chunkTagsArray';
 import { useOutsideClick } from '../../../common/utils/actions/clickOutside';
 import { categorizeLocations } from '../../../common/utils/format/categorizedLocations';
 import propertyTypesData from '../../../data/propertyTypesData.json';
@@ -61,10 +62,27 @@ const FilterList: React.FC<IFilterListProps> = ({
   const [parkingSpaces, setParkingSpaces] = useState(0);
   const tagsData: ITagsData[] = tagsProp;
   const [codeToSearch, setCodeToSearch] = useState('');
-  const [open, setOpen] = useState(false);
   const [openLocationDropdown, setOpenLocationDropdown] = useState(false);
   const [mobileFilterIsOpen, setMobileFilterIsOpen] = useState<boolean>(false);
   const [firstRender, setFirstRender] = useState(true);
+  const [showTags, setShowTags] = useState<ITagsData[][]>([]);
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const [showMore, setShowMore] = useState<boolean>(true);
+
+  // Dividir o array em arrays de no máximo 15 elementos
+  useEffect(() => {
+    setShowTags(chunkArray(tagsData, 15));
+  }, []);
+
+  const handleShowMore = () => {
+    setCurrentIndex((prevIndex) => prevIndex + 1);
+    setShowMore(false);
+  };
+
+  const handleShowLess = () => {
+    setCurrentIndex(0);
+    setShowMore(true);
+  };
 
   //Handles the behavior of dropdown close on click outside the element;
   useOutsideClick(refPropertyType, setPropTypeDropdownIsOpen, propTypeDropdownIsOpen);
@@ -537,7 +555,7 @@ const FilterList: React.FC<IFilterListProps> = ({
                   }}
                 >
                   <div
-                    className={`w-[20px] h-[20px] shrink-0 my-auto border border-quaternary rounded-[3px] bg-white mx-2`}
+                    className={`w-5 h-5 shrink-0 my-auto border border-quaternary rounded-[3px] bg-white mx-2`}
                   >
                     {allLocations && (
                       <CheckIcon
@@ -576,7 +594,7 @@ const FilterList: React.FC<IFilterListProps> = ({
                                   toggleLocation(option, category);
                                 }}
                               >
-                                <div className="w-[20px] h-[20px] shrink-0 my-auto border border-quaternary rounded-[3px] bg-tertiary">
+                                <div className="w-5 h-5 shrink-0 my-auto border border-quaternary rounded-[3px] bg-tertiary">
                                   {(location.some((obj) =>
                                     obj.name.includes(option)
                                   ) ||
@@ -605,7 +623,7 @@ const FilterList: React.FC<IFilterListProps> = ({
                                 toggleLocation(name, category);
                               }}
                             >
-                              <div className="w-[20px] h-[20px] shrink-0 my-auto border border-quaternary rounded-[3px] bg-tertiary">
+                              <div className="w-5 h-5 shrink-0 my-auto border border-quaternary rounded-[3px] bg-tertiary">
                                 {(location.some((obj) =>
                                   obj.name.includes(name)
                                 ) ||
@@ -691,7 +709,7 @@ const FilterList: React.FC<IFilterListProps> = ({
       </div>
 
       <div className="md:flex lg:flex-col gap-2 justify-between md:w-full md:mt-3">
-        <div className="-mb-5">
+        <div className=".">
           <h3 className="font-normal text-base text-quaternary leading-[19px] mb-2">
             Quartos
           </h3>
@@ -763,11 +781,11 @@ const FilterList: React.FC<IFilterListProps> = ({
 
         <div className="w-1 h-16 mt-5 border-l border-quaternary hidden md:flex lg:hidden"></div>
 
-        <div className="-mb-5">
+        <div>
           <h3 className="font-normal text-base text-quaternary leading-[19px] mb-2">
             Banheiros
           </h3>
-          <div className="flex justify-between gap-5">
+          <div className="flex justify-between gap-2">
             <button
               className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-5 md:mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
               onClick={() => setBathrooms(bathrooms != 1 ? 1 : 0)}
@@ -837,7 +855,7 @@ const FilterList: React.FC<IFilterListProps> = ({
           <h3 className="font-normal text-base text-quaternary leading-[19px] mb-2">
             Vagas de garagem
           </h3>
-          <div className="flex justify-between gap-5">
+          <div className="flex justify-between gap-2">
             <button
               className="cursor-pointer bg-transparent max-w-[66px] font-normal text-base text-quaternary leading-[19px] mb-5 md:mb-11 shadow-lg p-3 border border-quaternary rounded-xl hover:bg-secondary hover:text-tertiary hover:border-secondary"
               onClick={() => setParkingSpaces(parkingSpaces != 1 ? 1 : 0)}
@@ -910,37 +928,43 @@ const FilterList: React.FC<IFilterListProps> = ({
             Outros filtros
           </h3>
 
-          {tagsData?.length > 0 ? (
-            tagsData?.map(({ name, amount }) => (
-              <div className="flex flex-row items-center mb-3" key={name}>
-                <div
-                  id={name}
-                  className={`w-[20px] h-[20px] border border-quaternary rounded-[3px] bg-tertiary ${query.tags?.toLowerCase().includes(name.toLowerCase())
-                    ? 'border-yellow-500'
-                    : ''
-                    }`}
-                  onClick={() => toggleSelection(name.toLowerCase())}
-                >
-                  {query.tags?.toLowerCase().includes(name.toLowerCase()) && (
-                    <CheckIcon
-                      width="20"
-                      height="20"
-                      fill="#F5BF5D"
-                      viewBox="40 126 960 960"
-                    />
-                  )}
+          {showTags.map((chunk, index) => (
+            <div key={index} style={{ display: index <= currentIndex ? 'block' : 'none' }}>
+              {chunk.map(({ name, amount }) => (
+                <div className="flex flex-row items-center mb-2" key={name}>
+                  <div
+                    id={name}
+                    className={`w-5 h-5 border border-quaternary rounded-[3px] bg-tertiary ${query.tags?.toLowerCase().includes(name.toLowerCase())
+                      ? 'border-yellow-500'
+                      : ''
+                      }`}
+                    onClick={() => toggleSelection(name.toLowerCase())}
+                  >
+                    {query.tags?.toLowerCase().includes(name.toLowerCase()) && (
+                      <CheckIcon
+                        width="20"
+                        height="20"
+                        fill="#F5BF5D"
+                        viewBox="40 126 960 960"
+                      />
+                    )}
+                  </div>
+                  <h3 className="font-normal text-sm text-quaternary leading-[19px] ml-3">
+                    {name} ({amount})
+                  </h3>
                 </div>
-                <h3 className="font-normal text-sm text-quaternary leading-[19px] ml-3">
-                  {name} ({amount})
-                </h3>
-              </div>
-            ))
-          ) : (
-            <div>
-              <p className="font-normal text-base text-quaternary leading-[19px] mb-3">
-                Houve um problema ao buscar os filtros
-              </p>
+              ))}
             </div>
+          ))}
+          {showMore && currentIndex < showTags.length - 1 && (
+            <button onClick={handleShowMore} className={classNames.tagsBtn}>
+              Ver Mais
+            </button>
+          )}
+          {!showMore && (
+            <button onClick={handleShowLess} className={classNames.tagsBtn}>
+              Ver Menos
+            </button>
           )}
 
           <div className="border border-b-quaternary my-6" />
@@ -987,3 +1011,8 @@ const FilterList: React.FC<IFilterListProps> = ({
 };
 
 export default FilterList;
+
+
+const classNames = {
+  tagsBtn: "cursor-pointer bg-primary rounded-full text-tertiary px-2 hover:bg-red-600 hover:shadow-lg transition-all duration-200"
+}

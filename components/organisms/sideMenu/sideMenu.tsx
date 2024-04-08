@@ -2,11 +2,13 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { ReactNode, useEffect, useState } from 'react';
 
+import { IMessage } from '../../../common/interfaces/message/messages';
 import BellIcon from '../../atoms/icons/bellIcon';
 import HeartIcon from '../../atoms/icons/heartIcon';
 import MailIcon from '../../atoms/icons/mailIcon';
 import MyAnnouncesIcon from '../../atoms/icons/myAnnouncesIcon';
 import UserIcon from '../../atoms/icons/userIcon';
+import { INotification } from '../../molecules/cards/notificationCard/notificationCard';
 
 type Options = {
   key: string;
@@ -18,18 +20,20 @@ type Options = {
 
 type SideMenuProps = {
   isOwnerProp?: boolean;
-  notifications?: [];
+  notifications?: INotification[];
   isMobileProp?: boolean;
+  unreadMessages?: IMessage[]
 };
 
-const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications }) => {
+const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications, unreadMessages }) => {
   const router = useRouter();
-
   const [activeButton, setActiveButton] = useState('');
-
-  const [notReadNots, setNotReadNots] = useState([]);
-
+  const [notReadNots, setNotReadNots] = useState<INotification[]>([]);
   const isOwner = isOwnerProp;
+
+  const classNames = {
+    notesIcon: 'before:content-[attr(data-nots)] before:text-xs before:bg-tertiary before:font-medium before:text-primary before:border-secondary before:rounded-full before:border before:flex before:items-center before:justify-center before:min-w-[1.4em] before:min-h-[0.4em]'
+  }
 
   useEffect(() => {
     const path = router.pathname;
@@ -106,12 +110,21 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications }) => {
       key: 'myMessages',
       id: 'messages-button',
       icon: (
-        <MailIcon
-          fill={`${activeButton === 'messages-button' ? '#F5BF5D' : '#6B7280'}`}
-          className="my-auto mr-5"
-          width="30"
-          height="30"
-        />
+        <div className="flex items-center justify-around pr-5">
+          <MailIcon
+            fill={`${activeButton === 'messages-button' ? '#F5BF5D' : '#6B7280'}`}
+            className="my-auto"
+            width="30"
+            height="30"
+          />
+          <div className="absolute top-100 mt-4 ml-[0.4rem] left-10">
+            <div
+              data-nots={unreadMessages?.length! > 0 ? unreadMessages?.length : 0}
+              id={'messages-value'}
+              className={classNames.notesIcon}
+            ></div>
+          </div>
+        </div>
       ),
       title: 'Minhas mensagens',
       link: '/adminMessages',
@@ -132,7 +145,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications }) => {
             <div
               data-nots={notReadNots?.length > 0 ? notReadNots?.length : 0}
               id={'notifications-value'}
-              className="before:content-[attr(data-nots)] before:text-xs before:bg-tertiary before:font-medium before:text-primary before:border-secondary before:rounded-full before:border before:flex before:items-center before:justify-center before:min-w-[1.4em] before:min-h-[0.4em]"
+              className={classNames.notesIcon}
             ></div>
           </div>
         </div>
