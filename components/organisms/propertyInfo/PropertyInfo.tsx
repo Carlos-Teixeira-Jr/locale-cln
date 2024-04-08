@@ -178,9 +178,9 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
           </h3>
           <div className="flex flex-row items-center justify-start gap-1 text-left">
             <div className={classes.infoContainer}>
-              {getMetadataValue('bedroom')! > 0 && (<h3>{' • ' + getMetadataValue('bedroom') + 'quarto(s)'}</h3>)}
-              {getMetadataValue('bathroom')! > 0 && (<h3>{' • ' + getMetadataValue('bathroom') + 'banheiro(s)'}</h3>)}
-              {getMetadataValue('garage')! > 0 && (<h3>{' • ' + getMetadataValue('garage') + 'garagem(s)'}</h3>)}
+              {getMetadataValue('bedroom')! > 0 && (<h3>{' • ' + getMetadataValue('bedroom') + `${getMetadataValue('bedroom')! > 1 ? ' quartos' : ' quarto'}`}</h3>)}
+              {getMetadataValue('bathroom')! > 0 && (<h3>{' • ' + getMetadataValue('bathroom') + `${getMetadataValue('bathroom')! > 1 ? ' banheiros' : ' banheiro'}`}</h3>)}
+              {getMetadataValue('garage')! > 0 && (<h3>{' • ' + getMetadataValue('garage') + `${getMetadataValue('garage')! > 1 ? ' vagas de garagem' : ' caga de garagem'}`}</h3>)}
             </div>
           </div>
           {haveTags && (
@@ -194,7 +194,7 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
                 <div className="flex flex-col">
                   <div className={classes.tagContainer}>
                     <span>•</span>
-                    <span>{tag}</span>
+                    <span>{tag.toLowerCase()}</span>
                   </div>
                 </div>
               </div>
