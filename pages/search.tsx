@@ -414,13 +414,21 @@ export async function getServerSideProps(context: NextPageContext) {
       );
   }
 
-  const locations = await fetch(`${baseUrl}/location`)
+  const locationsPromise = fetch(`${baseUrl}/location`)
     .then((res) => res.json())
     .catch(() => ({}));
 
-  const tagsData = await fetch(`${baseUrl}/tag`)
+  const tagsDataPromise = fetch(`${baseUrl}/tag`)
     .then((res) => res.json())
     .catch(() => ({}));
+
+  const [locationsResult, tagsDataResult] = await Promise.allSettled([
+    locationsPromise,
+    tagsDataPromise,
+  ]);
+
+  const locations = locationsResult.status === 'fulfilled' ? locationsResult.value : {};
+  const tagsData = tagsDataResult.status === 'fulfilled' ? tagsDataResult.value : {};
 
   let propertyInfo;
   let currentPage = query.page;
