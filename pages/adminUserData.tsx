@@ -1,14 +1,13 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable react/jsx-no-undef */
-import jwt, { JwtPayload } from 'jsonwebtoken';
 import { GetServerSidePropsContext } from 'next';
 import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { destroyCookie } from 'nookies';
 import { useEffect, useRef, useState } from 'react';
 import 'react-credit-cards/es/styles-compiled.css';
 import Modal from 'react-modal';
 import { toast } from 'react-toastify';
+import { IMessagesByOwner } from '../common/interfaces/message/messages';
 import { IOwner, IOwnerData } from '../common/interfaces/owner/owner';
 import { IPlan } from '../common/interfaces/plans/plans';
 import {
@@ -50,6 +49,7 @@ interface IAdminUserDataPageProps {
   properties: IPropertyInfo;
   ownerData: IOwnerData;
   notifications: [];
+  messages: IMessagesByOwner
 }
 
 type AddressErrors = {
@@ -61,11 +61,14 @@ type AddressErrors = {
   uf: string;
 }
 
+const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+
 const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   notifications,
   plans,
   properties,
   ownerData,
+  messages
 }) => {
 
   const router = useRouter();
@@ -82,6 +85,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const [isAdminPage, setIsAdminPage] = useState(false);
   const isEdit = true;
   const [loading, setLoading] = useState(false);
+  const unreadMessages = messages?.docs?.length > 0 ? messages?.docs?.filter((message) => !message.isRead) : [];
 
   const creditCardInfo = ownerData?.owner?.paymentData?.creditCardInfo
     ? ownerData?.owner?.paymentData?.creditCardInfo
@@ -428,7 +432,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       <div className={classes.sideMenuContainer}>
         {!isMobile && (
           <div className={classes.sideMenu}>
-            <SideMenu isOwnerProp={isOwner} notifications={notifications} />
+            <SideMenu isOwnerProp={isOwner} notifications={notifications} unreadMessages={unreadMessages} />
           </div>
         )}
 
@@ -598,8 +602,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     session?.user.data._id !== undefined
       ? session?.user.data._id
       : session?.user.id;
-  let token = session?.user?.data?.access_token!!;
-  let refreshToken = session?.user?.data.refresh_token;
+  const page = Number(context.query.page);
+  let ownerId;
 
   if (!session) {
     return {
@@ -608,131 +612,99 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         permanent: false,
       },
     };
-  } else {
-    token = session?.user.data.access_token!!;
-    refreshToken = session.user?.data.refresh_token;
-    const decodedToken = jwt.decode(token) as JwtPayload;
-    const isTokenExpired = decodedToken?.exp
-      ? decodedToken?.exp <= Math.floor(Date.now() / 1000)
-      : false;
-    if (isTokenExpired) {
-      const decodedRefreshToken = jwt.decode(refreshToken) as JwtPayload;
-      const isRefreshTokenExpired = decodedRefreshToken?.exp
-        ? decodedRefreshToken?.exp <= Math.floor(Date.now() / 1000)
-        : false;
-      if (isRefreshTokenExpired) {
-        destroyCookie(context, 'next-auth.session-token');
-        destroyCookie(context, 'next-auth.csrf-token');
-        return {
-          redirect: {
-            destination: '/login',
-            permanent: false,
-          },
-        };
-      } else {
-        try {
-          const response = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/refresh`,
-            {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                refresh_token: refreshToken,
-              }),
-            }
-          );
-          if (response.ok) {
-            const data = await response.json();
-            const newToken = data.access_token;
-            const newRefreshToken = data.refresh_token;
-            refreshToken = newRefreshToken;
-            token = newToken;
-            session.user.data.refresh_token = newRefreshToken;
-            token = newToken;
-            session.user.data.access_token = newToken;
-          } else {
-            console.log('Não foi possível atualizar o token.');
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      }
-    }
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
-    let ownerId;
-    try {
-      const ownerIdResponse = await fetch(
-        `${baseUrl}/user/find-owner-by-user`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ _id: userId }),
-        }
-      );
-      if (ownerIdResponse.ok) {
-        const ownerData = await ownerIdResponse.json();
-        ownerId = ownerData?.owner?._id;
-      }
-    } catch (error) {
-      console.error(error);
-    }
-
-    const [notifications, userData, ownerData, plans, properties] =
-      await Promise.all([
-        fetch(`${baseUrl}/notification/user/${userId}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-          .then((res) => res.json())
-          .catch(() => []),
-        fetch(`${baseUrl}/user/${userId}`)
-          .then((res) => res.json())
-          .catch(() => []),
-        fetch(`${baseUrl}/user/find-owner-by-user`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ userId }),
-        })
-          .then((res) => res.json())
-          .catch(() => []),
-        fetch(`${baseUrl}/plan`)
-          .then((res) => res.json())
-          .catch(() => []),
-        fetch(`${baseUrl}/property/owner-properties`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            ownerId,
-            page: 1,
-          }),
-        })
-          .then((res) => res.json())
-          .catch(() => []),
-        fetchJson(`${baseUrl}/notification/user/${userId}`),
-        fetchJson(`${baseUrl}/user/${userId}`),
-        fetchJson(`${baseUrl}/user/find-owner-by-user`),
-        fetchJson(`${baseUrl}/plan`),
-        fetchJson(`${baseUrl}/property/owner-properties`),
-      ]);
-
-    return {
-      props: {
-        notifications,
-        userData,
-        plans,
-        properties,
-        ownerData,
-      },
-    };
   }
+
+  try {
+    const ownerIdResponse = await fetch(
+      `${baseUrl}/user/find-owner-by-user`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId }),
+      }
+    );
+    if (ownerIdResponse.ok) {
+      const ownerData = await ownerIdResponse.json();
+      ownerId = ownerData?.owner?._id;
+    } else {
+      return {
+        redirect: {
+          destination: '/adminFavProperties?page=1',
+          permanent: false,
+        },
+      };
+    }
+  } catch (error) {
+    console.error(error);
+  }
+
+  const [notifications, userData, ownerData, plans, properties, messages] =
+    await Promise.all([
+      fetch(`${baseUrl}/notification/user/${userId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then((res) => res.json())
+        .catch(() => []),
+      fetch(`${baseUrl}/user/${userId}`)
+        .then((res) => res.json())
+        .catch(() => []),
+      fetch(`${baseUrl}/user/find-owner-by-user`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId }),
+      })
+        .then((res) => res.json())
+        .catch(() => []),
+      fetch(`${baseUrl}/plan`)
+        .then((res) => res.json())
+        .catch(() => []),
+      fetch(`${baseUrl}/property/owner-properties`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ownerId,
+          page: 1,
+        }),
+      })
+        .then((res) => res.json())
+        .catch(() => []),
+      fetch(`${baseUrl}/message/find-all-by-ownerId`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ownerId,
+          page,
+        }),
+      })
+        .then((res) => res.json())
+        .catch(() => []),
+      fetchJson(`${baseUrl}/notification/user/${userId}`),
+      fetchJson(`${baseUrl}/user/${userId}`),
+      fetchJson(`${baseUrl}/user/find-owner-by-user`),
+      fetchJson(`${baseUrl}/plan`),
+      fetchJson(`${baseUrl}/property/owner-properties`),
+      fetchJson(`${baseUrl}/message/find-all-by-ownerId`),
+    ]);
+
+  return {
+    props: {
+      notifications,
+      userData,
+      plans,
+      properties,
+      ownerData,
+      messages
+    },
+  };
 }

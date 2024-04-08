@@ -48,7 +48,7 @@ const NotificationCard: React.FC<INotification> = ({
       }
       setDeleteNot(!deleteNot);
       location.reload();
-      const response = await fetch(
+      await fetch(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/notification`,
         {
           method: 'DELETE',
@@ -71,8 +71,8 @@ const NotificationCard: React.FC<INotification> = ({
       {/** ! */}
       <div
         className={`${!seen && !deleteNot
-            ? 'relative top-7 left-[94%] w-10 h-10 bg-white border-2 border-secondary rounded-full text-primary font-bold text-3xl text-center'
-            : 'hidden'
+          ? 'relative top-7 left-[94%] w-10 h-10 bg-white border-2 border-secondary rounded-full text-primary font-bold text-3xl text-center'
+          : 'hidden'
           }`}
       >
         !
@@ -81,8 +81,8 @@ const NotificationCard: React.FC<INotification> = ({
       {!deleteNot && (
         <div
           className={`${!seen
-              ? 'border-4 border-secondary bg-tertiary p-5'
-              : 'border-4 border-quaternary bg-tertiary p-5 mt-10'
+            ? 'border-4 border-secondary bg-tertiary p-5'
+            : 'border-4 border-quaternary bg-tertiary p-5 mt-10'
             } `}
         >
           <div className="flex flex-col md:flex-row lg:flex-row xl:flex-row items-center justify-between sm:w-[250px] md:w-[500px] w-[250px] lg:w-[600px] xl:w-[600px] gap-5">

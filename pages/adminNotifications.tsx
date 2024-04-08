@@ -1,6 +1,7 @@
 import { GetServerSidePropsContext } from 'next';
 import { getSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
+import { IMessagesByOwner } from '../common/interfaces/message/messages';
 import { IOwnerProperties } from '../common/interfaces/properties/propertiesList';
 import { IPropertyInfo } from '../common/interfaces/property/propertyData';
 import { fetchJson } from '../common/utils/fetchJson';
@@ -16,25 +17,29 @@ interface IMessageNotifications {
   properties?: IPropertyInfo;
   notifications: INotification[];
   ownerProperties?: IOwnerProperties | any;
+  messages: IMessagesByOwner
 }
+
+const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
 
 const MessageNotifications = ({
   ownerProperties,
   notifications,
+  messages
 }: IMessageNotifications) => {
 
   const isMobile = useIsMobile();
   const [isOwner, setIsOwner] = useState<boolean>(false);
   const [showPagination, setShowPagination] = useState<boolean>(notifications.length > 0 ? true : false);
-  const [userNotifications, setUserNotifications] = useState<INotification[]>(notifications);
+  const userNotifications = notifications;
   const adminNots = notifications as [];
-  const apiBaseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+  const unreadMessages = messages?.docs?.length > 0 ? messages?.docs?.filter((message) => !message.isRead) : [];
 
   useEffect(() => {
     // Função a ser executada quando o componente for desmontado
     const updateNotification = async () => {
       try {
-        const response = await fetch(`${apiBaseUrl}/notification/update-notifications`,
+        const response = await fetch(`${baseUrl}/notification/update-notifications`,
           {
             method: 'POST',
             headers: {
@@ -78,6 +83,7 @@ const MessageNotifications = ({
             <SideMenu
               isOwnerProp={isOwner}
               notifications={adminNots && adminNots}
+              unreadMessages={unreadMessages}
             />
           ) : (
             ''
@@ -143,10 +149,14 @@ const MessageNotifications = ({
     </main>
   );
 };
+
 export default MessageNotifications;
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = (await getSession(context)) as any;
+  const userId = session?.user.data._id || session?.user.id;
+  const page = Number(context.query.page);
+  let ownerId;
 
   if (!session) {
     return {
@@ -156,11 +166,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       },
     };
   }
-
-  const userId = session?.user.data._id || session?.user.id;
-  const page = Number(context.query.page);
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
-  let ownerId;
 
   try {
     const ownerIdResponse = await fetch(
@@ -184,7 +189,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     console.error(error);
   }
 
-  const [ownerProperties, notifications] = await Promise.all([
+  const [ownerProperties, notifications, messages] = await Promise.all([
     fetch(`${baseUrl}/property/owner-properties`, {
       method: 'POST',
       headers: {
@@ -208,14 +213,28 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     )
       .then((res) => res.json())
       .catch(() => []),
+    fetch(`${baseUrl}/message/find-all-by-ownerId`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        ownerId,
+        page,
+      }),
+    })
+      .then((res) => res.json())
+      .catch(() => []),
     fetchJson(`${baseUrl}/property/owner-properties`),
-    fetchJson(`${baseUrl}/notification/user/${userId}`)
+    fetchJson(`${baseUrl}/notification/user/${userId}`),
+    fetchJson(`${baseUrl}/message/find-all-by-ownerId`),
   ]);
 
   return {
     props: {
       notifications,
-      ownerProperties
+      ownerProperties,
+      messages
     },
   };
 }

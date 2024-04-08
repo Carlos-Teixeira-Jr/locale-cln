@@ -3,9 +3,9 @@ import { getSession } from 'next-auth/react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { IMessage } from '../../common/interfaces/message/messages';
+import { IMessage, IMessagesByProperty } from '../../common/interfaces/message/messages';
 import { IOwnerProperties } from '../../common/interfaces/properties/propertiesList';
-import { IData } from '../../common/interfaces/property/propertyData';
+import usePageQueryParam from '../../common/utils/actions/getQueryParamPage';
 import { fetchJson } from '../../common/utils/fetchJson';
 import Pagination from '../../components/atoms/pagination/pagination';
 import MessageInfoCard from '../../components/molecules/cards/messageInfoCard/messageInfoCard';
@@ -13,18 +13,9 @@ import { INotification } from '../../components/molecules/cards/notificationCard
 import AdminHeader from '../../components/organisms/adminHeader/adminHeader';
 import SideMenu from '../../components/organisms/sideMenu/sideMenu';
 
-type Message = {
-  messages: {
-    messagesDocs: any[];
-    count: number;
-    totalPages: number;
-  };
-  property: IData;
-};
-
 interface IMessagePage {
   ownerProperties: IOwnerProperties;
-  message: Message;
+  message: IMessagesByProperty;
   notifications: INotification[];
 }
 
@@ -33,19 +24,19 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
 const MessagePage = ({ ownerProperties, message, notifications }: IMessagePage) => {
   const router = useRouter();
   const query = router.query as any;
-  const [isOwner, setIsOwner] = useState<boolean>(false);
+  const [isOwner, setIsOwner] = useState<boolean>(ownerProperties?.docs?.length > 0 ? true : false);
   const propertyData = message?.property;
-  const messagesDocs = message?.messages.messagesDocs;
-  const totalPages = message?.messages.totalPages;
+  const [messagesDocs, setMessagesDocs] = useState(message?.messages?.docs);
+  const totalPages = message?.messages?.totalPages;
   const [currentPage, setCurrentPage] = useState(1);
+  console.log("🚀 ~ MessagePage ~ currentPage:", currentPage)
+  const unreadMessages = message?.messages?.docs?.length > 0 ? message?.messages?.docs.filter((message) => !message.isRead) : [];
+  const initialPage = 1;
 
-  useEffect(() => {
-    if (router.query.page !== undefined && typeof query.page === 'string') {
-      const parsedPage = parseInt(query.page);
-      setCurrentPage(parsedPage);
-    }
-  });
+  // Atualiza a current page a partir dos parametros do url
+  usePageQueryParam(initialPage, setCurrentPage);
 
+  // Atualiza a page nos parâmetros da url quando a página é trocada no componente de paginação;
   useEffect(() => {
     const pageQueryParam =
       router.query.page !== undefined && typeof query.page === 'string'
@@ -61,9 +52,49 @@ const MessagePage = ({ ownerProperties, message, notifications }: IMessagePage) 
     }
   }, [currentPage]);
 
+  // Atualiza a propriedade isRead das mensagens não lidas de false para true após o componente ser desmontado;
   useEffect(() => {
-    setIsOwner(ownerProperties?.docs?.length > 0 ? true : false);
-  }, [ownerProperties]);
+    // Função a ser executada quando o componente for desmontado
+    const updateMessages = async () => {
+      try {
+        await fetch(`${baseUrl}/message/update-messages`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-type': 'application/json',
+            },
+            body: JSON.stringify(unreadMessages),
+          })
+      } catch (error) {
+        console.error(error)
+      }
+    }
+
+    return () => {
+      updateMessages();
+    };
+  }, []);
+
+  const handleDelete = async (_id: string) => {
+    try {
+      location.reload();
+      await fetch(
+        `${baseUrl}/message`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            _id,
+          }),
+        }
+      ).then((response) => response.json());
+      setMessagesDocs(message?.messages?.docs);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <main>
@@ -71,13 +102,15 @@ const MessagePage = ({ ownerProperties, message, notifications }: IMessagePage) 
 
       <div className={classes.body}>
         <div className={classes.sideMenu}>
-          <SideMenu isOwnerProp={isOwner} notifications={notifications} />
+          <SideMenu
+            isOwnerProp={isOwner}
+            notifications={notifications}
+            unreadMessages={unreadMessages}
+          />
         </div>
-
         <div className={classes.contentContainer}>
           <div className={classes.content}>
             <h1 className={classes.title}>Mensagens</h1>
-
             <div className="flex gap-2 mb-3">
               <div>
                 <Image
@@ -109,14 +142,17 @@ const MessagePage = ({ ownerProperties, message, notifications }: IMessagePage) 
               />
             </div>
 
-            {messagesDocs.map(
-              ({ name, email, phone, message, _id }: IMessage) => (
+            {messagesDocs?.map(
+              ({ name, email, phone, message, _id, isRead }: IMessage) => (
                 <MessageInfoCard
+                  _id={_id}
                   key={_id}
                   name={name}
                   email={email}
                   message={message}
                   phone={phone}
+                  isRead={isRead}
+                  handleDelete={(messageId: string) => handleDelete(messageId)}
                 />
               )
             )}
