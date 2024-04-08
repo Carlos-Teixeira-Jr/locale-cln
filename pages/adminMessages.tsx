@@ -25,6 +25,8 @@ interface IAdminMessagesPage {
   notifications: [];
 }
 
+const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+
 const AdminMessages = ({
   ownerProperties,
   messages,
@@ -40,7 +42,6 @@ const AdminMessages = ({
   const [currentPage, setCurrentPage] = useState(1);
   const isMobile = useIsMobile();
   const unreadMessages = messages?.docs?.length > 0 ? messages?.docs?.filter((e) => e.isRead === false) : [];
-  console.log("🚀 ~ unreadMessages:", unreadMessages)
 
   useEffect(() => {
     if (router.query.page !== undefined && typeof query.page === 'string') {
@@ -142,6 +143,9 @@ export default AdminMessages;
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = (await getSession(context)) as any;
+  const userId = session?.user.data._id || session?.user.id;
+  const page = Number(context.query.page);
+  let ownerId;
 
   if (!session) {
     return {
@@ -151,11 +155,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       },
     };
   }
-
-  const userId = session?.user.data._id || session?.user.id;
-  const page = Number(context.query.page);
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
-  let ownerId;
 
   try {
     const ownerIdResponse = await fetch(

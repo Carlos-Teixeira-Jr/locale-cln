@@ -598,7 +598,6 @@ export default AdminUserDataPage;
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = (await getSession(context)) as any;
-  console.log("🚀 ~ getServerSideProps ~ session:", session)
   const userId =
     session?.user.data._id !== undefined
       ? session?.user.data._id
