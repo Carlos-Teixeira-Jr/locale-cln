@@ -37,7 +37,6 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
   const query = router.query as any;
   const isMobile = useIsMobile();
   const session = useSession();
-  console.log("🚀 ~ session:", session)
   const unreadMessages = messages?.docs?.length > 0 ? messages?.docs.filter((message) => !message.isRead) : [];
 
   useEffect(() => {
