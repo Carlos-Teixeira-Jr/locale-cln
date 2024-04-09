@@ -94,8 +94,6 @@ const PropertyCard: React.FC<IPropertyCard> = ({
     };
   }, [id, prices, description, bedrooms, bathrooms, parking_spaces, location]);
 
-  memoizedCardInfos.bathrooms;
-
   const handleFavouriteIcon = async () => {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
     try {

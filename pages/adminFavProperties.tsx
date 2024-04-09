@@ -1,5 +1,5 @@
 import { GetServerSidePropsContext } from 'next';
-import { getSession } from 'next-auth/react';
+import { getSession, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { IMessagesByOwner } from '../common/interfaces/message/messages';
@@ -29,13 +29,15 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
   notifications,
   messages
 }) => {
+
   const [isOwner, setIsOwner] = useState<boolean>(false);
   const [properties, _setProperties] = useState<IPropertyInfo>(ownerProperties);
   const [currentPage, setCurrentPage] = useState(1);
   const router = useRouter();
   const query = router.query as any;
   const isMobile = useIsMobile();
-  const unreadMessages = messages?.docs.length > 0 ? messages?.docs.filter((message) => !message.isRead) : [];
+  const session = useSession();
+  const unreadMessages = messages?.docs?.length > 0 ? messages?.docs.filter((message) => !message.isRead) : [];
 
   useEffect(() => {
     setIsOwner(properties?.docs?.length > 0 ? true : false);
@@ -109,6 +111,7 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
                   images,
                   highlighted,
                   description,
+                  metadata
                 }: IData) => (
                   <div className="w-full md:w-60" key={_id}>
                     <PropertyCard
@@ -120,6 +123,9 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
                       id={_id}
                       prices={prices}
                       highlighted={highlighted}
+                      bedrooms={metadata.find((e) => e.type === 'bedroom')?.amount}
+                      bathrooms={metadata.find((e) => e.type === 'bathroom')?.amount}
+                      parking_spaces={metadata.find((e) => e.type === 'garage')?.amount}
                     />
                   </div>
                 )

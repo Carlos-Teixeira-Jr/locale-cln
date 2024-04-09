@@ -2,12 +2,14 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { ReactNode, useEffect, useState } from 'react';
 
+import { ReactJSXElement } from '@emotion/react/types/jsx-namespace';
 import { IMessage } from '../../../common/interfaces/message/messages';
 import BellIcon from '../../atoms/icons/bellIcon';
 import HeartIcon from '../../atoms/icons/heartIcon';
 import MailIcon from '../../atoms/icons/mailIcon';
 import MyAnnouncesIcon from '../../atoms/icons/myAnnouncesIcon';
 import UserIcon from '../../atoms/icons/userIcon';
+import Loading from '../../atoms/loading';
 import { INotification } from '../../molecules/cards/notificationCard/notificationCard';
 
 type Options = {
@@ -30,6 +32,9 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications, unreadM
   const [activeButton, setActiveButton] = useState('');
   const [notReadNots, setNotReadNots] = useState<INotification[]>([]);
   const isOwner = isOwnerProp;
+  const [iconToUse, setIconToUse] = useState<ReactJSXElement>();
+  const [loadingIconId, setLoadingIconId] = useState('');
+
 
   const classNames = {
     notesIcon: 'before:content-[attr(data-nots)] before:text-xs before:bg-tertiary before:font-medium before:text-primary before:border-secondary before:rounded-full before:border before:flex before:items-center before:justify-center before:min-w-[1.4em] before:min-h-[0.4em]'
@@ -158,6 +163,49 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications, unreadM
   return (
     <>
       <div className="w-fit h-screen bg-tertiary px-2 mt-10 drop-shadow-xl left-0">
+        {/* {isOwnerProp !== undefined && notifications !== undefined && options.map(({ key, id, icon, title, link }: Options) => {
+          if (
+            isOwner ||
+            id === 'favourites-button' ||
+            id === 'notifications-button' ||
+            id === 'my-data-button'
+          ) {
+            return (
+              <div
+                key={key}
+                onClick={() => {
+                  router.push({
+                    pathname: link,
+                    query: {
+                      page: 1,
+                    },
+                  });
+                }}
+              >
+                <button
+                  className="flex mx-5 py-1.5"
+                  onClick={() => {
+                    setActiveButton(id);
+                    setLoadingIconId(id);
+                    //setIconToUse(<Loading />)
+                  }}
+                >
+                  {iconToUse ? iconToUse : icon}
+                  <h2
+                    className={`text-md font-bold leading-7 my-auto transition-colors duration-300 ${activeButton === id
+                      ? 'text-secondary hover:text-yellow'
+                      : 'text-quaternary hover:text-gray-700'
+                      }`}
+                  >
+                    {title}
+                  </h2>
+                </button>
+              </div>
+            );
+          }
+          return null;
+        })} */}
+
         {isOwnerProp !== undefined && notifications !== undefined && options.map(({ key, id, icon, title, link }: Options) => {
           if (
             isOwner ||
@@ -179,12 +227,19 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications, unreadM
               >
                 <button
                   className="flex mx-5 py-1.5"
-                  onClick={() => setActiveButton(id)}
+                  onClick={() => {
+                    setActiveButton(id);
+                    setLoadingIconId(id); // Define o ID do ícone que está em loading
+                  }}
                 >
-                  {icon}
+                  {/* {loadingIconId === id ? <Loading /> : icon} */}
+                  {loadingIconId === id ? <Loading fill='#F5BF5D' /> : icon}
                   <h2
-                    className={`text-md font-bold leading-7 my-auto transition-colors duration-300 ${activeButton === id
-                      ? 'text-secondary hover:text-yellow'
+                    className={`text-md ml font-bold leading-7 my-auto transition-colors duration-300 ${activeButton === id
+                      ? `text-secondary hover:text-yellow ${loadingIconId !== id ?
+                        '' :
+                        'md:ml-[18px]'
+                      }`
                       : 'text-quaternary hover:text-gray-700'
                       }`}
                   >
@@ -196,6 +251,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications, unreadM
           }
           return null;
         })}
+
 
         {isOwnerProp !== undefined && notifications !== undefined && (
           <div className="flex justify-center mt-10">

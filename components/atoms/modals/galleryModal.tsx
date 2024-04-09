@@ -17,7 +17,6 @@ const GalleryModal: React.FC<IGalleryModal> = ({
 }) => {
   const [currentIndex, setCurrentIndex] = useState(selectedImage);
   const [imageDimensions, setImageDimensions] = useState({ width: 0, height: 0 });
-  console.log("🚀 ~ imageDimensions:", imageDimensions)
 
   // Função para carregar a imagem e obter suas dimensões
   useEffect(() => {

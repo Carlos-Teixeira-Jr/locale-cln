@@ -29,7 +29,6 @@ const MessagePage = ({ ownerProperties, message, notifications }: IMessagePage) 
   const [messagesDocs, setMessagesDocs] = useState(message?.messages?.docs);
   const totalPages = message?.messages?.totalPages;
   const [currentPage, setCurrentPage] = useState(1);
-  console.log("🚀 ~ MessagePage ~ currentPage:", currentPage)
   const unreadMessages = message?.messages?.docs?.length > 0 ? message?.messages?.docs.filter((message) => !message.isRead) : [];
   const initialPage = 1;
 

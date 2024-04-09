@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import React, { ChangeEvent, useRef, useState } from 'react';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import {
   ILocation,
   ILocationProp,
@@ -7,6 +7,7 @@ import {
 import { IPropertyTypes } from '../../../common/interfaces/property/propertyTypes';
 import { useOutsideClick } from '../../../common/utils/actions/clickOutside';
 import { toggleLocation } from '../../../common/utils/actions/toggleLocations';
+import { handleClickOutside } from '../../../common/utils/clickOutsideDropdownHandler';
 import { categorizeLocations } from '../../../common/utils/format/categorizedLocations';
 import { lowerLetters } from '../../../common/utils/strings/capitalizeFirstLetter';
 import {
@@ -54,6 +55,7 @@ const HomeFilter: React.FC<IHomeFilter> = ({
   const refPorpertyType = useRef<HTMLDivElement>(null);
   const refLoation = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const [buyOrRentOptions, setBuyOrRentOptions] = useState({
     isBuy: true,
     isRent: false
@@ -71,7 +73,13 @@ const HomeFilter: React.FC<IHomeFilter> = ({
   const { longitude, latitude, location: geolocation } = useTrackLocation();
   const isMobile = useIsMobile();
   useOutsideClick(refLoation, setOpenLocationDropdown, openLocationDropdown);
-  useOutsideClick(refPorpertyType, setPropTypeDropdownIsOpen, propTypeDropdownIsOpen);
+
+  // Lida com o comportamento de abrir e fechar do dropdown de tipo de imóvel;
+  useEffect(() => {
+    const clickHandler = handleClickOutside(refPorpertyType, setPropTypeDropdownIsOpen);
+    document.addEventListener('click', clickHandler);
+    return () => document.removeEventListener('click', clickHandler);
+  }, [refPorpertyType, setPropTypeDropdownIsOpen]);
 
   const filterLocation = (value: string) => {
     const filtered: ILocation[] = locationProp.filter((location) =>
@@ -84,6 +92,7 @@ const HomeFilter: React.FC<IHomeFilter> = ({
 
   const handleFindBtnClick = () => {
     const adType = buyOrRentOptions.isBuy ? 'comprar' : buyOrRentOptions.isRent ? 'alugar' : undefined;
+    setIsLoading(true);
 
     const query: HomeQuery = {
       adType,
@@ -133,7 +142,7 @@ const HomeFilter: React.FC<IHomeFilter> = ({
               <BuyRentSelector buyOrRent={buyOrRentOptions} onBuyRentChange={(buyOrRent) => setBuyOrRentOptions(buyOrRent)} />
 
               {isMobile && (
-                <Button onClick={handleFindBtnClick} />
+                <Button onClick={handleFindBtnClick} isLoading={isLoading} />
               )}
 
               <div className="lg:w-56 w-full lg:mr-10 flex flex-col gap-2">
@@ -209,7 +218,7 @@ const HomeFilter: React.FC<IHomeFilter> = ({
             <div className="flex flex-col-reverse md:flex-col gap-5">
 
               {!isMobile && (
-                <Button onClick={handleFindBtnClick} />
+                <Button onClick={handleFindBtnClick} isLoading={isLoading} />
               )}
 
               <div className="flex flex-col lg:mt-0 gap-2">
