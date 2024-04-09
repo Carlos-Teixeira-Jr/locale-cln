@@ -84,13 +84,13 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
       ? ` ${selectedCards.includes(id) ? 'flex' : 'flex'}`
       : `${selectedCards.includes(id) ? 'flex' : 'flex'}`
       }`,
-    button: `rounded-[10px] text-tertiary mx-auto my-5 font-semibold ${isAdminPage
+    button: `rounded-[10px] text-tertiary mx-auto transition-colors duration-300 my-5 font-semibold ${isAdminPage
       ? `${selectedPlanCard === id
-        ? `bg-secondary w-[180px] h-[44px] text-base ${selectedCards.includes(id) ? 'mt-5' : ''
+        ? `bg-secondary hover:bg-yellow-500 w-[180px] h-[44px] text-base ${selectedCards.includes(id) ? 'mt-5' : ''
         }`
-        : 'bg-primary w-[180px] h-[44px] text-base'
+        : 'bg-primary hover:bg-red-500 w-[180px] h-[44px] text-base'
       }`
-      : `w-full h-[66px] mt-5 mx-5 text-xl ${selectedPlanCard === id ? 'bg-secondary' : 'bg-primary'
+      : `w-full h-[66px] mt-5 mx-5 text-xl ${selectedPlanCard === id ? 'bg-secondary hover:bg-yellow-500' : 'bg-primary hover:bg-red-500 '
       }`
       }`,
   };

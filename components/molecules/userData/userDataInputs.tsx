@@ -277,7 +277,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
             )}
           </div>
           <label
-            className="flex flex-row items-center justify-center px-6 w-56 h-12 border rounded-[50px] bg-secondary cursor-pointer mt-4 "
+            className="flex flex-row items-center justify-center px-6 w-56 h-12 border rounded-[50px] transition-colors hover:bg-yellow-500 duration-300 bg-secondary cursor-pointer mt-4"
             htmlFor="uploadImages"
           >
             <CameraIcon />

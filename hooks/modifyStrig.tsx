@@ -16,6 +16,7 @@ export default function modifyString(pathname: string): string {
     '/announcement': 'Planos de Anúncio',
     '/search': 'Buscar',
     '/admin': 'Anúncios',
+    '/login': 'Entrar'
   };
 
   const defaultTitle = 'Locale | Home';

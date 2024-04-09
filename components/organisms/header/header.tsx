@@ -56,7 +56,7 @@ const Header: React.FC<IHeader> = () => {
           <Link
             className={`cursor-pointer ${isBuy
               ? 'border-b-4  border-red-400'
-              : 'hover:border-b-4  border-red-400'
+              : 'hover:border-b-4 border-red-400 hover:border-primary border-transparent transition duration-500'
               }`}
             href="/search?adType=comprar"
           >
@@ -65,14 +65,14 @@ const Header: React.FC<IHeader> = () => {
           <Link
             className={`cursor-pointer ${isRent
               ? 'border-b-4  border-red-400'
-              : 'hover:border-b-4  border-red-400'
+              : 'hover:border-b-4 border-red-400 hover:border-primary border-transparent transition duration-500'
               }`}
             href="/search?adType=alugar"
           >
             Alugar
           </Link>
           <Link
-            className="hover:border-b-4 border-red-400 cursor-pointer"
+            className="hover:border-b-4 border-red-400 hover:border-primary border-transparent transition duration-500"
             href="/announcement"
           >
             Anunciar
@@ -81,7 +81,6 @@ const Header: React.FC<IHeader> = () => {
         <div className="flex flex-row items-center justify-end">
           {session ? (
             <div className="flex gap-2">
-              <p className="my-auto mx-2">{session.user?.data.username}</p>
               <Link href={'/admin?page=1'}>
                 {session.user.data.picture!! ? (
                   <Image
@@ -108,7 +107,7 @@ const Header: React.FC<IHeader> = () => {
           ) : (
             <>
               <Link href="/login">
-                <button className="bg-primary justify-self-end cursor-pointer text-tertiary rounded-3xl font-normal py-1 text-xl w-[100px] md:w-[124px] mr-2 shadow-md">
+                <button className="bg-primary justify-self-end cursor-pointer text-tertiary rounded-3xl font-normal py-1 text-xl w-[100px] md:w-[124px] mr-2 shadow-md transition-colors duration-300 hover:bg-red-600 hover:text-white">
                   Entrar
                 </button>
               </Link>

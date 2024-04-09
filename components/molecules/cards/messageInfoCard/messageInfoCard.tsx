@@ -73,48 +73,48 @@ const MessageInfoCard = ({
         />
         <h2 className="font-medium text-lg my-auto">{phone}</h2>
       </div>
-      <div className="flex gap-2">
-        <MessageBalloonIcon
-          fill="#6B7280"
-          width="32"
-          className="shrink-0"
-        />
-        <div>
-          <p
-            ref={descriptionRef}
-            className="font-medium text-lg my-auto overflow-hidden line-clamp-3"
-            style={{
-              overflow: expanded ? 'visible' : 'hidden',
-              textOverflow: 'ellipsis',
-              display: '-webkit-box',
-              lineClamp: expanded ? 'unset' : 2,
-              WebkitLineClamp: expanded ? 'unset' : 2,
-              WebkitBoxOrient: 'vertical',
-            }}
-          >
-            {message}
-          </p>
-          {descriptionRef.current && isExpandable && (
-            <div className="w-full text-end">
-              <span
-                onClick={() => setExpanded(!expanded)}
-                className="font-medium text-sm text-primary mt-4 whitespace-nowrap text-end cursor-pointer"
-              >
-                {!expanded ? 'Ler mais...' : 'Ler menos...'}
-              </span>
-            </div>
-          )}
+      <div className="flex justify-between">
+        <div className="flex gap-2">
+          <MessageBalloonIcon
+            fill="#6B7280"
+            width="32"
+            className="shrink-0"
+          />
+          <div className="my-auto">
+            <p
+              ref={descriptionRef}
+              className="font-medium text-lg my-auto overflow-hidden line-clamp-3"
+              style={{
+                overflow: expanded ? 'visible' : 'hidden',
+                textOverflow: 'ellipsis',
+                display: '-webkit-box',
+                lineClamp: expanded ? 'unset' : 2,
+                WebkitLineClamp: expanded ? 'unset' : 2,
+                WebkitBoxOrient: 'vertical',
+              }}
+            >
+              {message}
+            </p>
+            {descriptionRef.current && isExpandable && (
+              <div className="w-full text-end">
+                <span
+                  onClick={() => setExpanded(!expanded)}
+                  className="font-medium text-sm text-primary mt-4 whitespace-nowrap text-end cursor-pointer"
+                >
+                  {!expanded ? 'Ler mais...' : 'Ler menos...'}
+                </span>
+              </div>
+            )}
+          </div>
         </div>
-        <div className="flex items-end">
-          <button
-            className="flex items-center justify-center bg-primary rounded-md w-8 h-8 transition-colors duration-300 hover:bg-red-500"
-            onClick={() => {
-              handleDelete(_id);
-            }}
-          >
-            <DeleteIcon />
-          </button>
-        </div>
+        <button
+          className="flex items-center my-auto justify-center bg-primary rounded-md w-8 h-8 transition-colors duration-300 hover:bg-red-500"
+          onClick={() => {
+            handleDelete(_id);
+          }}
+        >
+          <DeleteIcon />
+        </button>
       </div>
     </div>
   )

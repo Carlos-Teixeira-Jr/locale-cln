@@ -21,6 +21,7 @@ const DeleteAccountModal = ({
   const isMobile = useIsMobile();
   const { data: session } = useSession() as any;
   const userId = session?.user?.data?._id;
+  console.log("🚀 ~ userId:", userId)
   const router = useRouter();
 
   const handleDeleteAccount = async () => {
