@@ -35,7 +35,7 @@ const Image: React.FC<ImageProps> = ({ id, src, onImageChange, alt }) => {
         width={176}
       />
       <div
-        className="flex p-1 cursor-pointer bg-primary rounded-full ml-2"
+        className="flex p-1 cursor-pointer bg-primary rounded-full ml-2 transition-colors duration-300 hover:bg-red-600"
         onClick={() => onImageChange(id)}
       >
         <TrashIcon />

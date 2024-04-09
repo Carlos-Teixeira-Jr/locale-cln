@@ -32,7 +32,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
   const router = useRouter();
   const query = router.query as any;
   const [width] = useDeviceSize();
-  const unreadMessages = messages?.docs.length > 0 ? messages?.docs.filter((message) => !message.isRead) : [];
+  const unreadMessages = messages?.docs?.length > 0 ? messages?.docs.filter((message) => !message.isRead) : [];
   const userName = session?.user?.data?.name;
 
   useEffect(() => {

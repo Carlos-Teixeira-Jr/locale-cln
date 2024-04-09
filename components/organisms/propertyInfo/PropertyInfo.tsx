@@ -268,7 +268,7 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
           {!isOwnProperty && (
             <button
               id="fav-property-tooltip"
-              className={`lg:w-80 w-40 mx-auto md:w-full h-12 md:h-16 bg-primary p-2.5 rounded-[10px] text-tertiary text-lg font-extrabold flex justify-center items-center mb-5 ${userIsLogged ? 'opacity opacity-100 cursor-pointer' : 'opacity-50'
+              className={`lg:w-80 w-40 mx-auto md:w-full h-12 md:h-16 bg-primary p-2.5 rounded-[10px] text-tertiary text-lg font-extrabold flex justify-center transition-colors items-center mb-5 ${userIsLogged ? 'opacity opacity-100 cursor-pointer hover:bg-red-600 duration-300' : 'opacity-50'
                 }`}
               onClick={handleFavouriteBtnClick}
             >
