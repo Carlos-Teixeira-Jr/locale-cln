@@ -347,7 +347,7 @@ const CreditCard = ({
       </div>
 
       {isEdit && (
-        <div className="flex my-10 justify-center">
+        <div className="flex my-10 justify-center md:justify-end">
           <button
             className="bg-primary w-fit h-13 item text-quinary rounded-[10px] py-3 px-10 lg:ml-8 gap-3 text-lg font-extrabold transition-colors duration-300 hover:bg-red-600 hover:text-white"
             onClick={handleSubmit}
