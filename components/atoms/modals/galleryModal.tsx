@@ -17,6 +17,7 @@ const GalleryModal: React.FC<IGalleryModal> = ({
 }) => {
   const [currentIndex, setCurrentIndex] = useState(selectedImage);
   const [imageDimensions, setImageDimensions] = useState({ width: 0, height: 0 });
+  console.log("🚀 ~ imageDimensions:", imageDimensions)
 
   // Função para carregar a imagem e obter suas dimensões
   useEffect(() => {
@@ -28,7 +29,6 @@ const GalleryModal: React.FC<IGalleryModal> = ({
       };
     };
     loadImage();
-
   }, [property.images, currentIndex]);
 
   const prevImage = () => {
@@ -46,7 +46,7 @@ const GalleryModal: React.FC<IGalleryModal> = ({
   };
 
   return (
-    <div className={`w-full. right-0 left-0 top-0 pt-24 pb-12 bg-black/90 absolute z-[214748364] group inset-x-0 overflow-x-hidden overflow-y-hidden overflow-hidden ${imageDimensions.height < 500 ?
+    <div className={`right-0 left-0 top-0 pt-24 pb-12 bg-black/90 absolute z-[214748364] group inset-x-0 overflow-x-hidden overflow-y-hidden overflow-hidden ${imageDimensions.height < 480 ?
       'lg:bottom-[-21px] md:bottom-[360px] xl:bottom-[670px]' :
       'h-fit'
       }`}>
