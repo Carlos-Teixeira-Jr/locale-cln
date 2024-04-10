@@ -16,8 +16,24 @@ const RegisterStep4: NextPageWithLayout = () => {
   useProgressRedirect(progress, 5, '/register');
 
   const handleSubmit = () => {
-    router.push('/login');
     setLoading(true);
+    router.push('/login');
+  };
+
+  const classes = {
+    root: 'flex flex-col mx-auto max-w-[1215px]',
+    stepLabel:
+      'md:mt-26 mt-28 sm:mt-32 md:mb-8 lg:mb-2 w-full mx-auto xl:mx-auto',
+    body: 'md:mx-20 md:mb-20 flex flex-col justify-center mx-auto',
+    textContainer: 'flex flex-col m-5 md:w-2/3 mx-auto',
+    h1: 'text-3xl text-red-500 text-center font-bold mb-5',
+    p: 'font-medium text-lg lg:text-xl text-quaternary inline-block mx-5',
+    buttonContainer: 'flex justify-center items-center my-4 max-w-[1215px]',
+    button:
+      `flex items-center flex-row justify-around w-44 h-14 text-tertiary rounded font-bold text-lg md:text-xl ${loading ?
+        'bg-red-300 transition-colors duration-300' :
+        'bg-primary transition-colors duration-300 hover:bg-red-600 hover:text-white cursor-pointer'
+      }`
   };
 
   return (
@@ -63,16 +79,3 @@ const RegisterStep4: NextPageWithLayout = () => {
 };
 
 export default RegisterStep4;
-
-const classes = {
-  root: 'flex flex-col mx-auto max-w-[1215px]',
-  stepLabel:
-    'md:mt-26 mt-28 sm:mt-32 md:mb-8 lg:mb-2 w-full mx-auto xl:mx-auto',
-  body: 'md:mx-20 md:mb-20 flex flex-col justify-center mx-auto',
-  textContainer: 'flex flex-col m-5 md:w-2/3 mx-auto',
-  h1: 'text-3xl text-red-500 text-center font-bold mb-5',
-  p: 'font-medium text-lg lg:text-xl text-quaternary inline-block mx-5',
-  buttonContainer: 'flex justify-center items-center my-4 max-w-[1215px]',
-  button:
-    'active:bg-gray-500 cursor-pointer flex items-center gap-2 flex-row justify-around bg-primary w-44 h-14 text-tertiary rounded transition-colors duration-300 font-bold text-lg md:text-xl hover:bg-red-600 hover:text-white',
-};
