@@ -2,6 +2,7 @@ import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { IData } from '../../../common/interfaces/property/propertyData';
 import { useIsMobile } from '../../../hooks/useIsMobile';
+import CameraIcon from '../../atoms/icons/cameraIcon';
 import NextGalleryIcon from '../../atoms/icons/nextGalleryIcon';
 import PreviousGalleryIcon from '../../atoms/icons/previousGalleryIcon';
 import GalleryModal from '../../atoms/modals/galleryModal';
@@ -76,6 +77,10 @@ const Gallery: React.FC<IGallery> = ({
               className={`max-w-[653px] max-h-[520px] bg-[#434343] rounded-l-3xl md:rounded-l-3xl 
                 ${isModalOpen ? '' : 'z-30'} text-center`}
             >
+              <div className='bg-primary rounded-full w-fit h-fit absolute bottom-0 ml-5 p-2 flex gap-2cursor-pointer'>
+                <CameraIcon />
+                <p className='text-sm text-tertiary font-semibold'>{`${propertyID?.images?.length} `}Fotos</p>
+              </div>
               <Image
                 src={propertyID.images[0]}
                 alt={'Property image'}
