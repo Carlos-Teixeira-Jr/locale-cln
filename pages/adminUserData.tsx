@@ -100,7 +100,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const [formData, setFormData] = useState<IUserDataComponent>({
     username: '',
     email: '',
-    cpf: '',
+    cpf: '366.422.100-18',
     cellPhone: '',
     phone: '',
     picture: {
@@ -113,7 +113,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const [formDataErrors, setFormDataErrors] = useState({
     username: '',
     email: '',
-    cpf: '',
+    cpf: '366.422.100-18',
     cellPhone: '',
   });
 
@@ -140,10 +140,12 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   };
 
   const [address, setAddress] = useState<IAddress>({
-    zipCode: userData ? userData.address?.zipCode : '',
+    // zipCode: userData ? userData.address?.zipCode : '',
+    zipCode: '96215-180',
     city: userData ? userData.address?.city : '',
     streetName: userData ? userData.address?.streetName : '',
-    streetNumber: userData ? userData.address?.streetNumber : '',
+    // streetNumber: userData ? userData.address?.streetNumber : '',
+    streetNumber: '123',
     complement: userData ? userData.address?.complement : '',
     neighborhood: userData ? userData.address?.neighborhood : '',
     uf: userData ? userData.address?.uf : '',
@@ -291,7 +293,8 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
         address,
         username: formData.username,
         email: formData.email,
-        cpf: formData.cpf,
+        // cpf: formData.cpf,
+        cpf: '366.422.100-18'
       };
 
       const ownerFormData: IOwner = {
