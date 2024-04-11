@@ -27,8 +27,8 @@ const RegisterStep35: NextPageWithLayout<IRegisterStep35> = ({ plans }) => {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       if (storedData) {
-        if (storedData.creditCard) {
-          setCardBrand(storedData.creditCard.cardBrand);
+        if (storedData?.paymentData?.cardBrand) {
+          setCardBrand(storedData?.creditCard?.cardBrand);
         }
       }
     }
@@ -65,7 +65,7 @@ const RegisterStep35: NextPageWithLayout<IRegisterStep35> = ({ plans }) => {
           <div className={classes.body}>
             <div className="lg:mx-24">
               <div className={classes.stepLabel}>
-                <LinearStepper isSubmited={false} sharedActiveStep={3} />
+                <LinearStepper activeStep={3} />
               </div>
 
               <div className={classes.card}>

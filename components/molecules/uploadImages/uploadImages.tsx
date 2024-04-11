@@ -290,7 +290,7 @@ const Image: React.FC<ImageProps> = ({
         className="absolute top-0 right-0 p-2 cursor-pointer"
         onClick={() => onRemove(id)}
       >
-        <TrashIcon />
+        <TrashIcon fill='#F75D5F' className='h-6 w-6 transition-transform transform ease-in-out duration-200 hover:scale-125' />
       </div>
       <span className="absolute bottom-0 left-0 p-1 px-3 text-sm text-white bg-black bg-opacity-50 rounded-3xl">
         {index === 0 ? 'Capa do anúncio' : index + 1}

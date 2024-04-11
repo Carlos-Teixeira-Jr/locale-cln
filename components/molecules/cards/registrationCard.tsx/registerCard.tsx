@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import { InfoToastNames, showInfoToast } from '../../../../common/utils/toasts';
 import UnverifiedEmailModal from '../../../atoms/modals/unverifiedEmailModal';
 import SocialAuthButton from '../../buttons/socialAuthButtons';
 
@@ -49,6 +50,7 @@ const RegisterCard: React.FC = () => {
 
     if (!email) {
       setEmailError('Por favor, insira seu email para cadastrar um anúncio');
+      showInfoToast(InfoToastNames.AnnouncementInfo);
     } else {
       try {
         toast.loading('Enviando...');

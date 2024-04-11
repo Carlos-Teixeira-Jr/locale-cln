@@ -23,6 +23,7 @@ type Owner = {
   _id: string;
   name: string;
   adCredits: number;
+  highlightCredits: number;
   cellPhone: string;
   email: string;
   phone: string;

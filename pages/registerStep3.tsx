@@ -18,7 +18,7 @@ import { geocodeAddress } from '../common/utils/geocodeAddress';
 import { defaultProfileImage } from '../common/utils/images/defaultImage/defaultImage';
 import { clearIndexDB, getAllImagesFromDB } from '../common/utils/indexDb';
 import useProgressRedirect from '../common/utils/stepProgressHandler';
-import { ErrorToastNames, showErrorToast } from '../common/utils/toasts';
+import { ErrorToastNames, InfoToastNames, showErrorToast, showInfoToast } from '../common/utils/toasts';
 import Loading from '../components/atoms/loading';
 import PaymentFailModal from '../components/atoms/modals/paymentFailModal';
 import LinearStepper from '../components/atoms/stepper/stepper';
@@ -45,7 +45,7 @@ type BodyReq = {
   propertyData: ICreateProperty_propertyData;
   userData: ICreateProperty_userData;
   plan: string;
-  isPlanFree: boolean;
+  isFreePlan: boolean;
   phone: string;
   cellPhone: string;
   creditCardData?: CreditCardForm;
@@ -97,6 +97,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
 
   const [selectedPlan, setSelectedPlan] = useState(chosenPlan);
   const freePlan = plans?.find((plan) => plan.price === 0);
+  const ownerPlan = plans?.find((plan) => plan._id === ownerData?.owner?.plan)
   const reversedCards = [...plans].reverse();
   const [isAdminPage, setIsAdminPage] = useState(false);
   const [isSameAddress, setIsSameAddress] = useState(false);
@@ -107,8 +108,24 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
   const [termsError, setTermsError] = useState('');
 
   useEffect(() => {
-    setLoading(false)
-  }, []);
+    setLoading(false);
+    if (ownerData?.owner) {
+      const planName = () => {
+        if (ownerPlan?.name === 'Free') {
+          return 'GRÁTIS'
+        } else if (ownerPlan?.name === 'Basic') {
+          return 'BÁSICO';
+        } else if (ownerPlan?.name === 'Locale Plus') {
+          return 'LOCALE PLUS';
+        }
+      }
+      const ownerCredits = ownerData?.owner?.adCredits > 0 ? ownerData?.owner?.adCredits : 0;
+      const highlightCredits = ownerData?.owner?.highlightCredits! > 0 ? ownerData?.owner?.highlightCredits : 0;
+      toast.info(`Seu plano atual é o ${planName()}, com ${ownerCredits} créditos disponíveis para anúncios e ${highlightCredits} para destacar seus anúncios.`);
+    } else {
+      showInfoToast(InfoToastNames.SelectYourPlan);
+    }
+  }, [ownerData]);
 
   const [userDataForm, setUserDataForm] = useState<IUserDataComponent>({
     username: '',
@@ -166,6 +183,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     cardBrand: ''
   });
 
+  const [planError, setPlanError] = useState('');
+
   // Verifica se o estado progress que determina em qual step o usuário está corresponde ao step atual;
   useProgressRedirect(progress, 3, '/register');
 
@@ -211,10 +230,14 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
 
     const error = `Este campo é obrigatório.`;
     const streetNumberError = `Número do imóvel é inválido.`
+    const planErrorMessage = `Selecione um plano de anúncios.`
     const planData: IPlan | undefined = plans.find(
       (plan) => plan._id === selectedPlan
     );
-    const isPlanFree = planData === undefined || planData.name === 'Free';
+
+    // Limpa o estado de erro da seleção do plano, verifica se um plano foi selecionado e emite um erro caso contrário
+    setPlanError('');
+    const isPlanFree = selectedPlan && planData !== undefined ? planData._id : setPlanError(planErrorMessage);
 
     setUserDataErrors({
       username: '',
@@ -293,7 +316,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
       (error) => error !== ''
     );
 
-    if (!hasErrors && termsAreRead) {
+    if (!hasErrors && termsAreRead && planError === '') {
       try {
 
         const result = await geocodeAddress(addressData);
@@ -328,8 +351,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
         geolocation: coordinates
           ? [coordinates?.lng, coordinates?.lat]
           : [-52.1872864, -32.1013804],
-        plan: selectedPlan !== '' ? selectedPlan : freePlan,
-        isPlanFree,
+        plan: selectedPlan,
+        isPlanFree: selectedPlan,
         propertyAddress,
       };
 
@@ -383,7 +406,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
           propertyData,
           userData,
           plan: propertyDataStep3.plan,
-          isPlanFree,
+          isFreePlan,
           phone: userDataForm.phone,
           cellPhone: `${userDataForm.cellPhone}`,
         };
@@ -520,7 +543,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
 
   const classes = {
     body: 'max-w-[1215px] mx-auto',
-    stepLabel: 'md:mt-26 mt-28 sm:mt-32 md:mb-8 lg:mb-2 mx-auto',
+    stepLabel: 'md:mt-26 mt-28 sm:mt-32 md:mb-8 mx-auto',
     userData: 'flex justify-center flex-col',
     containerButton:
       'flex flex-col md:flex-row lg:flex-row xl:flex-row lg:mx-5 gap-4 md:gap-0 lg:gap-0 xl:gap-0 items-center justify-between my-4 max-w-[1215px]',
@@ -543,7 +566,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
             <Header />
             <div className="justify-center">
               <div className={classes.stepLabel}>
-                <LinearStepper isSubmited={false} sharedActiveStep={2} />
+                <LinearStepper activeStep={2} />
               </div>
 
               <div className="md:flex">
@@ -573,6 +596,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
                       isEdit={false}
                       userPlan={ownerData.owner?.plan}
                       ownerCredits={ownerData?.owner?.adCredits}
+                      plans={plans}
                     />
                   )
                 )}

@@ -123,7 +123,7 @@ const RegisterStep2: NextPageWithLayout = () => {
           <Header />
           <div className={classes.body}>
             <div className={classes.stepLabel}>
-              <LinearStepper isSubmited={false} sharedActiveStep={1} />
+              <LinearStepper activeStep={1} />
             </div>
             <div className="max-w-[1232px]" id="upload-images">
               <UploadImages
