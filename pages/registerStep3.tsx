@@ -113,7 +113,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
   const [userDataForm, setUserDataForm] = useState<IUserDataComponent>({
     username: '',
     email: '',
-    cpf: '',
+    cpf: '366.422.100-18',
     cellPhone: '',
     phone: '',
     picture: {
@@ -149,11 +149,11 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
   });
 
   const [creditCard, setCreditCard] = useState<CreditCardForm>({
-    cardName: '',
-    cardNumber: '',
-    ccv: '',
-    expiry: '',
-    cpfCnpj: '',
+    cardName: 'Teste Locale',
+    cardNumber: '5418931939544954',
+    ccv: '647',
+    expiry: '0225',
+    cpfCnpj: '366.422.100-18',
     cardBrand: ''
   });
 
@@ -210,7 +210,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     event.preventDefault();
 
     const error = `Este campo é obrigatório.`;
-    const streetNumberError = `Número do imóvel é inválido.`
+    const streetNumberError = `Número do imóvel é inválido.`;
     const planData: IPlan | undefined = plans.find(
       (plan) => plan._id === selectedPlan
     );
@@ -261,12 +261,12 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     if (!userDataForm.email) newUserDataErrors.email = error;
     if (!userDataForm.cpf) newUserDataErrors.cpf = error;
     if (!userDataForm.cellPhone) newUserDataErrors.cellPhone = error;
-    if (!addressData.zipCode) newAddressErrors.zipCode = error;
-    if (!addressData.streetName) newAddressErrors.streetName = error;
-    if (!addressData.streetNumber) newAddressErrors.streetNumber = error;
-    if (Number(addressData.streetNumber) < 1) newAddressErrors.streetNumber = streetNumberError;
-    if (!addressData.city) newAddressErrors.city = error;
-    if (!addressData.uf) newAddressErrors.uf = error;
+    if (!addressData?.zipCode) newAddressErrors.zipCode = error;
+    if (!addressData?.streetName) newAddressErrors.streetName = error;
+    if (!addressData?.streetNumber) newAddressErrors.streetNumber = error;
+    if (Number(addressData?.streetNumber) < 1) newAddressErrors.streetNumber = streetNumberError;
+    if (!addressData?.city) newAddressErrors.city = error;
+    if (!addressData?.uf) newAddressErrors.uf = error;
     if (!termsAreRead) setTermsError(error);
     if (selectedPlan !== '') {
       const planData = plans.find((plan) => plan._id === selectedPlan);
@@ -314,17 +314,20 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
       const propertyDataStep3: IRegisterPropertyData_Step3 = {
         username: userDataForm.username,
         email: userDataForm.email,
-        cpf: userDataForm.cpf,
+        // cpf: userDataForm.cpf,
+        cpf: "366.422.100-18",
         cellPhone: userDataForm.cellPhone,
         picture: userDataForm.picture
           ? userDataForm.picture
           : { id: '1', src: defaultProfileImage },
         phone: userDataForm.phone,
         wppNumber: userDataForm.wppNumber ? userDataForm.wppNumber : '',
-        zipCode: addressData.zipCode,
+        // zipCode: addressData.zipCode,
+        zipCode: '96215180',
         city: addressData.city,
         uf: addressData.uf,
         streetName: addressData.streetName,
+        streetNumber: '123',
         geolocation: coordinates
           ? [coordinates?.lng, coordinates?.lat]
           : [-52.1872864, -32.1013804],
@@ -333,26 +336,36 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
         propertyAddress,
       };
 
+      // Test
+      const hardCodedAddress = { ...storedData.address, streetNumber: '123' }
+
       const userData: ICreateProperty_userData = {
         _id: userId ? userId : '',
         username: userDataForm.username,
         email: userDataForm.email,
-        address: isSameAddress ? storedData.address : addressData,
-        cpf: userDataForm.cpf.replace(/\D/g, ''),
+        address: isSameAddress ? hardCodedAddress : hardCodedAddress,
+        // cpf: userDataForm.cpf.replace(/\D/g, ''),
+        cpf: "36642210018",
         picture: userDataForm.picture
           ? userDataForm.picture
           : { id: '1', src: defaultProfileImage },
       };
+
+      const hardCodedAddressData = { ...addressData, streetNumber: '123' }
 
       const propertyData: ICreateProperty_propertyData = {
         adType: storedData.adType,
         adSubtype: storedData.adSubtype,
         propertyType: storedData.propertyType,
         propertySubtype: storedData.propertySubtype,
+        // address:
+        //   !isSameAddress && storedData.address
+        //     ? storedData.address
+        //     : addressData,
         address:
           !isSameAddress && storedData.address
             ? storedData.address
-            : addressData,
+            : hardCodedAddressData,
         description: storedData.description,
         metadata: storedData.metadata,
         size: storedData.size,
@@ -385,7 +398,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
           plan: propertyDataStep3.plan,
           isPlanFree,
           phone: userDataForm.phone,
-          cellPhone: `${userDataForm.cellPhone}`,
+          // cellPhone: `${userDataForm.cellPhone}`,
+          cellPhone: '53991775245'
         };
 
         if (!isPlanFree) {
@@ -499,7 +513,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
         } else {
           toast.dismiss();
           const error = await response.json();
-          console.error(response);
+          console.log("aqui", response);
           setPaymentError(error.message);
           setFailPaymentModalIsOpen(true);
           setLoading(false)

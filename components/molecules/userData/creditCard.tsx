@@ -56,15 +56,21 @@ const CreditCard = ({
   const router = useRouter();
 
   const [focus, setFocus] = useState<Focused | undefined>();
-  const actualCreditCardNumber = creditCardInfo
-    ? `---- ---- ---- ${creditCardInfo?.creditCardNumber}`
-    : '';
+  // const actualCreditCardNumber = creditCardInfo
+  //   ? `---- ---- ---- ${creditCardInfo?.creditCardNumber}`
+  //   : '';
+  const actualCreditCardNumber = '5418 9319 3954 4954';
+
   const [creditCardFormData, setCreditCardFormData] = useState<CreditCardForm>({
-    cardName: '',
-    cardNumber: creditCardInfo ? actualCreditCardNumber : '',
-    ccv: '',
-    expiry: '',
-    cpfCnpj: ''
+    // cardName: '',
+    cardName: 'Teste Locale',
+    // cardNumber: creditCardInfo ? actualCreditCardNumber : '',
+    cardNumber: '5418 9319 3954 4954',
+    // ccv: '',
+    ccv: '647',
+    // expiry: '',
+    expiry: '0225',
+    cpfCnpj: '366.422.100-18'
   });
 
   const [emptyAddressError, setEmptyAddressError] = useState('');
@@ -165,7 +171,8 @@ const CreditCard = ({
       name: 'cardNumber',
       type: 'string',
       label: 'Número do Cartão',
-      value: creditCardFormData.cardNumber,
+      // value: creditCardFormData.cardNumber,
+      value: '5418 9319 3954 4954'
     },
     {
       key: 'cardName',
@@ -173,7 +180,8 @@ const CreditCard = ({
       name: 'cardName',
       type: 'text',
       label: 'Nome no Cartão',
-      value: creditCardFormData.cardName,
+      // value: creditCardFormData.cardName,
+      value: 'Teste Locale'
     },
     {
       key: 'expiry',
@@ -197,7 +205,8 @@ const CreditCard = ({
       name: 'cpfCnpj',
       type: 'text',
       label: 'CPF/CNPJ',
-      value: creditCardFormData.cpfCnpj,
+      // value: creditCardFormData.cpfCnpj,
+      value: '366.422.100-18'
     },
   ];
 
@@ -252,8 +261,10 @@ const CreditCard = ({
           email: userInfo?.email,
           phone: userInfo?.cellPhone,
           plan: selectedPlan,
-          zipCode: userAddress?.zipCode,
-          streetNumber: userAddress?.streetNumber,
+          //: userAddress?.zipCode,
+          zipCode: '96215-180',
+          // streetNumber: userAddress?.streetNumber,
+          streetNumber: '123',
           owner: ownerData?.owner,
           customerId,
         };
@@ -302,7 +313,8 @@ const CreditCard = ({
             expiry={creditCardFormData.expiry}
             focused={focus}
             name={creditCardFormData.cardName}
-            number={creditCardFormData.cardNumber}
+            // number={creditCardFormData.cardNumber}
+            number={'5418 9319 3954 4954'}
           />
         </div>
 
@@ -317,7 +329,7 @@ const CreditCard = ({
                 type={input.type}
                 name={input.name}
                 placeholder={input.label}
-                onChange={(e) => handleInputChange(e, input.name)}
+                //onChange={(e) => handleInputChange(e, input.name)}
                 onFocus={(e) => setFocus(e.target.name as Focused)}
                 maxLength={input.key === 'expiry' ? 5 : undefined}
                 value={
