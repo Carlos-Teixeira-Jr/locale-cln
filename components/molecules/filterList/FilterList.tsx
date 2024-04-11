@@ -35,6 +35,7 @@ const FilterList: React.FC<IFilterListProps> = ({
   locationChangeProp,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
+  const dropDownRef = useRef<HTMLDivElement>(null);
   const refPropertyType = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const query = router.query as any;
@@ -166,38 +167,42 @@ const FilterList: React.FC<IFilterListProps> = ({
       (item) => item.category === categoryMappings[category]
     );
 
-    if (existingCategory) {
-      const updatedLocation = location
-        .map((item) => {
-          if (item.category === categoryMappings[category]) {
-            if (item.name.includes(name)) {
-              const updatedName = item.name.filter(
-                (itemName: string) => itemName !== name
-              );
-              if (updatedName.length === 0) {
-                return null;
+    if (name === "todos") {
+      setLocation([{ name: "todos", category: "todos" }])
+    } else {
+      if (existingCategory) {
+        const updatedLocation = location
+          .map((item) => {
+            if (item.category === categoryMappings[category]) {
+              if (item.name.includes(name)) {
+                const updatedName = item.name.filter(
+                  (itemName: string) => itemName !== name
+                );
+                if (updatedName.length === 0) {
+                  return null;
+                } else {
+                  return {
+                    ...item,
+                    name: updatedName,
+                  };
+                }
               } else {
                 return {
                   ...item,
-                  name: updatedName,
+                  name: [...item.name, name],
                 };
               }
-            } else {
-              return {
-                ...item,
-                name: [...item.name, name],
-              };
             }
-          }
-          return item;
-        })
-        .filter(Boolean) as ILocation[];
-      setLocation(updatedLocation);
-    } else {
-      setLocation([
-        ...location,
-        { name: [name], category: categoryMappings[category] },
-      ]);
+            return item;
+          })
+          .filter(Boolean) as ILocation[];
+        setLocation(updatedLocation);
+      } else {
+        setLocation([
+          ...location,
+          { name: [name], category: categoryMappings[category] },
+        ]);
+      }
     }
   };
 
@@ -316,15 +321,17 @@ const FilterList: React.FC<IFilterListProps> = ({
   useEffect(() => {
     document.addEventListener('click', handleClick);
     return () => document.removeEventListener('click', handleClick);
-    function handleClick(event: MouseEvent) {
-      if (ref && ref.current) {
-        const myRef = ref.current;
-        if (!myRef.contains(event.target as Node)) {
-          setOpenLocationDropdown(false);
-        }
+  });
+
+  function handleClick(event: MouseEvent) {
+    if (dropDownRef && dropDownRef.current) {
+      const myRef = dropDownRef.current;
+      const target = event.target as HTMLElement;
+      if (!myRef.contains(target) && !target.closest('.dropdown-input')) {
+        setOpenLocationDropdown(false);
       }
     }
-  });
+  }
 
   const maskedPrice = (value: string) => {
     let price = value;
@@ -528,7 +535,7 @@ const FilterList: React.FC<IFilterListProps> = ({
               Onde?
             </label>
             <input
-              className="bg-transparent w-full h-10 font-normal text-sm text-quaternary leading-[19px] shadow-lg p-3 border border-quaternary rounded-xl outline-none"
+              className="dropdown-input bg-transparent w-full h-10 font-normal text-sm text-quaternary leading-[19px] shadow-lg p-3 border border-quaternary rounded-xl outline-none "
               placeholder="digite um bairro, cidade, rua..."
               onChange={(event: ChangeEvent<HTMLInputElement>) => {
                 const value = event.target.value;
@@ -538,24 +545,25 @@ const FilterList: React.FC<IFilterListProps> = ({
                   value !== '' && locationInput.length > 1 ? true : false
                 );
               }}
-              value={locationInput}
+              value={locationInput.indexOf('+') !== -1 ? locationInput.slice(locationInput.indexOf('+') + 1) : locationInput}
               maxLength={30}
             />
             <div
-              className={`z-50 w-full h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md ${openLocationDropdown ? 'md:flex' : 'hidden'
+              className={`dropdown-input z-30 w-full h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md ${openLocationDropdown ? 'md:flex' : 'hidden'
                 }`}
-              ref={ref}
+              ref={dropDownRef}
             >
-              <div className="flex flex-col w-full text-center font-normal text-base text-quaternary leading-5">
+              <div className="dropdown-input flex flex-col w-full text-center font-normal text-base text-quaternary leading-5">
                 <div
-                  className="flex rounded-t-xl hover:bg-quaternary hover:text-tertiary"
+                  className="dropdown-input flex rounded-t-xl hover:bg-quaternary hover:text-tertiary"
                   onClick={() => {
                     setAllLocations(!allLocations);
                     setLocation([]);
+                    setLocationInput(!allLocations ? "todos" : "");
                   }}
                 >
                   <div
-                    className={`w-5 h-5 shrink-0 my-auto border border-quaternary rounded-[3px] bg-white mx-2`}
+                    className={`dropdown-input w-5 h-5 shrink-0 my-auto border border-quaternary rounded-[3px] bg-white mx-2`}
                   >
                     {allLocations && (
                       <CheckIcon
@@ -563,12 +571,13 @@ const FilterList: React.FC<IFilterListProps> = ({
                         height="20"
                         fill="#F5BF5D"
                         viewBox="40 126 960 960"
+                        className='dropdown-input'
                       />
                     )}
                   </div>
                   <span
                     id="todos"
-                    className="translate-x-[1px] w-full h-[50px] py-3"
+                    className="dropdown-input translate-x-[1px] w-full h-[50px] py-3"
                   >
                     Todos
                   </span>
@@ -576,25 +585,42 @@ const FilterList: React.FC<IFilterListProps> = ({
 
                 {Object.entries(categorizedLocations).map(
                   ([category, locations]) => (
-                    <div key={category} className="w-full py-2 h-fit">
-                      <h3 className="font-bold text-lg ml-[20px]">
+                    <div key={category} className="w-full py-2 h-fit dropdown-input">
+                      <h3 className="dropdown-input font-bold text-lg ml-[20px]">
                         {category}
                       </h3>
                       {locations.map(({ name }: ILocation) => (
                         <div
                           key={`${category}-${name}`}
-                          className="flex flex-col hover:bg-quaternary hover:text-tertiary px-2"
+                          className="dropdown-input flex flex-col hover:bg-quaternary hover:text-tertiary px-2"
                         >
                           {Array.isArray(name) ? (
                             name.map((option: string) => (
                               <div
                                 key={option}
-                                className="flex h-[50px]"
+                                className="dropdown-input flex h-[50px]"
                                 onClick={() => {
-                                  toggleLocation(option, category);
+                                  if (option === "todos") {
+                                    setLocationInput("Todos");
+                                    toggleLocation("todos", "todos")
+                                  } else {
+                                    toggleLocation(option, category);
+                                    const findLocation = locationInput.includes(option);
+                                    const findLocationWithPlus = locationInput.includes(`+${option}`);
+                                    let newString;
+                                    if (findLocationWithPlus) {
+                                      newString = locationInput.replace(`+${option}`, '');
+                                      setLocationInput(newString);
+                                    } else if (findLocation) {
+                                      newString = locationInput.replace(option, '');
+                                      setLocationInput(newString);
+                                    } else {
+                                      setLocationInput(`${locationInput}+${option}`);
+                                    }
+                                  }
                                 }}
                               >
-                                <div className="w-5 h-5 shrink-0 my-auto border border-quaternary rounded-[3px] bg-tertiary">
+                                <div className="dropdown-input w-5 h-5 shrink-0 my-auto border border-quaternary rounded-[3px] bg-tertiary">
                                   {(location.some((obj) =>
                                     obj.name.includes(option)
                                   ) ||
@@ -604,12 +630,13 @@ const FilterList: React.FC<IFilterListProps> = ({
                                         height="20"
                                         fill="#F5BF5D"
                                         viewBox="40 126 960 960"
+                                        className='dropdown-input'
                                       />
                                     )}
                                 </div>
                                 <span
                                   id={option}
-                                  className="translate-x-[1px] w-full h-fit py-1.5 px-2 flex justify-center my-auto"
+                                  className="dropdown-input translate-x-[1px] w-full h-fit py-1.5 px-2 flex justify-center my-auto"
                                 >
                                   {option.charAt(0).toUpperCase() +
                                     option.slice(1).toLowerCase()}
@@ -618,12 +645,12 @@ const FilterList: React.FC<IFilterListProps> = ({
                             ))
                           ) : (
                             <div
-                              className="flex h-[50px]"
+                              className="dropdown-input flex h-[50px]"
                               onClick={() => {
                                 toggleLocation(name, category);
                               }}
                             >
-                              <div className="w-5 h-5 shrink-0 my-auto border border-quaternary rounded-[3px] bg-tertiary">
+                              <div className="dropdown-input w-5 h-5 shrink-0 my-auto border border-quaternary rounded-[3px] bg-tertiary">
                                 {(location.some((obj) =>
                                   obj.name.includes(name)
                                 ) ||
@@ -633,12 +660,13 @@ const FilterList: React.FC<IFilterListProps> = ({
                                       height="20"
                                       fill="#F5BF5D"
                                       viewBox="40 126 960 960"
+                                      className='dropdown-input'
                                     />
                                   )}
                               </div>
                               <span
                                 id={name}
-                                className="translate-x-[1px] w-full h-fit py-1.5 px-2 flex justify-center my-auto"
+                                className="dropdown-input translate-x-[1px] w-full h-fit py-1.5 px-2 flex justify-center my-auto"
                               >
                                 {name.charAt(0).toUpperCase() +
                                   name.slice(1).toLowerCase()}
