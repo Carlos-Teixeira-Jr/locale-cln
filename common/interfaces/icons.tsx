@@ -4,5 +4,4 @@ export interface IIcon {
   width?: string
   height?: string
   viewBox?: string
-  onClick?: (value: boolean) => void
 }
