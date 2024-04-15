@@ -73,8 +73,6 @@ const Address: React.FC<IAddressComponent> = ({
     complemento: '',
   });
 
-  console.log("🚀 ~ viaZipCodeData:", viaZipCodeData)
-
   useEffect(() => {
     const scrollToError = (errorKey: keyof typeof addressErrors) => {
       if (

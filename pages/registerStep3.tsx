@@ -141,8 +141,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     uf: '',
   });
 
-  console.log("🚀 ~ addressData:", addressData)
-
   const [addressErrors, setAddressErrors] = useState({
     zipCode: '',
     city: '',
@@ -210,7 +208,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     router.back();
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (confirmChange: boolean) => {
     const error = `Este campo é obrigatório.`;
     const streetNumberError = `Número do imóvel é inválido.`
     const planErrorMessage = `Selecione um plano de anúncios.`
@@ -236,6 +234,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
 
     setTermsError('');
     setPaymentError('');
+    setPlanError('')
 
     const newUserDataErrors = {
       username: '',
@@ -261,12 +260,14 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
       cardBrand: ''
     };
 
+    let newChangePlanError = ''
+
     if (ownerData?.owner?.adCredits! < 1 &&
       selectedPlan === ownerData?.owner?.plan
     ) {
       setPaymentError('Parece que você esgotou seus créditos de anúncio no seu plano atual. Não se preocupe! Você pode mudar para um plano diferente ou comprar mais créditos para continuar anunciando seus imóveis.');
     }
-    if (ownerData?.owner?.plan !== selectedPlan) setChangePlanMessage(`Você está alterando seu plano de ${ownerPlan?.name} para o plano ${planData?.name}. A diferença entre os valores dos planos será cobrada na próxima fatura do seu cartão de crédito.`)
+    if (ownerPlan?._id !== selectedPlan && !confirmChange) newChangePlanError = `Você está alterando seu plano de ${ownerPlan?.name} para o plano ${planData?.name}. A diferença entre os valores dos planos será cobrada na próxima fatura do seu cartão de crédito.`;
     if (!userDataForm?.username) newUserDataErrors.username = error;
     if (!selectedPlan) setPlanError(planErrorMessage);
     if (!userDataForm?.email) newUserDataErrors.email = error;
@@ -302,11 +303,12 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     const hasErrors = Object.values(combinedErrors).some(
       (error) => error !== ''
     );
-    const hasPaymentError = paymentError !== '' ? false : true;
-    const planWasChanged = changePlanMessage !== '' ? false : true;
+    const hasPaymentError = paymentError !== '' ? true : false;
+    const planWasChanged = newChangePlanError !== '' && !confirmChange ? true : false;
 
     if (!hasErrors && termsAreRead && planError === '') {
-      if (hasPaymentError || planWasChanged) {
+      if (!hasPaymentError && !planWasChanged) {
+        console.log("entrou")
         try {
 
           const result = await geocodeAddress(addressData);
@@ -526,9 +528,12 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
           console.error(error);
         }
       } else {
-        setFailPaymentModalIsOpen(true);
+        if (planWasChanged) {
+          setChangePlanModalIsOpen(true);
+        } else {
+          setFailPaymentModalIsOpen(true)
+        }
       }
-
     } else {
       toast.error(`Algum campo obrigatório não foi preenchido.`);
       setLoading(false)
@@ -661,7 +666,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
                   </button>
                   <button
                     className={classes.button}
-                    onClick={handleSubmit}
+                    onClick={() => handleSubmit(false)}
                     disabled={loading}
                   >
                     <span className={`${loading ? 'ml-5' : ''}`}>Continuar</span>
@@ -679,11 +684,11 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
 
             <ChangePlanModal
               isOpen={changePlanModalIsOpen}
-              setModalIsOpen={setFailPaymentModalIsOpen}
+              setModalIsOpen={setChangePlanModalIsOpen}
               message={changePlanMessage}
-              onConfirm={() => {
+              onConfirm={(confirmChange: boolean) => {
                 setChangePlanModalIsOpen(false); // Fecha o modal
-                handleSubmit(); // Chama a função de envio do formulário após a confirmação
+                handleSubmit(confirmChange); // Chama a função de envio do formulário após a confirmação
               }}
             />
           </div >

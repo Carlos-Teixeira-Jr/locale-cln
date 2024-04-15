@@ -8,7 +8,7 @@ export interface IChangePlanModal {
   isOpen: boolean;
   setModalIsOpen: (value: boolean) => void;
   message: string;
-  onConfirm: () => void
+  onConfirm: (cinformChange: boolean) => void
 }
 
 const ChangePlanModal: React.FC<IChangePlanModal> = ({
@@ -18,16 +18,14 @@ const ChangePlanModal: React.FC<IChangePlanModal> = ({
   onConfirm
 }) => {
 
-  const [infoMessage, setInfoMessage] = useState(message);
   const [loading, setIsLoading] = useState(false);
 
   const handleCloseModal = () => {
     setModalIsOpen(false);
-    setInfoMessage('')
   };
 
   const handleSubmit = () => {
-    onConfirm();
+    onConfirm(true);
   }
 
   return (
@@ -73,7 +71,7 @@ const ChangePlanModal: React.FC<IChangePlanModal> = ({
             Você está trocando seu plano
           </h1>
           <p className="font-bold text-xl leading-6 text-quaternary ">
-            {infoMessage}
+            {message}
           </p>
         </div>
         <div className="w-[66px] h-[66px] rounded-full bg-green-500 shrink-0 flex justify-center my-auto ml-10">
