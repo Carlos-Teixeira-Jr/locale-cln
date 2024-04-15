@@ -114,7 +114,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
   const [userDataForm, setUserDataForm] = useState<IUserDataComponent>({
     username: '',
     email: '',
-    cpf: '',
+    cpf: '366.422.100-18',
     cellPhone: '',
     phone: '',
     picture: {
@@ -150,11 +150,11 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
   });
 
   const [creditCard, setCreditCard] = useState<CreditCardForm>({
-    cardName: '',
-    cardNumber: '',
-    ccv: '',
-    expiry: '',
-    cpfCnpj: '',
+    cardName: 'Teste Locale',
+    cardNumber: '5418931939544954',
+    ccv: '647',
+    expiry: '0225',
+    cpfCnpj: '366.422.100-18',
     cardBrand: ''
   });
 
@@ -215,7 +215,10 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
 
     // Limpa o estado de erro da seleção do plano, verifica se um plano foi selecionado e emite um erro caso contrário
     setPlanError('');
-    const isPlanFree = selectedPlan! === freePlan?._id ? true : false;
+    const planData: IPlan | undefined = plans.find(
+      (plan) => plan._id === selectedPlan
+    );
+    const isPlanFree = planData === undefined || planData.name === 'Free';
 
     setUserDataErrors({
       username: '',
@@ -329,24 +332,76 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
         const propertyDataStep3: IRegisterPropertyData_Step3 = {
           username: userDataForm.username,
           email: userDataForm.email,
-          cpf: userDataForm.cpf,
+          // cpf: userDataForm.cpf,
+          cpf: "366.422.100-18",
           cellPhone: userDataForm.cellPhone,
           picture: userDataForm.picture
             ? userDataForm.picture
             : { id: '1', src: defaultProfileImage },
           phone: userDataForm.phone,
           wppNumber: userDataForm.wppNumber ? userDataForm.wppNumber : '',
-          zipCode: addressData.zipCode,
+          // zipCode: addressData.zipCode,
+          zipCode: '96215180',
           city: addressData.city,
           uf: addressData.uf,
           streetName: addressData.streetName,
+          streetNumber: '123',
           geolocation: coordinates
             ? [coordinates?.lng, coordinates?.lat]
             : [-52.1872864, -32.1013804],
-          plan: selectedPlan,
+          plan: selectedPlan !== '' ? selectedPlan : freePlan,
           isPlanFree,
           propertyAddress,
         };
+
+        // Test
+        const hardCodedAddress = { ...storedData.address, streetNumber: '123' }
+
+        // const userData: ICreateProperty_userData = {
+        //   _id: userId ? userId : '',
+        //   username: userDataForm.username,
+        //   email: userDataForm.email,
+        //   address: isSameAddress ? hardCodedAddress : hardCodedAddress,
+        //   // cpf: userDataForm.cpf.replace(/\D/g, ''),
+        //   cpf: "36642210018",
+        //   picture: userDataForm.picture
+        //     ? userDataForm.picture
+        //     : { id: '1', src: defaultProfileImage },
+        // };
+
+        const hardCodedAddressData = { ...addressData, streetNumber: '123' }
+
+        // const propertyData: ICreateProperty_propertyData = {
+        //   adType: storedData.adType,
+        //   adSubtype: storedData.adSubtype,
+        //   propertyType: storedData.propertyType,
+        //   propertySubtype: storedData.propertySubtype,
+        //   // address:
+        //   //   !isSameAddress && storedData.address
+        //   //     ? storedData.address
+        //   //     : addressData,
+        //   address:
+        //     !isSameAddress && storedData.address
+        //       ? storedData.address
+        //       : hardCodedAddressData,
+        //   description: storedData.description,
+        //   metadata: storedData.metadata,
+        //   size: storedData.size,
+        //   geolocation: coordinates
+        //     ? [coordinates?.lng, coordinates?.lat]
+        //     : [-52.1872864, -32.1013804],
+        //   plan: selectedPlan,
+        //   isPlanFree,
+        //   propertyAddress,
+        //   ownerInfo: {
+        //     picture: userDataForm.picture
+        //       ? userDataForm.picture
+        //       : { id: '1', src: defaultProfileImage },
+        //     phone: userDataForm.phone,
+        //     wppNumber: userDataForm.wppNumber ? userDataForm.wppNumber : '',
+
+        //   }
+        // }
 
         const userData: ICreateProperty_userData = {
           _id: userId ? userId : '',
@@ -532,6 +587,9 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
           setChangePlanModalIsOpen(true);
         } else {
           setFailPaymentModalIsOpen(true)
+          setPaymentError(paymentError);
+          setFailPaymentModalIsOpen(true);
+          setLoading(false)
         }
       }
     } else {

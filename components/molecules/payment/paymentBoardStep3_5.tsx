@@ -70,7 +70,7 @@ const PaymentBoard_Step3_5 = ({
                 {cardFlag === 'MASTERCARD' && plan?.price! > 0 && (
                   <MastercardIcon viewBox="0 5 48 48" />
                 )}
-                {cardFlag === 'VISA' && plan?.price! > 0 && <VisaIcon viewBox="0 5 48 48" />}
+                {cardFlag === 'VISA' && plan?.price !== 0 && <VisaIcon viewBox="0 5 48 48" />}
               </div>
             )}
 
