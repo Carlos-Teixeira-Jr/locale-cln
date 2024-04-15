@@ -1,4 +1,4 @@
-import { MouseEventHandler, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { IPlan } from '../../../../common/interfaces/plans/plans';
 import ArrowDownIcon from '../../../atoms/icons/arrowDownIcon';
 import LocationIcon from '../../../atoms/icons/location';
@@ -38,8 +38,14 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
 }) => {
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
   const [anchorId, setAnchorId] = useState(``);
-  const anchorRef = useRef<HTMLDivElement>(null)
-  console.log("🚀 ~ anchorId 878787878:", anchorId)
+  const anchorRef = useRef<HTMLDivElement>(null);
+  const [ownerPlan, setOwnerPlan] = useState(userPlan);
+
+  useEffect(() => {
+    if (selectedPlanCard !== '') {
+      setAnchorId(`card-${selectedPlanCard}`);
+    }
+  }, [selectedPlanCard]);
 
   const handleDropdown = (cardId: string) => {
     if (selectedCards.includes(cardId)) {
@@ -48,21 +54,6 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
       setSelectedCards([...selectedCards, cardId]);
     }
   };
-
-  // useEffect(() => {
-  //   setAnchorId(selectedPlanCard)
-  // }, [selectedPlanCard])
-
-
-
-  const handleHover: MouseEventHandler<HTMLDivElement> = () => {
-    if (anchorRef && anchorRef.current) {
-      const myRef = anchorRef.current;
-      console.log("🚀 ~ myRef:", myRef.id)
-      setAnchorId(myRef.id);
-      console.log("🚀 ~ anchorId 222:", anchorId)
-    }
-  }
 
   const dinamicClasses = {
     cardContainer: `card-${selectedPlanCard} md:mx-auto my-5 lg:my-0 rounded-t-[35px] rounded-b-[30px] border-[5px] h-fit ${selectedPlanCard === id ? 'border-secondary' : 'border-none'
@@ -113,10 +104,9 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
 
   return (
     <div
-      className={`${isAdminPage ? classes.adminPage : classes.notAdminPage}`}
+      className={`card-${id} z-0 ${isAdminPage ? classes.adminPage : classes.notAdminPage}`}
       id={`card-${id}`}
       ref={anchorRef}
-      onMouseEnter={handleHover}
     >
       <div className={dinamicClasses.cardContainer}>
         <div className={dinamicClasses.adminHeader}>
@@ -204,19 +194,19 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
               className={dinamicClasses.button}
               onClick={() => {
                 setSelectedPlanCard(selectedPlanCard !== id ? id : '');
-                setAnchorId(`card-${selectedPlanCard}`)
               }}
             >
               {selectedPlanCard === id ? 'Meu Plano' : 'Assinar'}
             </button>
           </div>
           {ownerCredits !== undefined && userPlan === id && (
-            <div className='w-full'>
+            <div className='w-full flex z-50'>
               <AdCreditsTooltip
                 anchorId={anchorId}
                 planName={name}
                 creditsLeft={ownerCredits}
                 plans={plans}
+                ownerPlan={ownerPlan! ? ownerPlan : ''}
               />
             </div>
           )}

@@ -13,25 +13,26 @@ const ChangeAddressCheckbox: React.FC<IChangeAddressCheckbox> = ({
   userAddress,
 }) => {
   const [isSameAddress, setIsSameAddress] = useState(true);
+  const [propAddress, setPropAddress] = useState(Object.keys(propertyAddress).some((k) => k === 'address') ? propertyAddress : propertyAddress?.storedData)
 
   const propertyAddressData = {
     zipCode: isSameAddress
-      ? propertyAddress?.address?.zipCode
+      ? propAddress?.address?.zipCode
       : userAddress?.zipCode,
-    city: isSameAddress ? propertyAddress?.address?.city : userAddress.city,
+    city: isSameAddress ? propAddress?.address?.city : userAddress?.city,
     streetName: isSameAddress
-      ? propertyAddress?.address?.streetName
-      : userAddress.streetName,
+      ? propAddress?.address?.streetName
+      : userAddress?.streetName,
     streetNumber: isSameAddress
-      ? propertyAddress?.address?.streetNumber
-      : userAddress.streetNumber,
+      ? propAddress?.address?.streetNumber
+      : userAddress?.streetNumber,
     complement: isSameAddress
-      ? propertyAddress?.address?.complement
-      : userAddress.complement,
+      ? propAddress?.address?.complement
+      : userAddress?.complement,
     neighborhood: isSameAddress
-      ? propertyAddress?.address?.neighborhood
-      : userAddress.neighborhood,
-    uf: isSameAddress ? propertyAddress?.address?.uf : userAddress.uf,
+      ? propAddress?.address?.neighborhood
+      : userAddress?.neighborhood,
+    uf: isSameAddress ? propAddress?.address?.uf : userAddress?.uf,
   };
 
   useEffect(() => {
@@ -46,11 +47,10 @@ const ChangeAddressCheckbox: React.FC<IChangeAddressCheckbox> = ({
       <div className="lg:flex">
         <div className="flex lg:w-3/6 my-5 lg:my-0">
           <div
-            className={` w-8 h-8 shrink-0 rounded-full bg-tertiary drop-shadow-lg mr-5 flex justify-center cursor-pointer ${
-              isSameAddress
-                ? 'border-[3px] border-secondary'
-                : 'border border-quaternary'
-            }`}
+            className={` w-8 h-8 shrink-0 rounded-full bg-tertiary drop-shadow-lg mr-5 flex justify-center cursor-pointer ${isSameAddress
+              ? 'border-[3px] border-secondary'
+              : 'border border-quaternary'
+              }`}
             onClick={() => setIsSameAddress(true)}
           >
             {isSameAddress && (
@@ -63,11 +63,10 @@ const ChangeAddressCheckbox: React.FC<IChangeAddressCheckbox> = ({
         </div>
         <div className="flex">
           <div
-            className={`w-8 h-8 shrink-0 rounded-full bg-tertiary drop-shadow-lg mr-5 flex justify-center cursor-pointer ${
-              !isSameAddress
-                ? 'border-[3px] border-secondary'
-                : 'border border-quaternary'
-            }`}
+            className={`w-8 h-8 shrink-0 rounded-full bg-tertiary drop-shadow-lg mr-5 flex justify-center cursor-pointer ${!isSameAddress
+              ? 'border-[3px] border-secondary'
+              : 'border border-quaternary'
+              }`}
             onClick={() => setIsSameAddress(false)}
           >
             {!isSameAddress && (
