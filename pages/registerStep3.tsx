@@ -1,7 +1,7 @@
 import { GetServerSidePropsContext } from 'next';
 import { getSession, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { MouseEvent, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import store from 'store';
 import { IOwnerData } from '../common/interfaces/owner/owner';
@@ -10,7 +10,7 @@ import { IAddress } from '../common/interfaces/property/propertyData';
 import {
   ICreateProperty_propertyData,
   ICreateProperty_userData,
-  IRegisterPropertyData_Step3,
+  IRegisterPropertyData_Step3
 } from '../common/interfaces/property/register/register';
 import { IUserDataComponent } from '../common/interfaces/user/user';
 import { fetchJson } from '../common/utils/fetchJson';
@@ -60,10 +60,26 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
   const storedData = store.get('propertyData');
   const storedPlan = store.get('plans');
   const chosenPlan = storedPlan ? storedPlan : '';
-  const propertyAddress = storedData?.address ? storedData.address : {};
+  const propertyAddress = storedData! ? storedData?.storedData?.address : storedData?.storedData?.address;
   const [paymentError, setPaymentError] = useState('');
+  console.log("🚀 ~ paymentError:", paymentError)
   const [loading, setLoading] = useState(false);
-
+  const freePlan = plans?.find((plan) => plan.price === 0);
+  const ownerPlan = plans?.find((plan) => plan._id === ownerData?.owner?.plan)
+  const [selectedPlan, setSelectedPlan] = useState(chosenPlan !== '' ? chosenPlan : ownerPlan?._id);
+  const reversedCards = [...plans].reverse();
+  const [isAdminPage, setIsAdminPage] = useState(false);
+  const [isSameAddress, setIsSameAddress] = useState(false);
+  const [termsAreRead, setTermsAreRead] = useState(false);
+  const property = store.get('propertyData');
+  const [isFreePlan, setIsFreePlan] = useState(false);
+  const [failPaymentModalIsOpen, setFailPaymentModalIsOpen] = useState(false);
+  const [termsError, setTermsError] = useState('');
+  const [changePlanModalIsOpen, setChangePlanModalIsOpen] = useState(false);
+  const [changePlanMessage, setChangePlanMessage] = useState('');
+  const planData: IPlan | undefined = plans.find(
+    (plan) => plan._id === selectedPlan
+  );
 
   const userDataInputRefs = {
     username: useRef<HTMLElement>(null),
@@ -95,25 +111,10 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     lng: number;
   } | null>(null);
 
-  const [selectedPlan, setSelectedPlan] = useState(chosenPlan);
-  const freePlan = plans?.find((plan) => plan.price === 0);
-  const reversedCards = [...plans].reverse();
-  const [isAdminPage, setIsAdminPage] = useState(false);
-  const [isSameAddress, setIsSameAddress] = useState(false);
-  const [termsAreRead, setTermsAreRead] = useState(false);
-  const property = store.get('propertyData');
-  const [isFreePlan, setIsFreePlan] = useState(false);
-  const [failPaymentModalIsOpen, setFailPaymentModalIsOpen] = useState(false);
-  const [termsError, setTermsError] = useState('');
-
-  useEffect(() => {
-    setLoading(false)
-  }, []);
-
   const [userDataForm, setUserDataForm] = useState<IUserDataComponent>({
     username: '',
     email: '',
-    cpf: '',
+    cpf: '366.422.100-18',
     cellPhone: '',
     phone: '',
     picture: {
@@ -144,16 +145,15 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     zipCode: '',
     city: '',
     streetName: '',
-    streetNumber: '',
     uf: '',
   });
 
   const [creditCard, setCreditCard] = useState<CreditCardForm>({
-    cardName: '',
-    cardNumber: '',
-    ccv: '',
-    expiry: '',
-    cpfCnpj: '',
+    cardName: 'Teste Locale',
+    cardNumber: '5418931939544954',
+    ccv: '647',
+    expiry: '0225',
+    cpfCnpj: '366.422.100-18',
     cardBrand: ''
   });
 
@@ -166,13 +166,14 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     cardBrand: ''
   });
 
+  const [planError, setPlanError] = useState('');
+
   // Verifica se o estado progress que determina em qual step o usuário está corresponde ao step atual;
   useProgressRedirect(progress, 3, '/register');
 
   useEffect(() => {
     setAddressData(property ? property.address : '');
   }, []);
-
 
   // Busca as coordenadas geográficas do endereço do imóvel;
   useEffect(() => {
@@ -206,11 +207,13 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     router.back();
   };
 
-  const handleSubmit = async (event: MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-
+  const handleSubmit = async (confirmChange: boolean) => {
     const error = `Este campo é obrigatório.`;
-    const streetNumberError = `Número do imóvel é inválido.`
+    const planErrorMessage = `Selecione um plano de anúncios.`
+    const emptyCreditsErrorMsg = 'Parece que você esgotou seus créditos de anúncio no seu plano atual. Não se preocupe! Você pode mudar para um plano diferente ou comprar mais créditos para continuar anunciando seus imóveis.'
+
+    // Limpa o estado de erro da seleção do plano, verifica se um plano foi selecionado e emite um erro caso contrário
+    setPlanError('');
     const planData: IPlan | undefined = plans.find(
       (plan) => plan._id === selectedPlan
     );
@@ -227,11 +230,12 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
       zipCode: '',
       city: '',
       streetName: '',
-      streetNumber: '',
       uf: '',
     });
 
     setTermsError('');
+    setPaymentError('');
+    setPlanError('')
 
     const newUserDataErrors = {
       username: '',
@@ -244,7 +248,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
       zipCode: '',
       city: '',
       streetName: '',
-      streetNumber: '',
       uf: '',
     };
 
@@ -257,19 +260,27 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
       cardBrand: ''
     };
 
-    if (!userDataForm.username) newUserDataErrors.username = error;
-    if (!userDataForm.email) newUserDataErrors.email = error;
-    if (!userDataForm.cpf) newUserDataErrors.cpf = error;
-    if (!userDataForm.cellPhone) newUserDataErrors.cellPhone = error;
-    if (!addressData.zipCode) newAddressErrors.zipCode = error;
-    if (!addressData.streetName) newAddressErrors.streetName = error;
-    if (!addressData.streetNumber) newAddressErrors.streetNumber = error;
-    if (Number(addressData.streetNumber) < 1) newAddressErrors.streetNumber = streetNumberError;
-    if (!addressData.city) newAddressErrors.city = error;
-    if (!addressData.uf) newAddressErrors.uf = error;
+    let newChangePlanError = '';
+    let newPaymentError = '';
+
+    if (ownerData?.owner?.adCredits! < 1 &&
+      selectedPlan === ownerData?.owner?.plan
+    ) {
+      setPaymentError(emptyCreditsErrorMsg);
+      newPaymentError = emptyCreditsErrorMsg;
+    }
+    if (ownerPlan?._id !== selectedPlan && !confirmChange) newChangePlanError = `Você está alterando seu plano de ${ownerPlan?.name} para o plano ${planData?.name}. A diferença entre os valores dos planos será cobrada na próxima fatura do seu cartão de crédito.`;
+    if (!userDataForm?.username) newUserDataErrors.username = error;
+    if (!selectedPlan) setPlanError(planErrorMessage);
+    if (!userDataForm?.email) newUserDataErrors.email = error;
+    if (!userDataForm?.cpf) newUserDataErrors.cpf = error;
+    if (!userDataForm?.cellPhone) newUserDataErrors.cellPhone = error;
+    if (!addressData?.zipCode) newAddressErrors.zipCode = error;
+    if (!addressData?.streetName) newAddressErrors.streetName = error;
+    if (!addressData?.city) newAddressErrors.city = error;
+    if (!addressData?.uf) newAddressErrors.uf = error;
     if (!termsAreRead) setTermsError(error);
     if (selectedPlan !== '') {
-      const planData = plans.find((plan) => plan._id === selectedPlan);
       if (planData && planData.name !== 'Free') {
         if (!creditCard.cardName) newCreditCardErrors.cardName = error;
         if (!creditCard.cardNumber) newCreditCardErrors.cardNumber = error;
@@ -292,225 +303,243 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     const hasErrors = Object.values(combinedErrors).some(
       (error) => error !== ''
     );
+    const hasPaymentError = newPaymentError !== '' ? true : false;
+    const planWasChanged = newChangePlanError !== '' && !confirmChange ? true : false;
 
-    if (!hasErrors && termsAreRead) {
-      try {
+    if (!hasErrors && termsAreRead && planError === '') {
+      if (!hasPaymentError && !planWasChanged) {
+        console.log("entrou")
+        try {
 
-        const result = await geocodeAddress(addressData);
+          const result = await geocodeAddress(addressData);
 
-        if (result !== null) {
-          setCoordinates(result);
-        } else {
-          console.log(
-            'Não foi possível buscar as coordenadas geográficas do imóvel'
-          );
+          if (result !== null) {
+            setCoordinates(result);
+          } else {
+            console.log(
+              'Não foi possível buscar as coordenadas geográficas do imóvel'
+            );
+          }
+        } catch (error) {
+          console.error(error);
         }
-      } catch (error) {
-        console.error(error);
-      }
 
-      const storedData = store.get('propertyData');
+        const storedData = store.get('propertyData');
 
-      const propertyDataStep3: IRegisterPropertyData_Step3 = {
-        username: userDataForm.username,
-        email: userDataForm.email,
-        cpf: userDataForm.cpf,
-        cellPhone: userDataForm.cellPhone,
-        picture: userDataForm.picture
-          ? userDataForm.picture
-          : { id: '1', src: defaultProfileImage },
-        phone: userDataForm.phone,
-        wppNumber: userDataForm.wppNumber ? userDataForm.wppNumber : '',
-        zipCode: addressData.zipCode,
-        city: addressData.city,
-        uf: addressData.uf,
-        streetName: addressData.streetName,
-        geolocation: coordinates
-          ? [coordinates?.lng, coordinates?.lat]
-          : [-52.1872864, -32.1013804],
-        plan: selectedPlan !== '' ? selectedPlan : freePlan,
-        isPlanFree,
-        propertyAddress,
-      };
-
-      const userData: ICreateProperty_userData = {
-        _id: userId ? userId : '',
-        username: userDataForm.username,
-        email: userDataForm.email,
-        address: isSameAddress ? storedData.address : addressData,
-        cpf: userDataForm.cpf.replace(/\D/g, ''),
-        picture: userDataForm.picture
-          ? userDataForm.picture
-          : { id: '1', src: defaultProfileImage },
-      };
-
-      const propertyData: ICreateProperty_propertyData = {
-        adType: storedData.adType,
-        adSubtype: storedData.adSubtype,
-        propertyType: storedData.propertyType,
-        propertySubtype: storedData.propertySubtype,
-        address:
-          !isSameAddress && storedData.address
-            ? storedData.address
-            : addressData,
-        description: storedData.description,
-        metadata: storedData.metadata,
-        size: storedData.size,
-        ownerInfo: {
+        // To-do: remover hardcode de dados de pagamento;
+        const propertyDataStep3: IRegisterPropertyData_Step3 = {
+          username: userDataForm.username,
+          email: userDataForm.email,
+          // cpf: userDataForm.cpf,
+          cpf: "366.422.100-18",
+          cellPhone: userDataForm.cellPhone,
           picture: userDataForm.picture
             ? userDataForm.picture
             : { id: '1', src: defaultProfileImage },
-          name: userDataForm.username,
-          phones: [`${userDataForm.cellPhone}`, userDataForm.phone],
-          wppNumber: userDataForm.wppNumber ? `55 ${userDataForm.wppNumber}` : ''
-        },
-        tags: storedData.tags,
-        condominiumTags: storedData.condominiumTags,
-        prices: storedData.prices,
-        youtubeLink: storedData.youtubeLink,
-        geolocation: {
-          type: 'Point',
-          coordinates: propertyDataStep3.geolocation,
-        },
-        highlighted: false,
-      };
-
-
-      try {
-        toast.loading('Enviando...');
-        setLoading(true);
-        const body: BodyReq = {
-          propertyData,
-          userData,
-          plan: propertyDataStep3.plan,
-          isPlanFree,
           phone: userDataForm.phone,
-          cellPhone: `${userDataForm.cellPhone}`,
+          wppNumber: userDataForm.wppNumber ? userDataForm.wppNumber : '',
+          // zipCode: addressData.zipCode,
+          zipCode: '96215180',
+          city: addressData.city,
+          uf: addressData.uf,
+          streetName: addressData.streetName,
+          streetNumber: '123',
+          geolocation: coordinates
+            ? [coordinates?.lng, coordinates?.lat]
+            : [-52.1872864, -32.1013804],
+          plan: selectedPlan !== '' ? selectedPlan : freePlan,
+          isPlanFree,
+          propertyAddress,
         };
 
-        if (!isPlanFree) {
-          body.creditCardData = creditCard;
-        }
+        const userData: ICreateProperty_userData = {
+          _id: userId ? userId : '',
+          username: userDataForm.username,
+          email: userDataForm.email,
+          address: isSameAddress ? storedData.address : addressData,
+          cpf: userDataForm.cpf.replace(/\D/g, ''),
+          picture: userDataForm.picture
+            ? userDataForm.picture
+            : { id: '1', src: defaultProfileImage },
+        };
 
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
-
-        const response = await fetch(`${baseUrl}/property`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
+        const propertyData: ICreateProperty_propertyData = {
+          adType: storedData.adType,
+          adSubtype: storedData.adSubtype,
+          propertyType: storedData.propertyType,
+          propertySubtype: storedData.propertySubtype,
+          address:
+            !isSameAddress && storedData.address
+              ? storedData.address
+              : addressData,
+          description: storedData.description,
+          metadata: storedData.metadata,
+          size: storedData.size,
+          ownerInfo: {
+            picture: userDataForm.picture
+              ? userDataForm.picture
+              : { id: '1', src: defaultProfileImage },
+            name: userDataForm.username,
+            phones: [`${userDataForm.cellPhone}`, userDataForm.phone],
+            wppNumber: userDataForm.wppNumber ? `55 ${userDataForm.wppNumber}` : ''
           },
-          body: JSON.stringify(body),
-        });
+          tags: storedData.tags,
+          condominiumTags: storedData.condominiumTags,
+          prices: storedData.prices,
+          youtubeLink: storedData.youtubeLink,
+          geolocation: {
+            type: 'Point',
+            coordinates: propertyDataStep3.geolocation,
+          },
+          highlighted: false,
+        };
 
-        if (response.ok) {
-          const data = await response.json();
-          const paymentData = {
-            cardBrand: data.creditCardBrand ? data.creditCardBrand : 'Free',
-            value: data.paymentValue ? data.paymentValue : '00',
+        try {
+          toast.loading('Enviando...');
+          setLoading(true);
+          const body: BodyReq = {
+            propertyData,
+            userData,
+            plan: propertyDataStep3.plan,
+            isPlanFree: isFreePlan,
+            phone: userDataForm.phone,
+            cellPhone: `${userDataForm.cellPhone}`,
           };
-          store.set('creditCard', paymentData);
-          toast.dismiss();
-          store.set('propertyData', {
-            propertyDataStep3,
-            storedData,
-            paymentData,
+
+          if (!isPlanFree) {
+            body.creditCardData = creditCard;
+          }
+
+          const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+
+          const response = await fetch(`${baseUrl}/property`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(body),
           });
 
-          const indexDbImages = (await getAllImagesFromDB()) as {
-            id: string;
-            data: Blob;
-            name: string;
-          }[];
+          if (response.ok) {
+            const data = await response.json();
+            const paymentData = {
+              cardBrand: data.creditCardBrand ? data.creditCardBrand : 'Free',
+              value: data.paymentValue ? data.paymentValue : '00',
+            };
+            store.set('creditCard', paymentData);
+            toast.dismiss();
+            store.set('propertyData', {
+              propertyDataStep3,
+              storedData,
+              paymentData,
+            });
 
-          const propertyImagesFormData = new FormData();
+            const indexDbImages = (await getAllImagesFromDB()) as {
+              id: string;
+              data: Blob;
+              name: string;
+            }[];
 
-          for (let i = 0; i < indexDbImages.length; i++) {
-            if (indexDbImages[i].id !== userDataForm.picture.id) {
-              const file = new File(
-                [indexDbImages[i].data],
-                `${indexDbImages[i].name}`
-              );
-              propertyImagesFormData.append('images', file);
-            }
-          }
+            const propertyImagesFormData = new FormData();
 
-          propertyImagesFormData.append('propertyId', data.createdProperty._id);
-
-          const propertyImagesResponse = await fetch(
-            `${baseUrl}/property/upload-property-images`,
-            {
-              method: 'POST',
-              body: propertyImagesFormData,
-            }
-          );
-
-          if (propertyImagesResponse.ok) {
-            if (userDataForm.picture.id) {
-              const profileImageFormData = new FormData();
-
-              for (let i = 0; i < indexDbImages.length; i++) {
-                if (indexDbImages[i].id === userDataForm.picture.id) {
-                  const file = new File(
-                    [indexDbImages[i].data],
-                    `${indexDbImages[i].name}`
-                  );
-                  profileImageFormData.append('images', file);
-                }
-              }
-
-              profileImageFormData.append('userId', data.user._id);
-
-              const profileImageResponse = await fetch(
-                `${baseUrl}/property/upload-profile-image/owner`,
-                {
-                  method: 'POST',
-                  body: profileImageFormData,
-                }
-              );
-
-              if (!profileImageResponse.ok) {
-                showErrorToast(ErrorToastNames.SendImages);
-                showErrorToast(ErrorToastNames.ImagesUploadError);
-                setTimeout(() => {
-                  router.push('/register');
-                }, 7000);
+            for (let i = 0; i < indexDbImages.length; i++) {
+              if (indexDbImages[i].id !== userDataForm.picture.id) {
+                const file = new File(
+                  [indexDbImages[i].data],
+                  `${indexDbImages[i].name}`
+                );
+                propertyImagesFormData.append('images', file);
               }
             }
 
-            clearIndexDB();
-            updateProgress(4);
-            if (!urlEmail) {
-              router.push('/registerStep35');
+            propertyImagesFormData.append('propertyId', data.createdProperty._id);
+
+            const propertyImagesResponse = await fetch(
+              `${baseUrl}/property/upload-property-images`,
+              {
+                method: 'POST',
+                body: propertyImagesFormData,
+              }
+            );
+
+            if (propertyImagesResponse.ok) {
+              if (userDataForm.picture.id) {
+                const profileImageFormData = new FormData();
+
+                for (let i = 0; i < indexDbImages.length; i++) {
+                  if (indexDbImages[i].id === userDataForm.picture.id) {
+                    const file = new File(
+                      [indexDbImages[i].data],
+                      `${indexDbImages[i].name}`
+                    );
+                    profileImageFormData.append('images', file);
+                  }
+                }
+
+                profileImageFormData.append('userId', data.user._id);
+
+                const profileImageResponse = await fetch(
+                  `${baseUrl}/property/upload-profile-image/owner`,
+                  {
+                    method: 'POST',
+                    body: profileImageFormData,
+                  }
+                );
+
+                if (!profileImageResponse.ok) {
+                  showErrorToast(ErrorToastNames.SendImages);
+                  showErrorToast(ErrorToastNames.ImagesUploadError);
+                  setTimeout(() => {
+                    router.push('/register');
+                  }, 7000);
+                }
+              }
+
+              clearIndexDB();
+              updateProgress(4);
+              if (!urlEmail) {
+                router.push('/registerStep35');
+              } else {
+                router.push({
+                  pathname: '/registerStep35',
+                  query: {
+                    email: urlEmail,
+                  },
+                });
+              }
             } else {
-              router.push({
-                pathname: '/registerStep35',
-                query: {
-                  email: urlEmail,
-                },
-              });
+              showErrorToast(ErrorToastNames.SendImages);
+              showErrorToast(ErrorToastNames.ImagesUploadError);
+              setTimeout(() => {
+                router.push('/register');
+              }, 7000);
             }
           } else {
-            showErrorToast(ErrorToastNames.SendImages);
-            showErrorToast(ErrorToastNames.ImagesUploadError);
-            setTimeout(() => {
-              router.push('/register');
-            }, 7000);
+            toast.dismiss();
+            const error = await response.json();
+            console.error(response);
+            setPaymentError(error.message);
+            setFailPaymentModalIsOpen(true);
+            setLoading(false)
           }
-        } else {
+        } catch (error) {
           toast.dismiss();
-          const error = await response.json();
-          console.error(response);
-          setPaymentError(error.message);
+          setLoading(false);
+          toast.error(
+            'Não foi possivel se conectar ao servidor. Por favor, tente novamente mais tarde.'
+          );
+          console.error(error);
+        }
+      } else {
+        if (planWasChanged) {
+          setChangePlanModalIsOpen(true);
+          setChangePlanMessage(newChangePlanError)
+        } else {
+          setFailPaymentModalIsOpen(true)
+          setPaymentError(emptyCreditsErrorMsg);
           setFailPaymentModalIsOpen(true);
           setLoading(false)
         }
-      } catch (error) {
-        toast.dismiss();
-        setLoading(false);
-        toast.error(
-          'Não foi possivel se conectar ao servidor. Por favor, tente novamente mais tarde.'
-        );
-        console.error(error);
       }
     } else {
       toast.error(`Algum campo obrigatório não foi preenchido.`);
@@ -520,10 +549,10 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
 
   const classes = {
     body: 'max-w-[1215px] mx-auto',
-    stepLabel: 'md:mt-26 mt-28 sm:mt-32 md:mb-8 lg:mb-2 mx-auto',
+    stepLabel: 'md:mt-26 mt-28 sm:mt-32 md:mb-8 mx-auto',
     userData: 'flex justify-center flex-col',
     containerButton:
-      'flex flex-col md:flex-row lg:flex-row xl:flex-row lg:mx-5 gap-4 md:gap-0 lg:gap-0 xl:gap-0 items-center justify-between my-4 max-w-[1215px]',
+      'flex flex-col-reverse md:flex-row lg:flex-row xl:flex-row lg:mx-5 gap-4 md:gap-0 lg:gap-0 xl:gap-0 items-center justify-between my-4 max-w-[1215px]',
     button:
       `flex items-center flex-row justify-around w-44 h-14 text-tertiary rounded font-bold text-lg md:text-xl ${loading ?
         'bg-red-300 transition-colors duration-300' :
@@ -543,7 +572,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
             <Header />
             <div className="justify-center">
               <div className={classes.stepLabel}>
-                <LinearStepper isSubmited={false} sharedActiveStep={2} />
+                <LinearStepper sharedActiveStep={0} />
               </div>
 
               <div className="md:flex">
@@ -573,6 +602,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
                       isEdit={false}
                       userPlan={ownerData.owner?.plan}
                       ownerCredits={ownerData?.owner?.adCredits}
+                      plans={plans}
                     />
                   )
                 )}
@@ -643,7 +673,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
                   </button>
                   <button
                     className={classes.button}
-                    onClick={handleSubmit}
+                    onClick={() => handleSubmit(false)}
                     disabled={loading}
                   >
                     <span className={`${loading ? 'ml-5' : ''}`}>Continuar</span>
@@ -658,6 +688,16 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
               setModalIsOpen={setFailPaymentModalIsOpen}
               paymentError={paymentError}
             />
+
+            {/* <ChangePlanModal
+              isOpen={changePlanModalIsOpen}
+              setModalIsOpen={setChangePlanModalIsOpen}
+              message={changePlanMessage}
+              onConfirm={(confirmChange: boolean) => {
+                setChangePlanModalIsOpen(false); // Fecha o modal
+                handleSubmit(confirmChange); // Chama a função de envio do formulário após a confirmação
+              }}
+            /> */}
           </div >
 
           <Footer />

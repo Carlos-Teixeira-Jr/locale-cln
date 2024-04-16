@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { IPlan } from '../../../../common/interfaces/plans/plans';
 import ArrowDownIcon from '../../../atoms/icons/arrowDownIcon';
 import LocationIcon from '../../../atoms/icons/location';
 import PlusIcon from '../../../atoms/icons/plusIcon';
@@ -18,6 +19,7 @@ interface IPlansCardHidden {
   isEdit: boolean;
   userPlan?: string;
   ownerCredits?: number;
+  plans: IPlan[]
 }
 
 const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
