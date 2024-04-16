@@ -47,7 +47,7 @@ const RegisterStep4: NextPageWithLayout = () => {
           <Header />
           <div className={classes.root}>
             <div className={classes.stepLabel}>
-              <LinearStepper isSubmited={false} sharedActiveStep={3} />
+              <LinearStepper activeStep={0} />
             </div>
 
             <div className={classes.body}>
