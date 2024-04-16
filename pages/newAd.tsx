@@ -42,7 +42,7 @@ const NewAd: NextPageWithLayout = () => {
       <AdminHeader />
       <div className="flex flex-row justify-center lg:justify-end xl:justify-end 2xl:justify-center">
         <div className="fixed left-0 top-7  sm:hidden hidden md:hidden lg:flex">
-          <SideMenu />
+          <SideMenu isPlus={false} />
         </div>
         <div className="flex flex-col items-center mt-16 max-w-[900px] text-xl lg:text-4xl px-2 md:px-10">
           <h1 className="font-bold text-2xl lg:text-4xl text-quaternary mb-10 mt-20">
