@@ -46,6 +46,11 @@ export enum ErrorToastNames {
   UserNotFound = 'Nenhum usuário encontrado com o email ou senha informados.'
 }
 
+export enum InfoToastNames {
+  AnnouncementInfo = 'announcementInfo',
+  SelectYourPlan = 'selectYourPlan'
+}
+
 const successToastMessages: Record<SuccessToastNames, ToastMessage> = {
   [SuccessToastNames.PasswordRecovery]: {
     message: 'Recuperação de senha enviada para o e-mail com sucesso!',
@@ -250,6 +255,21 @@ const errorToastMessages: Record<ErrorToastNames, ToastMessage> = {
   }
 };
 
+const infoToastMessages: Record<InfoToastNames, ToastMessage> = {
+  [InfoToastNames.AnnouncementInfo]: {
+    message: 'Para anunciar, você pode inserir seu e-mail durante o processo de cadastro do imóvel ou optar por se cadastrar agora usando sua conta do Google.',
+    options: {
+      autoClose: 7000,
+    },
+  },
+  [InfoToastNames.SelectYourPlan]: {
+    message: 'Selecione um dos planos abaixo',
+    options: {
+      autoClose: 4000,
+    },
+  },
+}
+
 export const showSuccessToast = (name: SuccessToastNames, customOptions?: ToastOptions) => {
   const { message, options } = successToastMessages[name] || { message: 'Mensagem não encontrada' };
   const mergedOptions = { ...options, ...customOptions };
@@ -260,4 +280,10 @@ export const showErrorToast = (name: ErrorToastNames, customOptions?: ToastOptio
   const { message, options } = errorToastMessages[name] || { message: 'Mensagem não encontrada' };
   const mergedOptions = { ...options, ...customOptions };
   toast.error(message, mergedOptions);
+};
+
+export const showInfoToast = (name: InfoToastNames, customOptions?: ToastOptions) => {
+  const { message, options } = infoToastMessages[name] || { message: 'Mensagem não encontrada' };
+  const mergedOptions = { ...options, ...customOptions };
+  toast.info(message, mergedOptions);
 };

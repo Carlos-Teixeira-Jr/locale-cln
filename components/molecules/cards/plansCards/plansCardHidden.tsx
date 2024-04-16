@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { IPlan } from '../../../../common/interfaces/plans/plans';
 import ArrowDownIcon from '../../../atoms/icons/arrowDownIcon';
 import LocationIcon from '../../../atoms/icons/location';
 import PlusIcon from '../../../atoms/icons/plusIcon';
@@ -18,6 +19,7 @@ interface IPlansCardHidden {
   isEdit: boolean;
   userPlan?: string;
   ownerCredits?: number;
+  plans: IPlan[]
 }
 
 const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
@@ -31,10 +33,19 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
   smartAd,
   id,
   userPlan,
-  ownerCredits
+  ownerCredits,
+  plans
 }) => {
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
-  const [tooltipISOpen, setTooltipIsOpen] = useState(true);
+  const [anchorId, setAnchorId] = useState(``);
+  const anchorRef = useRef<HTMLDivElement>(null);
+  const [ownerPlan, setOwnerPlan] = useState(userPlan);
+
+  useEffect(() => {
+    if (selectedPlanCard !== '') {
+      setAnchorId(`card-${selectedPlanCard}`);
+    }
+  }, [selectedPlanCard]);
 
   const handleDropdown = (cardId: string) => {
     if (selectedCards.includes(cardId)) {
@@ -44,18 +55,14 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
     }
   };
 
-  useEffect(() => {
-    if (userPlan) setSelectedPlanCard(userPlan);
-  }, [userPlan]);
-
   const dinamicClasses = {
-    cardContainer: `md:mx-auto my-5 lg:my-0 rounded-t-[35px] rounded-b-[30px] border-[5px] h-fit ${selectedPlanCard === id ? 'border-secondary' : 'border-none'
+    cardContainer: `card-${selectedPlanCard} md:mx-auto my-5 lg:my-0 rounded-t-[35px] rounded-b-[30px] border-[5px] h-fit ${selectedPlanCard === id ? 'border-secondary' : 'border-none'
       }`,
     adminHeader: `${isAdminPage ? classes.cardAdminHeader : classes.cardHeader
       }`,
     planTitle: `${isAdminPage ? classes.planAdminTitle : classes.planTitle}`,
     planType: `${isAdminPage ? classes.planAdminType : classes.planType}`,
-    contentContainer: `bg-tertiary rounded-b-[30px] p-2 drop-shadow-lg ${isAdminPage
+    contentContainer: `bg-tertiary transition-shadow hover:shadow-2xl duration-300 easy-in-out rounded-b-[30px] p-2 drop-shadow-lg ${isAdminPage
       ? `md:w-[230px] ${selectedCards.includes(id) ? 'h-fit' : 'h-fit'}`
       : `md:w-60 ${selectedCards.includes(id) ? 'h-fit' : 'h-fit'}`
       }`,
@@ -64,7 +71,7 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
         ? 'h-fit'
         : 'h-fit flex flex-col justify-center'
       }`
-      : `${selectedCards.includes(id) ? 'h-fit pb-5' : 'h-fit pb-5'}`
+      : `${selectedCards.includes(id) ? 'h-fit' : 'h-fit pb-5'}`
       }`,
     arrowDown: `float-right cursor-pointer transform transition-transform duration-300 ${isAdminPage ? 'mr-5' : 'mr-5'
       } ${selectedCards.includes(id) ? 'rotate-180' : ''}`,
@@ -72,10 +79,10 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
       ? `${selectedCards.includes(id) ? '' : 'hidden'}`
       : `${selectedCards.includes(id) ? '' : 'hidden'}`
       }`,
-    locationAndLabel: `${isAdminPage ? 'flex mx-3 mb-5' : 'flex mx-10 mb-7'}`,
-    iconLabel: `text-quaternary leading-7 ${isAdminPage ? 'font-medium text-base' : 'font-medium text-xl'
+    locationAndLabel: `${isAdminPage ? 'flex mx-3 mb-5' : 'flex mx-5 mb-7'}`,
+    iconLabel: `text-quaternary leading-7 ${isAdminPage ? 'font-medium text-base' : 'font-medium text-md'
       }`,
-    highlightContainer: `${isAdminPage ? 'flex mx-3 mb-5' : 'flex mx-10 mb-7'}`,
+    highlightContainer: `${isAdminPage ? 'flex mx-3 mb-5' : 'flex mx-5 mb-3'}`,
     p: `text-quaternary leading-7 ${isAdminPage ? 'font-medium text-base' : 'font-medium text-xl'
       }`,
     smartAd: `${isAdminPage ? 'flex mx-3 mb-5 ' : 'grid grid-flow-col mx-10 mb-7 mt-4'
@@ -97,8 +104,9 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
 
   return (
     <div
-      className={`${isAdminPage ? classes.adminPage : classes.notAdminPage}`}
+      className={`card-${id} z-0 ${isAdminPage ? classes.adminPage : classes.notAdminPage}`}
       id={`card-${id}`}
+      ref={anchorRef}
     >
       <div className={dinamicClasses.cardContainer}>
         <div className={dinamicClasses.adminHeader}>
@@ -162,7 +170,7 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
                 </div>
               )}
 
-              <div className={`${isAdminPage ? 'flex mx-3' : 'flex mx-10'}`}>
+              {/* <div className={`${isAdminPage ? 'flex mx-3' : 'flex mx-10'}`}>
                 <div className={classes.locationShrink}>
                   <LocationIcon fill="white" />
                 </div>
@@ -178,7 +186,7 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
                     Criação de Anúncios Inteligentes.
                   </p>
                 </div>
-              )}
+              )} */}
             </div>
           </div>
           <div className={dinamicClasses.buttonContainer}>
@@ -192,11 +200,13 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
             </button>
           </div>
           {ownerCredits !== undefined && userPlan === id && (
-            <div className='w-full'>
+            <div className='w-full flex z-50'>
               <AdCreditsTooltip
-                anchorId={`card-${id}`}
+                anchorId={anchorId}
                 planName={name}
                 creditsLeft={ownerCredits}
+                plans={plans}
+                ownerPlan={ownerPlan! ? ownerPlan : ''}
               />
             </div>
           )}
@@ -223,9 +233,9 @@ const classes = {
   contentTitle: 'text-3xl font-normal leading-[60px] py-3 text-center',
   divider:
     'w-48 text-center md:mr-8 mr-[45px] md:ml-16 ml-[50px] text-quaternary border border-quaternary',
-  p: 'text-center my-2 text-base font-medium text-quaternary mx-8',
+  p: 'text-center my-2 text-sm font-medium text-quaternary mx-8',
   locationIcon:
-    'w-[26px] h-[26px] flex items-center justify-center my-auto mr-2 bg-primary rounded-full',
+    'w-[26px] h-[26px] flex items-center justify-center my-auto mr-2 bg-primary rounded-full shrink-0',
   locationShrink:
     'w-[26px] h-[26px] flex items-center justify-center my-auto mr-2 bg-primary rounded-full shrink-0',
 };

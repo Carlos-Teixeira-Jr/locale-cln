@@ -92,7 +92,8 @@ const MainFeatures: React.FC<IMainFeatures> = ({
 
   const [isRent, setIsRent] = useState(
     !isEdit ? false : editarAdType === 'alugar' ? true : false
-  );
+  )
+
   const [isCommercial, setIsCommercial] = useState(
     !isEdit ? true : editarSubType === 'comercial' ? true : false
   );

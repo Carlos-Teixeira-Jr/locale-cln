@@ -116,14 +116,14 @@ const RegisterStep2: NextPageWithLayout = () => {
     <>
       {progress !== 2 ? (
         <div className='flex justify-center items-center h-screen'>
-          <Loading width='md:w-20' height='md:h-20' />
+          <Loading className='md:w-20 w-10 h-10 md:h-20 animate-spin text-gray-200 dark:text-gray-600 fill-tertiary' fill={'#F75D5F'} />
         </div>
       ) : (
         <>
           <Header />
           <div className={classes.body}>
             <div className={classes.stepLabel}>
-              <LinearStepper isSubmited={false} sharedActiveStep={1} />
+              <LinearStepper activeStep={1} />
             </div>
             <div className="max-w-[1232px]" id="upload-images">
               <UploadImages

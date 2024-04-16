@@ -83,7 +83,7 @@ const AdminMessages = ({
       <div className={classes.body}>
         <div className={classes.sideMenu}>
           {!isMobile ? (
-            <SideMenu isOwnerProp={isOwner} notifications={notifications} unreadMessages={unreadMessages} />
+            <SideMenu isOwnerProp={isOwner} notifications={notifications} unreadMessages={unreadMessages} isPlus={false} />
           ) : (
             ''
           )}
