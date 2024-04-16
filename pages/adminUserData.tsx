@@ -488,9 +488,8 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                         smartAd={smartAd}
                         id={_id}
                         isEdit={isEdit}
-                        userPlan={
-                          ownerData?.owner ? ownerData?.owner?.plan : ''
-                        }
+                        userPlan={ownerData?.owner ? ownerData?.owner?.plan : ''}
+                        plans={[]}
                       />
                     </>
                   )
