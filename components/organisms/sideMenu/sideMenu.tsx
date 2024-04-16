@@ -2,9 +2,9 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { ReactNode, useEffect, useState } from 'react';
 
-import { ReactJSXElement } from '@emotion/react/types/jsx-namespace';
 import { IMessage } from '../../../common/interfaces/message/messages';
 import BellIcon from '../../atoms/icons/bellIcon';
+import CartIcon from '../../atoms/icons/cartIcon';
 import HeartIcon from '../../atoms/icons/heartIcon';
 import MailIcon from '../../atoms/icons/mailIcon';
 import MyAnnouncesIcon from '../../atoms/icons/myAnnouncesIcon';
@@ -24,17 +24,22 @@ type SideMenuProps = {
   isOwnerProp?: boolean;
   notifications?: INotification[];
   isMobileProp?: boolean;
-  unreadMessages?: IMessage[]
+  unreadMessages?: IMessage[];
+  isPlus: boolean
 };
 
-const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications, unreadMessages }) => {
+const SideMenu: React.FC<SideMenuProps> = ({
+  isOwnerProp,
+  notifications,
+  unreadMessages,
+  isPlus
+}) => {
+
   const router = useRouter();
   const [activeButton, setActiveButton] = useState('');
   const [notReadNots, setNotReadNots] = useState<INotification[]>([]);
   const isOwner = isOwnerProp;
-  const [iconToUse, setIconToUse] = useState<ReactJSXElement>();
   const [loadingIconId, setLoadingIconId] = useState('');
-
 
   const classNames = {
     notesIcon: 'before:content-[attr(data-nots)] before:text-xs before:bg-tertiary before:font-medium before:text-primary before:border-secondary before:rounded-full before:border before:flex before:items-center before:justify-center before:min-w-[1.4em] before:min-h-[0.4em]'
@@ -54,6 +59,8 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications, unreadM
       setActiveButton('messages-button');
     } else if (path === '/adminNotifications') {
       setActiveButton('notifications-button');
+    } else if (isPlus && path === '/creditsShop') {
+      setActiveButton('credits-shop')
     }
   }, [router.pathname, isOwner]);
 
@@ -160,51 +167,31 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOwnerProp, notifications, unreadM
     },
   ];
 
+  useEffect(() => {
+    if (isPlus) {
+      options.push(
+        {
+          key: 'creditsShop',
+          id: 'credits-shop',
+          icon: (
+            <CartIcon
+              fill={`${activeButton === 'credits-shop' ? '#F5BF5D' : '#6B7280'
+                }`}
+              className="my-auto mr-5"
+              width="30"
+              height="30"
+            />
+          ),
+          title: 'Comprar créditos',
+          link: '/creditsShop',
+        },
+      )
+    }
+  }, [isPlus])
+
   return (
     <>
       <div className="w-fit h-screen bg-tertiary px-2 mt-10 drop-shadow-xl left-0">
-        {/* {isOwnerProp !== undefined && notifications !== undefined && options.map(({ key, id, icon, title, link }: Options) => {
-          if (
-            isOwner ||
-            id === 'favourites-button' ||
-            id === 'notifications-button' ||
-            id === 'my-data-button'
-          ) {
-            return (
-              <div
-                key={key}
-                onClick={() => {
-                  router.push({
-                    pathname: link,
-                    query: {
-                      page: 1,
-                    },
-                  });
-                }}
-              >
-                <button
-                  className="flex mx-5 py-1.5"
-                  onClick={() => {
-                    setActiveButton(id);
-                    setLoadingIconId(id);
-                    //setIconToUse(<Loading />)
-                  }}
-                >
-                  {iconToUse ? iconToUse : icon}
-                  <h2
-                    className={`text-md font-bold leading-7 my-auto transition-colors duration-300 ${activeButton === id
-                      ? 'text-secondary hover:text-yellow'
-                      : 'text-quaternary hover:text-gray-700'
-                      }`}
-                  >
-                    {title}
-                  </h2>
-                </button>
-              </div>
-            );
-          }
-          return null;
-        })} */}
 
         {isOwnerProp !== undefined && notifications !== undefined && options.map(({ key, id, icon, title, link }: Options) => {
           if (

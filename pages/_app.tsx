@@ -1,9 +1,11 @@
+import Cookies from 'js-cookie';
 import { SessionProvider } from 'next-auth/react';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
+import { checkAndClearLocalStorage } from '../common/utils/clearStoredData';
 import { verifyCookiesPolicy } from '../common/utils/verifyCookiesPolicy';
 import CookiesModal from '../components/atoms/modals/cookiesModal';
 import ToastWrapper from '../components/atoms/toast/toastWrapper';
@@ -21,9 +23,14 @@ export default function App({
   verifyCookiesPolicy(setShowCookieModal);
 
   const closeModal = () => {
-    localStorage.setItem('locale.cookiesPolicy', 'true');
+    Cookies.set('locale.cookiesPolicy', 'true');
     setShowCookieModal(false);
   };
+
+  // Limpa os dados armazenados no navegador ao sair das telas de cadastro de anúncio;
+  useEffect(() => {
+    checkAndClearLocalStorage(pathname);
+  }, [pathname]);
 
   return (
     <>

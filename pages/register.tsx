@@ -20,7 +20,7 @@ var store = require('store')
 
 const Register = () => {
   const router = useRouter();
-  const { updateProgress } = useProgress();
+  const { updateProgress, progress } = useProgress();
   const handleClose = () => setOpen(false);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
@@ -72,7 +72,6 @@ const Register = () => {
   const [addressErrors, setAddressErrors] = useState({
     zipCode: '',
     uf: '',
-    streetNumber: '',
     city: '',
     streetName: '',
   });
@@ -113,7 +112,6 @@ const Register = () => {
     setAddressErrors({
       zipCode: '',
       uf: '',
-      streetNumber: '',
       city: '',
       streetName: '',
     });
@@ -137,7 +135,6 @@ const Register = () => {
     if (!address.zipCode) newAddressErrors.zipCode = error;
     if (!address.city) newAddressErrors.city = error;
     if (!address.streetName) newAddressErrors.streetName = error;
-    if (!address.streetNumber) newAddressErrors.streetNumber = error;
     if (!address.uf) newAddressErrors.uf = error;
     if (!registration.description) newRegistrationErrors.description = error;
     if (registration.size.totalArea === 0)
@@ -232,7 +229,7 @@ const Register = () => {
 
   const classes = {
     stepLabel:
-      'md:mt-[150px] mt-[120px] md:mb-10 lg:mb-2 w-full mx-auto lg:mx-24 xl:mx-auto',
+      'md:mt-[130px] mt-[120px] md:mb-10 lg:mb-2 w-full mx-auto lg:mx-24 xl:mx-auto',
     buttonContainer:
       'flex md:justify-end justify-center lg:justify-end xl:justify-end px-5 max-w-[1215px]',
     button:
@@ -244,75 +241,83 @@ const Register = () => {
 
   return (
     <>
-      <div>
-        <Header />
-      </div>
-      <AreaCalculatorModal
-        open={open}
-        handleClose={handleClose}
-        handleSize={(value: number) => {
-          setRegistration({
-            ...registration,
-            size: { ...registration.size, totalArea: value },
-          });
-        }}
-      />
-      <div className="max-w-[1215px] mx-auto">
-        <div className={classes.stepLabel}>
-          <LinearStepper isSubmited={false} sharedActiveStep={0} />
+      {!progress ? (
+        <div className='flex justify-center items-center h-screen'>
+          <Loading width='md:w-20' height='md:h-20' />
         </div>
+      ) : (
+        <>
+          <div>
+            <Header />
+          </div>
+          <AreaCalculatorModal
+            open={open}
+            handleClose={handleClose}
+            handleSize={(value: number) => {
+              setRegistration({
+                ...registration,
+                size: { ...registration.size, totalArea: value },
+              });
+            }}
+          />
+          <div className="max-w-[1215px] mx-auto">
+            <div className={classes.stepLabel}>
+              <LinearStepper activeStep={0} />
+            </div>
 
-        <MainFeatures
-          propertyId={''}
-          editarAdType={'comprar'}
-          editarSubType={'comercial'}
-          editarPropertyType={'apartamento'}
-          editarPropertySubtype={'cobertura'}
-          editarSize={registration.size}
-          editarNumBedroom={0}
-          editarNumBathroom={0}
-          editarNumGarage={0}
-          editarNumDependencies={0}
-          editarNumSuite={0}
-          editarDescription={''}
-          editarPropertyValue={''}
-          editarCondominium={false}
-          editarCondominiumValue={''}
-          editarIptuValue={''}
-          editarIptu={false}
-          isEdit={false}
-          onMainFeaturesUpdate={(updatedFeatures: any) =>
-            setRegistration(updatedFeatures)
-          }
-          errors={registrationErrors}
-          mainFeaturesInputRefs={mainFeaturesInputRefs}
-        />
+            <MainFeatures
+              propertyId={''}
+              editarAdType={'comprar'}
+              editarSubType={'comercial'}
+              editarPropertyType={'apartamento'}
+              editarPropertySubtype={'cobertura'}
+              editarSize={registration.size}
+              editarNumBedroom={0}
+              editarNumBathroom={0}
+              editarNumGarage={0}
+              editarNumDependencies={0}
+              editarNumSuite={0}
+              editarDescription={''}
+              editarPropertyValue={''}
+              editarCondominium={false}
+              editarCondominiumValue={''}
+              editarIptuValue={''}
+              editarIptu={false}
+              isEdit={false}
+              onMainFeaturesUpdate={(updatedFeatures: any) =>
+                setRegistration(updatedFeatures)
+              }
+              errors={registrationErrors}
+              mainFeaturesInputRefs={mainFeaturesInputRefs}
+            />
 
-        <Address
-          isEdit={false}
-          address={address}
-          onAddressUpdate={(updatedAddress: IAddress) =>
-            setAddress(updatedAddress)
-          }
-          errors={addressErrors}
-          addressInputRefs={addressInputRefs}
-        />
+            <Address
+              isEdit={false}
+              address={address}
+              onAddressUpdate={(updatedAddress: IAddress) =>
+                setAddress(updatedAddress)
+              }
+              errors={addressErrors}
+              addressInputRefs={addressInputRefs}
+            />
 
-        <div className={classes.buttonContainer}>
-          <button
-            className={classes.button}
-            onClick={handleSubmit}
-            disabled={loading}
-          >
-            <span className={`${loading ? 'ml-5' : ''}`}>Continuar</span>
-            {loading && <Loading />}
-          </button>
-        </div>
-      </div>
+            <div className={classes.buttonContainer}>
+              <button
+                className={classes.button}
+                onClick={handleSubmit}
+                disabled={loading}
+              >
+                <span className={`${loading ? 'ml-5' : ''}`}>Continuar</span>
+                {loading && <Loading />}
+              </button>
+            </div>
+          </div>
 
-      <div className="flex flex-col mt-10">
-        <Footer />
-      </div>
+          <div className="flex flex-col mt-10">
+            <Footer />
+          </div>
+        </>
+      )}
     </>
   );
 };

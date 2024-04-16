@@ -40,7 +40,6 @@ const Address: React.FC<IAddressComponent> = ({
 
   const [shouldExecuteEffect, setShouldExecuteEffect] = useState(false);
   const [inputsDisabled, setInputsDisabled] = useState(true);
-  const storedData = store.get('proeprtyData')
 
   const [addressData, setAddressData] = useState<IAddress>({
     zipCode: isEdit ? address?.zipCode! : '',
@@ -51,8 +50,6 @@ const Address: React.FC<IAddressComponent> = ({
     neighborhood: isEdit ? address?.neighborhood! : '',
     uf: isEdit ? address?.uf! : '',
   });
-
-
 
   const [addressErrors, setAddressErrors] = useState({
     zipCode: '',

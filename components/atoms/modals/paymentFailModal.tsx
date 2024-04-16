@@ -14,10 +14,12 @@ const PaymentFailModal: React.FC<IPaymentFailModal> = ({
   setModalIsOpen,
   paymentError
 }) => {
+  console.log("🚀 ~ paymentError:", paymentError)
 
   const inputString = paymentError;
   const indexOfLastDot = inputString.lastIndexOf(".");
   const resultString = inputString.substring(indexOfLastDot + 1);
+  const errorMessage = paymentError;
 
   const handleCloseModal = () => {
     setModalIsOpen(false);
@@ -66,11 +68,7 @@ const PaymentFailModal: React.FC<IPaymentFailModal> = ({
             Falha no Pagamento
           </h1>
           <p className="font-bold text-xl leading-6 text-quaternary">
-            {'Não foi possível efetuar o pagamento. Ocorreu um erro ou a compra não foi autorizada.'}
-          </p>
-
-          <p className="font-bold text-xl leading-6 text-quaternary my-5">
-            Por favor, revise seus dados de cobrança ou altere o plano para a versão grátis.
+            {errorMessage}
           </p>
         </div>
         <div className="w-[66px] h-[66px] rounded-full bg-red-500 shrink-0 flex justify-center my-auto ml-10">

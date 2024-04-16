@@ -20,6 +20,7 @@ import { clearIndexDB, getAllImagesFromDB } from '../common/utils/indexDb';
 import useProgressRedirect from '../common/utils/stepProgressHandler';
 import { ErrorToastNames, showErrorToast } from '../common/utils/toasts';
 import Loading from '../components/atoms/loading';
+import ChangePlanModal from '../components/atoms/modals/changePlanModal';
 import PaymentFailModal from '../components/atoms/modals/paymentFailModal';
 import LinearStepper from '../components/atoms/stepper/stepper';
 import Address from '../components/molecules/address/address';
@@ -572,7 +573,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
             <Header />
             <div className="justify-center">
               <div className={classes.stepLabel}>
-                <LinearStepper sharedActiveStep={0} />
+                <LinearStepper activeStep={2} />
               </div>
 
               <div className="md:flex">
@@ -689,7 +690,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
               paymentError={paymentError}
             />
 
-            {/* <ChangePlanModal
+            <ChangePlanModal
               isOpen={changePlanModalIsOpen}
               setModalIsOpen={setChangePlanModalIsOpen}
               message={changePlanMessage}
@@ -697,7 +698,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
                 setChangePlanModalIsOpen(false); // Fecha o modal
                 handleSubmit(confirmChange); // Chama a função de envio do formulário após a confirmação
               }}
-            /> */}
+            />
           </div >
 
           <Footer />

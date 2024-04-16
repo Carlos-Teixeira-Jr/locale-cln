@@ -65,11 +65,11 @@ const RegisterFormStep3: React.FC<IProps> = ({ selectedPlanCard }) => {
     termsAreRead: '',
   });
 
-  const [cvc, setCvc] = useState('');
-  const [expiry, setExpiry] = useState('');
+  const [cvc, setCvc] = useState('647');
+  const [expiry, setExpiry] = useState('0225');
   const [focus, setFocus] = useState<Focused | undefined>();
-  const [cardName, setCardName] = useState('');
-  const [cardNumber, setCardNumber] = useState('');
+  const [cardName, setCardName] = useState('Teste Locale');
+  const [cardNumber, setCardNumber] = useState('5418 9319 3954 4954');
   const [cardFlag, setCardFlag] = useState('');
 
   const handleInputFocus = (e: any) => {
@@ -421,32 +421,6 @@ const RegisterFormStep3: React.FC<IProps> = ({ selectedPlanCard }) => {
       scrollToElement(firstError);
     }
 
-    // try {
-    //   const paymentData = {
-    //     cardNumber: cardNumber,
-    //     cardName: cardName,
-    //     expiry: expiry,
-    //     cvc: cvc
-    //   };
-
-    //   const response = await fetch('/endpoint-da-api-que-recebe-os-dados-do-pagamento', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json'
-    //     },
-    //     body: JSON.stringify(paymentData)
-    //   });
-
-    //   if (response.ok) {
-    //     console.log('Pagamento efetuado com sucesso!');
-    //   } else {
-    //     setModalIsOpen(true);
-    //   }
-    // } catch (error) {
-    //   console.error('Ocorreu um erro ao enviar os dados do pagamento:', error);
-    //   setModalIsOpen(true);
-    // }
-
     if (
       !newErrors.name &&
       !newErrors.email &&
@@ -647,8 +621,8 @@ const RegisterFormStep3: React.FC<IProps> = ({ selectedPlanCard }) => {
           <div className="flex lg:w-3/6 my-5 lg:my-0">
             <div
               className={`w-[40px] h-[40px] shrink-0 rounded-full bg-tertiary drop-shadow-lg mr-5 flex justify-center cursor-pointer ${sameAddresCheckbox
-                  ? 'border-[3px] border-secondary'
-                  : 'border border-quaternary'
+                ? 'border-[3px] border-secondary'
+                : 'border border-quaternary'
                 }`}
               onClick={handleSameAddressCheckbox}
             >
@@ -663,8 +637,8 @@ const RegisterFormStep3: React.FC<IProps> = ({ selectedPlanCard }) => {
           <div className="flex">
             <div
               className={`w-[40px] h-[40px] shrink-0 rounded-full bg-tertiary drop-shadow-lg mr-5 flex justify-center cursor-pointer ${anotherAddressCheckbox
-                  ? 'border-[3px] border-secondary'
-                  : 'border border-quaternary'
+                ? 'border-[3px] border-secondary'
+                : 'border border-quaternary'
                 }`}
               onClick={handleAnotherAddressCheckbox}
             >
@@ -876,7 +850,7 @@ const RegisterFormStep3: React.FC<IProps> = ({ selectedPlanCard }) => {
                       type="tel"
                       name="cardNumber"
                       placeholder="Número do Cartão"
-                      onChange={handleInputChange}
+                      //onChange={handleInputChange}
                       onFocus={handleInputFocus}
                       className={`border border-quaternary rounded-[10px] h-[66px] text-quaternary lg:text-[26px] text-xl font-bold px-5 drop-shadow-lg bg-tertiary mt-5 md:ml-5 mx-auto`}
                       style={
@@ -898,7 +872,7 @@ const RegisterFormStep3: React.FC<IProps> = ({ selectedPlanCard }) => {
                       type="tel"
                       name="cardName"
                       placeholder="Nome do Cartão"
-                      onChange={handleInputChange}
+                      //onChange={handleInputChange}
                       onFocus={handleInputFocus}
                       value={cardName}
                       className={`border border-quaternary rounded-[10px] h-[66px] text-quaternary lg:text-[26px] text-xl font-bold px-5 drop-shadow-lg bg-tertiary mt-5 md:ml-5`}
@@ -920,7 +894,7 @@ const RegisterFormStep3: React.FC<IProps> = ({ selectedPlanCard }) => {
                         type="tel"
                         name="expiry"
                         placeholder="Válido até..."
-                        onChange={handleInputChange}
+                        //onChange={handleInputChange}
                         onFocus={handleInputFocus}
                         className={`border border-quaternary rounded-[10px] h-[66px] text-quaternary lg:text-[26px] text-xl font-bold px-5 drop-shadow-lg bg-tertiary mt-5 md:ml-5`}
                         style={errors.expiry ? { border: '1px solid red' } : {}}
@@ -940,7 +914,7 @@ const RegisterFormStep3: React.FC<IProps> = ({ selectedPlanCard }) => {
                         type="tel"
                         name="cvc"
                         placeholder="Código de verificação"
-                        onChange={handleInputChange}
+                        //onChange={handleInputChange}
                         onFocus={handleInputFocus}
                         className={`border border-quaternary rounded-[10px] h-[66px] text-quaternary lg:text-[26px] text-xl font-bold px-5 drop-shadow-lg bg-tertiary mt-5 md:ml-5`}
                         style={errors.cvc ? { border: '1px solid red' } : {}}
