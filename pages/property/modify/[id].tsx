@@ -402,8 +402,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
         <div className={classes.sideMenu}>
           <SideMenu
             isOwnerProp={property !== undefined && true}
-            notifications={[]}
-          />
+            notifications={[]} isPlus={false} />
         </div>
         <div className={classes.content}>
           <h1 className={classes.title}>
