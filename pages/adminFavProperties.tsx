@@ -79,6 +79,7 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
               isOwnerProp={isOwner}
               notifications={notifications}
               unreadMessages={unreadMessages}
+              isPlus={false}
             />
           ) : (
             ''

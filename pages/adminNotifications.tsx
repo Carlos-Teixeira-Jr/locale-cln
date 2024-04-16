@@ -83,8 +83,7 @@ const MessageNotifications = ({
             <SideMenu
               isOwnerProp={isOwner}
               notifications={adminNots && adminNots}
-              unreadMessages={unreadMessages}
-            />
+              unreadMessages={unreadMessages} isPlus={false} />
           ) : (
             ''
           )}
