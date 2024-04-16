@@ -51,4 +51,5 @@ export interface IOwner {
   email: string;
   adCredits: number;
   plan: string
+  highlightCredits?: number
 }

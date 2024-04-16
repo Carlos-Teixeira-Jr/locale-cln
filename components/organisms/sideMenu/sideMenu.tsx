@@ -165,47 +165,119 @@ const SideMenu: React.FC<SideMenuProps> = ({
       title: 'Minhas notificações',
       link: '/adminNotifications',
     },
+    {
+      key: 'creditsShop',
+      id: 'credits-shop',
+      icon: (
+        <CartIcon
+          fill={`${activeButton === 'credits-shop' ? '#F5BF5D' : '#6B7280'
+            }`}
+          className="my-auto mr-5"
+          width="30"
+          height="30"
+        />
+      ),
+      title: 'Comprar créditos',
+      link: '/creditsShop',
+    },
   ];
 
-  useEffect(() => {
-    if (isPlus) {
-      options.push(
-        {
-          key: 'creditsShop',
-          id: 'credits-shop',
-          icon: (
-            <CartIcon
-              fill={`${activeButton === 'credits-shop' ? '#F5BF5D' : '#6B7280'
-                }`}
-              className="my-auto mr-5"
-              width="30"
-              height="30"
-            />
-          ),
-          title: 'Comprar créditos',
-          link: '/creditsShop',
-        },
-      )
-    }
-  }, [isPlus])
+  // useEffect(() => {
+  //   if (isPlus) {
+  //     options.push(
+
+  //     )
+  //   }
+  // }, [isPlus])
 
   return (
     <>
       <div className="w-fit h-screen bg-tertiary px-2 mt-10 drop-shadow-xl left-0">
 
-        {isOwnerProp !== undefined && notifications !== undefined && options.map(({ key, id, icon, title, link }: Options) => {
-          if (
-            isOwner ||
-            id === 'favourites-button' ||
-            id === 'notifications-button' ||
-            id === 'my-data-button'
-          ) {
-            return (
+        {/* {isPlus && isOwner && notifications! ? (
+          options.map((option: Options) => {
+            <div
+              key={option.key}
+              onClick={() => {
+                router.push({
+                  pathname: option.link,
+                  query: {
+                    page: 1,
+                  },
+                });
+              }}
+            >
+              <button
+                className="flex mx-5 py-1.5"
+                onClick={() => {
+                  setActiveButton(option.id);
+                  setLoadingIconId(option.id); // Define o ID do ícone que está em loading
+                }}
+              >
+                {loadingIconId === option.id ? <Loading fill='#F5BF5D' /> : option.icon}
+                <h2
+                  className={`text-md ml font-bold leading-7 my-auto transition-colors duration-300 ${activeButton === id
+                    ? `text-secondary hover:text-yellow ${loadingIconId !== option.id ?
+                      '' :
+                      'md:ml-[18px]'
+                    }`
+                    : 'text-quaternary hover:text-gray-700'
+                    }`}
+                >
+                  {option.title}
+                </h2>
+              </button>
+            </div>
+          })
+        ) : (
+          options.map((option) => {
+            if (option.id !== 'credits-shop') {
+              return (
+                <div
+                  key={option.key}
+                  onClick={() => {
+                    router.push({
+                      pathname: option.link,
+                      query: {
+                        page: 1,
+                      },
+                    });
+                  }}
+                >
+                  <button
+                    className="flex mx-5 py-1.5"
+                    onClick={() => {
+                      setActiveButton(option.id);
+                      setLoadingIconId(option.id); // Define o ID do ícone que está em loading
+                    }}
+                  >
+                    {loadingIconId === option.id ? <Loading fill='#F5BF5D' /> : option.icon}
+                    <h2
+                      className={`text-md ml font-bold leading-7 my-auto transition-colors duration-300 ${activeButton === id
+                        ? `text-secondary hover:text-yellow ${loadingIconId !== option.id ?
+                          '' :
+                          'md:ml-[18px]'
+                        }`
+                        : 'text-quaternary hover:text-gray-700'
+                        }`}
+                    >
+                      {option.title}
+                    </h2>
+                  </button>
+                </div>
+              )
+            }
+          })
+        )} */}
+
+        {isPlus && isOwner && notifications ? (
+          options.map((option: Options) => {
+            return ( // Adicionar 'return' aqui
               <div
-                key={key}
+                key={option.key}
                 onClick={() => {
                   router.push({
-                    pathname: link,
+                    pathname: option.link,
                     query: {
                       page: 1,
                     },
@@ -215,29 +287,62 @@ const SideMenu: React.FC<SideMenuProps> = ({
                 <button
                   className="flex mx-5 py-1.5"
                   onClick={() => {
-                    setActiveButton(id);
-                    setLoadingIconId(id); // Define o ID do ícone que está em loading
+                    setActiveButton(option.id);
+                    setLoadingIconId(option.id); // Define o ID do ícone que está em loading
                   }}
                 >
-                  {/* {loadingIconId === id ? <Loading /> : icon} */}
-                  {loadingIconId === id ? <Loading fill='#F5BF5D' /> : icon}
+                  {loadingIconId === option.id ? <Loading fill="#F5BF5D" /> : option.icon}
                   <h2
-                    className={`text-md ml font-bold leading-7 my-auto transition-colors duration-300 ${activeButton === id
-                      ? `text-secondary hover:text-yellow ${loadingIconId !== id ?
-                        '' :
-                        'md:ml-[18px]'
-                      }`
+                    className={`text-md ml font-bold leading-7 my-auto transition-colors duration-300 ${activeButton === option.id
+                      ? `text-secondary hover:text-yellow ${loadingIconId !== option.id ? '' : 'md:ml-[18px]'}`
                       : 'text-quaternary hover:text-gray-700'
                       }`}
                   >
-                    {title}
+                    {option.title}
                   </h2>
                 </button>
               </div>
             );
-          }
-          return null;
-        })}
+          })
+        ) : (
+          options.map((option) => {
+            if (option.id !== 'credits-shop') {
+              return (
+                <div
+                  key={option.key}
+                  onClick={() => {
+                    router.push({
+                      pathname: option.link,
+                      query: {
+                        page: 1,
+                      },
+                    });
+                  }}
+                >
+                  <button
+                    className="flex mx-5 py-1.5"
+                    onClick={() => {
+                      setActiveButton(option.id);
+                      setLoadingIconId(option.id); // Define o ID do ícone que está em loading
+                    }}
+                  >
+                    {loadingIconId === option.id ? <Loading fill="#F5BF5D" /> : option.icon}
+                    <h2
+                      className={`text-md ml font-bold leading-7 my-auto transition-colors duration-300 ${activeButton === option.id
+                        ? `text-secondary hover:text-yellow ${loadingIconId !== option.id ? '' : 'md:ml-[18px]'}`
+                        : 'text-quaternary hover:text-gray-700'
+                        }`}
+                    >
+                      {option.title}
+                    </h2>
+                  </button>
+                </div>
+              );
+            } else {
+              return null; // Retornar algo, mesmo que vazio
+            }
+          })
+        )}
 
 
         {isOwnerProp !== undefined && notifications !== undefined && (

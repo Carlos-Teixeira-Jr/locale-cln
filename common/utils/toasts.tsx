@@ -18,7 +18,8 @@ export enum SuccessToastNames {
   PropertyUpdate = 'propertyUpdate',
   DeleteUser = 'deleteUser',
   UploadedImage = 'uploadedImage',
-  RemoveImage = 'removeImage'
+  RemoveImage = 'removeImage',
+  CreditsSuccess = 'creditsSuccess'
 }
 
 export enum ErrorToastNames {
@@ -114,6 +115,12 @@ const successToastMessages: Record<SuccessToastNames, ToastMessage> = {
   },
   [SuccessToastNames.RemoveImage]: {
     message: 'Imagem removida com sucesso do IndexedDB.',
+    options: {
+      autoClose: 7000,
+    },
+  },
+  [SuccessToastNames.CreditsSuccess]: {
+    message: 'Compra de créditos realizada com sucesso.',
     options: {
       autoClose: 7000,
     },
