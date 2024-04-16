@@ -59,10 +59,11 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
   const chosenPlan = storedPlan ? storedPlan : '';
   const propertyAddress = storedData! ? storedData?.storedData?.address : storedData?.storedData?.address;
   const [paymentError, setPaymentError] = useState('');
+  console.log("🚀 ~ paymentError:", paymentError)
   const [loading, setLoading] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState(chosenPlan);
   const freePlan = plans?.find((plan) => plan.price === 0);
   const ownerPlan = plans?.find((plan) => plan._id === ownerData?.owner?.plan)
+  const [selectedPlan, setSelectedPlan] = useState(chosenPlan !== '' ? chosenPlan : ownerPlan?._id);
   const reversedCards = [...plans].reverse();
   const [isAdminPage, setIsAdminPage] = useState(false);
   const [isSameAddress, setIsSameAddress] = useState(false);
@@ -205,8 +206,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
 
   const handleSubmit = async (confirmChange: boolean) => {
     const error = `Este campo é obrigatório.`;
-    const streetNumberError = `Número do imóvel é inválido.`
     const planErrorMessage = `Selecione um plano de anúncios.`
+    const emptyCreditsErrorMsg = 'Parece que você esgotou seus créditos de anúncio no seu plano atual. Não se preocupe! Você pode mudar para um plano diferente ou comprar mais créditos para continuar anunciando seus imóveis.'
 
     // Limpa o estado de erro da seleção do plano, verifica se um plano foi selecionado e emite um erro caso contrário
     setPlanError('');
@@ -256,12 +257,14 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
       cardBrand: ''
     };
 
-    let newChangePlanError = ''
+    let newChangePlanError = '';
+    let newPaymentError = '';
 
     if (ownerData?.owner?.adCredits! < 1 &&
       selectedPlan === ownerData?.owner?.plan
     ) {
-      setPaymentError('Parece que você esgotou seus créditos de anúncio no seu plano atual. Não se preocupe! Você pode mudar para um plano diferente ou comprar mais créditos para continuar anunciando seus imóveis.');
+      setPaymentError(emptyCreditsErrorMsg);
+      newPaymentError = emptyCreditsErrorMsg;
     }
     if (ownerPlan?._id !== selectedPlan && !confirmChange) newChangePlanError = `Você está alterando seu plano de ${ownerPlan?.name} para o plano ${planData?.name}. A diferença entre os valores dos planos será cobrada na próxima fatura do seu cartão de crédito.`;
     if (!userDataForm?.username) newUserDataErrors.username = error;
@@ -297,9 +300,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     const hasErrors = Object.values(combinedErrors).some(
       (error) => error !== ''
     );
-    const hasPaymentError = paymentError !== '' ? true : false;
+    const hasPaymentError = newPaymentError !== '' ? true : false;
     const planWasChanged = newChangePlanError !== '' && !confirmChange ? true : false;
-    console.log("🚀 ~ handleSubmit ~ newChangePlanError:", newChangePlanError)
 
     if (!hasErrors && termsAreRead && planError === '') {
       if (!hasPaymentError && !planWasChanged) {
@@ -530,7 +532,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
           setChangePlanMessage(newChangePlanError)
         } else {
           setFailPaymentModalIsOpen(true)
-          setPaymentError(paymentError);
+          setPaymentError(emptyCreditsErrorMsg);
           setFailPaymentModalIsOpen(true);
           setLoading(false)
         }

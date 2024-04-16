@@ -14,6 +14,7 @@ const PaymentFailModal: React.FC<IPaymentFailModal> = ({
   setModalIsOpen,
   paymentError
 }) => {
+  console.log("🚀 ~ paymentError:", paymentError)
 
   const inputString = paymentError;
   const indexOfLastDot = inputString.lastIndexOf(".");
