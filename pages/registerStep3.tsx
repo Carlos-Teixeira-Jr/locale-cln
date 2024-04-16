@@ -9,16 +9,12 @@ import { IPlan } from '../common/interfaces/plans/plans';
 import { IAddress } from '../common/interfaces/property/propertyData';
 import {
   ICreateProperty_propertyData,
-  ICreateProperty_userData,
-  IRegisterPropertyData_Step3
+  ICreateProperty_userData
 } from '../common/interfaces/property/register/register';
 import { IUserDataComponent } from '../common/interfaces/user/user';
 import { fetchJson } from '../common/utils/fetchJson';
 import { geocodeAddress } from '../common/utils/geocodeAddress';
-import { defaultProfileImage } from '../common/utils/images/defaultImage/defaultImage';
-import { clearIndexDB, getAllImagesFromDB } from '../common/utils/indexDb';
 import useProgressRedirect from '../common/utils/stepProgressHandler';
-import { ErrorToastNames, showErrorToast } from '../common/utils/toasts';
 import Loading from '../components/atoms/loading';
 import ChangePlanModal from '../components/atoms/modals/changePlanModal';
 import PaymentFailModal from '../components/atoms/modals/paymentFailModal';
@@ -145,7 +141,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     zipCode: '',
     city: '',
     streetName: '',
-    streetNumber: '',
     uf: '',
   });
 
@@ -231,7 +226,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
       zipCode: '',
       city: '',
       streetName: '',
-      streetNumber: '',
       uf: '',
     });
 
@@ -250,7 +244,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
       zipCode: '',
       city: '',
       streetName: '',
-      streetNumber: '',
       uf: '',
     };
 
@@ -278,8 +271,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     if (!userDataForm?.cellPhone) newUserDataErrors.cellPhone = error;
     if (!addressData?.zipCode) newAddressErrors.zipCode = error;
     if (!addressData?.streetName) newAddressErrors.streetName = error;
-    if (!addressData?.streetNumber) newAddressErrors.streetNumber = error;
-    if (Number(addressData?.streetNumber) < 1) newAddressErrors.streetNumber = streetNumberError;
     if (!addressData?.city) newAddressErrors.city = error;
     if (!addressData?.uf) newAddressErrors.uf = error;
     if (!termsAreRead) setTermsError(error);
@@ -308,283 +299,235 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     );
     const hasPaymentError = paymentError !== '' ? true : false;
     const planWasChanged = newChangePlanError !== '' && !confirmChange ? true : false;
+    console.log("🚀 ~ handleSubmit ~ newChangePlanError:", newChangePlanError)
 
     if (!hasErrors && termsAreRead && planError === '') {
       if (!hasPaymentError && !planWasChanged) {
         console.log("entrou")
-        try {
+        // try {
 
-          const result = await geocodeAddress(addressData);
+        //   const result = await geocodeAddress(addressData);
 
-          if (result !== null) {
-            setCoordinates(result);
-          } else {
-            console.log(
-              'Não foi possível buscar as coordenadas geográficas do imóvel'
-            );
-          }
-        } catch (error) {
-          console.error(error);
-        }
+        //   if (result !== null) {
+        //     setCoordinates(result);
+        //   } else {
+        //     console.log(
+        //       'Não foi possível buscar as coordenadas geográficas do imóvel'
+        //     );
+        //   }
+        // } catch (error) {
+        //   console.error(error);
+        // }
 
-        const storedData = store.get('propertyData');
+        // const storedData = store.get('propertyData');
 
-        const propertyDataStep3: IRegisterPropertyData_Step3 = {
-          username: userDataForm.username,
-          email: userDataForm.email,
-          // cpf: userDataForm.cpf,
-          cpf: "366.422.100-18",
-          cellPhone: userDataForm.cellPhone,
-          picture: userDataForm.picture
-            ? userDataForm.picture
-            : { id: '1', src: defaultProfileImage },
-          phone: userDataForm.phone,
-          wppNumber: userDataForm.wppNumber ? userDataForm.wppNumber : '',
-          // zipCode: addressData.zipCode,
-          zipCode: '96215180',
-          city: addressData.city,
-          uf: addressData.uf,
-          streetName: addressData.streetName,
-          streetNumber: '123',
-          geolocation: coordinates
-            ? [coordinates?.lng, coordinates?.lat]
-            : [-52.1872864, -32.1013804],
-          plan: selectedPlan !== '' ? selectedPlan : freePlan,
-          isPlanFree,
-          propertyAddress,
-        };
-
-        // Test
-        const hardCodedAddress = { ...storedData.address, streetNumber: '123' }
+        // const propertyDataStep3: IRegisterPropertyData_Step3 = {
+        //   username: userDataForm.username,
+        //   email: userDataForm.email,
+        //   // cpf: userDataForm.cpf,
+        //   cpf: "366.422.100-18",
+        //   cellPhone: userDataForm.cellPhone,
+        //   picture: userDataForm.picture
+        //     ? userDataForm.picture
+        //     : { id: '1', src: defaultProfileImage },
+        //   phone: userDataForm.phone,
+        //   wppNumber: userDataForm.wppNumber ? userDataForm.wppNumber : '',
+        //   // zipCode: addressData.zipCode,
+        //   zipCode: '96215180',
+        //   city: addressData.city,
+        //   uf: addressData.uf,
+        //   streetName: addressData.streetName,
+        //   streetNumber: '123',
+        //   geolocation: coordinates
+        //     ? [coordinates?.lng, coordinates?.lat]
+        //     : [-52.1872864, -32.1013804],
+        //   plan: selectedPlan !== '' ? selectedPlan : freePlan,
+        //   isPlanFree,
+        //   propertyAddress,
+        // };
 
         // const userData: ICreateProperty_userData = {
         //   _id: userId ? userId : '',
         //   username: userDataForm.username,
         //   email: userDataForm.email,
-        //   address: isSameAddress ? hardCodedAddress : hardCodedAddress,
-        //   // cpf: userDataForm.cpf.replace(/\D/g, ''),
-        //   cpf: "36642210018",
+        //   address: isSameAddress ? storedData.address : addressData,
+        //   cpf: userDataForm.cpf.replace(/\D/g, ''),
         //   picture: userDataForm.picture
         //     ? userDataForm.picture
         //     : { id: '1', src: defaultProfileImage },
         // };
-
-        const hardCodedAddressData = { ...addressData, streetNumber: '123' }
 
         // const propertyData: ICreateProperty_propertyData = {
         //   adType: storedData.adType,
         //   adSubtype: storedData.adSubtype,
         //   propertyType: storedData.propertyType,
         //   propertySubtype: storedData.propertySubtype,
-        //   // address:
-        //   //   !isSameAddress && storedData.address
-        //   //     ? storedData.address
-        //   //     : addressData,
         //   address:
         //     !isSameAddress && storedData.address
         //       ? storedData.address
-        //       : hardCodedAddressData,
+        //       : addressData,
         //   description: storedData.description,
         //   metadata: storedData.metadata,
         //   size: storedData.size,
-        //   geolocation: coordinates
-        //     ? [coordinates?.lng, coordinates?.lat]
-        //     : [-52.1872864, -32.1013804],
-        //   plan: selectedPlan,
-        //   isPlanFree,
-        //   propertyAddress,
         //   ownerInfo: {
         //     picture: userDataForm.picture
         //       ? userDataForm.picture
         //       : { id: '1', src: defaultProfileImage },
+        //     name: userDataForm.username,
+        //     phones: [`${userDataForm.cellPhone}`, userDataForm.phone],
+        //     wppNumber: userDataForm.wppNumber ? `55 ${userDataForm.wppNumber}` : ''
+        //   },
+        //   tags: storedData.tags,
+        //   condominiumTags: storedData.condominiumTags,
+        //   prices: storedData.prices,
+        //   youtubeLink: storedData.youtubeLink,
+        //   geolocation: {
+        //     type: 'Point',
+        //     coordinates: propertyDataStep3.geolocation,
+        //   },
+        //   highlighted: false,
+        // };
+
+        // try {
+        //   toast.loading('Enviando...');
+        //   setLoading(true);
+        //   const body: BodyReq = {
+        //     propertyData,
+        //     userData,
+        //     plan: propertyDataStep3.plan,
+        //     isPlanFree: isFreePlan,
         //     phone: userDataForm.phone,
-        //     wppNumber: userDataForm.wppNumber ? userDataForm.wppNumber : '',
+        //     cellPhone: `${userDataForm.cellPhone}`,
+        //   };
 
+        //   if (!isPlanFree) {
+        //     body.creditCardData = creditCard;
         //   }
+
+        //   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+
+        //   const response = await fetch(`${baseUrl}/property`, {
+        //     method: 'POST',
+        //     headers: {
+        //       'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify(body),
+        //   });
+
+        //   if (response.ok) {
+        //     const data = await response.json();
+        //     const paymentData = {
+        //       cardBrand: data.creditCardBrand ? data.creditCardBrand : 'Free',
+        //       value: data.paymentValue ? data.paymentValue : '00',
+        //     };
+        //     store.set('creditCard', paymentData);
+        //     toast.dismiss();
+        //     store.set('propertyData', {
+        //       propertyDataStep3,
+        //       storedData,
+        //       paymentData,
+        //     });
+
+        //     const indexDbImages = (await getAllImagesFromDB()) as {
+        //       id: string;
+        //       data: Blob;
+        //       name: string;
+        //     }[];
+
+        //     const propertyImagesFormData = new FormData();
+
+        //     for (let i = 0; i < indexDbImages.length; i++) {
+        //       if (indexDbImages[i].id !== userDataForm.picture.id) {
+        //         const file = new File(
+        //           [indexDbImages[i].data],
+        //           `${indexDbImages[i].name}`
+        //         );
+        //         propertyImagesFormData.append('images', file);
+        //       }
+        //     }
+
+        //     propertyImagesFormData.append('propertyId', data.createdProperty._id);
+
+        //     const propertyImagesResponse = await fetch(
+        //       `${baseUrl}/property/upload-property-images`,
+        //       {
+        //         method: 'POST',
+        //         body: propertyImagesFormData,
+        //       }
+        //     );
+
+        //     if (propertyImagesResponse.ok) {
+        //       if (userDataForm.picture.id) {
+        //         const profileImageFormData = new FormData();
+
+        //         for (let i = 0; i < indexDbImages.length; i++) {
+        //           if (indexDbImages[i].id === userDataForm.picture.id) {
+        //             const file = new File(
+        //               [indexDbImages[i].data],
+        //               `${indexDbImages[i].name}`
+        //             );
+        //             profileImageFormData.append('images', file);
+        //           }
+        //         }
+
+        //         profileImageFormData.append('userId', data.user._id);
+
+        //         const profileImageResponse = await fetch(
+        //           `${baseUrl}/property/upload-profile-image/owner`,
+        //           {
+        //             method: 'POST',
+        //             body: profileImageFormData,
+        //           }
+        //         );
+
+        //         if (!profileImageResponse.ok) {
+        //           showErrorToast(ErrorToastNames.SendImages);
+        //           showErrorToast(ErrorToastNames.ImagesUploadError);
+        //           setTimeout(() => {
+        //             router.push('/register');
+        //           }, 7000);
+        //         }
+        //       }
+
+        //       clearIndexDB();
+        //       updateProgress(4);
+        //       if (!urlEmail) {
+        //         router.push('/registerStep35');
+        //       } else {
+        //         router.push({
+        //           pathname: '/registerStep35',
+        //           query: {
+        //             email: urlEmail,
+        //           },
+        //         });
+        //       }
+        //     } else {
+        //       showErrorToast(ErrorToastNames.SendImages);
+        //       showErrorToast(ErrorToastNames.ImagesUploadError);
+        //       setTimeout(() => {
+        //         router.push('/register');
+        //       }, 7000);
+        //     }
+        //   } else {
+        //     toast.dismiss();
+        //     const error = await response.json();
+        //     console.error(response);
+        //     setPaymentError(error.message);
+        //     setFailPaymentModalIsOpen(true);
+        //     setLoading(false)
+        //   }
+        // } catch (error) {
+        //   toast.dismiss();
+        //   setLoading(false);
+        //   toast.error(
+        //     'Não foi possivel se conectar ao servidor. Por favor, tente novamente mais tarde.'
+        //   );
+        //   console.error(error);
         // }
-
-        const userData: ICreateProperty_userData = {
-          _id: userId ? userId : '',
-          username: userDataForm.username,
-          email: userDataForm.email,
-          address: isSameAddress ? storedData.address : addressData,
-          cpf: userDataForm.cpf.replace(/\D/g, ''),
-          picture: userDataForm.picture
-            ? userDataForm.picture
-            : { id: '1', src: defaultProfileImage },
-        };
-
-        const propertyData: ICreateProperty_propertyData = {
-          adType: storedData.adType,
-          adSubtype: storedData.adSubtype,
-          propertyType: storedData.propertyType,
-          propertySubtype: storedData.propertySubtype,
-          address:
-            !isSameAddress && storedData.address
-              ? storedData.address
-              : addressData,
-          description: storedData.description,
-          metadata: storedData.metadata,
-          size: storedData.size,
-          ownerInfo: {
-            picture: userDataForm.picture
-              ? userDataForm.picture
-              : { id: '1', src: defaultProfileImage },
-            name: userDataForm.username,
-            phones: [`${userDataForm.cellPhone}`, userDataForm.phone],
-            wppNumber: userDataForm.wppNumber ? `55 ${userDataForm.wppNumber}` : ''
-          },
-          tags: storedData.tags,
-          condominiumTags: storedData.condominiumTags,
-          prices: storedData.prices,
-          youtubeLink: storedData.youtubeLink,
-          geolocation: {
-            type: 'Point',
-            coordinates: propertyDataStep3.geolocation,
-          },
-          highlighted: false,
-        };
-
-
-        try {
-          toast.loading('Enviando...');
-          setLoading(true);
-          const body: BodyReq = {
-            propertyData,
-            userData,
-            plan: propertyDataStep3.plan,
-            isPlanFree: isFreePlan,
-            phone: userDataForm.phone,
-            cellPhone: `${userDataForm.cellPhone}`,
-          };
-
-          if (!isPlanFree) {
-            body.creditCardData = creditCard;
-          }
-
-          const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
-
-          const response = await fetch(`${baseUrl}/property`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(body),
-          });
-
-          if (response.ok) {
-            const data = await response.json();
-            const paymentData = {
-              cardBrand: data.creditCardBrand ? data.creditCardBrand : 'Free',
-              value: data.paymentValue ? data.paymentValue : '00',
-            };
-            store.set('creditCard', paymentData);
-            toast.dismiss();
-            store.set('propertyData', {
-              propertyDataStep3,
-              storedData,
-              paymentData,
-            });
-
-            const indexDbImages = (await getAllImagesFromDB()) as {
-              id: string;
-              data: Blob;
-              name: string;
-            }[];
-
-            const propertyImagesFormData = new FormData();
-
-            for (let i = 0; i < indexDbImages.length; i++) {
-              if (indexDbImages[i].id !== userDataForm.picture.id) {
-                const file = new File(
-                  [indexDbImages[i].data],
-                  `${indexDbImages[i].name}`
-                );
-                propertyImagesFormData.append('images', file);
-              }
-            }
-
-            propertyImagesFormData.append('propertyId', data.createdProperty._id);
-
-            const propertyImagesResponse = await fetch(
-              `${baseUrl}/property/upload-property-images`,
-              {
-                method: 'POST',
-                body: propertyImagesFormData,
-              }
-            );
-
-            if (propertyImagesResponse.ok) {
-              if (userDataForm.picture.id) {
-                const profileImageFormData = new FormData();
-
-                for (let i = 0; i < indexDbImages.length; i++) {
-                  if (indexDbImages[i].id === userDataForm.picture.id) {
-                    const file = new File(
-                      [indexDbImages[i].data],
-                      `${indexDbImages[i].name}`
-                    );
-                    profileImageFormData.append('images', file);
-                  }
-                }
-
-                profileImageFormData.append('userId', data.user._id);
-
-                const profileImageResponse = await fetch(
-                  `${baseUrl}/property/upload-profile-image/owner`,
-                  {
-                    method: 'POST',
-                    body: profileImageFormData,
-                  }
-                );
-
-                if (!profileImageResponse.ok) {
-                  showErrorToast(ErrorToastNames.SendImages);
-                  showErrorToast(ErrorToastNames.ImagesUploadError);
-                  setTimeout(() => {
-                    router.push('/register');
-                  }, 7000);
-                }
-              }
-
-              clearIndexDB();
-              updateProgress(4);
-              if (!urlEmail) {
-                router.push('/registerStep35');
-              } else {
-                router.push({
-                  pathname: '/registerStep35',
-                  query: {
-                    email: urlEmail,
-                  },
-                });
-              }
-            } else {
-              showErrorToast(ErrorToastNames.SendImages);
-              showErrorToast(ErrorToastNames.ImagesUploadError);
-              setTimeout(() => {
-                router.push('/register');
-              }, 7000);
-            }
-          } else {
-            toast.dismiss();
-            const error = await response.json();
-            console.error(response);
-            setPaymentError(error.message);
-            setFailPaymentModalIsOpen(true);
-            setLoading(false)
-          }
-        } catch (error) {
-          toast.dismiss();
-          setLoading(false);
-          toast.error(
-            'Não foi possivel se conectar ao servidor. Por favor, tente novamente mais tarde.'
-          );
-          console.error(error);
-        }
       } else {
         if (planWasChanged) {
           setChangePlanModalIsOpen(true);
+          setChangePlanMessage(newChangePlanError)
         } else {
           setFailPaymentModalIsOpen(true)
           setPaymentError(paymentError);

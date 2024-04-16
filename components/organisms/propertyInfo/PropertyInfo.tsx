@@ -157,7 +157,7 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
     if (property.tags.length > 0) {
       setHaveTags(true);
     }
-    console.log(property.prices[1].type);
+    console.log(property.prices[1]?.type);
   }, [property.tags]);
 
   const classes = {
@@ -199,13 +199,13 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
                 </div>
               </div>
             ))}
-          {property.prices[1].type == 'IPTU' &&
-            property.prices[1].value !== null ? (
+          {property.prices[1]?.type == 'IPTU' &&
+            property.prices[1]?.value !== null ? (
             <div className="flex flex-col items-start">
               <div className="flex flex-col">
                 <div className={classes.tagContainer}>
                   <span>•</span>
-                  <span>IPTU: R$ {property.prices[2].value}</span>
+                  <span>IPTU: R$ {property.prices[2]?.value}</span>
                 </div>
               </div>
             </div>
@@ -213,12 +213,12 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
             ''
           )}
 
-          {property.prices[1].value !== null && property.prices[1].value > 0 ? (
+          {property.prices[1]?.value !== null && property.prices[1]?.value > 0 ? (
             <div className="flex flex-col items-start">
               <div className="flex flex-col">
                 <div className={classes.tagContainer}>
                   <span>•</span>
-                  <span>Condomínio: R$ {property.prices[1].value}</span>
+                  <span>Condomínio: R$ {property.prices[1]?.value}</span>
                 </div>
               </div>
             </div>

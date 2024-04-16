@@ -50,4 +50,5 @@ export interface IOwner {
   phones: string[];
   email: string;
   adCredits: number;
+  plan: string
 }

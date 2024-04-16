@@ -72,7 +72,6 @@ const Register = () => {
   const [addressErrors, setAddressErrors] = useState({
     zipCode: '',
     uf: '',
-    streetNumber: '',
     city: '',
     streetName: '',
   });
@@ -113,7 +112,6 @@ const Register = () => {
     setAddressErrors({
       zipCode: '',
       uf: '',
-      streetNumber: '',
       city: '',
       streetName: '',
     });
@@ -137,7 +135,6 @@ const Register = () => {
     if (!address.zipCode) newAddressErrors.zipCode = error;
     if (!address.city) newAddressErrors.city = error;
     if (!address.streetName) newAddressErrors.streetName = error;
-    if (!address.streetNumber) newAddressErrors.streetNumber = error;
     if (!address.uf) newAddressErrors.uf = error;
     if (!registration.description) newRegistrationErrors.description = error;
     if (registration.size.totalArea === 0)

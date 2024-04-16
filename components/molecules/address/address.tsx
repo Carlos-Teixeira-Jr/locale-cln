@@ -6,7 +6,6 @@ var store = require('store')
 export type AddressErrorsTypes = {
   zipCode: string;
   uf: string;
-  streetNumber: string;
   city: string;
   streetName: string;
 };
@@ -55,7 +54,6 @@ const Address: React.FC<IAddressComponent> = ({
   const [addressErrors, setAddressErrors] = useState({
     zipCode: '',
     uf: '',
-    streetNumber: '',
     city: '',
     streetName: '',
   });
@@ -89,7 +87,6 @@ const Address: React.FC<IAddressComponent> = ({
     scrollToError('zipCode');
     scrollToError('city');
     scrollToError('streetName');
-    scrollToError('streetNumber');
     scrollToError('uf');
   }, [addressErrors]);
 
@@ -174,7 +171,6 @@ const Address: React.FC<IAddressComponent> = ({
     const formattedNumber = number.replace(/-/g, '');
     const numberMask = formattedNumber.replace(/\D/g, '');
     setAddressData({ ...addressData, streetNumber: numberMask });
-    setAddressErrors({ ...addressErrors, streetNumber: '' });
   };
 
   const handleNeighborhoodChange = (
@@ -338,17 +334,9 @@ const Address: React.FC<IAddressComponent> = ({
                   ? viaZipCodeData.numero
                   : addressData.streetNumber
               }
-              style={
-                addressErrors.streetNumber ? { border: '1px solid red' } : {}
-              }
               maxLength={10}
               onChange={handleNumberChange}
             />
-            {addressErrors.streetNumber && (
-              <span className={classes.errorLabel}>
-                {addressErrors.streetNumber}
-              </span>
-            )}
           </div>
         </div>
         <div className="lg:flex mt-5 mb-10">
