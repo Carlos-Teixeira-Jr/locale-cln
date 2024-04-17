@@ -1,11 +1,11 @@
 import { GetServerSidePropsContext } from "next";
 import { getSession } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IMessagesByOwner } from "../common/interfaces/message/messages";
 import { IOwner } from "../common/interfaces/owner/owner";
 import { IPlan } from "../common/interfaces/plans/plans";
 import { fetchJson } from "../common/utils/fetchJson";
-import { ErrorToastNames, showErrorToast, showSuccessToast, SuccessToastNames } from "../common/utils/toasts";
+import CreditsConfirmationModal from "../components/atoms/modals/creditsConfirmattionModal";
 import { INotification } from "../components/molecules/cards/notificationCard/notificationCard";
 import { AdminHeader, SideMenu } from "../components/organisms";
 import CreditsShopBoard, { Credits } from "../components/organisms/creditsShop/creditsShopBoard";
@@ -29,11 +29,24 @@ const CreditsShop = ({
   const unreadMessages = messages?.docs?.length > 0 ? messages?.docs.filter((message) => !message.isRead) : [];
   const [loading, setLoading] = useState(false);
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+  const [showCreditsConfirmattionModal, setShowCreditsConfirmationModal] = useState(false);
+  const [btnIsDisabled, setBtnIsDisabled] = useState(true);
 
   const [credits, setCredits] = useState<Credits>({
     adCredits: owner.adCredits,
     highlightCredits: owner.highlightCredits === undefined ? 0 : owner.highlightCredits
   });
+
+  useEffect(() => {
+    if (
+      credits.adCredits > owner.adCredits ||
+      credits.highlightCredits > owner.highlightCredits!
+    ) {
+      setBtnIsDisabled(false);
+    } else {
+      setBtnIsDisabled(true);
+    }
+  })
 
   const classes = {
     sideMenu: `${width < 1080 ? 'hidden' : 'fixed left-0 top-7 lg:flex xl:flex md:hidden'
@@ -41,37 +54,38 @@ const CreditsShop = ({
   };
 
   const handleSubmit = async () => {
-    try {
-      setLoading(true)
-      const response = await fetch(
-        `${baseUrl}/payment/increase-credits/${owner.id}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify([
-            {
-              type: 'adCredits',
-              amount: credits.adCredits
-            },
-            {
-              type: 'highlightCredits',
-              amount: credits.highlightCredits
-            },
-          ]),
-        }
-      );
+    console.log("entrou")
+    // try {
+    //   setLoading(true)
+    //   const response = await fetch(
+    //     `${baseUrl}/payment/increase-credits/${owner.id}`,
+    //     {
+    //       method: 'POST',
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //       },
+    //       body: JSON.stringify([
+    //         {
+    //           type: 'adCredits',
+    //           amount: credits.adCredits
+    //         },
+    //         {
+    //           type: 'highlightCredits',
+    //           amount: credits.highlightCredits
+    //         },
+    //       ]),
+    //     }
+    //   );
 
-      if (response.ok) {
-        showSuccessToast(SuccessToastNames.CreditsSuccess)
-      }
-      setLoading(false);
-    } catch (error) {
-      showErrorToast(ErrorToastNames.ServerConnection);
-      console.error(error);
-      setLoading(false)
-    }
+    //   if (response.ok) {
+    //     showSuccessToast(SuccessToastNames.CreditsSuccess)
+    //   }
+    //   setLoading(false);
+    // } catch (error) {
+    //   showErrorToast(ErrorToastNames.ServerConnection);
+    //   console.error(error);
+    //   setLoading(false)
+    // }
   }
 
   return (
@@ -89,9 +103,9 @@ const CreditsShop = ({
         </div>
 
         <div
-          className={`flex flex-col items-center mt-24 ${width < 1080 ? 'justify-center' : 'lg:ml-[26rem]'}`}
+          className={`flex flex-col w-full items-center md:mx-0 mt-24 ${width < 1080 ? 'justify-center px-2' : 'lg:ml-[26rem]'}`}
         >
-          <div className="mb-10 md:px-5 lg:px-0">
+          <div className="mb-10 md:px-5 lg:px-0 w-full">
 
             <CreditsShopBoard
               adCredits={owner?.adCredits}
@@ -102,12 +116,12 @@ const CreditsShop = ({
 
             <div className="w-full flex justify-center">
               <button
-                className={`flex items-center flex-row justify-around w-44 h-14 text-tertiary rounded font-bold text-lg md:text-xl ${loading ?
+                className={`flex items-center flex-row justify-around w-full shadow-lg md:w-44 h-14 text-tertiary rounded font-bold text-lg md:text-xl ${loading || btnIsDisabled ?
                   'bg-red-300 transition-colors duration-300' :
                   'bg-primary transition-colors duration-300 hover:bg-red-600 hover:text-white cursor-pointer'
                   }`}
-                onClick={handleSubmit}
-                disabled={loading}
+                onClick={() => setShowCreditsConfirmationModal(true)}
+                disabled={loading || btnIsDisabled}
               >
                 Confirmar
               </button>
@@ -115,6 +129,18 @@ const CreditsShop = ({
           </div>
         </div>
       </div>
+
+      <CreditsConfirmationModal
+        isOpen={showCreditsConfirmattionModal}
+        setModalIsOpen={(isOpen) => setShowCreditsConfirmationModal(isOpen)}
+        credits={credits}
+        ownerAdCredits={owner?.adCredits}
+        ownerHighlightCredits={owner?.highlightCredits!}
+        onConfirm={() => {
+          setShowCreditsConfirmationModal(false); // Fecha o modal
+          handleSubmit(); // Chama a função de envio do formulário após a confirmação
+        }}
+      />
     </main>
   )
 }

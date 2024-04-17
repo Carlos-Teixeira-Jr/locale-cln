@@ -63,7 +63,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
   const chosenPlan = storedPlan ? storedPlan : '';
   const propertyAddress = storedData! ? storedData?.storedData?.address : storedData?.storedData?.address;
   const [paymentError, setPaymentError] = useState('');
-  console.log("🚀 ~ paymentError:", paymentError)
   const [loading, setLoading] = useState(false);
   const freePlan = plans?.find((plan) => plan.price === 0);
   const ownerPlan = plans?.find((plan) => plan._id === ownerData?.owner?.plan)
