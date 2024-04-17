@@ -87,6 +87,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const [loading, setLoading] = useState(false);
   const unreadMessages = messages?.docs?.length > 0 ? messages?.docs?.filter((message) => !message.isRead) : [];
 
+  // Mostrar os dados do cartão na tela;
   const creditCardInfo = ownerData?.owner?.paymentData?.creditCardInfo
     ? ownerData?.owner?.paymentData?.creditCardInfo
     : {
@@ -94,6 +95,15 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       creditCardNumber: '',
       creditCardToken: ''
     };
+
+  // Dados do cartão de crédito usado nesse update;
+  const [creditCard, setCreditCard] = useState<CreditCardForm>({
+    cardName: '',
+    cardNumber: '',
+    ccv: '',
+    expiry: '',
+    cpfCnpj: ''
+  })
 
   const planObj = plans.find((plan) => plan._id === selectedPlan);
 
@@ -197,6 +207,9 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     const invalidPasswordConfimattion =
       'A senha e a confirmação de senha precisam ser iguais';
     const invalidPasswordLenght = 'A senha precisa ter pelo meno 6 caracteres';
+    const emptyCreditCardError = 'Há algum dado do cartão de crédito faltando';
+
+    let newCreditCardError = '';
 
     setFormDataErrors({
       username: '',
@@ -262,6 +275,13 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       if (passwordFormData.passwordConfirmattion.length < 6)
         newPasswordErrors.passwordConfirmattion = invalidPasswordLenght;
     }
+    if (
+      selectedPlan !== ownerData?.owner?.plan
+      && planObj?.name !== 'Free'
+      && Object.values(creditCard).some((value) => value === '')
+    ) {
+      newCreditCardError = emptyCreditCardError;
+    }
 
     setFormDataErrors(newFormDataErrors);
     setAddressErrors(newAddressErrors);
@@ -287,123 +307,126 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     const hasErrors = Object.values(combinedErrors).some(
       (error) => error !== ''
     );
-    if (!hasErrors) {
-      const userFormData: IUser = {
-        id: userData._id,
-        address,
-        username: formData.username,
-        email: formData.email,
-        // cpf: formData.cpf,
-        cpf: '366.422.100-18'
-      };
 
-      const ownerFormData: IOwner = {
-        id: ownerData?.owner ? ownerData.owner._id : '',
-        ownername: formData.username,
-        phones: [formData.cellPhone, formData.phone],
-        userId: userData._id,
-        email: formData.email ? formData.email : '',
-        adCredits: ownerData.owner?.adCredits ? ownerData.owner?.adCredits : 0,
-        plan: ''
-      };
-
-      const editPasswordFormData = {
-        password: passwordFormData.password ? passwordFormData.password : '',
-        passwordConfirmattion: passwordFormData.passwordConfirmattion
-          ? passwordFormData.passwordConfirmattion
-          : '',
-      };
-
-      let body;
-
-      if (isEditPassword) {
-        body = {
-          user: userFormData,
-          owner: ownerFormData,
-          password: editPasswordFormData,
+    if (newCreditCardError === '') {
+      if (!hasErrors) {
+        const userFormData: IUser = {
+          id: userData._id,
+          address,
+          username: formData.username,
+          email: formData.email,
+          // cpf: formData.cpf,
+          cpf: '366.422.100-18'
         };
-      } else {
-        body = {
-          user: userFormData,
-          owner: ownerFormData,
+
+        const ownerFormData: IOwner = {
+          _id: ownerData?.owner ? ownerData.owner._id : '',
+          ownername: formData.username,
+          phones: [formData.cellPhone, formData.phone],
+          userId: userData._id,
+          email: formData.email ? formData.email : '',
+          adCredits: ownerData.owner?.adCredits ? ownerData.owner?.adCredits : 0,
+          plan: ''
         };
-      }
 
-      const indexDbImages = (await getAllImagesFromDB()) as {
-        id: string;
-        data: Blob;
-        name: string;
-      }[];
+        const editPasswordFormData = {
+          password: passwordFormData.password ? passwordFormData.password : '',
+          passwordConfirmattion: passwordFormData.passwordConfirmattion
+            ? passwordFormData.passwordConfirmattion
+            : '',
+        };
 
-      const imagesForm = new FormData();
-      const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
-      let file;
+        let body;
 
-      if (indexDbImages.length > 0) {
-        file = new File(
-          [indexDbImages[0].data],
-          `${indexDbImages[0].name}`
-        );
-      } else {
-        file = new File([], '');
-      }
-
-      imagesForm.append('images', file);
-
-      imagesForm.append('userId', ownerData?.user?._id);
-
-      setLoading(true);
-
-      try {
-        const imagesResponse = await fetch(
-          `${baseUrl}/property/upload-profile-image/user`,
-          {
-            method: 'POST',
-            body: imagesForm,
-          }
-        );
-
-        if (imagesResponse.ok) {
-          clearIndexDB();
+        if (isEditPassword) {
+          body = {
+            user: userFormData,
+            owner: ownerFormData,
+            password: editPasswordFormData,
+          };
         } else {
-          clearIndexDB();
-          showErrorToast(ErrorToastNames.ImagesUploadError);
+          body = {
+            user: userFormData,
+            owner: ownerFormData,
+          };
         }
-      } catch (error) {
-        clearIndexDB();
-        showErrorToast(ErrorToastNames.ImageUploadError);
-      }
 
-      try {
-        toast.loading('Enviando...');
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_API_URL}/user/edit-user`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-type': 'application/json',
-            },
-            body: JSON.stringify(body),
-          }
-        );
+        const indexDbImages = (await getAllImagesFromDB()) as {
+          id: string;
+          data: Blob;
+          name: string;
+        }[];
 
-        if (response.ok) {
-          toast.dismiss();
-          showSuccessToast(SuccessToastNames.UserDataUpdate);
-          router.push('/admin?page=1');
+        const imagesForm = new FormData();
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+        let file;
+
+        if (indexDbImages.length > 0) {
+          file = new File(
+            [indexDbImages[0].data],
+            `${indexDbImages[0].name}`
+          );
         } else {
+          file = new File([], '');
+        }
+
+        imagesForm.append('images', file);
+
+        imagesForm.append('userId', ownerData?.user?._id);
+
+        setLoading(true);
+
+        try {
+          const imagesResponse = await fetch(
+            `${baseUrl}/property/upload-profile-image/user`,
+            {
+              method: 'POST',
+              body: imagesForm,
+            }
+          );
+
+          if (imagesResponse.ok) {
+            clearIndexDB();
+          } else {
+            clearIndexDB();
+            showErrorToast(ErrorToastNames.ImagesUploadError);
+          }
+        } catch (error) {
+          clearIndexDB();
+          showErrorToast(ErrorToastNames.ImageUploadError);
+        }
+
+        try {
+          toast.loading('Enviando...');
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_BASE_API_URL}/user/edit-user`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-type': 'application/json',
+              },
+              body: JSON.stringify(body),
+            }
+          );
+
+          if (response.ok) {
+            toast.dismiss();
+            showSuccessToast(SuccessToastNames.UserDataUpdate);
+            router.push('/admin?page=1');
+          } else {
+            setLoading(false);
+            toast.dismiss();
+            showErrorToast(ErrorToastNames.UserDataUpdate);
+          }
+        } catch (error) {
           setLoading(false);
           toast.dismiss();
-          showErrorToast(ErrorToastNames.UserDataUpdate);
+          showErrorToast(ErrorToastNames.ServerConnection);
         }
-      } catch (error) {
+      } else {
         setLoading(false);
-        toast.dismiss();
-        showErrorToast(ErrorToastNames.ServerConnection);
+        showErrorToast(ErrorToastNames.EmptyFields);
       }
-    } else {
-      setLoading(false);
-      showErrorToast(ErrorToastNames.EmptyFields);
     }
   };
 
@@ -567,6 +590,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                       // Atualiza o estado com o objeto de erros atualizado
                       setAddressErrors(updatedErrors);
                     }}
+                    onCreditCardUpdate={(creditCard) => setCreditCard(creditCard)}
                   />
                 )}
               </div>

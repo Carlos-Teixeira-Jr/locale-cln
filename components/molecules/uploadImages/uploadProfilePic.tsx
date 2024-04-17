@@ -12,9 +12,11 @@ interface ImageProps {
 }
 
 const Image: React.FC<ImageProps> = ({ id, src, onImageChange, alt }) => {
+  console.log("🚀 ~ src:", src)
 
   const imgRef = useRef<HTMLImageElement | null>(null);
   const [isDefault, setIsDefault] = useState(src ? false : true);
+  console.log("🚀 ~ isDefault:", isDefault)
 
   useEffect(() => {
     if (imgRef.current) {
@@ -25,7 +27,7 @@ const Image: React.FC<ImageProps> = ({ id, src, onImageChange, alt }) => {
   return (
     <div className="flex items-center">
       <img
-        src={src ? src : defaultProfileImage}
+        src={!isDefault ? src : defaultProfileImage}
         alt={alt}
         className={`rounded-full mt-2 ml-10 object-cover ${isDefault ?
           '' :

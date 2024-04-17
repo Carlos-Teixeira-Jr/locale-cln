@@ -44,7 +44,7 @@ export interface IOwnerData {
 }
 
 export interface IOwner {
-  id: string;
+  _id: string;
   ownername: string;
   userId: string;
   phones: string[];

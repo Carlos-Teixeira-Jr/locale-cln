@@ -5,6 +5,7 @@ import { IMessagesByOwner } from "../common/interfaces/message/messages";
 import { IOwner } from "../common/interfaces/owner/owner";
 import { IPlan } from "../common/interfaces/plans/plans";
 import { fetchJson } from "../common/utils/fetchJson";
+import { ErrorToastNames, showErrorToast, showSuccessToast, SuccessToastNames } from "../common/utils/toasts";
 import CreditsConfirmationModal from "../components/atoms/modals/creditsConfirmattionModal";
 import { INotification } from "../components/molecules/cards/notificationCard/notificationCard";
 import { AdminHeader, SideMenu } from "../components/organisms";
@@ -55,37 +56,40 @@ const CreditsShop = ({
 
   const handleSubmit = async () => {
     console.log("entrou")
-    // try {
-    //   setLoading(true)
-    //   const response = await fetch(
-    //     `${baseUrl}/payment/increase-credits/${owner.id}`,
-    //     {
-    //       method: 'POST',
-    //       headers: {
-    //         'Content-Type': 'application/json',
-    //       },
-    //       body: JSON.stringify([
-    //         {
-    //           type: 'adCredits',
-    //           amount: credits.adCredits
-    //         },
-    //         {
-    //           type: 'highlightCredits',
-    //           amount: credits.highlightCredits
-    //         },
-    //       ]),
-    //     }
-    //   );
+    try {
+      setLoading(true)
+      const response = await fetch(
+        `${baseUrl}/payment/increase-credits/${owner._id}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            credits: [
+              {
+                type: 'adCredits',
+                amount: Number(credits.adCredits - owner.adCredits),
+              },
+              {
+                type: 'highlightCredits',
+                // To-do: remover verificação de undefined já que plano plus nunca vai ser undefined;
+                amount: Number(credits.highlightCredits - owner.highlightCredits!)! ? Number(credits.highlightCredits - owner.highlightCredits!) : 0,
+              },
+            ],
+          }),
+        }
+      );
 
-    //   if (response.ok) {
-    //     showSuccessToast(SuccessToastNames.CreditsSuccess)
-    //   }
-    //   setLoading(false);
-    // } catch (error) {
-    //   showErrorToast(ErrorToastNames.ServerConnection);
-    //   console.error(error);
-    //   setLoading(false)
-    // }
+      if (response.ok) {
+        showSuccessToast(SuccessToastNames.CreditsSuccess)
+      }
+      setLoading(false);
+    } catch (error) {
+      showErrorToast(ErrorToastNames.ServerConnection);
+      console.error(error);
+      setLoading(false)
+    }
   }
 
   return (
@@ -110,7 +114,7 @@ const CreditsShop = ({
             <CreditsShopBoard
               adCredits={owner?.adCredits}
               highlightCredits={owner?.highlightCredits!}
-              ownerId={owner.id}
+              ownerId={owner._id}
               handleCreditsChange={(credits) => setCredits(credits)}
             />
 

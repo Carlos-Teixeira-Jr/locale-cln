@@ -60,8 +60,8 @@ const CreditsConfirmationModal = ({
         },
       }}
     >
-      <main className=' p-5 text-xl font-semibold text-quaternary flex flex-col gap-5'>
-        <h1 className='w-full text-2xl font-bold text-quaternary'>Confirmação de compra de créditos</h1>
+      <main className='md:p-5 text-xl font-semibold text-quaternary flex flex-col gap-5'>
+        <h1 className='w-full md:text-2xl font-bold text-quaternary'>Confirmação de compra de créditos</h1>
         <p>Você está comprando:</p>
 
         <div className='flex flex-col'>
@@ -74,16 +74,16 @@ const CreditsConfirmationModal = ({
           )}
         </div>
 
-        <div className='w-full flex justify-between text-tertiary mt-10'>
+        <div className='w-full flex gap-10 justify-between text-tertiary mt-10'>
           <button
-            className={`flex items-center flex-row justify-around w-full md:w-44 h-14 text-tertiary rounded font-bold text-lg md:text-xl bg-primary transition-colors duration-300 hover:bg-red-600 hover:text-white cursor-pointer`}
+            className={`flex items-center flex-row justify-around w-full md:w-44 md:h-14 h-10 text-tertiary rounded font-bold text-lg md:text-xl bg-primary transition-colors duration-300 hover:bg-red-600 hover:text-white cursor-pointer`}
             onClick={() => setModalIsOpen(false)}
           >
             Cancelar
           </button>
 
           <button
-            className={`flex items-center flex-row justify-around w-full md:w-44 h-14 text-tertiary rounded font-bold text-lg md:text-xl 
+            className={`flex items-center flex-row justify-around w-full md:h-14 h-10 text-tertiary rounded font-bold text-lg md:text-xl 
               bg-primary transition-colors duration-300 hover:bg-red-600 hover:text-white cursor-pointer`}
             onClick={() => {
               onConfirm()
