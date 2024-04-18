@@ -15,6 +15,10 @@ interface IRegisterStep35 {
   plans: IPlan[];
 }
 
+// To-do: Se não for feita uma nova compra não deve mostrar o valor;
+// To-do: informar sobre status do plano dio usuário;
+
+
 const RegisterStep35: NextPageWithLayout<IRegisterStep35> = ({ plans }) => {
   const router = useRouter();
   const { progress, updateProgress } = useProgress();

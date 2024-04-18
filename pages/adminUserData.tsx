@@ -8,7 +8,7 @@ import 'react-credit-cards/es/styles-compiled.css';
 import Modal from 'react-modal';
 import { toast } from 'react-toastify';
 import { IMessagesByOwner } from '../common/interfaces/message/messages';
-import { IOwner, IOwnerData } from '../common/interfaces/owner/owner';
+import { CreditCardType, IOwner, IOwnerData } from '../common/interfaces/owner/owner';
 import { IPlan } from '../common/interfaces/plans/plans';
 import {
   IAddress,
@@ -61,6 +61,16 @@ type AddressErrors = {
   uf: string;
 }
 
+type EditUserBody = {
+  user: IUser,
+  owner: IOwner,
+  password?: {
+    password: string,
+    passwordConfirmattion: string
+  },
+  creditCard?: CreditCardType
+}
+
 const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
 
 const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
@@ -79,6 +89,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const [selectedPlan, setSelectedPlan] = useState(
     ownerData?.owner ? ownerData?.owner?.plan : ''
   );
+  const selectedPlanData = plans.find((plan) => plan._id === selectedPlan);
   const [creditCardIsOpen, setCreditCardIsOpen] = useState(false);
   const [deleteAccountIsOpen, setDeleteAccountIsOpen] = useState(false);
   const [isEditPassword, setIsEditPassword] = useState(false);
@@ -86,6 +97,8 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const isEdit = true;
   const [loading, setLoading] = useState(false);
   const unreadMessages = messages?.docs?.length > 0 ? messages?.docs?.filter((message) => !message.isRead) : [];
+  const plusPlan = plans.find((e) => e.name === 'Locale Plus');
+  const ownerIsPlus = ownerData?.owner?.plan === plusPlan?._id ? true : false;
 
   // Mostrar os dados do cartão na tela;
   const creditCardInfo = ownerData?.owner?.paymentData?.creditCardInfo
@@ -177,13 +190,13 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     uf: useRef<HTMLInputElement>(null),
   };
 
-  const creditCardErrors: CreditCardForm = {
+  const [creditCardErrors, setCreditCardErrors] = useState<CreditCardForm>({
     cardName: '',
     cardNumber: '',
     ccv: '',
     expiry: '',
     cpfCnpj: ''
-  };
+  })
 
   const creditCardInputRefs = {
     cardName: useRef<HTMLInputElement>(null),
@@ -218,6 +231,8 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       cellPhone: '',
     });
 
+    //To-do: ajustar o side menu de todas as abas do admin para o plano Loclae Plus;
+
     setAddressErrors({
       zipCode: '',
       city: '',
@@ -230,6 +245,14 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       password: '',
       passwordConfirmattion: '',
     });
+
+    setCreditCardErrors({
+      cardName: '',
+      cardNumber: '',
+      expiry: '',
+      ccv: '',
+      cpfCnpj: ''
+    })
 
     const newFormDataErrors = {
       username: '',
@@ -287,6 +310,15 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     setAddressErrors(newAddressErrors);
     setPasswordErrors(newPasswordErrors);
 
+    // Insere a mensagem de erro nos inputs vazios do form de credit card;
+    Object.keys(creditCard).forEach((e) => {
+      if (creditCardErrors[e] === '') {
+        setCreditCardErrors({ ...creditCardErrors, [e]: newCreditCardError })
+      }
+    })
+
+    setCreditCardIsOpen(true);
+
     let combinedErrors;
 
     if (isEditPassword) {
@@ -316,17 +348,18 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
           username: formData.username,
           email: formData.email,
           // cpf: formData.cpf,
-          cpf: '366.422.100-18'
+          cpf: '366.422.100-18',
         };
 
         const ownerFormData: IOwner = {
           _id: ownerData?.owner ? ownerData.owner._id : '',
           ownername: formData.username,
-          phones: [formData.cellPhone, formData.phone],
+          phone: formData.phone,
+          cellPhone: formData.cellPhone,
           userId: userData._id,
           email: formData.email ? formData.email : '',
           adCredits: ownerData.owner?.adCredits ? ownerData.owner?.adCredits : 0,
-          plan: ''
+          plan: selectedPlan
         };
 
         const editPasswordFormData = {
@@ -336,7 +369,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
             : '',
         };
 
-        let body;
+        let body: EditUserBody;
 
         if (isEditPassword) {
           body = {
@@ -349,6 +382,16 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
             user: userFormData,
             owner: ownerFormData,
           };
+        }
+
+        if (selectedPlanData?.name !== 'Free') {
+          body.creditCard = {
+            cardName: creditCard.cardName,
+            cardNumber: creditCard.cardNumber,
+            expiry: creditCard.expiry,
+            ccv: creditCard.ccv,
+            cpfCnpj: creditCard.cpfCnpj
+          }
         }
 
         const indexDbImages = (await getAllImagesFromDB()) as {
@@ -427,6 +470,8 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
         setLoading(false);
         showErrorToast(ErrorToastNames.EmptyFields);
       }
+    } else {
+      showErrorToast(ErrorToastNames.EmptyCreditCardInfo);
     }
   };
 
@@ -459,7 +504,12 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       <div className={classes.sideMenuContainer}>
         {!isMobile && (
           <div className={classes.sideMenu}>
-            <SideMenu isOwnerProp={isOwner} notifications={notifications} unreadMessages={unreadMessages} isPlus={false} />
+            <SideMenu
+              isOwnerProp={isOwner}
+              notifications={notifications}
+              unreadMessages={unreadMessages}
+              isPlus={ownerIsPlus}
+            />
           </div>
         )}
 
@@ -590,7 +640,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                       // Atualiza o estado com o objeto de erros atualizado
                       setAddressErrors(updatedErrors);
                     }}
-                    onCreditCardUpdate={(creditCard) => setCreditCard(creditCard)}
+                    onCreditCardUpdate={(creditCard: CreditCardType) => setCreditCard(creditCard)}
                   />
                 )}
               </div>

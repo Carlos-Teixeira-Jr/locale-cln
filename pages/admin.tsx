@@ -24,6 +24,8 @@ interface AdminPageProps {
   plans: IPlan[]
 }
 
+// To-do: verificar se a reativação de anúncios desativados está decrementando os créditos do usuário;
+
 const AdminPage: NextPageWithLayout<AdminPageProps> = ({
   ownerProperties,
   notifications,
@@ -83,7 +85,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
             isOwnerProp={isOwner}
             notifications={notifications}
             unreadMessages={unreadMessages}
-            isPlus={true}
+            isPlus={ownerIsPlus}
           />
         </div>
         <div className={`flex flex-col items-center mt-24 ${width < 1080 ? 'justify-center' : 'lg:ml-[26rem]'}`}>
@@ -188,7 +190,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        ownerId: owner._id,
+        ownerId: owner?._id,
         page,
       }),
     })

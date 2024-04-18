@@ -3,6 +3,8 @@ import { getSession, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { IMessagesByOwner } from '../common/interfaces/message/messages';
+import { IOwner } from '../common/interfaces/owner/owner';
+import { IPlan } from '../common/interfaces/plans/plans';
 import { IFavProperties } from '../common/interfaces/properties/favouriteProperties';
 import {
   IData,
@@ -20,15 +22,20 @@ interface IAdminFavProperties {
   favouriteProperties: IFavProperties;
   ownerProperties: IPropertyInfo;
   notifications: [];
-  messages: IMessagesByOwner
+  messages: IMessagesByOwner;
+  plans: IPlan[];
+  owner: IOwner
 }
 
 const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
   favouriteProperties,
   ownerProperties,
   notifications,
-  messages
+  messages,
+  plans,
+  owner
 }) => {
+  console.log("🚀 ~ owner:", owner)
 
   const [isOwner, setIsOwner] = useState<boolean>(false);
   const [properties, _setProperties] = useState<IPropertyInfo>(ownerProperties);
@@ -38,6 +45,8 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
   const isMobile = useIsMobile();
   const session = useSession();
   const unreadMessages = messages?.docs?.length > 0 ? messages?.docs.filter((message) => !message.isRead) : [];
+  const plusPlan = plans.find((e) => e.name === 'Locale Plus');
+  const ownerIsPlus = owner?.plan === plusPlan?._id ? true : false;
 
   useEffect(() => {
     setIsOwner(properties?.docs?.length > 0 ? true : false);
@@ -79,7 +88,7 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
               isOwnerProp={isOwner}
               notifications={notifications}
               unreadMessages={unreadMessages}
-              isPlus={false}
+              isPlus={ownerIsPlus}
             />
           ) : (
             ''
@@ -142,6 +151,7 @@ export default AdminFavProperties;
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = (await getSession(context)) as any;
+  let owner;
 
   if (!session) {
     return {
@@ -172,13 +182,20 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
     if (ownerIdResponse.ok) {
       const ownerData = await ownerIdResponse.json();
+      owner = ownerData.owner;
       ownerId = ownerData?.owner?._id;
     }
   } catch (error) {
     console.error(error);
   }
 
-  const [notifications, favouriteProperties, ownerProperties, messages] =
+  const [
+    notifications,
+    favouriteProperties,
+    ownerProperties,
+    messages,
+    plans
+  ] =
     await Promise.all([
       fetch(`${baseUrl}/notification/user/${userId}`, {
         method: 'GET',
@@ -224,10 +241,19 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       })
         .then((res) => res.json())
         .catch(() => []),
+      fetch(`${baseUrl}/plan`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then((res) => res.json())
+        .catch(() => []),
       fetchJson(`${baseUrl}/notification/user/${userId}`),
       fetchJson(`${baseUrl}/user/favourite`),
       fetchJson(`${baseUrl}/property/owner-properties`),
       fetchJson(`${baseUrl}/message/find-all-by-ownerId`),
+      fetchJson(`${baseUrl}/plan`),
     ]);
 
   return {
@@ -235,7 +261,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       favouriteProperties,
       ownerProperties,
       notifications,
-      messages
+      messages,
+      plans,
+      owner
     },
   };
 }

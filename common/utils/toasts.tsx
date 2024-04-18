@@ -44,7 +44,8 @@ export enum ErrorToastNames {
   SendImages = 'sendImages',
   ImagesTotalSizeLimit = 'imagesTotalSizeLimit',
   ImagesUploadError = 'imagesUpload',
-  UserNotFound = 'Nenhum usuário encontrado com o email ou senha informados.'
+  UserNotFound = 'Nenhum usuário encontrado com o email ou senha informados.',
+  EmptyCreditCardInfo = 'emptyCreditCArdInfo'
 }
 
 export enum InfoToastNames {
@@ -255,7 +256,13 @@ const errorToastMessages: Record<ErrorToastNames, ToastMessage> = {
     },
   },
   [ErrorToastNames.UserNotFound]: {
-    message: 'Nenhum usuário encontrado com o e-mail ou senha informados..',
+    message: 'Nenhum usuário encontrado com o e-mail ou senha informados.',
+    options: {
+      autoClose: 7000,
+    },
+  },
+  [ErrorToastNames.EmptyCreditCardInfo]: {
+    message: 'Algum dos dados do cartão de crédito não foi informado.',
     options: {
       autoClose: 7000,
     },

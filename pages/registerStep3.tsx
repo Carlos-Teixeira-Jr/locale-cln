@@ -53,6 +53,10 @@ type BodyReq = {
   picture?: string;
 };
 
+// To-do: verificar se a página está exigindo os dados do cartão mesmo quando o usuário ainda tem créditos no plano;
+// To-do: Se não for feita uma nova compra não deve mostrar o valor no box do final da página;
+// To-do: não está salvando a foto do owner no imóvel;
+
 const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerData }) => {
   const router = useRouter();
   const { progress, updateProgress } = useProgress();

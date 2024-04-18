@@ -6,6 +6,14 @@ export interface ICreditCardInfo {
   creditCardToken: string;
 }
 
+export type CreditCardType = {
+  cardName: string,
+  cardNumber: string,
+  ccv: string,
+  expiry: string
+  cpfCnpj: string
+}
+
 export type CreditCardInfo = {
   creditCardBrand: string;
   creditCardNumber: string;
@@ -47,7 +55,8 @@ export interface IOwner {
   _id: string;
   ownername: string;
   userId: string;
-  phones: string[];
+  phone: string;
+  cellPhone: string;
   email: string;
   adCredits: number;
   plan: string
