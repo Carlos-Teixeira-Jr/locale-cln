@@ -231,8 +231,6 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       cellPhone: '',
     });
 
-    //To-do: ajustar o side menu de todas as abas do admin para o plano Loclae Plus;
-
     setAddressErrors({
       zipCode: '',
       city: '',

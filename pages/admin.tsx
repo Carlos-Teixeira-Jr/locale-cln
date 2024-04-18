@@ -24,8 +24,6 @@ interface AdminPageProps {
   plans: IPlan[]
 }
 
-// To-do: verificar se a reativação de anúncios desativados está decrementando os créditos do usuário;
-
 const AdminPage: NextPageWithLayout<AdminPageProps> = ({
   ownerProperties,
   notifications,

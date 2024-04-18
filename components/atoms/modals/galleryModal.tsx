@@ -66,7 +66,7 @@ const GalleryModal: React.FC<IGalleryModal> = ({
             alt={''}
             width={imageDimensions.width}
             height={imageDimensions.height}
-            className="rounded-3xl md:mx-5 lg:mx-0"
+            className="rounded-3xl md:mx-5 lg:mx-0 max-h-full object-contain"
           />
         )}
       </div>

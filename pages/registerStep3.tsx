@@ -25,6 +25,7 @@ import PaymentFailModal from '../components/atoms/modals/paymentFailModal';
 import LinearStepper from '../components/atoms/stepper/stepper';
 import Address from '../components/molecules/address/address';
 import ChangeAddressCheckbox from '../components/molecules/address/changeAddressCheckbox';
+import OwnerPlanBoard from '../components/molecules/boards/owwnerPlanBoard';
 import PlansCardsHidden from '../components/molecules/cards/plansCards/plansCardHidden';
 import PaymentBoard from '../components/molecules/payment/paymentBoard';
 import CreditCard, {
@@ -81,6 +82,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
   const [termsError, setTermsError] = useState('');
   const [changePlanModalIsOpen, setChangePlanModalIsOpen] = useState(false);
   const [changePlanMessage, setChangePlanMessage] = useState('');
+  const [isChangePlan, setIsChangePlan] = useState(false);
   const planData: IPlan | undefined = plans.find(
     (plan) => plan._id === selectedPlan
   );
@@ -580,35 +582,44 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
               </div>
 
               <div className="md:flex">
-                {reversedCards.map(
-                  ({ _id, name, price, highlightAd, commonAd, smartAd }: IPlan) => (
-                    <PlansCardsHidden
-                      key={_id}
-                      selectedPlanCard={selectedPlan}
-                      setSelectedPlanCard={(selectedCard: string) => {
-                        setSelectedPlan(selectedCard);
-                        const planData = plans.find(
-                          (plan) => plan._id === selectedCard
-                        );
-                        if (planData && planData?.name === 'Free') {
-                          setIsFreePlan(true);
-                        } else {
-                          setIsFreePlan(false);
-                        }
-                      }}
-                      isAdminPage={isAdminPage}
-                      name={name}
-                      price={price}
-                      commonAd={commonAd}
-                      highlightAd={highlightAd}
-                      smartAd={smartAd}
-                      id={_id}
-                      isEdit={false}
-                      userPlan={ownerData.owner?.plan}
-                      ownerCredits={ownerData?.owner?.adCredits}
-                      plans={plans}
-                    />
+                {ownerData?.owner?.adCredits! === 0 || isChangePlan ? (
+                  reversedCards.map(
+                    ({ _id, name, price, highlightAd, commonAd, smartAd }: IPlan) => (
+                      <PlansCardsHidden
+                        key={_id}
+                        selectedPlanCard={selectedPlan}
+                        setSelectedPlanCard={(selectedCard: string) => {
+                          setSelectedPlan(selectedCard);
+                          const planData = plans.find(
+                            (plan) => plan._id === selectedCard
+                          );
+                          if (planData && planData?.name === 'Free') {
+                            setIsFreePlan(true);
+                          } else {
+                            setIsFreePlan(false);
+                          }
+                        }}
+                        isAdminPage={isAdminPage}
+                        name={name}
+                        price={price}
+                        commonAd={commonAd}
+                        highlightAd={highlightAd}
+                        smartAd={smartAd}
+                        id={_id}
+                        isEdit={false}
+                        userPlan={ownerData.owner?.plan}
+                        ownerCredits={ownerData?.owner?.adCredits}
+                        plans={plans}
+                      />
+                    )
                   )
+                ) : (
+                  <OwnerPlanBoard
+                    ownerPlan={ownerPlan!}
+                    owner={ownerData?.owner!}
+                    isChangePlan={isChangePlan}
+                    setIsChangePlan={(isChange: boolean) => setIsChangePlan(isChange)}
+                  />
                 )}
               </div>
 
@@ -669,6 +680,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
                   selectedPlan={selectedPlan}
                   plans={plans}
                   termsError={termsError}
+                  ownerActualPlan={ownerPlan!}
                 />
 
                 <div className={classes.containerButton}>

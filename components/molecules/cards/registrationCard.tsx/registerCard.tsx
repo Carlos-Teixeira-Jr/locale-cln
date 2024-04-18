@@ -9,9 +9,9 @@ import SocialAuthButton from '../../buttons/socialAuthButtons';
 
 const RegisterCard: React.FC = () => {
   const { data } = useSession() as any;
-  const { data: userData } = data.user;
+  const userEmail = data?.user?.data?.email! ? data?.user?.data?.email : data?.user?.email;
   const router = useRouter();
-  const [email, setEmail] = useState<string>(userData?.email ? userData?.email : '');
+  const [email, setEmail] = useState<string>(userEmail! ? userEmail : '');
   const [emailError, setEmailError] = useState<string>('');
   const [unverifiedEmailModal, setUnverifiedEmailModal] =
     useState<boolean>(false);

@@ -7,19 +7,30 @@ interface IPaymentBoard {
   selectedPlan: string
   plans: IPlan[]
   termsError: string
+  ownerActualPlan: IPlan
 }
 
 const PaymentBoard: React.FC<IPaymentBoard> = ({
   onTermsChange,
   selectedPlan,
   plans,
-  termsError
+  termsError,
+  ownerActualPlan
 }) => {
 
   const [selectedPlanCard, setSelectedPlanCard] = useState(plans.find((plan) => plan._id === selectedPlan));
   const defaultPlan = plans.find((plan) => plan.name === 'Free');
   const [terms, setTermsAreRead] = useState(false);
   const [errors, setErrors] = useState('');
+  const [isSamePlan, setIsSamePlan] = useState(true);
+
+  useEffect(() => {
+    if (selectedPlanCard?._id === ownerActualPlan._id) {
+      setIsSamePlan(true)
+    } else {
+      setIsSamePlan(false)
+    }
+  }, [selectedPlanCard])
 
   useEffect(() => {
     setErrors(termsError)
@@ -44,6 +55,7 @@ const PaymentBoard: React.FC<IPaymentBoard> = ({
           </p>
           <span className="md:text-2xl text-xl font-semibold leading-7 text-quaternary">
             Plano {selectedPlanCard ? selectedPlanCard?.name : defaultPlan?.name}
+            <span className="text-sm">{isSamePlan && ` - (plano atual)`}</span>
           </span>
         </div>
         <div className="flex justify-between mb-5">
@@ -51,7 +63,7 @@ const PaymentBoard: React.FC<IPaymentBoard> = ({
             Valor do Plano:
           </p>
           <span className="md:text-2xl text-xl font-semibold leading-7 text-quaternary">
-            R$ {selectedPlanCard ? selectedPlanCard?.price : defaultPlan?.price},00
+            {isSamePlan ? 'R$ 0,00' : `R$ ${selectedPlanCard?.price},00`}
           </span>
         </div>
         <hr className="border-b border-quaternary mb-5" />
@@ -60,7 +72,7 @@ const PaymentBoard: React.FC<IPaymentBoard> = ({
             Valor Total:
           </p>
           <span className="md:text-2xl text-xl font-semibold leading-7 text-quaternary">
-            R$ {selectedPlanCard ? selectedPlanCard?.price : defaultPlan?.price},00
+            {isSamePlan ? 'R$ 0,00' : `R$ ${selectedPlanCard?.price},00`}
           </span>
         </div>
       </div>

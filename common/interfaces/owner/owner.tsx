@@ -27,7 +27,7 @@ export type OwnerPaymentData = {
   creditCardInfo: CreditCardInfo
 }
 
-type Owner = {
+export type Owner = {
   _id: string;
   name: string;
   adCredits: number;

@@ -9,7 +9,9 @@ interface ICreditsShopBoard {
   adCredits: number,
   highlightCredits: number,
   ownerId: string,
-  handleCreditsChange: (credits: Credits) => void
+  handleCreditsChange: (credits: Credits) => void,
+  handleTotalPriceChange: (value: number) => void
+
 }
 
 export type Credits = {
@@ -21,7 +23,8 @@ export type Credits = {
 const CreditsShopBoard = ({
   adCredits,
   highlightCredits = 0,
-  handleCreditsChange
+  handleCreditsChange,
+  handleTotalPriceChange
 }: ICreditsShopBoard) => {
 
   const [showTooltip, setShowTooltip] = useState({
@@ -32,14 +35,21 @@ const CreditsShopBoard = ({
 
   const anchorRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
+  const commomAdPrice = Number(process.env.NEXT_PUBLIC_COMMON_CREDITS_PRICE);
+  const highlightAdPrice = Number(process.env.NEXT_PUBLIC_HIGHLIGHT_CREDITS_PRICE);
 
   const [credits, setCredits] = useState<Credits>({
     adCredits: adCredits,
     highlightCredits: highlightCredits === undefined ? 0 : highlightCredits
   });
 
+  const [totalPrice, setTotalPrice] = useState(((credits.adCredits - adCredits) * commomAdPrice) + ((credits.highlightCredits - highlightCredits) * highlightAdPrice))
+
   useEffect(() => {
     handleCreditsChange(credits);
+    const value = ((credits.adCredits - adCredits) * commomAdPrice) + ((credits.highlightCredits - highlightCredits) * highlightAdPrice)
+    setTotalPrice(value);
+    handleTotalPriceChange(value)
   }, [credits]);
 
   const buttons = [
@@ -122,10 +132,10 @@ const CreditsShopBoard = ({
             <h3>Valor</h3>
             <div className="text-sm mt-2 flex flex-col justify-center">
               <p className="text-center">
-                {`R$ ${(credits.adCredits - adCredits) * 5}`}
+                {`R$ ${(credits.adCredits - adCredits) * commomAdPrice}`}
               </p>
               <p className="text-center">
-                {`R$ ${(credits.highlightCredits - highlightCredits) * 10}`}
+                {`R$ ${(credits.highlightCredits - highlightCredits) * highlightAdPrice}`}
               </p>
             </div>
           </div>
@@ -138,7 +148,7 @@ const CreditsShopBoard = ({
             <h3>Total</h3>
           </div>
           <div>
-            <p>{`R$ ${((credits.adCredits - adCredits) * 5) + ((credits.highlightCredits - highlightCredits) * 10)}`}</p>
+            <p>{`R$ ${totalPrice}`}</p>
           </div>
         </div>
       </div>

@@ -35,7 +35,6 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
   plans,
   owner
 }) => {
-  console.log("🚀 ~ owner:", owner)
 
   const [isOwner, setIsOwner] = useState<boolean>(false);
   const [properties, _setProperties] = useState<IPropertyInfo>(ownerProperties);
