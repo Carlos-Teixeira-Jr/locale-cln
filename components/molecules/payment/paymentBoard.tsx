@@ -25,7 +25,7 @@ const PaymentBoard: React.FC<IPaymentBoard> = ({
   const [isSamePlan, setIsSamePlan] = useState(true);
 
   useEffect(() => {
-    if (selectedPlanCard?._id === ownerActualPlan._id) {
+    if (selectedPlanCard?._id === ownerActualPlan?._id) {
       setIsSamePlan(true)
     } else {
       setIsSamePlan(false)

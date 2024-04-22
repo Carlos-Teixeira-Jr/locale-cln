@@ -3,9 +3,11 @@ import Link from 'next/link';
 
 interface IDropdownAdmin {
   isOwnerProp: boolean;
+  isPlus: boolean
 }
 
-export default function DropdownAdmin({ isOwnerProp }: IDropdownAdmin) {
+export default function DropdownAdmin({ isOwnerProp, isPlus }: IDropdownAdmin) {
+  console.log("🚀 ~ DropdownAdmin ~ isPlus:", isPlus)
   const isOwner = isOwnerProp;
   const optionsClassname =
     'translate-x-[1px] w-[150px] h-fit hover:bg-quaternary hover:text-tertiary py-3 ';
@@ -52,6 +54,13 @@ export default function DropdownAdmin({ isOwnerProp }: IDropdownAdmin) {
       ref: '/register',
       className: optionsClassname,
       ownerOption: false,
+    },
+    {
+      key: 'creditShop',
+      title: 'Comprar créditos',
+      ref: '/creditsShop',
+      className: optionsClassname,
+      ownerOption: isPlus ? false : true,
     },
     {
       key: 'logOut',

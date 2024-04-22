@@ -67,7 +67,6 @@ const MessageNotifications = ({
     }
 
     return () => {
-      console.log('Componente desmontado. Execute sua lógica aqui.');
       updateNotification();
     };
   }, []);
@@ -84,7 +83,7 @@ const MessageNotifications = ({
 
   return (
     <main>
-      <AdminHeader isOwnerProp={isOwner} />
+      <AdminHeader isOwnerProp={isOwner} isPlus={ownerIsPlus} />
       <div className={classes.body}>
         <div className={classes.sideMenu}>
           {!isMobile ? (

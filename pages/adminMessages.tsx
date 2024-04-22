@@ -87,7 +87,7 @@ const AdminMessages = ({
 
   return (
     <main>
-      <AdminHeader isOwnerProp={isOwner} />
+      <AdminHeader isOwnerProp={isOwner} isPlus={ownerIsPlus} />
       <div className={classes.body}>
         <div className={classes.sideMenu}>
           {!isMobile ? (

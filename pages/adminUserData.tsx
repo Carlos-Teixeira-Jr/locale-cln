@@ -496,7 +496,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   return (
     <div className={classes.root}>
       <div className="fixed z-50 top-0 w-full inset-x-0">
-        <AdminHeader isOwnerProp={isOwner} ownerData={ownerData} />
+        <AdminHeader isOwnerProp={isOwner} ownerData={ownerData} isPlus={ownerIsPlus} />
       </div>
 
       <div className={classes.sideMenuContainer}>

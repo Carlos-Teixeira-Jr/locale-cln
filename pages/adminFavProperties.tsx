@@ -1,5 +1,5 @@
 import { GetServerSidePropsContext } from 'next';
-import { getSession, useSession } from 'next-auth/react';
+import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { IMessagesByOwner } from '../common/interfaces/message/messages';
@@ -36,24 +36,16 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
   owner
 }) => {
 
-  const [isOwner, setIsOwner] = useState<boolean>(false);
   const [properties, _setProperties] = useState<IPropertyInfo>(ownerProperties);
+  const isOwner = properties?.docs?.length > 0 ? true : false;
+
   const [currentPage, setCurrentPage] = useState(1);
   const router = useRouter();
   const query = router.query as any;
   const isMobile = useIsMobile();
-  const session = useSession();
   const unreadMessages = messages?.docs?.length > 0 ? messages?.docs.filter((message) => !message.isRead) : [];
   const plusPlan = plans.find((e) => e.name === 'Locale Plus');
   const ownerIsPlus = owner?.plan === plusPlan?._id ? true : false;
-
-  useEffect(() => {
-    setIsOwner(properties?.docs?.length > 0 ? true : false);
-  }, [properties]);
-
-  useEffect(() => {
-    setIsOwner(ownerProperties.docs?.length > 0 ? true : false);
-  }, [ownerProperties]);
 
   useEffect(() => {
     if (router.query.page !== undefined && typeof query.page === 'string') {
@@ -79,7 +71,7 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
 
   return (
     <div className='my-5'>
-      <AdminHeader isOwnerProp={isOwner} />
+      <AdminHeader isOwnerProp={isOwner} isPlus={ownerIsPlus} />
       <div className={classes.content}>
         <div className={classes.sideMenu}>
           {!isMobile ? (

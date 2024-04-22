@@ -24,7 +24,7 @@ const OwnerPlanBoard = ({
 
   return (
     <section className="w-[40rem] text-quaternary px-20 h-fit p-5 flex flex-col mx-auto mb-5 gap-3 border border-quaternary bg-tertiary">
-      <h2 className="text-2xl font-bold text-quaternary">{`Seu plano atual é o ${ownerPlan.name === 'Free' ? 'GRÁTIS' : ownerPlan.name.toUpperCase()}`}</h2>
+      <h2 className="text-2xl font-bold text-quaternary">{`Seu plano atual é o ${ownerPlan?.name === 'Free' ? 'GRÁTIS' : ownerPlan?.name?.toUpperCase()}`}</h2>
 
       <h3 className="mt-2">Você ainda têm:</h3>
 

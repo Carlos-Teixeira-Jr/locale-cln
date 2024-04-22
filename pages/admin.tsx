@@ -31,9 +31,11 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
   owner,
   plans
 }) => {
+  console.log("🚀 ~ owner:", owner)
 
   const { data: session } = useSession() as any;
   const [isOwner, setIsOwner] = useState<boolean>(false);
+  console.log("🚀 ~ isOwner:", isOwner)
   const [currentPage, setCurrentPage] = useState(1);
   const router = useRouter();
   const query = router.query as any;
@@ -42,6 +44,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
   const userName = session?.user?.data?.name;
   const plusPlan = plans.find((e) => e.name === 'Locale Plus');
   const ownerIsPlus = owner?.plan === plusPlan?._id ? true : false;
+  console.log("🚀 ~ ownerIsPlus:", ownerIsPlus)
 
   useEffect(() => {
     setIsOwner(ownerProperties?.docs?.length > 0 ? true : false);
@@ -76,7 +79,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
 
   return (
     <div>
-      <AdminHeader isOwnerProp={isOwner} />
+      <AdminHeader isOwnerProp={isOwner} isPlus={ownerIsPlus} />
       <div className="flex flex-row items-center justify-evenly xl:w-fit 2xl:w-full w-full max-w-full">
         <div className={classes.sideMenu}>
           <SideMenu
@@ -86,7 +89,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
             isPlus={ownerIsPlus}
           />
         </div>
-        <div className={`flex flex-col items-center mt-24 ${width < 1080 ? 'justify-center' : 'lg:ml-[26rem]'}`}>
+        <div className={`flex flex-col items-center mt-24 ${width < 1080 ? 'justify-center w-full' : 'lg:ml-[26rem]'}`}>
 
           <div className="mb-10 md:px-5 lg:px-0">
             <h1 className="font-extrabold text-xl md:text-3xl text-quaternary md:mb-5 md:mr-20. text-center">
@@ -211,7 +214,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        ownerId: owner._id,
+        ownerId: owner?._id,
         page,
       }),
     })

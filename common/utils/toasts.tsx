@@ -45,7 +45,8 @@ export enum ErrorToastNames {
   ImagesTotalSizeLimit = 'imagesTotalSizeLimit',
   ImagesUploadError = 'imagesUpload',
   UserNotFound = 'Nenhum usuário encontrado com o email ou senha informados.',
-  EmptyCreditCardInfo = 'emptyCreditCArdInfo'
+  EmptyCreditCardInfo = 'emptyCreditCArdInfo',
+  OwnerImageUpload = 'ownerImageUpload'
 }
 
 export enum InfoToastNames {
@@ -263,6 +264,12 @@ const errorToastMessages: Record<ErrorToastNames, ToastMessage> = {
   },
   [ErrorToastNames.EmptyCreditCardInfo]: {
     message: 'Algum dos dados do cartão de crédito não foi informado.',
+    options: {
+      autoClose: 7000,
+    },
+  },
+  [ErrorToastNames.OwnerImageUpload]: {
+    message: 'Houve um erro ao cadastrar a imagem do proprietário do imóvel.',
     options: {
       autoClose: 7000,
     },

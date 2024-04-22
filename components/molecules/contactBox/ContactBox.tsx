@@ -17,7 +17,7 @@ export interface IContactBox {
 
 const ContactBox: React.FC<IContactBox> = ({ ownerInfo, property }: IContactBox) => {
 
-  const picture = ownerInfo?.picture;
+  const picture = property?.ownerInfo?.picture;
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [fullMessage, setFullMessage] = useState(false);
   const owner = ownerInfo?.name;
@@ -96,7 +96,7 @@ const ContactBox: React.FC<IContactBox> = ({ ownerInfo, property }: IContactBox)
               alt={'A image of the property owner'}
               width={90}
               height={90}
-              className="rounded-full w-[90px] max-w-[90px] h-[90px] max-h-[90px]"
+              className="rounded-full w-[90px] max-w-[90px] h-[90px] max-h-[90px] shrink-0 border-2 border-primary"
             />
           ) : (
             <UserIcon

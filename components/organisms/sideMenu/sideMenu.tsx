@@ -18,6 +18,7 @@ type Options = {
   icon: ReactNode;
   title: string;
   link: string;
+  cases: string[];
 };
 
 type SideMenuProps = {
@@ -34,6 +35,7 @@ const SideMenu: React.FC<SideMenuProps> = ({
   unreadMessages,
   isPlus
 }) => {
+  console.log("🚀 ~ isPlus:", isPlus)
 
   const router = useRouter();
   const [activeButton, setActiveButton] = useState('');
@@ -88,6 +90,7 @@ const SideMenu: React.FC<SideMenuProps> = ({
       ),
       title: 'Meus anúncios',
       link: '/admin',
+      cases: ['owner', 'plus']
     },
     {
       key: 'myData',
@@ -102,6 +105,7 @@ const SideMenu: React.FC<SideMenuProps> = ({
       ),
       title: 'Meus dados',
       link: '/adminUserData',
+      cases: ['user', 'owner', 'plus']
     },
     {
       key: 'myFavourites',
@@ -117,6 +121,7 @@ const SideMenu: React.FC<SideMenuProps> = ({
       ),
       title: 'Meus favoritos',
       link: '/adminFavProperties',
+      cases: ['user', 'owner', 'plus']
     },
     {
       key: 'myMessages',
@@ -140,6 +145,7 @@ const SideMenu: React.FC<SideMenuProps> = ({
       ),
       title: 'Minhas mensagens',
       link: '/adminMessages',
+      cases: ['owner', 'plus']
     },
     {
       key: 'myNotifications',
@@ -164,6 +170,7 @@ const SideMenu: React.FC<SideMenuProps> = ({
       ),
       title: 'Minhas notificações',
       link: '/adminNotifications',
+      cases: ['user', 'owner', 'plus']
     },
     {
       key: 'creditsShop',
@@ -179,108 +186,27 @@ const SideMenu: React.FC<SideMenuProps> = ({
       ),
       title: 'Comprar créditos',
       link: '/creditsShop',
+      cases: ['plus']
     },
   ];
-
-  // useEffect(() => {
-  //   if (isPlus) {
-  //     options.push(
-
-  //     )
-  //   }
-  // }, [isPlus])
 
   return (
     <>
       <div className="w-fit h-screen bg-tertiary px-2 mt-10 drop-shadow-xl left-0">
+        {options.map((option: Options) => {
+          const shouldRender =
+            (isOwner && option.cases.includes('owner')) ||
+            (!isOwner && option.cases.includes('user')) ||
+            (isPlus && option.cases.includes('plus') && (isOwner || option.cases.includes('owner')));
 
-        {/* {isPlus && isOwner && notifications! ? (
-          options.map((option: Options) => {
-            <div
-              key={option.key}
-              onClick={() => {
-                router.push({
-                  pathname: option.link,
-                  query: {
-                    page: 1,
-                  },
-                });
-              }}
-            >
-              <button
-                className="flex mx-5 py-1.5"
-                onClick={() => {
-                  setActiveButton(option.id);
-                  setLoadingIconId(option.id); // Define o ID do ícone que está em loading
-                }}
-              >
-                {loadingIconId === option.id ? <Loading fill='#F5BF5D' /> : option.icon}
-                <h2
-                  className={`text-md ml font-bold leading-7 my-auto transition-colors duration-300 ${activeButton === id
-                    ? `text-secondary hover:text-yellow ${loadingIconId !== option.id ?
-                      '' :
-                      'md:ml-[18px]'
-                    }`
-                    : 'text-quaternary hover:text-gray-700'
-                    }`}
-                >
-                  {option.title}
-                </h2>
-              </button>
-            </div>
-          })
-        ) : (
-          options.map((option) => {
-            if (option.id !== 'credits-shop') {
-              return (
-                <div
-                  key={option.key}
-                  onClick={() => {
-                    router.push({
-                      pathname: option.link,
-                      query: {
-                        page: 1,
-                      },
-                    });
-                  }}
-                >
-                  <button
-                    className="flex mx-5 py-1.5"
-                    onClick={() => {
-                      setActiveButton(option.id);
-                      setLoadingIconId(option.id); // Define o ID do ícone que está em loading
-                    }}
-                  >
-                    {loadingIconId === option.id ? <Loading fill='#F5BF5D' /> : option.icon}
-                    <h2
-                      className={`text-md ml font-bold leading-7 my-auto transition-colors duration-300 ${activeButton === id
-                        ? `text-secondary hover:text-yellow ${loadingIconId !== option.id ?
-                          '' :
-                          'md:ml-[18px]'
-                        }`
-                        : 'text-quaternary hover:text-gray-700'
-                        }`}
-                    >
-                      {option.title}
-                    </h2>
-                  </button>
-                </div>
-              )
-            }
-          })
-        )} */}
-
-        {isPlus && isOwner && notifications ? (
-          options.map((option: Options) => {
-            return ( // Adicionar 'return' aqui
+          if (shouldRender) {
+            return (
               <div
                 key={option.key}
                 onClick={() => {
                   router.push({
                     pathname: option.link,
-                    query: {
-                      page: 1,
-                    },
+                    query: { page: 1 },
                   });
                 }}
               >
@@ -288,7 +214,7 @@ const SideMenu: React.FC<SideMenuProps> = ({
                   className="flex mx-5 py-1.5"
                   onClick={() => {
                     setActiveButton(option.id);
-                    setLoadingIconId(option.id); // Define o ID do ícone que está em loading
+                    setLoadingIconId(option.id);
                   }}
                 >
                   {loadingIconId === option.id ? <Loading fill="#F5BF5D" /> : option.icon}
@@ -303,47 +229,10 @@ const SideMenu: React.FC<SideMenuProps> = ({
                 </button>
               </div>
             );
-          })
-        ) : (
-          options.map((option) => {
-            if (option.id !== 'credits-shop') {
-              return (
-                <div
-                  key={option.key}
-                  onClick={() => {
-                    router.push({
-                      pathname: option.link,
-                      query: {
-                        page: 1,
-                      },
-                    });
-                  }}
-                >
-                  <button
-                    className="flex mx-5 py-1.5"
-                    onClick={() => {
-                      setActiveButton(option.id);
-                      setLoadingIconId(option.id); // Define o ID do ícone que está em loading
-                    }}
-                  >
-                    {loadingIconId === option.id ? <Loading fill="#F5BF5D" /> : option.icon}
-                    <h2
-                      className={`text-md ml font-bold leading-7 my-auto transition-colors duration-300 ${activeButton === option.id
-                        ? `text-secondary hover:text-yellow ${loadingIconId !== option.id ? '' : 'md:ml-[18px]'}`
-                        : 'text-quaternary hover:text-gray-700'
-                        }`}
-                    >
-                      {option.title}
-                    </h2>
-                  </button>
-                </div>
-              );
-            } else {
-              return null; // Retornar algo, mesmo que vazio
-            }
-          })
-        )}
-
+          } else {
+            return null;
+          }
+        })}
 
         {isOwnerProp !== undefined && notifications !== undefined && (
           <div className="flex justify-center mt-10">

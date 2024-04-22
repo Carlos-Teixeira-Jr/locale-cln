@@ -86,6 +86,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
   const planData: IPlan | undefined = plans.find(
     (plan) => plan._id === selectedPlan
   );
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
 
   const userDataInputRefs = {
     username: useRef<HTMLElement>(null),
@@ -275,7 +276,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
       setPaymentError(emptyCreditsErrorMsg);
       newPaymentError = emptyCreditsErrorMsg;
     }
-    if (ownerPlan?._id !== selectedPlan && !confirmChange) newChangePlanError = `Você está alterando seu plano de ${ownerPlan?.name} para o plano ${planData?.name}. A diferença entre os valores dos planos será cobrada na próxima fatura do seu cartão de crédito.`;
+    if (ownerPlan?._id !== selectedPlan && ownerPlan !== undefined && !confirmChange) newChangePlanError = `Você está alterando seu plano de ${ownerPlan?.name} para o plano ${planData?.name}. A diferença entre os valores dos planos será cobrada na próxima fatura do seu cartão de crédito.`;
     if (!userDataForm?.username) newUserDataErrors.username = error;
     if (!selectedPlan) setPlanError(planErrorMessage);
     if (!userDataForm?.email) newUserDataErrors.email = error;
@@ -362,7 +363,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
           _id: userId ? userId : '',
           username: userDataForm.username,
           email: userDataForm.email,
-          address: isSameAddress ? storedData.address : addressData,
+          address: isSameAddress ? { ...storedData.address, streetNumber: '123' } : { ...addressData, streetNumber: '123' },
           cpf: userDataForm.cpf.replace(/\D/g, ''),
           picture: userDataForm.picture
             ? userDataForm.picture
@@ -409,14 +410,12 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
             plan: propertyDataStep3.plan,
             isPlanFree: isFreePlan,
             phone: userDataForm.phone,
-            cellPhone: `${userDataForm.cellPhone}`,
+            cellPhone: userDataForm.cellPhone !== '' ? `${userDataForm.cellPhone}` : '123',
           };
 
           if (!isPlanFree) {
             body.creditCardData = creditCard;
           }
-
-          const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
 
           const response = await fetch(`${baseUrl}/property`, {
             method: 'POST',
@@ -485,7 +484,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
                 profileImageFormData.append('userId', data.user._id);
 
                 const profileImageResponse = await fetch(
-                  `${baseUrl}/property/upload-profile-image/owner`,
+                  `${baseUrl}/property/upload-profile-image/owner/${data.createdProperty._id}`,
                   {
                     method: 'POST',
                     body: profileImageFormData,
@@ -494,9 +493,9 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
 
                 if (!profileImageResponse.ok) {
                   showErrorToast(ErrorToastNames.SendImages);
-                  showErrorToast(ErrorToastNames.ImagesUploadError);
+                  showErrorToast(ErrorToastNames.OwnerImageUpload);
                   setTimeout(() => {
-                    router.push('/register');
+                    router.push('/admin');
                   }, 7000);
                 }
               }
@@ -582,7 +581,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
               </div>
 
               <div className="md:flex">
-                {ownerData?.owner?.adCredits! === 0 || isChangePlan ? (
+                {ownerData?.owner?.adCredits! === 0 || isChangePlan || !ownerData.owner ? (
                   reversedCards.map(
                     ({ _id, name, price, highlightAd, commonAd, smartAd }: IPlan) => (
                       <PlansCardsHidden
@@ -753,6 +752,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     fetchJson(`${baseUrl}/plan`),
     fetchJson(`${baseUrl}/user/find-owner-by-user`)
   ]);
+
+  console.log("🚀 ~ getServerSideProps ~ ownerData:", ownerData)
+
 
   return {
     props: {
