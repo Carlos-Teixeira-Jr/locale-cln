@@ -35,7 +35,6 @@ const SideMenu: React.FC<SideMenuProps> = ({
   unreadMessages,
   isPlus
 }) => {
-  console.log("🚀 ~ isPlus:", isPlus)
 
   const router = useRouter();
   const [activeButton, setActiveButton] = useState('');

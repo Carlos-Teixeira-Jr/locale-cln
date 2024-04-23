@@ -31,11 +31,9 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
   owner,
   plans
 }) => {
-  console.log("🚀 ~ owner:", owner)
 
   const { data: session } = useSession() as any;
   const [isOwner, setIsOwner] = useState<boolean>(false);
-  console.log("🚀 ~ isOwner:", isOwner)
   const [currentPage, setCurrentPage] = useState(1);
   const router = useRouter();
   const query = router.query as any;
@@ -44,7 +42,6 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
   const userName = session?.user?.data?.name;
   const plusPlan = plans.find((e) => e.name === 'Locale Plus');
   const ownerIsPlus = owner?.plan === plusPlan?._id ? true : false;
-  console.log("🚀 ~ ownerIsPlus:", ownerIsPlus)
 
   useEffect(() => {
     setIsOwner(ownerProperties?.docs?.length > 0 ? true : false);

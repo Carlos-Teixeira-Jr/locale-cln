@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import store from 'store';
 import { IOwnerData } from '../common/interfaces/owner/owner';
 import { IPlan } from '../common/interfaces/plans/plans';
-import { IAddress } from '../common/interfaces/property/propertyData';
+import { IAddress, IData } from '../common/interfaces/property/propertyData';
 import {
   ICreateProperty_propertyData,
   ICreateProperty_userData,
@@ -22,6 +22,7 @@ import { ErrorToastNames, showErrorToast } from '../common/utils/toasts';
 import Loading from '../components/atoms/loading';
 import ChangePlanModal from '../components/atoms/modals/changePlanModal';
 import PaymentFailModal from '../components/atoms/modals/paymentFailModal';
+import SelectAdsToDeactivateModal from '../components/atoms/modals/selectAdsToDeactivateModal';
 import LinearStepper from '../components/atoms/stepper/stepper';
 import Address from '../components/molecules/address/address';
 import ChangeAddressCheckbox from '../components/molecules/address/changeAddressCheckbox';
@@ -41,6 +42,7 @@ interface IRegisterStep3Props {
   setSelectedPlanCard: (_selectedCard: string) => void;
   plans: IPlan[];
   ownerData: IOwnerData;
+  docs: IData[]
 }
 
 type BodyReq = {
@@ -58,7 +60,8 @@ type BodyReq = {
 // To-do: Se não for feita uma nova compra não deve mostrar o valor no box do final da página;
 // To-do: não está salvando a foto do owner no imóvel;
 
-const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerData }) => {
+const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerData, docs }) => {
+
   const router = useRouter();
   const { progress, updateProgress } = useProgress();
   const query = router.query;
@@ -72,6 +75,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
   const freePlan = plans?.find((plan) => plan.price === 0);
   const ownerPlan = plans?.find((plan) => plan._id === ownerData?.owner?.plan)
   const [selectedPlan, setSelectedPlan] = useState(chosenPlan !== '' ? chosenPlan : ownerPlan?._id);
+  const [selectedPlanData, setSelectedPlanData] = useState(plans?.find((plan) => plan._id === selectedPlan));
   const reversedCards = [...plans].reverse();
   const [isAdminPage, setIsAdminPage] = useState(false);
   const [isSameAddress, setIsSameAddress] = useState(false);
@@ -81,12 +85,17 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
   const [failPaymentModalIsOpen, setFailPaymentModalIsOpen] = useState(false);
   const [termsError, setTermsError] = useState('');
   const [changePlanModalIsOpen, setChangePlanModalIsOpen] = useState(false);
+  const [propsToDeactivateIsOpen, setPropsToDeactivateIsOpen] = useState(false);
   const [changePlanMessage, setChangePlanMessage] = useState('');
   const [isChangePlan, setIsChangePlan] = useState(false);
-  const planData: IPlan | undefined = plans.find(
-    (plan) => plan._id === selectedPlan
-  );
+  const [confirmAdsToDeactivate, setConfirmAdsToDeactivate] = useState(false);
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+
+  // Atualiza o selectedPlanData
+  useEffect(() => {
+    const data = plans?.find((plan) => plan._id === selectedPlan)
+    setSelectedPlanData(data)
+  }, [selectedPlan])
 
   const userDataInputRefs = {
     username: useRef<HTMLElement>(null),
@@ -215,6 +224,19 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
   };
 
   const handleSubmit = async (confirmChange: boolean) => {
+
+    if (
+      !isFreePlan &&
+      !confirmAdsToDeactivate &&
+      ownerPlan !== undefined &&
+      selectedPlanData !== undefined &&
+      selectedPlan !== ownerPlan._id &&
+      selectedPlanData.price < ownerPlan.price
+    ) {
+      setPropsToDeactivateIsOpen(true);
+      return;
+    }
+
     const error = `Este campo é obrigatório.`;
     const planErrorMessage = `Selecione um plano de anúncios.`
     const emptyCreditsErrorMsg = 'Parece que você esgotou seus créditos de anúncio no seu plano atual. Não se preocupe! Você pode mudar para um plano diferente ou comprar mais créditos para continuar anunciando seus imóveis.'
@@ -709,9 +731,18 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
               setModalIsOpen={setChangePlanModalIsOpen}
               message={changePlanMessage}
               onConfirm={(confirmChange: boolean) => {
-                setChangePlanModalIsOpen(false); // Fecha o modal
-                handleSubmit(confirmChange); // Chama a função de envio do formulário após a confirmação
+                setChangePlanModalIsOpen(false);
+                handleSubmit(confirmChange);
               }}
+            />
+
+            <SelectAdsToDeactivateModal
+              isOpen={propsToDeactivateIsOpen}
+              setModalIsOpen={(isOpen: boolean) => setPropsToDeactivateIsOpen(isOpen)}
+              docs={docs}
+              creditsLeft={selectedPlanData?.commonAd!}
+              setConfirmAdsToDeactivate={(isConfirmed: boolean) => setConfirmAdsToDeactivate(isConfirmed)}
+              onSubmit={(isConfirmed: boolean) => handleSubmit(isConfirmed)}
             />
           </div >
 
@@ -728,6 +759,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   const session = (await getSession(context) as any);
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+  let docs: IData[];
 
   const userId =
     session?.user.data._id !== undefined
@@ -753,13 +785,40 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     fetchJson(`${baseUrl}/user/find-owner-by-user`)
   ]);
 
-  console.log("🚀 ~ getServerSideProps ~ ownerData:", ownerData)
+  if (ownerData?.owner?._id) {
+    const response = await fetch(`${baseUrl}/property/owner-properties`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ ownerId: ownerData.owner._id }),
+    })
 
+    if (response.ok) {
+      const data = await response.json()
+      docs = data.docs;
 
-  return {
-    props: {
-      plans,
-      ownerData
-    },
-  };
+      return {
+        props: {
+          plans,
+          ownerData,
+          docs
+        },
+      };
+    } else {
+      return {
+        props: {
+          plans,
+          ownerData
+        },
+      };
+    }
+  } else {
+    return {
+      props: {
+        plans,
+        ownerData
+      },
+    };
+  }
 }
