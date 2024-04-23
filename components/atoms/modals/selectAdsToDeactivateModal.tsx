@@ -10,7 +10,8 @@ export interface ISelectAdsToDeactivateModal {
   docs: IData[],
   creditsLeft: number,
   setConfirmAdsToDeactivate: (isConfirmed: boolean) => void,
-  onSubmit: (confirmChange: boolean) => void
+  onSubmit: (confirmChange: boolean) => void,
+  docsToDeactivate: (docs: string[]) => void
 }
 
 const SelectAdsToDeactivateModal = ({
@@ -19,12 +20,17 @@ const SelectAdsToDeactivateModal = ({
   docs,
   creditsLeft,
   setConfirmAdsToDeactivate,
-  onSubmit
+  onSubmit,
+  docsToDeactivate
 }: ISelectAdsToDeactivateModal) => {
 
   const isMobile = useIsMobile();
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
   const [credits, setCredits] = useState(0);
+
+  useEffect(() => {
+    docsToDeactivate(selectedCards);
+  }, [selectedCards]);
 
   useEffect(() => {
     setCredits(creditsLeft)
@@ -73,12 +79,13 @@ const SelectAdsToDeactivateModal = ({
           WebkitOverflowScrolling: 'touch',
           borderRadius: '30px',
           outline: 'none',
-          padding: '20px',
+          padding: isMobile ? '10px' : '20px',
           marginRight: '-50%',
           transform: 'translate(-50%, -50%)',
           height: 'auto',
           maxHeight: '90%',
           width: isMobile ? '90%' : '70%',
+          maxWidth: '1000px',
           margin: '0 auto 0 auto',
           boxShadow: '0px 4px 4px 0px rgba(0, 0, 0, 0.25)',
         },
@@ -90,7 +97,7 @@ const SelectAdsToDeactivateModal = ({
         <h2 className="text-base">créditos disponíveis: {credits}</h2>
       </div>
 
-      <div className="flex gap-4 flex-wrap">
+      <div className="flex gap-2 md:gap-3 lg:gap-4 flex-wrap justify-between md:justify-start">
         {docs?.length > 0 && docs?.map((doc) => (
           <MiniPropertyCards
             key={doc?._id}
@@ -106,15 +113,15 @@ const SelectAdsToDeactivateModal = ({
         ))}
       </div>
 
-      <div className="flex mt-5 justify-between">
+      <div className="w-full flex gap-5 md:gap-0 md:flex-row flex-col-reverse mt-5 mx-auto md:justify-between">
         <button
           onClick={() => setModalIsOpen(false)}
-          className={`flex items-center flex-row justify-around w-44 h-14 text-tertiary rounded font-bold text-lg md:text-x bg-primary transition-colors duration-300 hover:bg-red-600 hover:text-white cursor-pointer`}
+          className={`flex items-center flex-row justify-around mx-auto w-full md:w-44 h-14 text-tertiary rounded-2xl  font-bold text-lg md:text-x bg-primary transition-colors duration-300 hover:bg-red-600 hover:text-white cursor-pointer`}
         >
           Cancelar
         </button>
         <button
-          className={`flex items-center flex-row justify-around w-44 h-14 text-tertiary rounded font-bold text-lg md:text-x bg-primary transition-colors duration-300 hover:bg-red-600 hover:text-white cursor-pointer`}
+          className={`flex items-center flex-row justify-around mx-auto w-full md:w-44 h-14 text-tertiary rounded-2xl font-bold text-lg md:text-x bg-primary transition-colors duration-300 hover:bg-red-600 hover:text-white cursor-pointer`}
           onClick={handleConfirmAdsToDeactivate}
         >
           Confirmar
