@@ -26,11 +26,24 @@ const SelectAdsToDeactivateModal = ({
 
   const isMobile = useIsMobile();
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
+  const [unselectedCards, setUnselectedCards] = useState<string[]>([])
   const [credits, setCredits] = useState(0);
 
   useEffect(() => {
-    docsToDeactivate(selectedCards);
-  }, [selectedCards]);
+    // Update unselectedCards based on docs and selectedCards
+    const newUnselectedCards = docs?.reduce<string[]>((acc, doc) => {
+      if (!selectedCards.includes(doc._id)) {
+        return [...acc, doc._id];
+      }
+      return acc;
+    }, []);
+
+    setUnselectedCards(newUnselectedCards); // Update state
+  }, [docs, selectedCards]);
+
+  useEffect(() => {
+    docsToDeactivate(unselectedCards);
+  }, [unselectedCards]);
 
   useEffect(() => {
     setCredits(creditsLeft)
@@ -39,7 +52,7 @@ const SelectAdsToDeactivateModal = ({
   const handleSelectedCards = (card: string) => {
     if (!selectedCards.includes(card)) {
       setSelectedCards((prevState) => [...prevState, card]);
-      setCredits((prevState) => prevState - 1)
+      setCredits((prevState) => prevState - 1);
     } else {
       const filteredArray = selectedCards.filter((prevCard) => prevCard !== card);
       setSelectedCards(filteredArray);
