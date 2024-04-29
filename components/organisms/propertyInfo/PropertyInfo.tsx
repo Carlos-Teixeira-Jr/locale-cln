@@ -238,7 +238,7 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
             <p className="font-normal text-md text-quaternary text-justify pr-5">{property.announcementCode}</p>
           </div>
         </div>
-        <div className="flex flex-col mt-10 md:w-[40%] lg:mx-2 justify-items-center gap-5 md:gap-0">
+        <div className="flex md:flex-col mt-10 md:w-[40%] lg:mx-2 justify-items-center gap-5 md:gap-0">
           <LinkCopiedTooltip
             anchorId={'tooltip'}
           />
@@ -274,7 +274,7 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
             >
               <p className="my-auto pr-4">Favoritar</p>
               {favourited ? (
-                <FavouritedIcon width="34" height="34" className="pb-4 md:pb-0" />
+                <FavouritedIcon width="34" height="34" />
               ) : (
                 <UnfavouritedIcon
                   width="34"

@@ -191,7 +191,7 @@ const PropertyCard: React.FC<IPropertyCard> = ({
           </div>
         </div>
         <div
-          className={`flex flex-col mt-2 justify-between ${expanded ? 'h-fit' : 'h-36'
+          className={`flex flex-col mt-2 justify-between ${expanded ? 'h-fit' : 'md:h-36'
             }`}
         >
           {favorited ? (
