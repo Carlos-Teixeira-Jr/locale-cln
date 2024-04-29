@@ -331,7 +331,7 @@ const Search: NextPageWithLayout<ISearch> = ({
               {!mobileFilterIsOpen &&
                 propertyInfo?.docs &&
                 propertyInfo?.docs.length > 0 && (
-                  <div className="mx-auto mt-5">
+                  <div className="mx-auto">
                     <Pagination
                       totalPages={propertyInfo?.totalPages}
                       setCurrentPage={setCurrentPage}
