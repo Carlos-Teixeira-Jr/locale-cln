@@ -437,6 +437,16 @@ const FilterList: React.FC<IFilterListProps> = ({
     });
   };
 
+  const handleRemoveFilters = () => {
+    const { pathname } = router;
+    const emptyParams = new URLSearchParams();
+    emptyParams.set('page', '1');
+    router.replace({ pathname, query: emptyParams.toString() }, undefined, {
+      shallow: false,
+      scroll: false,
+    });
+  }
+
   return (
     <div
       className={`lg:block md:w-full lg:max-w-[400px] h-fit bg-tertiary shadow-md rounded-[30px] px-2 md:px-5 md:py-8 pt-8 pb-2 lg:ml-7 mt-12 ${!mobileFilterIsOpen ? 'hidden' : ''
@@ -1024,7 +1034,7 @@ const FilterList: React.FC<IFilterListProps> = ({
 
         {mobileFilterIsOpen && isMobileProp && (
           <div className="bg-tertiary sticky z-10 bottom-0 flex flex-row items-center justify-between mt-2 p-4 w-full">
-            <h3 className="text-primary text-lg font-bold">Remover filtros</h3>
+            <h3 className="text-primary text-lg font-bold" onClick={handleRemoveFilters}>Remover filtros</h3>
             <button
               className="bg-primary rounded-[30px] p-2 text-tertiary px-10 text-lg font-extrabold"
               onClick={onSearchBtnClick}

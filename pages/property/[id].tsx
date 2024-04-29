@@ -63,7 +63,7 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
     setMapIsActive(false);
   }, [dynamicRoute]);
 
-  const galeryModalCSS = `lg:mx-auto m-5 mb-0 lg:mb-36. md:mb-5 md:mt-0 lg:mt-5  ${isModalOpen ? 'z-50' : 'z-30'
+  const galeryModalCSS = `lg:mx-auto md:m-5 mb-0 lg:mb-36. md:mb-5 md:mt-0 lg:mt-5  ${isModalOpen ? 'z-50' : 'z-30'
     }`;
 
   return (

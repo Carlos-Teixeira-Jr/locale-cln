@@ -6,7 +6,12 @@ import FurnitureIcon from '../../atoms/icons/furnitureIcon';
 import ParkingIcon from '../../atoms/icons/parkingIcon';
 import PetsIcon from '../../atoms/icons/petsIcon';
 import PoolIcon from '../../atoms/icons/poolIcon';
+import Loading from '../../atoms/loading';
 import { toggleSelection } from './toggleSelection';
+
+type LoadingState = {
+  [key: string]: boolean; // Index signature para acessar propriedades dinâmicas como boolean
+};
 
 export interface ISearchShortcut {
   onMobileFilterIsOpenChange: (isOpen: boolean) => void;
@@ -22,6 +27,12 @@ const SearchShortcut: React.FC<ISearchShortcut> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const [loading, setLoading] = useState<LoadingState>({
+    pets: false,
+    furnished: false,
+    pool: false,
+    garage: false
+  });
 
   // Handles the query url params checking to verify the tags thats already selected on rendering;
   useTagEffect(query, selectedTags, setSelectedTags);
@@ -29,40 +40,37 @@ const SearchShortcut: React.FC<ISearchShortcut> = ({
   const getTagsShortcuts = () => {
     const iconClassName = "group-hover:fill-tertiary";
     const iconFill = "#6B7280";
+    const loadingFill = "#6B7280";
     const tagsShortcuts = [
       {
         label: 'Pets',
         key: 'pets',
         tag: 'aceita pets',
-        icon: <PetsIcon fill={iconFill} className={iconClassName} />,
+        icon: !loading.pets ? <PetsIcon fill={iconFill} className={iconClassName} /> : <Loading fill={loadingFill} />,
       },
       {
         label: 'Mobiliado',
         key: 'furnished',
         tag: 'mobiliado',
-        icon: (
-          <FurnitureIcon fill={iconFill} className={iconClassName} />
-        ),
+        icon: !loading.furnished ? <FurnitureIcon fill={iconFill} className={iconClassName} /> : <Loading fill={loadingFill} />,
       },
       {
         label: 'Piscina',
         key: 'pool',
         tag: 'piscina',
-        icon: <PoolIcon fill={iconFill} className={iconClassName} />,
+        icon: !loading.pool ? <PoolIcon fill={iconFill} className={iconClassName} /> : <Loading fill={loadingFill} />,
       },
       {
         label: 'Garagem',
         key: 'garage',
         tag: 'garagem',
-        icon: (
-          <ParkingIcon
-            fill={iconFill}
-            viewBox="4 -12 40 70"
-            width="24"
-            height="48"
-            className={iconClassName}
-          />
-        ),
+        icon: !loading.garage ? <ParkingIcon
+          fill={iconFill}
+          viewBox="4 -12 40 70"
+          width="24"
+          height="48"
+          className={iconClassName}
+        /> : <Loading fill={loadingFill} />
       },
     ];
     return tagsShortcuts;
@@ -114,7 +122,10 @@ const SearchShortcut: React.FC<ISearchShortcut> = ({
               } rounded-[30px] p-3 bg-transparent hover:bg-quaternary cursor-pointer`}
           >
             <div
-              onClick={() => toggleSelection(query, router, shortcut.tag)}
+              onClick={() => {
+                setLoading({ ...loading, [shortcut.key]: !loading[shortcut.key] });
+                toggleSelection(query, router, shortcut.tag);
+              }}
               className="flex flex-row items-center justify-between"
             >
               {query.tags?.includes(shortcut.tag) ? (
