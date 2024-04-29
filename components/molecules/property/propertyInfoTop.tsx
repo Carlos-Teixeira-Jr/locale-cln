@@ -80,7 +80,7 @@ const PropertyInfoTop = ({ propertyID }: IPropertyInfoTop) => {
           )}
         </div>
       </div>
-      <div className="flex flex-row items-end text-quaternary font-semibold text-sm md:text-lg justify-between mt-2 md:mt-0">
+      <div className="flex flex-row items-end. justify-center text-quaternary font-semibold text-sm md:text-lg md:justify-between mt-2 md:mt-0">
         {getSections(
           propertyID.size?.totalArea,
           propertyID.metadata.find(

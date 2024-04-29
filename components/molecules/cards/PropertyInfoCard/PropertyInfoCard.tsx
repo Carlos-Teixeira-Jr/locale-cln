@@ -189,37 +189,46 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
             </div>
             <div className="grid grid-auto-cols grid-flow-col gap-3 pb-6 md:pb-5 items-center">
               <div className="flex flex-row gap-6">
-                <div className="flex flex-row">
-                  <div className="md:w-fit h-fit">
-                    <BedroomIcon fill="#6B7280" width="34" height="34" />
+
+                {bedrooms! > 0 && (
+                  <div className="flex flex-row">
+                    <div className="md:w-fit h-fit">
+                      <BedroomIcon fill="#6B7280" width="34" height="34" />
+                    </div>
+                    <div className="font-bold text-xl md:ml-[0.2rem] text-quaternary flex items-center justify-center">
+                      {bedrooms}
+                    </div>
                   </div>
-                  <div className="font-bold text-xl md:ml-[0.2rem] text-quaternary flex items-center justify-center">
-                    {bedrooms}
+                )}
+
+                {parking_spaces! > 0 && (
+                  <div className="flex flex-row">
+                    <div className="md:w-fit h-fit">
+                      <ParkingIcon fill="#6B7280" width="34" height="34" />
+                    </div>
+                    <div className="font-bold text-xl md:ml-[0.2rem]  text-quaternary flex items-center justify-center">
+                      {parking_spaces}
+                    </div>
                   </div>
-                </div>
-                <div className="flex flex-row">
-                  <div className="md:w-fit h-fit">
-                    <ParkingIcon fill="#6B7280" width="34" height="34" />
+                )}
+
+                {bathrooms! > 0 && (
+                  <div className="flex flex-row">
+                    <div className="md:w-fit h-fit">
+                      <BathroomIcon fill="#6B7280" width="34" height="34" />
+                    </div>
+                    <div className="font-bold text-xl md:ml-[0.2rem] text-quaternary flex items-center justify-center">
+                      {bathrooms}
+                    </div>
                   </div>
-                  <div className="font-bold text-xl md:ml-[0.2rem]  text-quaternary flex items-center justify-center">
-                    {parking_spaces}
-                  </div>
-                </div>
-                <div className="flex flex-row">
-                  <div className="md:w-fit h-fit">
-                    <BathroomIcon fill="#6B7280" width="34" height="34" />
-                  </div>
-                  <div className="font-bold text-xl md:ml-[0.2rem] text-quaternary flex items-center justify-center">
-                    {bathrooms}
-                  </div>
-                </div>
+                )}
               </div>
 
               <button
-                className="bg-primary md:w-[170px] h-10 rounded-full transition-colors duration-300 hover:bg-red-600 hover:text-white"
+                className="bg-primary max-w-[114px] ml-auto md:w-[170px] h-10 rounded-full transition-colors duration-300 hover:bg-red-600 hover:text-white"
                 onClick={handleMessageBtnClick}
               >
-                <p className="md:w-[176px] md:h-[20px] font-normal sm:text-sm px-2 text-xl text-tertiary flex mx-auto my-1 lg:my-0 align-middle justify-center py-0 sm:py-1 md:py-0 lg:py-0 xl:py-0 mb-1 md:mb-1 lg:mb-0">
+                <p className="md:w-[176px] md:h-[20px] font-normal leading-tight sm:text-sm px-2 text-base md:text-xl text-tertiary flex mx-auto md:my-1 lg:my-0 align-middle justify-center py-0 sm:py-1 md:py-0 lg:py-0 xl:py-0 mb-1 md:mb-1 lg:mb-0">
                   Enviar Mensagem
                 </p>
               </button>

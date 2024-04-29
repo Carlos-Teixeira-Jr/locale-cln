@@ -279,7 +279,6 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
                 <UnfavouritedIcon
                   width="34"
                   height="34"
-                  className="pb-4 md:pb-0"
                 />
               )}
             </button>
