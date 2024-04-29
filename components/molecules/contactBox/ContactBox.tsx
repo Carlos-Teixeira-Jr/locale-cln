@@ -118,7 +118,7 @@ const ContactBox: React.FC<IContactBox> = ({ ownerInfo, property }: IContactBox)
           {buttons.map((btn) => (
             <div
               onClick={() => btn.onClick()}
-              className={`md:w-full w-36 h-12 text-tertiary font-extrabold text-lg rounded-[10px] p-2.5 top-[861px] left-[999px] gap-y-1.5 md:grid flex drop-shadow-lg md:m-2 align-middle my-auto justify-center mr-2 cursor-pointer transition-colors  duration-300 ${btn.key === 'contact' ? 'bg-secondary hover:bg-yellow-600' : 'bg-[#25D366] hover:bg-green-700'
+              className={`md:w-full w-36 h-12 text-tertiary font-extrabold text-lg rounded-[10px] p-2.5 top-[861px] left-[999px] gap-y-1.5 md:grid flex drop-shadow-lg md:m-2 align-middle my-auto justify-center md:mr-2 cursor-pointer transition-colors  duration-300 ${btn.key === 'contact' ? 'bg-secondary hover:bg-yellow-600' : 'bg-[#25D366] hover:bg-green-700'
                 }`}
               key={btn.key}
             >
