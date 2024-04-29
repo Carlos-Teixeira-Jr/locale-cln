@@ -18,6 +18,7 @@ type Options = {
   icon: ReactNode;
   title: string;
   link: string;
+  cases: string[];
 };
 
 type SideMenuProps = {
@@ -88,6 +89,7 @@ const SideMenu: React.FC<SideMenuProps> = ({
       ),
       title: 'Meus anúncios',
       link: '/admin',
+      cases: ['owner', 'plus']
     },
     {
       key: 'myData',
@@ -102,6 +104,7 @@ const SideMenu: React.FC<SideMenuProps> = ({
       ),
       title: 'Meus dados',
       link: '/adminUserData',
+      cases: ['user', 'owner', 'plus']
     },
     {
       key: 'myFavourites',
@@ -117,6 +120,7 @@ const SideMenu: React.FC<SideMenuProps> = ({
       ),
       title: 'Meus favoritos',
       link: '/adminFavProperties',
+      cases: ['user', 'owner', 'plus']
     },
     {
       key: 'myMessages',
@@ -140,6 +144,7 @@ const SideMenu: React.FC<SideMenuProps> = ({
       ),
       title: 'Minhas mensagens',
       link: '/adminMessages',
+      cases: ['owner', 'plus']
     },
     {
       key: 'myNotifications',
@@ -164,81 +169,69 @@ const SideMenu: React.FC<SideMenuProps> = ({
       ),
       title: 'Minhas notificações',
       link: '/adminNotifications',
+      cases: ['user', 'owner', 'plus']
+    },
+    {
+      key: 'creditsShop',
+      id: 'credits-shop',
+      icon: (
+        <CartIcon
+          fill={`${activeButton === 'credits-shop' ? '#F5BF5D' : '#6B7280'
+            }`}
+          className="my-auto mr-5"
+          width="30"
+          height="30"
+        />
+      ),
+      title: 'Comprar créditos',
+      link: '/creditsShop',
+      cases: ['plus']
     },
   ];
-
-  useEffect(() => {
-    if (isPlus) {
-      options.push(
-        {
-          key: 'creditsShop',
-          id: 'credits-shop',
-          icon: (
-            <CartIcon
-              fill={`${activeButton === 'credits-shop' ? '#F5BF5D' : '#6B7280'
-                }`}
-              className="my-auto mr-5"
-              width="30"
-              height="30"
-            />
-          ),
-          title: 'Comprar créditos',
-          link: '/creditsShop',
-        },
-      )
-    }
-  }, [isPlus])
 
   return (
     <>
       <div className="w-fit h-screen bg-tertiary px-2 mt-10 drop-shadow-xl left-0">
+        {options.map((option: Options) => {
+          const shouldRender =
+            (isOwner && option.cases.includes('owner')) ||
+            (!isOwner && option.cases.includes('user')) ||
+            (isPlus && option.cases.includes('plus') && (isOwner || option.cases.includes('owner')));
 
-        {isOwnerProp !== undefined && notifications !== undefined && options.map(({ key, id, icon, title, link }: Options) => {
-          if (
-            isOwner ||
-            id === 'favourites-button' ||
-            id === 'notifications-button' ||
-            id === 'my-data-button'
-          ) {
+          if (shouldRender) {
             return (
               <div
-                key={key}
+                key={option.key}
                 onClick={() => {
                   router.push({
-                    pathname: link,
-                    query: {
-                      page: 1,
-                    },
+                    pathname: option.link,
+                    query: { page: 1 },
                   });
                 }}
               >
                 <button
                   className="flex mx-5 py-1.5"
                   onClick={() => {
-                    setActiveButton(id);
-                    setLoadingIconId(id); // Define o ID do ícone que está em loading
+                    setActiveButton(option.id);
+                    setLoadingIconId(option.id);
                   }}
                 >
-                  {/* {loadingIconId === id ? <Loading /> : icon} */}
-                  {loadingIconId === id ? <Loading fill='#F5BF5D' /> : icon}
+                  {loadingIconId === option.id ? <Loading fill="#F5BF5D" /> : option.icon}
                   <h2
-                    className={`text-md ml font-bold leading-7 my-auto transition-colors duration-300 ${activeButton === id
-                      ? `text-secondary hover:text-yellow ${loadingIconId !== id ?
-                        '' :
-                        'md:ml-[18px]'
-                      }`
+                    className={`text-md ml font-bold leading-7 my-auto transition-colors duration-300 ${activeButton === option.id
+                      ? `text-secondary hover:text-yellow ${loadingIconId !== option.id ? '' : 'md:ml-[18px]'}`
                       : 'text-quaternary hover:text-gray-700'
                       }`}
                   >
-                    {title}
+                    {option.title}
                   </h2>
                 </button>
               </div>
             );
+          } else {
+            return null;
           }
-          return null;
         })}
-
 
         {isOwnerProp !== undefined && notifications !== undefined && (
           <div className="flex justify-center mt-10">

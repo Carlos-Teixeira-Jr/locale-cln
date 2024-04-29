@@ -3,8 +3,8 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import ReactModal from 'react-modal';
 import { toast } from 'react-toastify';
-import CloseIcon from '../icons/closeIcon';
 import { ErrorToastNames, showErrorToast } from '../../../common/utils/toasts';
+import CloseIcon from '../icons/closeIcon';
 ReactModal.setAppElement('#__next');
 
 interface IConfirmActivationModal {
@@ -20,6 +20,7 @@ export default function confirmActivationModal({
   isActiveProp,
   propertyIdProp,
 }: IConfirmActivationModal) {
+
   const [isMobile, setIsMobile] = useState(false);
   const [isActive, _setIsActive] = useState<boolean>(isActiveProp);
   const [propertyId, _setPropertyId] = useState<string>(propertyIdProp);
@@ -128,9 +129,8 @@ export default function confirmActivationModal({
           />
         </div>
 
-        <h1 className="text-xl font-bold mb-4 text-primary">{`Você tem certeza que quer ${
-          isActive ? 'inativar' : 'reativar'
-        } este anúncio?`}</h1>
+        <h1 className="text-xl font-bold mb-4 text-primary">{`Você tem certeza que quer ${isActive ? 'inativar' : 'reativar'
+          } este anúncio?`}</h1>
         <p className="font-bold text-xs text-quaternary mb-4">
           {isActive
             ? 'Caso queira reativar este anúncio no futuro será cobrado um crédito de anúncio de seu plano.'

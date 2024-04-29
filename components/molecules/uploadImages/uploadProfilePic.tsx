@@ -25,7 +25,7 @@ const Image: React.FC<ImageProps> = ({ id, src, onImageChange, alt }) => {
   return (
     <div className="flex items-center">
       <img
-        src={src ? src : defaultProfileImage}
+        src={!isDefault ? src : defaultProfileImage}
         alt={alt}
         className={`rounded-full mt-2 ml-10 object-cover ${isDefault ?
           '' :

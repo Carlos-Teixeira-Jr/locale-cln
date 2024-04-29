@@ -18,7 +18,8 @@ export enum SuccessToastNames {
   PropertyUpdate = 'propertyUpdate',
   DeleteUser = 'deleteUser',
   UploadedImage = 'uploadedImage',
-  RemoveImage = 'removeImage'
+  RemoveImage = 'removeImage',
+  CreditsSuccess = 'creditsSuccess'
 }
 
 export enum ErrorToastNames {
@@ -43,7 +44,9 @@ export enum ErrorToastNames {
   SendImages = 'sendImages',
   ImagesTotalSizeLimit = 'imagesTotalSizeLimit',
   ImagesUploadError = 'imagesUpload',
-  UserNotFound = 'Nenhum usuário encontrado com o email ou senha informados.'
+  UserNotFound = 'Nenhum usuário encontrado com o email ou senha informados.',
+  EmptyCreditCardInfo = 'emptyCreditCArdInfo',
+  OwnerImageUpload = 'ownerImageUpload'
 }
 
 export enum InfoToastNames {
@@ -114,6 +117,12 @@ const successToastMessages: Record<SuccessToastNames, ToastMessage> = {
   },
   [SuccessToastNames.RemoveImage]: {
     message: 'Imagem removida com sucesso do IndexedDB.',
+    options: {
+      autoClose: 7000,
+    },
+  },
+  [SuccessToastNames.CreditsSuccess]: {
+    message: 'Compra de créditos realizada com sucesso.',
     options: {
       autoClose: 7000,
     },
@@ -248,7 +257,19 @@ const errorToastMessages: Record<ErrorToastNames, ToastMessage> = {
     },
   },
   [ErrorToastNames.UserNotFound]: {
-    message: 'Nenhum usuário encontrado com o e-mail ou senha informados..',
+    message: 'Nenhum usuário encontrado com o e-mail ou senha informados.',
+    options: {
+      autoClose: 7000,
+    },
+  },
+  [ErrorToastNames.EmptyCreditCardInfo]: {
+    message: 'Algum dos dados do cartão de crédito não foi informado.',
+    options: {
+      autoClose: 7000,
+    },
+  },
+  [ErrorToastNames.OwnerImageUpload]: {
+    message: 'Houve um erro ao cadastrar a imagem do proprietário do imóvel.',
     options: {
       autoClose: 7000,
     },

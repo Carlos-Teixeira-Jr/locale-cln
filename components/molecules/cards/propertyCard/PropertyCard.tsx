@@ -126,7 +126,7 @@ const PropertyCard: React.FC<IPropertyCard> = ({
 
   return (
     <div
-      className={`flex flex-col lg:max-w-[270px] md:max-w-[250px] bg-tertiary shadow-lg rounded-[30px] mt-2 cursor-pointer w-full ${expanded ? `min-h-[470px] max-h-fit` : 'max-h-[470px]'
+      className={`flex flex-col max-w-[350px] lg:max-w-[270px] md:max-w-[250px] bg-tertiary shadow-lg rounded-[30px] mt-2 cursor-pointer w-full ${expanded ? `min-h-[470px] max-h-fit` : 'max-h-[470px]'
         }`}
     >
       <Link href={`/property/${id}`}>

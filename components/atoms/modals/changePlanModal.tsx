@@ -78,7 +78,7 @@ const ChangePlanModal: React.FC<IChangePlanModal> = ({
           <CheckIcon fill="white" className='my-auto' />
         </div>
       </div>
-      <div className='flex justify-between w-full'>
+      <div className='flex flex-row-reverse justify-between w-full'>
         <button
           className={`flex items-center flex-row justify-around w-44 h-14 text-tertiary rounded font-bold text-lg md:text-xl ${loading ?
             'bg-red-300 transition-colors duration-300' :

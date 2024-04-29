@@ -48,13 +48,9 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
 
   const priceString = price.toString();
   const formattedPrice = monetaryFormat(priceString);
-
   const [isActive, setIsActive] = useState<boolean>(isActiveProp);
-
   const { data: session } = useSession() as any;
-
   const user = session?.user?.data._id;
-
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
   const handleHighlight = async () => {

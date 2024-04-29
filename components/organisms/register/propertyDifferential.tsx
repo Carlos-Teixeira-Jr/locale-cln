@@ -35,7 +35,7 @@ const PropertyDifferentials = ({
   const [updatedTags, setUpdatedTags] = useState<string[]>(() => {
     if (property && property.tags) {
       return property.tags;
-    } else if (storedData && storedData.tags.length > 0) {
+    } else if (storedData && storedData?.tags?.length > 0) {
       return storedData.tags
     } else {
       return [];

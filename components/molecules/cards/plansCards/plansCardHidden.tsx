@@ -212,6 +212,7 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
           )}
         </div>
       </div>
+
     </div>
   );
 };

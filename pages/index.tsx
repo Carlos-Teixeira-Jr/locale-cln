@@ -120,7 +120,7 @@ const Home: NextPageWithLayout<IHome> = ({
             ))}
 
           <div className={classes.cardContainer}>
-            <div className="flex flex-row px-4">
+            <div className="flex flex-row md:px-4">
               <div className="flex flex-col m-auto align-middle mt-2">
                 <div className={classes.propertiesByLocation}>
                   {propertiesByLocation.docs
@@ -221,7 +221,7 @@ const classes = {
   content:
     'max-w-[1232px] flex sm:items-center md:items-center flex-col m-auto',
   cardContainer:
-    'flex sm:flex-col max-w-[1232px] justify-center items-center md:flex-row  mb-3 px-2',
+    'flex sm:flex-col max-w-[1232px] justify-center items-center md:flex-row mb-3 px-2',
   title:
     'text-base lg:text-xl font-bold text-quaternary text-center mt-5 md:ml-5',
   subTitleContainer: 'flex max-w-[1232px] justify-center text-left',

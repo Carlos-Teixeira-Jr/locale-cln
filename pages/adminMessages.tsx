@@ -3,6 +3,8 @@ import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { IMessage } from '../common/interfaces/message/messages';
+import { IOwner } from '../common/interfaces/owner/owner';
+import { IPlan } from '../common/interfaces/plans/plans';
 import { IOwnerProperties } from '../common/interfaces/properties/propertiesList';
 import { IData } from '../common/interfaces/property/propertyData';
 import { fetchJson } from '../common/utils/fetchJson';
@@ -23,6 +25,8 @@ interface IAdminMessagesPage {
   ownerProperties: IOwnerProperties;
   messages: IMessages;
   notifications: [];
+  plans: IPlan[];
+  owner: IOwner;
 }
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
@@ -31,6 +35,8 @@ const AdminMessages = ({
   ownerProperties,
   messages,
   notifications,
+  plans,
+  owner
 }: IAdminMessagesPage) => {
 
   const router = useRouter();
@@ -42,6 +48,8 @@ const AdminMessages = ({
   const [currentPage, setCurrentPage] = useState(1);
   const isMobile = useIsMobile();
   const unreadMessages = messages?.docs?.length > 0 ? messages?.docs?.filter((e) => e.isRead === false) : [];
+  const plusPlan = plans.find((e) => e.name === 'Locale Plus');
+  const ownerIsPlus = owner?.plan === plusPlan?._id ? true : false;
 
   useEffect(() => {
     if (router.query.page !== undefined && typeof query.page === 'string') {
@@ -79,11 +87,16 @@ const AdminMessages = ({
 
   return (
     <main>
-      <AdminHeader isOwnerProp={isOwner} />
+      <AdminHeader isOwnerProp={isOwner} isPlus={ownerIsPlus} />
       <div className={classes.body}>
         <div className={classes.sideMenu}>
           {!isMobile ? (
-            <SideMenu isOwnerProp={isOwner} notifications={notifications} unreadMessages={unreadMessages} isPlus={false} />
+            <SideMenu
+              isOwnerProp={isOwner}
+              notifications={notifications}
+              unreadMessages={unreadMessages}
+              isPlus={ownerIsPlus}
+            />
           ) : (
             ''
           )}
@@ -146,6 +159,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const userId = session?.user.data._id || session?.user.id;
   const page = Number(context.query.page);
   let ownerId;
+  let owner;
 
   if (!session) {
     return {
@@ -170,13 +184,19 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
     if (ownerIdResponse.ok) {
       const ownerData = await ownerIdResponse.json();
+      owner = ownerData.owner;
       ownerId = ownerData?.owner?._id;
     }
   } catch (error) {
     console.error(error);
   }
 
-  const [notifications, ownerProperties, messages] = await Promise.all([
+  const [
+    notifications,
+    ownerProperties,
+    messages,
+    plans
+  ] = await Promise.all([
     fetch(
       `${baseUrl}/notification/user/${userId}`,
       {
@@ -212,9 +232,18 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     })
       .then((res) => res.json())
       .catch(() => []),
+    fetch(`${baseUrl}/plan`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => res.json())
+      .catch(() => []),
     fetchJson(`${baseUrl}/notification/${userId}`),
     fetchJson(`${baseUrl}/property/owner-properties`),
     fetchJson(`${baseUrl}/message/find-all-by-ownerId`),
+    fetchJson(`${baseUrl}/plan`),
   ]);
 
   return {
@@ -222,6 +251,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       ownerProperties,
       messages,
       notifications,
+      plans,
+      owner
     },
   };
 }

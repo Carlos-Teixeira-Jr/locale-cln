@@ -2,7 +2,6 @@ import { useState } from 'react';
 import ArrowDownIconcon from '../components/atoms/icons/arrowDownIcon';
 import Address from '../components/molecules/address/address';
 import UploadImages from '../components/molecules/uploadImages/uploadImages';
-import AdminHeader from '../components/organisms/adminHeader/adminHeader';
 import MainFeatures from '../components/organisms/mainFeatures/mainFeatures';
 import PropertyDifferentials from '../components/organisms/register/propertyDifferential';
 import SideMenu from '../components/organisms/sideMenu/sideMenu';
@@ -39,7 +38,7 @@ const NewAd: NextPageWithLayout = () => {
 
   return (
     <div>
-      <AdminHeader />
+      {/* <AdminHeader /> */}
       <div className="flex flex-row justify-center lg:justify-end xl:justify-end 2xl:justify-center">
         <div className="fixed left-0 top-7  sm:hidden hidden md:hidden lg:flex">
           <SideMenu isPlus={false} />

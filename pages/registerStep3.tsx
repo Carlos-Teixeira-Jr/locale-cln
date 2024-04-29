@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import store from 'store';
 import { IOwnerData } from '../common/interfaces/owner/owner';
 import { IPlan } from '../common/interfaces/plans/plans';
-import { IAddress } from '../common/interfaces/property/propertyData';
+import { IAddress, IData } from '../common/interfaces/property/propertyData';
 import {
   ICreateProperty_propertyData,
   ICreateProperty_userData,
@@ -22,9 +22,11 @@ import { ErrorToastNames, showErrorToast } from '../common/utils/toasts';
 import Loading from '../components/atoms/loading';
 import ChangePlanModal from '../components/atoms/modals/changePlanModal';
 import PaymentFailModal from '../components/atoms/modals/paymentFailModal';
+import SelectAdsToDeactivateModal from '../components/atoms/modals/selectAdsToDeactivateModal';
 import LinearStepper from '../components/atoms/stepper/stepper';
 import Address from '../components/molecules/address/address';
 import ChangeAddressCheckbox from '../components/molecules/address/changeAddressCheckbox';
+import OwnerPlanBoard from '../components/molecules/boards/owwnerPlanBoard';
 import PlansCardsHidden from '../components/molecules/cards/plansCards/plansCardHidden';
 import PaymentBoard from '../components/molecules/payment/paymentBoard';
 import CreditCard, {
@@ -40,6 +42,7 @@ interface IRegisterStep3Props {
   setSelectedPlanCard: (_selectedCard: string) => void;
   plans: IPlan[];
   ownerData: IOwnerData;
+  docs: IData[]
 }
 
 type BodyReq = {
@@ -51,9 +54,16 @@ type BodyReq = {
   cellPhone: string;
   creditCardData?: CreditCardForm;
   picture?: string;
+  deactivateProperties: string[]
 };
 
-const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerData }) => {
+// To-do: verificar se a página está exigindo os dados do cartão mesmo quando o usuário ainda tem créditos no plano;
+// To-do: Se não for feita uma nova compra não deve mostrar o valor no box do final da página;
+// To-do: não está salvando a foto do owner no imóvel;
+// To-do: refazer o payload da desativação de imoveis no admin para enviar um array de strings;
+
+const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerData, docs }) => {
+
   const router = useRouter();
   const { progress, updateProgress } = useProgress();
   const query = router.query;
@@ -61,13 +71,13 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
   const storedData = store.get('propertyData');
   const storedPlan = store.get('plans');
   const chosenPlan = storedPlan ? storedPlan : '';
-  const propertyAddress = storedData! ? storedData?.storedData?.address : storedData?.storedData?.address;
+  const propertyAddress = storedData?.storedData?.address ? storedData?.storedData?.address : storedData?.address;
   const [paymentError, setPaymentError] = useState('');
-  console.log("🚀 ~ paymentError:", paymentError)
   const [loading, setLoading] = useState(false);
   const freePlan = plans?.find((plan) => plan.price === 0);
   const ownerPlan = plans?.find((plan) => plan._id === ownerData?.owner?.plan)
   const [selectedPlan, setSelectedPlan] = useState(chosenPlan !== '' ? chosenPlan : ownerPlan?._id);
+  const [selectedPlanData, setSelectedPlanData] = useState(plans?.find((plan) => plan._id === selectedPlan));
   const reversedCards = [...plans].reverse();
   const [isAdminPage, setIsAdminPage] = useState(false);
   const [isSameAddress, setIsSameAddress] = useState(false);
@@ -77,10 +87,18 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
   const [failPaymentModalIsOpen, setFailPaymentModalIsOpen] = useState(false);
   const [termsError, setTermsError] = useState('');
   const [changePlanModalIsOpen, setChangePlanModalIsOpen] = useState(false);
+  const [propsToDeactivateIsOpen, setPropsToDeactivateIsOpen] = useState(false);
   const [changePlanMessage, setChangePlanMessage] = useState('');
-  const planData: IPlan | undefined = plans.find(
-    (plan) => plan._id === selectedPlan
-  );
+  const [isChangePlan, setIsChangePlan] = useState(false);
+  const [confirmAdsToDeactivate, setConfirmAdsToDeactivate] = useState(false);
+  const [docsToDeactivate, setDocsToDeactivate] = useState<string[]>([])
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+
+  // Atualiza o selectedPlanData
+  useEffect(() => {
+    const data = plans?.find((plan) => plan._id === selectedPlan)
+    setSelectedPlanData(data)
+  }, [selectedPlan])
 
   const userDataInputRefs = {
     username: useRef<HTMLElement>(null),
@@ -103,6 +121,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     expiry: useRef<HTMLInputElement>(null),
     cvc: useRef<HTMLInputElement>(null),
   };
+
+  const plansRef = useRef<HTMLDivElement>(null);
 
   const { data: session } = useSession() as any;
   const userId = session?.user?.data._id;
@@ -142,6 +162,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     uf: '',
   });
 
+  console.log("🚀 ~ addressData:", addressData)
+
   const [addressErrors, setAddressErrors] = useState({
     zipCode: '',
     city: '',
@@ -168,6 +190,14 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
   });
 
   const [planError, setPlanError] = useState('');
+  useEffect(() => {
+    if (planError !== '' && plansRef.current) {
+      plansRef.current.scrollIntoView({
+        behavior: 'auto',
+        block: 'center',
+      });
+    }
+  }, [planError]);
 
   // Verifica se o estado progress que determina em qual step o usuário está corresponde ao step atual;
   useProgressRedirect(progress, 3, '/register');
@@ -209,16 +239,30 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
   };
 
   const handleSubmit = async (confirmChange: boolean) => {
+
+    if (
+      !isFreePlan &&
+      !confirmAdsToDeactivate &&
+      ownerPlan !== undefined &&
+      selectedPlanData !== undefined &&
+      selectedPlan !== ownerPlan._id &&
+      selectedPlanData.price < ownerPlan.price
+    ) {
+      setPropsToDeactivateIsOpen(true);
+      return;
+    }
+
     const error = `Este campo é obrigatório.`;
     const planErrorMessage = `Selecione um plano de anúncios.`
     const emptyCreditsErrorMsg = 'Parece que você esgotou seus créditos de anúncio no seu plano atual. Não se preocupe! Você pode mudar para um plano diferente ou comprar mais créditos para continuar anunciando seus imóveis.'
 
     // Limpa o estado de erro da seleção do plano, verifica se um plano foi selecionado e emite um erro caso contrário
-    setPlanError('');
     const planData: IPlan | undefined = plans.find(
       (plan) => plan._id === selectedPlan
     );
     const isPlanFree = planData === undefined || planData.name === 'Free';
+
+    setPlanError('');
 
     setUserDataErrors({
       username: '',
@@ -261,6 +305,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
       cardBrand: ''
     };
 
+    let newPlanError = '';
+
     let newChangePlanError = '';
     let newPaymentError = '';
 
@@ -270,9 +316,9 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
       setPaymentError(emptyCreditsErrorMsg);
       newPaymentError = emptyCreditsErrorMsg;
     }
-    if (ownerPlan?._id !== selectedPlan && !confirmChange) newChangePlanError = `Você está alterando seu plano de ${ownerPlan?.name} para o plano ${planData?.name}. A diferença entre os valores dos planos será cobrada na próxima fatura do seu cartão de crédito.`;
+    if (ownerPlan?._id !== selectedPlan && ownerPlan !== undefined && !confirmChange) newChangePlanError = `Você está alterando seu plano de ${ownerPlan?.name} para o plano ${planData?.name}. A diferença entre os valores dos planos será cobrada na próxima fatura do seu cartão de crédito.`;
     if (!userDataForm?.username) newUserDataErrors.username = error;
-    if (!selectedPlan) setPlanError(planErrorMessage);
+    if (!selectedPlan) newPlanError = planErrorMessage;
     if (!userDataForm?.email) newUserDataErrors.email = error;
     if (!userDataForm?.cpf) newUserDataErrors.cpf = error;
     if (!userDataForm?.cellPhone) newUserDataErrors.cellPhone = error;
@@ -294,11 +340,13 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     setUserDataErrors(newUserDataErrors);
     setAddressErrors(newAddressErrors);
     setCreditCardErrors(newCreditCardErrors);
+    setPlanError(newPlanError);
 
     const combinedErrors = {
       ...newAddressErrors,
       ...newUserDataErrors,
       ...newCreditCardErrors,
+      newPlanError
     };
 
     const hasErrors = Object.values(combinedErrors).some(
@@ -307,7 +355,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     const hasPaymentError = newPaymentError !== '' ? true : false;
     const planWasChanged = newChangePlanError !== '' && !confirmChange ? true : false;
 
-    if (!hasErrors && termsAreRead && planError === '') {
+    if (!hasErrors && termsAreRead) {
       if (!hasPaymentError && !planWasChanged) {
         console.log("entrou")
         try {
@@ -357,7 +405,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
           _id: userId ? userId : '',
           username: userDataForm.username,
           email: userDataForm.email,
-          address: isSameAddress ? storedData.address : addressData,
+          address: isSameAddress ? { ...storedData.address, streetNumber: '123' } : { ...addressData, streetNumber: '123' },
           cpf: userDataForm.cpf.replace(/\D/g, ''),
           picture: userDataForm.picture
             ? userDataForm.picture
@@ -404,14 +452,13 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
             plan: propertyDataStep3.plan,
             isPlanFree: isFreePlan,
             phone: userDataForm.phone,
-            cellPhone: `${userDataForm.cellPhone}`,
+            cellPhone: userDataForm.cellPhone !== '' ? `${userDataForm.cellPhone}` : '123',
+            deactivateProperties: docsToDeactivate
           };
 
           if (!isPlanFree) {
             body.creditCardData = creditCard;
           }
-
-          const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
 
           const response = await fetch(`${baseUrl}/property`, {
             method: 'POST',
@@ -427,13 +474,13 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
               cardBrand: data.creditCardBrand ? data.creditCardBrand : 'Free',
               value: data.paymentValue ? data.paymentValue : '00',
             };
-            store.set('creditCard', paymentData);
-            toast.dismiss();
-            store.set('propertyData', {
-              propertyDataStep3,
-              storedData,
-              paymentData,
-            });
+            // store.set('creditCard', paymentData);
+            // toast.dismiss();
+            // store.set('propertyData', {
+            //   propertyDataStep3,
+            //   storedData,
+            //   paymentData,
+            // });
 
             const indexDbImages = (await getAllImagesFromDB()) as {
               id: string;
@@ -480,7 +527,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
                 profileImageFormData.append('userId', data.user._id);
 
                 const profileImageResponse = await fetch(
-                  `${baseUrl}/property/upload-profile-image/owner`,
+                  `${baseUrl}/property/upload-profile-image/owner/${data.createdProperty._id}`,
                   {
                     method: 'POST',
                     body: profileImageFormData,
@@ -489,15 +536,22 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
 
                 if (!profileImageResponse.ok) {
                   showErrorToast(ErrorToastNames.SendImages);
-                  showErrorToast(ErrorToastNames.ImagesUploadError);
+                  showErrorToast(ErrorToastNames.OwnerImageUpload);
                   setTimeout(() => {
-                    router.push('/register');
+                    router.push('/admin');
                   }, 7000);
                 }
               }
 
               clearIndexDB();
               updateProgress(4);
+              store.set('creditCard', paymentData);
+              toast.dismiss();
+              store.set('propertyData', {
+                propertyDataStep3,
+                storedData,
+                paymentData,
+              });
               if (!urlEmail) {
                 router.push('/registerStep35');
               } else {
@@ -576,38 +630,53 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
                 <LinearStepper activeStep={2} />
               </div>
 
-              <div className="md:flex">
-                {reversedCards.map(
-                  ({ _id, name, price, highlightAd, commonAd, smartAd }: IPlan) => (
-                    <PlansCardsHidden
-                      key={_id}
-                      selectedPlanCard={selectedPlan}
-                      setSelectedPlanCard={(selectedCard: string) => {
-                        setSelectedPlan(selectedCard);
-                        const planData = plans.find(
-                          (plan) => plan._id === selectedCard
-                        );
-                        if (planData && planData?.name === 'Free') {
-                          setIsFreePlan(true);
-                        } else {
-                          setIsFreePlan(false);
-                        }
-                      }}
-                      isAdminPage={isAdminPage}
-                      name={name}
-                      price={price}
-                      commonAd={commonAd}
-                      highlightAd={highlightAd}
-                      smartAd={smartAd}
-                      id={_id}
-                      isEdit={false}
-                      userPlan={ownerData.owner?.plan}
-                      ownerCredits={ownerData?.owner?.adCredits}
-                      plans={plans}
+              <div className='flex flex-col'>
+                <div ref={plansRef} className={`md:flex ${planError !== "" ? 'border-2 pt-7 border-red-500 transition-opacity ease-in-out opacity-100' : ''}`}>
+                  {ownerData?.owner?.adCredits! === 0 || isChangePlan || !ownerData.owner ? (
+                    reversedCards.map(
+                      ({ _id, name, price, highlightAd, commonAd, smartAd }: IPlan) => (
+                        <PlansCardsHidden
+                          key={_id}
+                          selectedPlanCard={selectedPlan}
+                          setSelectedPlanCard={(selectedCard: string) => {
+                            setSelectedPlan(selectedCard);
+                            const planData = plans.find(
+                              (plan) => plan._id === selectedCard
+                            );
+                            if (planData && planData?.name === 'Free') {
+                              setIsFreePlan(true);
+                            } else {
+                              setIsFreePlan(false);
+                            }
+                          }}
+                          isAdminPage={isAdminPage}
+                          name={name}
+                          price={price}
+                          commonAd={commonAd}
+                          highlightAd={highlightAd}
+                          smartAd={smartAd}
+                          id={_id}
+                          isEdit={false}
+                          userPlan={ownerData.owner?.plan}
+                          ownerCredits={ownerData?.owner?.adCredits}
+                          plans={plans}
+                        />
+                      )
+                    )
+                  ) : (
+                    <OwnerPlanBoard
+                      ownerPlan={ownerPlan!}
+                      owner={ownerData?.owner!}
+                      isChangePlan={isChangePlan}
+                      setIsChangePlan={(isChange: boolean) => setIsChangePlan(isChange)}
                     />
-                  )
+                  )}
+                </div>
+                {planError !== "" && (
+                  <span className='text-sm text-red-500 font-normal text-center'>{planError}</span>
                 )}
               </div>
+
 
               <div className="lg:mx-0">
                 <div className={classes.userData}>
@@ -666,6 +735,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
                   selectedPlan={selectedPlan}
                   plans={plans}
                   termsError={termsError}
+                  ownerActualPlan={ownerPlan!}
                 />
 
                 <div className={classes.containerButton}>
@@ -695,9 +765,19 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
               setModalIsOpen={setChangePlanModalIsOpen}
               message={changePlanMessage}
               onConfirm={(confirmChange: boolean) => {
-                setChangePlanModalIsOpen(false); // Fecha o modal
-                handleSubmit(confirmChange); // Chama a função de envio do formulário após a confirmação
+                setChangePlanModalIsOpen(false);
+                handleSubmit(confirmChange);
               }}
+            />
+
+            <SelectAdsToDeactivateModal
+              isOpen={propsToDeactivateIsOpen}
+              setModalIsOpen={(isOpen: boolean) => setPropsToDeactivateIsOpen(isOpen)}
+              docs={docs}
+              creditsLeft={selectedPlanData?.commonAd!}
+              setConfirmAdsToDeactivate={(isConfirmed: boolean) => setConfirmAdsToDeactivate(isConfirmed)}
+              onSubmit={(isConfirmed: boolean) => handleSubmit(isConfirmed)}
+              docsToDeactivate={(docs: string[]) => setDocsToDeactivate(docs)}
             />
           </div >
 
@@ -714,6 +794,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   const session = (await getSession(context) as any);
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+  let docs: IData[];
 
   const userId =
     session?.user.data._id !== undefined
@@ -739,10 +820,40 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     fetchJson(`${baseUrl}/user/find-owner-by-user`)
   ]);
 
-  return {
-    props: {
-      plans,
-      ownerData
-    },
-  };
+  if (ownerData?.owner?._id) {
+    const response = await fetch(`${baseUrl}/property/owner-properties`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ ownerId: ownerData.owner._id }),
+    })
+
+    if (response.ok) {
+      const data = await response.json()
+      docs = data.docs;
+
+      return {
+        props: {
+          plans,
+          ownerData,
+          docs
+        },
+      };
+    } else {
+      return {
+        props: {
+          plans,
+          ownerData
+        },
+      };
+    }
+  } else {
+    return {
+      props: {
+        plans,
+        ownerData
+      },
+    };
+  }
 }

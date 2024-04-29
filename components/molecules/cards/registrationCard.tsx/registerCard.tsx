@@ -1,4 +1,4 @@
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
@@ -8,8 +8,10 @@ import UnverifiedEmailModal from '../../../atoms/modals/unverifiedEmailModal';
 import SocialAuthButton from '../../buttons/socialAuthButtons';
 
 const RegisterCard: React.FC = () => {
+  const { data } = useSession() as any;
+  const userEmail = data?.user?.data?.email! ? data?.user?.data?.email : data?.user?.email;
   const router = useRouter();
-  const [email, setEmail] = useState<string>('');
+  const [email, setEmail] = useState<string>(userEmail! ? userEmail : '');
   const [emailError, setEmailError] = useState<string>('');
   const [unverifiedEmailModal, setUnverifiedEmailModal] =
     useState<boolean>(false);

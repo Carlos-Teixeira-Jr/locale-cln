@@ -190,19 +190,19 @@ const LoginCard: React.FC = () => {
                   redirect: false,
                 }).then(({ ok, error }: any) => {
                   if (ok) {
-                    toast.dismiss();
-                    router.push('/admin?page=1');
+                    //toast.dismiss();
+                    router.push('/');
                   } else {
                     console.error(error);
-                    toast.dismiss();
-                    showErrorToast(ErrorToastNames.UserNotFound);
+                    //toast.dismiss();
+                    //showErrorToast(ErrorToastNames.UserNotFound);
                     setLoading(false);
                   }
                 });
 
                 if (signInResponse === null) {
                   setLoading(false);
-                  showErrorToast(ErrorToastNames.UserNotFound)
+                  //showErrorToast(ErrorToastNames.UserNotFound)
                 }
               } catch (error) {
                 toast.dismiss();
@@ -216,9 +216,7 @@ const LoginCard: React.FC = () => {
               setVerifyEmailModalIsOpen(true);
             }
           } else {
-            toast.dismiss();
             setLoading(false)
-            showErrorToast(ErrorToastNames.EmailNotFound)
           }
         } catch (error) {
           toast.dismiss();

@@ -76,7 +76,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
 
   return (
     <div>
-      <AdminHeader isOwnerProp={isOwner} />
+      <AdminHeader isOwnerProp={isOwner} isPlus={ownerIsPlus} />
       <div className="flex flex-row items-center justify-evenly xl:w-fit 2xl:w-full w-full max-w-full">
         <div className={classes.sideMenu}>
           <SideMenu
@@ -86,7 +86,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
             isPlus={ownerIsPlus}
           />
         </div>
-        <div className={`flex flex-col items-center mt-24 ${width < 1080 ? 'justify-center' : 'lg:ml-[26rem]'}`}>
+        <div className={`flex flex-col items-center mt-24 ${width < 1080 ? 'justify-center w-full' : 'lg:ml-[26rem]'}`}>
 
           <div className="mb-10 md:px-5 lg:px-0">
             <h1 className="font-extrabold text-xl md:text-3xl text-quaternary md:mb-5 md:mr-20. text-center">
@@ -188,7 +188,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        ownerId: owner._id,
+        ownerId: owner?._id,
         page,
       }),
     })
@@ -211,7 +211,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        ownerId: owner._id,
+        ownerId: owner?._id,
         page,
       }),
     })
