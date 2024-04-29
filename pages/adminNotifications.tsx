@@ -2,6 +2,8 @@ import { GetServerSidePropsContext } from 'next';
 import { getSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { IMessagesByOwner } from '../common/interfaces/message/messages';
+import { IOwner } from '../common/interfaces/owner/owner';
+import { IPlan } from '../common/interfaces/plans/plans';
 import { IOwnerProperties } from '../common/interfaces/properties/propertiesList';
 import { IPropertyInfo } from '../common/interfaces/property/propertyData';
 import { fetchJson } from '../common/utils/fetchJson';
@@ -17,7 +19,9 @@ interface IMessageNotifications {
   properties?: IPropertyInfo;
   notifications: INotification[];
   ownerProperties?: IOwnerProperties | any;
-  messages: IMessagesByOwner
+  messages: IMessagesByOwner;
+  plans: IPlan[];
+  owner: IOwner;
 }
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
@@ -25,7 +29,9 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
 const MessageNotifications = ({
   ownerProperties,
   notifications,
-  messages
+  messages,
+  plans,
+  owner
 }: IMessageNotifications) => {
 
   const isMobile = useIsMobile();
@@ -34,6 +40,8 @@ const MessageNotifications = ({
   const userNotifications = notifications;
   const adminNots = notifications as [];
   const unreadMessages = messages?.docs?.length > 0 ? messages?.docs?.filter((message) => !message.isRead) : [];
+  const plusPlan = plans.find((e) => e.name === 'Locale Plus');
+  const ownerIsPlus = owner?.plan === plusPlan?._id ? true : false;
 
   useEffect(() => {
     // Função a ser executada quando o componente for desmontado
@@ -59,7 +67,6 @@ const MessageNotifications = ({
     }
 
     return () => {
-      console.log('Componente desmontado. Execute sua lógica aqui.');
       updateNotification();
     };
   }, []);
@@ -76,7 +83,7 @@ const MessageNotifications = ({
 
   return (
     <main>
-      <AdminHeader isOwnerProp={isOwner} />
+      <AdminHeader isOwnerProp={isOwner} isPlus={ownerIsPlus} />
       <div className={classes.body}>
         <div className={classes.sideMenu}>
           {!isMobile ? (
@@ -84,6 +91,7 @@ const MessageNotifications = ({
               isOwnerProp={isOwner}
               notifications={adminNots && adminNots}
               unreadMessages={unreadMessages}
+              isPlus={ownerIsPlus}
             />
           ) : (
             ''
@@ -157,6 +165,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const userId = session?.user.data._id || session?.user.id;
   const page = Number(context.query.page);
   let ownerId;
+  let owner;
 
   if (!session) {
     return {
@@ -181,6 +190,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
     if (ownerIdResponse.ok) {
       const ownerData = await ownerIdResponse.json();
+      owner = ownerData.owner;
       ownerId = ownerData?.owner?._id;
     } else {
       console.error('erro - find-owner-by-user:', ownerIdResponse);
@@ -189,7 +199,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     console.error(error);
   }
 
-  const [ownerProperties, notifications, messages] = await Promise.all([
+  const [ownerProperties, notifications, messages, plans] = await Promise.all([
     fetch(`${baseUrl}/property/owner-properties`, {
       method: 'POST',
       headers: {
@@ -225,6 +235,15 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     })
       .then((res) => res.json())
       .catch(() => []),
+    fetch(`${baseUrl}/plan`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => res.json())
+      .catch(() => []),
+    fetchJson(`${baseUrl}/plan`),
     fetchJson(`${baseUrl}/property/owner-properties`),
     fetchJson(`${baseUrl}/notification/user/${userId}`),
     fetchJson(`${baseUrl}/message/find-all-by-ownerId`),
@@ -234,7 +253,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     props: {
       notifications,
       ownerProperties,
-      messages
+      messages,
+      plans,
+      owner
     },
   };
 }

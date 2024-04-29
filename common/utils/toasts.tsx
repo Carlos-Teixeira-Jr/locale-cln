@@ -18,7 +18,8 @@ export enum SuccessToastNames {
   PropertyUpdate = 'propertyUpdate',
   DeleteUser = 'deleteUser',
   UploadedImage = 'uploadedImage',
-  RemoveImage = 'removeImage'
+  RemoveImage = 'removeImage',
+  CreditsSuccess = 'creditsSuccess'
 }
 
 export enum ErrorToastNames {
@@ -43,7 +44,14 @@ export enum ErrorToastNames {
   SendImages = 'sendImages',
   ImagesTotalSizeLimit = 'imagesTotalSizeLimit',
   ImagesUploadError = 'imagesUpload',
-  UserNotFound = 'Nenhum usuário encontrado com o email ou senha informados.'
+  UserNotFound = 'Nenhum usuário encontrado com o email ou senha informados.',
+  EmptyCreditCardInfo = 'emptyCreditCArdInfo',
+  OwnerImageUpload = 'ownerImageUpload'
+}
+
+export enum InfoToastNames {
+  AnnouncementInfo = 'announcementInfo',
+  SelectYourPlan = 'selectYourPlan'
 }
 
 const successToastMessages: Record<SuccessToastNames, ToastMessage> = {
@@ -109,6 +117,12 @@ const successToastMessages: Record<SuccessToastNames, ToastMessage> = {
   },
   [SuccessToastNames.RemoveImage]: {
     message: 'Imagem removida com sucesso do IndexedDB.',
+    options: {
+      autoClose: 7000,
+    },
+  },
+  [SuccessToastNames.CreditsSuccess]: {
+    message: 'Compra de créditos realizada com sucesso.',
     options: {
       autoClose: 7000,
     },
@@ -243,12 +257,39 @@ const errorToastMessages: Record<ErrorToastNames, ToastMessage> = {
     },
   },
   [ErrorToastNames.UserNotFound]: {
-    message: 'Nenhum usuário encontrado com o e-mail ou senha informados..',
+    message: 'Nenhum usuário encontrado com o e-mail ou senha informados.',
+    options: {
+      autoClose: 7000,
+    },
+  },
+  [ErrorToastNames.EmptyCreditCardInfo]: {
+    message: 'Algum dos dados do cartão de crédito não foi informado.',
+    options: {
+      autoClose: 7000,
+    },
+  },
+  [ErrorToastNames.OwnerImageUpload]: {
+    message: 'Houve um erro ao cadastrar a imagem do proprietário do imóvel.',
     options: {
       autoClose: 7000,
     },
   }
 };
+
+const infoToastMessages: Record<InfoToastNames, ToastMessage> = {
+  [InfoToastNames.AnnouncementInfo]: {
+    message: 'Para anunciar, você pode inserir seu e-mail durante o processo de cadastro do imóvel ou optar por se cadastrar agora usando sua conta do Google.',
+    options: {
+      autoClose: 7000,
+    },
+  },
+  [InfoToastNames.SelectYourPlan]: {
+    message: 'Selecione um dos planos abaixo',
+    options: {
+      autoClose: 4000,
+    },
+  },
+}
 
 export const showSuccessToast = (name: SuccessToastNames, customOptions?: ToastOptions) => {
   const { message, options } = successToastMessages[name] || { message: 'Mensagem não encontrada' };
@@ -260,4 +301,10 @@ export const showErrorToast = (name: ErrorToastNames, customOptions?: ToastOptio
   const { message, options } = errorToastMessages[name] || { message: 'Mensagem não encontrada' };
   const mergedOptions = { ...options, ...customOptions };
   toast.error(message, mergedOptions);
+};
+
+export const showInfoToast = (name: InfoToastNames, customOptions?: ToastOptions) => {
+  const { message, options } = infoToastMessages[name] || { message: 'Mensagem não encontrada' };
+  const mergedOptions = { ...options, ...customOptions };
+  toast.info(message, mergedOptions);
 };

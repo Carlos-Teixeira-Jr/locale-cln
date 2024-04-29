@@ -39,7 +39,7 @@ const DeleteAccountModal = ({
       if (response.ok) {
         toast.dismiss();
         showSuccessToast(SuccessToastNames.DeleteUser);
-        signOut();
+        await signOut();
         router.push('/login');
       } else {
         toast.dismiss();

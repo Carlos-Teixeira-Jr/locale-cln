@@ -1,10 +1,10 @@
-import jwt, { JwtPayload } from 'jsonwebtoken';
 import { GetServerSidePropsContext } from 'next';
 import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { destroyCookie } from 'nookies';
 import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
+import { IOwner } from '../../../common/interfaces/owner/owner';
+import { IPlan } from '../../../common/interfaces/plans/plans';
 import {
   IEditPropertyData,
   IEditPropertyMainFeatures,
@@ -26,6 +26,7 @@ import {
 } from '../../../common/utils/toasts';
 import ArrowDownIconcon from '../../../components/atoms/icons/arrowDownIcon';
 import Address from '../../../components/molecules/address/address';
+import { INotification } from '../../../components/molecules/cards/notificationCard/notificationCard';
 import UploadImages from '../../../components/molecules/uploadImages/uploadImages';
 import AdminHeader from '../../../components/organisms/adminHeader/adminHeader';
 import MainFeatures from '../../../components/organisms/mainFeatures/mainFeatures';
@@ -35,24 +36,32 @@ import { NextPageWithLayout } from '../../page';
 
 interface IEditAnnouncement {
   property: IData;
+  ownerData: IOwner;
+  plans: IPlan[];
+  notifications: INotification[]
 }
 
 const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
   property,
+  ownerData,
+  plans,
+  notifications
 }) => {
   const [rotate1, setRotate1] = useState(false);
   const [rotate2, setRotate2] = useState(false);
   const [rotate3, setRotate3] = useState(false);
   const [rotate4, setRotate4] = useState(false);
   const router = useRouter();
+  const plusPlan = plans.find((e) => e.name === 'Locale Plus');
+  const ownerIsPlus = ownerData?.plan === plusPlan?._id ? true : false;
 
   const isEdit = router.pathname == '/property/modify/[id]';
 
   const [address, setAddress] = useState<IAddress>({
-    zipCode: '',
+    zipCode: '96215-180',
     city: '',
     streetName: '',
-    streetNumber: '',
+    streetNumber: '123',
     complement: '',
     neighborhood: '',
     uf: '',
@@ -397,13 +406,12 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
 
   return (
     <div>
-      <AdminHeader isOwnerProp={true} />
+      <AdminHeader isOwnerProp={true} isPlus={ownerIsPlus} />
       <div className={classes.body}>
         <div className={classes.sideMenu}>
           <SideMenu
             isOwnerProp={property !== undefined && true}
-            notifications={[]}
-          />
+            notifications={notifications} isPlus={ownerIsPlus} />
         </div>
         <div className={classes.content}>
           <h1 className={classes.title}>
@@ -613,11 +621,13 @@ export default EditAnnouncement;
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = (await getSession(context)) as any;
-  const query = context.query;
-  const propertyId = query.id;
-  let token = session?.user?.data?.access_token!!;
-  let refreshToken = session?.user?.data.refresh_token;
-  const isEdit = (await session) ? true : false;
+  const userId =
+    session?.user.data._id !== undefined
+      ? session?.user.data._id
+      : session?.user.id;
+  const propertyId = Number(context.query.id);
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+  let ownerId;
 
   if (!session) {
     return {
@@ -626,78 +636,45 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         permanent: false,
       },
     };
-  } else {
-    token = session?.user.data.access_token!!;
-    refreshToken = session.user?.data.refresh_token;
-    const decodedToken = jwt.decode(token) as JwtPayload;
-    const isTokenExpired = decodedToken.exp
-      ? decodedToken.exp <= Math.floor(Date.now() / 1000)
-      : false;
-
-    if (isTokenExpired) {
-      const decodedRefreshToken = jwt.decode(refreshToken) as JwtPayload;
-      const isRefreshTokenExpired = decodedRefreshToken.exp
-        ? decodedRefreshToken.exp <= Math.floor(Date.now() / 1000)
-        : false;
-
-      if (isRefreshTokenExpired) {
-        destroyCookie(context, 'next-auth.session-token');
-        destroyCookie(context, 'next-auth.csrf-token');
-
-        return {
-          redirect: {
-            destination: '/login',
-            permanent: false,
-          },
-        };
-      } else {
-        try {
-          const response = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/refresh`,
-            {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                refresh_token: refreshToken,
-              }),
-            }
-          );
-
-          if (response.ok) {
-            const data = await response.json();
-            const newToken = data.access_token;
-            const newRefreshToken = data.refresh_token;
-            refreshToken = newRefreshToken;
-            token = newToken;
-            session.user.data.refresh_token = newRefreshToken;
-            token = newToken;
-            session.user.data.access_token = newToken;
-          } else {
-            console.log('Não foi possível atualizar o token.');
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      }
-    }
-
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
-
-    const [property] = await Promise.all([
-      fetch(`${baseUrl}/property/${propertyId}?isEdit=${isEdit}`)
-        .then((res) => res.json())
-        .catch(() => { }),
-      fetchJson(`${baseUrl}/property/${propertyId}?isEdit=${isEdit}`),
-    ]);
-
-    return {
-      props: {
-        property,
-      },
-    };
   }
+
+  const [notifications, property, ownerData, plans] = await Promise.all([
+    fetch(`${baseUrl}/notification/user/${userId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => res.json())
+      .catch(() => []),
+    fetch(`${baseUrl}/property/${propertyId}?isEdit=true`)
+      .then((res) => res.json())
+      .catch(() => { }),
+    fetch(`${baseUrl}/user/find-owner-by-user`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ userId }),
+    })
+      .then((res) => res.json())
+      .catch(() => { }),
+    fetch(`${baseUrl}/plan`)
+      .then((res) => res.json())
+      .catch(() => []),
+    fetchJson(`${baseUrl}/notification/user/${userId}`),
+    fetchJson(`${baseUrl}/property/${propertyId}?isEdit=true`),
+    fetchJson(`${baseUrl}/user/find-owner-by-user`),
+    fetchJson(`${baseUrl}/plan`),
+  ]);
+
+  return {
+    props: {
+      property,
+      ownerData,
+      plans
+    },
+  };
 }
 
 const classes = {

@@ -15,7 +15,7 @@ export interface IPropertyInfoTop {
 }
 
 const PropertyInfoTop = ({ propertyID }: IPropertyInfoTop) => {
-  const formattedPrice = monetaryFormat(propertyID.prices[0].value.toString());
+  const formattedPrice = monetaryFormat(propertyID.prices[0]?.value.toString());
   const getSections = (
     areaValue: any,
     numBedrooms: IMetadata | undefined,
@@ -80,9 +80,9 @@ const PropertyInfoTop = ({ propertyID }: IPropertyInfoTop) => {
           )}
         </div>
       </div>
-      <div className="flex flex-row items-end text-quaternary font-semibold text-sm md:text-lg justify-between mt-2 md:mt-0">
+      <div className="flex flex-row items-end. justify-center text-quaternary font-semibold text-sm md:text-lg md:justify-between mt-2 md:mt-0">
         {getSections(
-          propertyID.size.totalArea,
+          propertyID.size?.totalArea,
           propertyID.metadata.find(
             (item: IMetadata) => item.type === 'bedroom'
           ),

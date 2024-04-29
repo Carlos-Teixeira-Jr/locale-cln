@@ -102,7 +102,7 @@ const RegisterStep2: NextPageWithLayout = () => {
     body: 'flex flex-col mx-auto max-w-[1215px]',
     propertyDifferentials: 'mb-10 mx-2 max-w-[1232px] justify-center',
     buttonContainer:
-      'flex flex-col md:flex-row lg:flex-row xl:flex-row gap-4 md:gap-0 lg:gap-0 xl:gap-0 items-center justify-between my-4 max-w-[1215px]',
+      'flex flex-col-reverse md:flex-row lg:flex-row xl:flex-row gap-4 md:gap-0 lg:gap-0 xl:gap-0 items-center justify-between my-4 max-w-[1215px]',
     button:
       `flex items-center flex-row justify-around w-44 h-14 text-tertiary rounded font-bold text-lg md:text-xl transition-colors duration-300 ${loading ?
         'bg-red-300' :
@@ -116,14 +116,14 @@ const RegisterStep2: NextPageWithLayout = () => {
     <>
       {progress !== 2 ? (
         <div className='flex justify-center items-center h-screen'>
-          <Loading width='md:w-20' height='md:h-20' />
+          <Loading className='md:w-20 w-10 h-10 md:h-20 animate-spin text-gray-200 dark:text-gray-600 fill-tertiary' fill={'#F75D5F'} />
         </div>
       ) : (
         <>
           <Header />
           <div className={classes.body}>
             <div className={classes.stepLabel}>
-              <LinearStepper isSubmited={false} sharedActiveStep={1} />
+              <LinearStepper activeStep={1} />
             </div>
             <div className="max-w-[1232px]" id="upload-images">
               <UploadImages

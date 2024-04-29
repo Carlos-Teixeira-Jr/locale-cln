@@ -11,18 +11,15 @@ import LocaleLogo from '../../atoms/logos/locale';
 
 interface IAdminHeader {
   isOwnerProp?: boolean;
-  ownerData?: IOwnerData
+  ownerData?: IOwnerData;
+  isPlus: boolean
 }
 
-const AdminHeader: React.FC<IAdminHeader> = ({ isOwnerProp, ownerData }) => {
+const AdminHeader: React.FC<IAdminHeader> = ({ isOwnerProp, ownerData, isPlus }) => {
   const [open, setOpen] = useState(false);
-
   const ref = useRef<HTMLDivElement>(null);
-
   const isMobile = useIsMobile();
-
   const isOwner = isOwnerProp ? isOwnerProp : false;
-
   const { data: session } = useSession() as any;
   const [userPicture, setUserPicture] = useState(session?.user?.user?.data?.picture
     ? session?.user?.user?.data?.picture
@@ -83,7 +80,7 @@ const AdminHeader: React.FC<IAdminHeader> = ({ isOwnerProp, ownerData }) => {
           </button>
         </div>
       </div>
-      {open && <DropdownAdmin isOwnerProp={isOwner} />}
+      {open && <DropdownAdmin isOwnerProp={isOwner} isPlus={isPlus} />}
     </div>
   );
 };

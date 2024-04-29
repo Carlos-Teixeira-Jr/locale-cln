@@ -4,6 +4,8 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { IMessage, IMessagesByProperty } from '../../common/interfaces/message/messages';
+import { IOwner } from '../../common/interfaces/owner/owner';
+import { IPlan } from '../../common/interfaces/plans/plans';
 import { IOwnerProperties } from '../../common/interfaces/properties/propertiesList';
 import usePageQueryParam from '../../common/utils/actions/getQueryParamPage';
 import { fetchJson } from '../../common/utils/fetchJson';
@@ -17,11 +19,13 @@ interface IMessagePage {
   ownerProperties: IOwnerProperties;
   message: IMessagesByProperty;
   notifications: INotification[];
+  ownerData: IOwner;
+  plans: IPlan[]
 }
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
 
-const MessagePage = ({ ownerProperties, message, notifications }: IMessagePage) => {
+const MessagePage = ({ ownerProperties, message, notifications, ownerData, plans }: IMessagePage) => {
   const router = useRouter();
   const query = router.query as any;
   const [isOwner, setIsOwner] = useState<boolean>(ownerProperties?.docs?.length > 0 ? true : false);
@@ -31,6 +35,8 @@ const MessagePage = ({ ownerProperties, message, notifications }: IMessagePage) 
   const [currentPage, setCurrentPage] = useState(1);
   const unreadMessages = message?.messages?.docs?.length > 0 ? message?.messages?.docs.filter((message) => !message.isRead) : [];
   const initialPage = 1;
+  const plusPlan = plans?.find((plan) => plan.name === 'Locale Plus')
+  const isPlus = ownerData?.plan === plusPlan?._id ? true : false
 
   // Atualiza a current page a partir dos parametros do url
   usePageQueryParam(initialPage, setCurrentPage);
@@ -97,15 +103,14 @@ const MessagePage = ({ ownerProperties, message, notifications }: IMessagePage) 
 
   return (
     <main>
-      <AdminHeader isOwnerProp={isOwner} />
+      <AdminHeader isOwnerProp={isOwner} isPlus={isPlus} />
 
       <div className={classes.body}>
         <div className={classes.sideMenu}>
           <SideMenu
             isOwnerProp={isOwner}
             notifications={notifications}
-            unreadMessages={unreadMessages}
-          />
+            unreadMessages={unreadMessages} isPlus={false} />
         </div>
         <div className={classes.contentContainer}>
           <div className={classes.content}>
@@ -170,6 +175,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const userId = session?.user.data._id;
   const page = Number(context.query.page);
   let ownerId;
+  let ownerData;
 
   if (!session) {
     return {
@@ -193,14 +199,14 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     );
 
     if (ownerIdResponse.ok) {
-      const ownerData = await ownerIdResponse.json();
+      ownerData = await ownerIdResponse.json();
       ownerId = ownerData?.owner?._id;
     }
   } catch (error) {
     console.error(error);
   }
 
-  const [ownerProperties, message, notifications] = await Promise.all([
+  const [ownerProperties, message, notifications, plans] = await Promise.all([
     fetch(`${baseUrl}/property/owner-properties`, {
       method: 'POST',
       headers: {
@@ -233,9 +239,13 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     })
       .then((res) => res.json())
       .catch(() => []),
+    fetch(`${baseUrl}/plan`)
+      .then((res) => res.json())
+      .catch(() => []),
     fetchJson(`${baseUrl}/property/owner-properties`),
     fetchJson(`${baseUrl}/message/find-by-propertyId`),
     fetchJson(`${baseUrl}/notification/${ownerId}`),
+    fetchJson(`${baseUrl}/plan`),
   ]);
 
   return {
@@ -243,6 +253,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       ownerProperties,
       message,
       notifications,
+      ownerData,
+      plans
     },
   };
 }

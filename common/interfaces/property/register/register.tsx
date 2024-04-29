@@ -59,6 +59,7 @@ export interface IRegisterPropertyData_Step3 {
   city: string;
   uf: string;
   streetName: string;
+  streetNumber: string;
   propertyAddress: IAddress;
   geolocation: number[];
   plan: string;

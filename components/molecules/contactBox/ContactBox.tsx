@@ -17,13 +17,13 @@ export interface IContactBox {
 
 const ContactBox: React.FC<IContactBox> = ({ ownerInfo, property }: IContactBox) => {
 
-  const picture = ownerInfo?.picture;
+  const picture = property?.ownerInfo?.picture;
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [fullMessage, setFullMessage] = useState(false);
   const owner = ownerInfo?.name;
   const ownerPropertyWpp = ownerInfo?.wppNumber ? ownerInfo?.wppNumber : ownerInfo?.cellPhone;
   const ownerWhatsapp = ownerPropertyWpp?.replace(/[^0-9]+/g, '');
-  const formattedPrice = monetaryFormat(String(property?.prices[0].value));
+  const formattedPrice = monetaryFormat(String(property?.prices[0]?.value));
   const uf = property?.address.uf;
   const city = property?.address.city;
   const propertyType = property?.propertyType;
@@ -96,7 +96,7 @@ const ContactBox: React.FC<IContactBox> = ({ ownerInfo, property }: IContactBox)
               alt={'A image of the property owner'}
               width={90}
               height={90}
-              className="rounded-full w-[90px] max-w-[90px] h-[90px] max-h-[90px]"
+              className="rounded-full w-[90px] max-w-[90px] h-[90px] max-h-[90px] shrink-0 border-2 border-primary"
             />
           ) : (
             <UserIcon
