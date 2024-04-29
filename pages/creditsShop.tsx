@@ -18,14 +18,16 @@ interface ICreditsShop {
   messages: IMessagesByOwner,
   owner: IOwner;
   plans: IPlan[];
-  ownerPlanPrice: number
+  ownerPlanPrice: number;
+  ownerPlan: IPlan
 }
 
 const CreditsShop = ({
   notifications,
   messages,
   owner,
-  ownerPlanPrice
+  ownerPlanPrice,
+  ownerPlan
 }: ICreditsShop) => {
 
   const [width] = useDeviceSize();
@@ -36,6 +38,7 @@ const CreditsShop = ({
   const [showCreditsConfirmattionModal, setShowCreditsConfirmationModal] = useState(false);
   const [btnIsDisabled, setBtnIsDisabled] = useState(true);
   const [totalPrice, setTotalPrice] = useState(0);
+  const ownerIsPlus = ownerPlan?.name === "Locale Plus" ? true : false;
 
   const [credits, setCredits] = useState<Credits>({
     adCredits: owner.adCredits,
@@ -114,7 +117,7 @@ const CreditsShop = ({
         <Loading width='md:w-20' height='md:h-20' />
       ) : (
         <main>
-          <AdminHeader isOwnerProp={true} />
+          <AdminHeader isOwnerProp={true} isPlus={ownerIsPlus} />
 
           <div className="flex flex-row items-center justify-evenly xl:w-fit 2xl:w-full w-full max-w-full">
             <div className={classes.sideMenu}>
@@ -265,14 +268,15 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     fetchJson(`${paymentUrl}/payment/subscription/${ownerSubscription}`),
   ]);
 
-  ownerPlanPrice = ownerPlan?.value
+  ownerPlanPrice = ownerPlan?.value;
 
   return {
     props: {
       notifications,
       messages,
       owner,
-      ownerPlanPrice
+      ownerPlanPrice,
+      ownerPlan
     },
   };
 }
