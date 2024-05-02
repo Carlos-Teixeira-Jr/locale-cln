@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IData } from '../../../common/interfaces/property/propertyData';
 import { useIsMobile } from '../../../hooks/useIsMobile';
 import CameraIcon from '../../atoms/icons/cameraIcon';
@@ -21,7 +21,6 @@ const Gallery: React.FC<IGallery> = ({
 }: IGallery) => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const isMobile = useIsMobile();
-  const ref = useRef();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedImage, setSelectedImage] = useState(0);
 

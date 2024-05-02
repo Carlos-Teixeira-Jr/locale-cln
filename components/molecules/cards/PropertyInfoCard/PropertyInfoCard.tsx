@@ -97,7 +97,7 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
     <>
       <Link href={href}>
         <div
-          className={` bg-tertiary md:grid md:grid-cols-3 rounded-[30px] overflow-hidden drop-shadow-lg my-7 md:mx-9 mx-2 flex flex-col ${expanded ? 'lg:h-fit' : 'lg:h-[255px]'
+          className={` bg-tertiary md:grid md:grid-cols-3 rounded-[30px] overflow-hidden drop-shadow-lg my-7 md:mx-9 mx-2 flex flex-col py-2 ${expanded ? 'lg:h-fit' : 'lg:h-fit'
             }`}
         >
           <div className="group relative md:h-[200px]">
@@ -187,7 +187,7 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
                 {location}
               </p>
             </div>
-            <div className="grid grid-auto-cols grid-flow-col gap-3 pb-6 md:pb-5 items-center">
+            <div className="grid grid-auto-cols grid-flow-col gap-3 pb-6. md:pb-5. items-center">
               <div className="flex flex-row gap-6">
 
                 {bedrooms! > 0 && (
@@ -225,12 +225,10 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
               </div>
 
               <button
-                className="bg-primary max-w-[114px] ml-auto md:w-[170px] h-10 rounded-full transition-colors duration-300 hover:bg-red-600 hover:text-white"
+                className="bg-primary max-w-[114px] md:max-w-fit ml-auto md:w-fit h-full py-1 px-2 rounded-full transition-colors duration-300 hover:bg-red-600 hover:text-white text-tertiary leading-tight"
                 onClick={handleMessageBtnClick}
               >
-                <p className="md:w-[176px] md:h-[20px] font-normal leading-tight sm:text-sm px-2 text-base md:text-xl text-tertiary flex mx-auto md:my-1 lg:my-0 align-middle justify-center py-0 sm:py-1 md:py-0 lg:py-0 xl:py-0 mb-1 md:mb-1 lg:mb-0">
-                  Enviar Mensagem
-                </p>
+                Enviar Mensagem
               </button>
             </div>
           </div>
