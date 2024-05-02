@@ -57,7 +57,7 @@ const Gallery: React.FC<IGallery> = ({
   return (
     <div className="overflow-hidden">
       <div className="z-50">
-        {modalIsOpen && !isMobile && (
+        {modalIsOpen && (
           <GalleryModal
             setModalIsOpen={setModalIsOpen}
             property={propertyID}
@@ -250,6 +250,13 @@ const Gallery: React.FC<IGallery> = ({
                 width={405}
                 height={350}
                 className=' object-cover'
+                onClick={() => {
+                  setSelectedImage(currentIndex);
+                  setModalIsOpen(true);
+                  document
+                    ?.getElementById('desabilitarScrollBtn')
+                    ?.addEventListener('click', desabilitarScroll);
+                }}
               />
             </div>
             {/* Index */}
