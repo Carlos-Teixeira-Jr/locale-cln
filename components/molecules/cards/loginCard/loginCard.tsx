@@ -140,6 +140,7 @@ const LoginCard: React.FC = () => {
         passwordConfirmation === password
       ) {
         try {
+          setLoading(true);
           const data = await sendRequest(
             `${baseUrl}/auth/register`,
             'POST',
@@ -190,12 +191,12 @@ const LoginCard: React.FC = () => {
                   redirect: false,
                 }).then(({ ok, error }: any) => {
                   if (ok) {
-                    //toast.dismiss();
+                    toast.dismiss();
                     router.push('/');
                   } else {
                     console.error(error);
-                    //toast.dismiss();
-                    //showErrorToast(ErrorToastNames.UserNotFound);
+                    toast.dismiss();
+                    showErrorToast(ErrorToastNames.UserNotFound);
                     setLoading(false);
                   }
                 });
@@ -360,9 +361,9 @@ const LoginCard: React.FC = () => {
 
       <div>
         <button
-          className={`md:w-[400px] w-full px-10 md:h-14 bg-primary p-2.5 gap-2.5 rounded-[50px] font-normal text-xl text-tertiary my-5  ${loading ?
-            'flex justify-center bg-red-300 transition-colors duration-300 text' :
-            'transition-colors duration-300 hover:bg-red-600 hover:text-white'
+          className={`md:w-[400px] w-full px-10 md:h-14 bg-primary p-2.5 gap-2.5 rounded-[50px] font-normal text-xl text-tertiary my-5 transition-colors duration-300 ${loading ?
+            'flex justify-center bg-red-300' :
+            ' hover:bg-red-600 hover:text-white'
             }`}
           disabled={loading}
           onClick={handleSubmit}
