@@ -243,8 +243,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
       !confirmAdsToDeactivate &&
       ownerPlan !== undefined &&
       selectedPlanData !== undefined &&
-      selectedPlan !== ownerPlan._id &&
-      selectedPlanData.price < ownerPlan.price
+      selectedPlan !== ownerPlan._id
+      //selectedPlanData.price < ownerPlan.price
     ) {
       setPropsToDeactivateIsOpen(true);
       return;
@@ -314,7 +314,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
       setPaymentError(emptyCreditsErrorMsg);
       newPaymentError = emptyCreditsErrorMsg;
     }
-    if (ownerPlan?._id !== selectedPlan && ownerPlan !== undefined && !confirmChange) newChangePlanError = `Você está alterando seu plano de ${ownerPlan?.name} para o plano ${planData?.name}. A diferença entre os valores dos planos será cobrada na próxima fatura do seu cartão de crédito.`;
+    if (ownerPlan?._id !== selectedPlan && ownerPlan !== undefined && !confirmChange) newChangePlanError = `Você está alterando seu plano de ${ownerPlan?.name === 'Free' ? 'Grátis' : ownerPlan?.name} para o plano ${selectedPlanData?.name === 'Free' ? 'Grátis' : selectedPlanData?.name}. A diferença entre os valores dos planos será cobrada na próxima fatura do seu cartão de crédito.`;
     if (!userDataForm?.username) newUserDataErrors.username = error;
     if (!selectedPlan) newPlanError = planErrorMessage;
     if (!userDataForm?.email) newUserDataErrors.email = error;
