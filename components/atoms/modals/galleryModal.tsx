@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { AiOutlineClose } from 'react-icons/ai';
 import { BsChevronCompactLeft, BsChevronCompactRight } from 'react-icons/bs';
 import { IData } from '../../../common/interfaces/property/propertyData';
+import Loading from '../loading';
 export interface IGalleryModal {
   setModalIsOpen: (isOpen: boolean) => void;
   property: IData;
@@ -18,13 +19,16 @@ const GalleryModal: React.FC<IGalleryModal> = ({
 }) => {
   const [currentIndex, setCurrentIndex] = useState(selectedImage);
   const [imageDimensions, setImageDimensions] = useState({ width: 0, height: 0 });
+  const [isLoading, setIsLoading] = useState(true);
 
   // Função para carregar a imagem e obter suas dimensões
   useEffect(() => {
+    setIsLoading(true);
     const loadImage = async () => {
       const img = new Image();
       img.src = property.images[currentIndex];
       img.onload = () => {
+        setIsLoading(false);
         setImageDimensions({ width: img.width, height: img.height });
       };
     };
@@ -47,7 +51,6 @@ const GalleryModal: React.FC<IGalleryModal> = ({
 
   return (
     <div className={`right-0 left-0 top-0 my-auto pb-12 bg-black/90 fixed z-[214748364] group inset-x-0 overflow-x-hidden overflow-y-hidden overflow-hidden ${imageDimensions.height < 480 ?
-      // 'lg:bottom-[-21px] md:bottom-[360px] xl:bottom-[670px]' :
       'md:h-full' :
       'h-full'
       } transition-opacity duration-700 ${!modalIsOpen ? 'opcaity-0 hidden' : 'opacity-100 visible'}`}>
@@ -61,10 +64,12 @@ const GalleryModal: React.FC<IGalleryModal> = ({
         />
       </div>
       <div className="flex justify-center h-screen w-full items-center">
-        {imageDimensions.width > 0 && imageDimensions.height > 0 && (
+        {isLoading ? (
+          <Loading width='md:w-40' height='md:h-40' />
+        ) : (
           <NextImage
             src={property.images[currentIndex]}
-            alt={''}
+            alt=""
             width={imageDimensions.width}
             height={imageDimensions.height}
             className="rounded-3xl md:mx-5 lg:mx-0 max-h-full object-contain"

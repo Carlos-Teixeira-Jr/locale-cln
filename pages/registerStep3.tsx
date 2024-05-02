@@ -162,8 +162,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     uf: '',
   });
 
-  console.log("🚀 ~ addressData:", addressData)
-
   const [addressErrors, setAddressErrors] = useState({
     zipCode: '',
     city: '',
