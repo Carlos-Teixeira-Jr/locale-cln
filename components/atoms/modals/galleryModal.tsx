@@ -51,7 +51,6 @@ const GalleryModal: React.FC<IGalleryModal> = ({
 
   return (
     <div className={`right-0 left-0 top-0 my-auto pb-12 bg-black/90 fixed z-[214748364] group inset-x-0 overflow-x-hidden overflow-y-hidden overflow-hidden ${imageDimensions.height < 480 ?
-      // 'lg:bottom-[-21px] md:bottom-[360px] xl:bottom-[670px]' :
       'md:h-full' :
       'h-full'
       } transition-opacity duration-700 ${!modalIsOpen ? 'opcaity-0 hidden' : 'opacity-100 visible'}`}>
