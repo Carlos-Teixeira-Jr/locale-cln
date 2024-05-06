@@ -86,11 +86,11 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
             isPlus={ownerIsPlus}
           />
         </div>
-        <div className={`flex flex-col items-center mt-24 ${width < 1080 ? 'justify-center w-full' : 'lg:ml-[26rem]'}`}>
+        <div className={`flex flex-col items-center mt-24 ${width < 1080 ? 'justify-center w-full' : `${notifications.length <= 0 ? 'lg:ml-[43rem]' : 'lg:ml-[26rem]'}`}`}>
 
           <div className="mb-10 md:px-5 lg:px-0">
             <h1 className="font-extrabold text-xl md:text-3xl text-quaternary md:mb-5 md:mr-20. text-center">
-              {userName! ? `Bem vindo ${userName}` : 'Bem vindo'}
+              {userName! ? `Bem vindo ${userName ? userName : owner.ownername}` : 'Bem vindo'}
             </h1>
             {isOwner && ownerProperties?.docs && (
               <Pagination
