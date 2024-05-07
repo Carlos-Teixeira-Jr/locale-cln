@@ -80,12 +80,13 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   ownerData,
   messages
 }) => {
+  console.log("🚀 ~ properties:", properties)
 
   const router = useRouter();
   const isMobile = useIsMobile();
   const userData = ownerData?.user;
   const reversedCards = [...plans].reverse();
-  const isOwner = properties?.docs?.length > 0 || ownerData?.owner ? true : false;
+  const isOwner = properties?.docs?.length > 0 ? true : false;
   const [selectedPlan, setSelectedPlan] = useState(
     ownerData?.owner ? ownerData?.owner?.plan : ''
   );
@@ -417,24 +418,35 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
 
         setLoading(true);
 
-        try {
-          const imagesResponse = await fetch(
-            `${baseUrl}/property/upload-profile-image/user`,
-            {
-              method: 'POST',
-              body: imagesForm,
-            }
-          );
-
-          if (imagesResponse.ok) {
-            clearIndexDB();
+        if (indexDbImages.length > 0) {
+          if (indexDbImages.length > 0) {
+            file = new File(
+              [indexDbImages[0].data],
+              `${indexDbImages[0].name}`
+            );
           } else {
-            clearIndexDB();
-            showErrorToast(ErrorToastNames.ImagesUploadError);
+            file = new File([], '');
           }
-        } catch (error) {
-          clearIndexDB();
-          showErrorToast(ErrorToastNames.ImageUploadError);
+
+          try {
+            const imagesResponse = await fetch(
+              `${baseUrl}/property/upload-profile-image/user`,
+              {
+                method: 'POST',
+                body: imagesForm,
+              }
+            );
+
+            if (imagesResponse.ok) {
+              clearIndexDB();
+            } else {
+              clearIndexDB();
+              showErrorToast(ErrorToastNames.ImagesUploadError);
+            }
+          } catch (error) {
+            clearIndexDB();
+            showErrorToast(ErrorToastNames.ImageUploadError);
+          }
         }
 
         try {

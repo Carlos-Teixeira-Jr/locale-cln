@@ -196,8 +196,8 @@ const SideMenu: React.FC<SideMenuProps> = ({
           const shouldRender =
             (isOwner && option.cases.includes('owner')) ||
             (!isOwner && option.cases.includes('user')) ||
-            (isPlus && option.cases.includes('plus') && (isOwner || option.cases.includes('owner')));
-
+            (isPlus && option.cases.includes('plus') &&
+              (isOwner || option.cases.includes('owner')));
           if (shouldRender) {
             return (
               <div

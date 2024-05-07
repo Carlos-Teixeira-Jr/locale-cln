@@ -47,6 +47,7 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
   const plusPlan = plans.find((e) => e.name === 'Locale Plus');
   const ownerIsPlus = owner?.plan === plusPlan?._id ? true : false;
 
+
   useEffect(() => {
     if (router.query.page !== undefined && typeof query.page === 'string') {
       const parsedPage = parseInt(query.page);
@@ -94,7 +95,7 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
               <Pagination totalPages={favouriteProperties?.totalPages} />
             </div>
           )}
-          {favouriteProperties?.docs?.length == 0 && (
+          {favouriteProperties?.docs?.length === 0 && (
             <div className={classes.notFound}>
               <SentimentIcon />
               <h1 className={classes.h1}>
