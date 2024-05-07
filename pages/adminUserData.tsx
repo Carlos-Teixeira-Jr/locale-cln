@@ -20,9 +20,9 @@ import { defaultProfileImage } from '../common/utils/images/defaultImage/default
 import { clearIndexDB, getAllImagesFromDB } from '../common/utils/indexDb';
 import {
   ErrorToastNames,
-  SuccessToastNames,
   showErrorToast,
-  showSuccessToast
+  showSuccessToast,
+  SuccessToastNames
 } from '../common/utils/toasts';
 import ArrowDownIcon from '../components/atoms/icons/arrowDownIcon';
 import Loading from '../components/atoms/loading';
@@ -80,7 +80,6 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   ownerData,
   messages
 }) => {
-  console.log("🚀 ~ properties:", properties)
 
   const router = useRouter();
   const isMobile = useIsMobile();
