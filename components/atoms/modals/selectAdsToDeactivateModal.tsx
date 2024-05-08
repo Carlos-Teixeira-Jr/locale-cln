@@ -26,11 +26,20 @@ const SelectAdsToDeactivateModal = ({
   docsToDeactivate,
   ownerData
 }: ISelectAdsToDeactivateModal) => {
+  console.log("🚀 ~ creditsLeft:", creditsLeft)
+  console.log("🚀 ~ ownerData?.owner?.adCredits:", ownerData?.owner?.adCredits)
 
   const isMobile = useIsMobile();
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
   const [unselectedCards, setUnselectedCards] = useState<string[]>([])
-  const [credits, setCredits] = useState(ownerData?.owner !== undefined ? ownerData?.owner?.adCredits : 0);
+  const [credits, setCredits] = useState<number>(0);
+
+  useEffect(() => {
+    if (creditsLeft !== undefined && ownerData?.owner?.adCredits !== undefined) {
+      setCredits(creditsLeft + ownerData?.owner?.adCredits);
+    }
+  }, [creditsLeft, ownerData?.owner?.adCredits]);
+
 
   useEffect(() => {
     // Update unselectedCards based on docs and selectedCards
@@ -48,9 +57,9 @@ const SelectAdsToDeactivateModal = ({
     docsToDeactivate(unselectedCards);
   }, [unselectedCards]);
 
-  useEffect(() => {
-    setCredits(credits + creditsLeft)
-  }, [creditsLeft])
+  // useEffect(() => {
+  //   setCredits(credits + creditsLeft)
+  // }, [creditsLeft])
 
   const handleSelectedCards = (card: string) => {
     if (!selectedCards.includes(card)) {
@@ -114,20 +123,24 @@ const SelectAdsToDeactivateModal = ({
       </div>
 
       <div className="flex gap-2 md:gap-3 lg:gap-4 flex-wrap justify-between md:justify-start">
-        {docs?.length > 0 && docs?.map((doc) => (
-          <MiniPropertyCards
-            key={doc?._id}
-            _id={doc?._id}
-            src={doc?.images[0]}
-            streetName={doc?.address.streetName}
-            neighborhood={doc?.address.neighborhood}
-            city={doc?.address.uf}
-            price={doc?.prices[0].value.toString()}
-            isSelected={selectedCards.includes(doc._id)}
-            setSelectedCard={(card: string) => handleSelectedCards(card)}
-          />
-        ))}
+        {docs?.length > 0 &&
+          docs
+            .filter((doc) => doc.isActive === true) // Filtrar apenas os documentos ativos
+            .map((doc) => (
+              <MiniPropertyCards
+                key={doc?._id}
+                _id={doc?._id}
+                src={doc?.images[0]}
+                streetName={doc?.address.streetName}
+                neighborhood={doc?.address.neighborhood}
+                city={doc?.address.uf}
+                price={doc?.prices[0].value.toString()}
+                isSelected={selectedCards.includes(doc._id)}
+                setSelectedCard={(card: string) => handleSelectedCards(card)}
+              />
+            ))}
       </div>
+
 
       <div className="w-full flex gap-5 md:gap-0 md:flex-row flex-col-reverse mt-5 mx-auto md:justify-between">
         <button

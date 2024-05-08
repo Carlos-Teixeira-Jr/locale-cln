@@ -121,7 +121,7 @@ const DeleteAccountModal = ({
         />
 
         <p className="font-bold text-xs text-quaternary">
-          Ao excluir sua conta você não poderá mais acessar seus anúncios e favoritos do site. Tem certeza que deseja prosseguir?
+          Só para avisar: ao excluir sua conta, você não terá mais acesso aos seus anúncios e favoritos. 🙃 Tem certeza de que quer continuar?
         </p>
 
         <div className="flex justify-between">
