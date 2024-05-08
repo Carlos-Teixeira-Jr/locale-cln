@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { GetServerSidePropsContext } from 'next';
+import { getSession } from 'next-auth/react';
+import { IOwnerData } from '../../../common/interfaces/owner/owner';
 import { IPlan } from '../../../common/interfaces/plans/plans';
 import { IRegisterPropertyData_Step3 } from '../../../common/interfaces/property/register/register';
 import { IStoredData } from '../../../common/interfaces/property/register/store';
@@ -17,31 +19,28 @@ type StoredData = {
 };
 
 export interface IPaymentBoard_Step3_5 {
-  selectedPlan?: IPlan;
-  selectedCard?: string;
   storedData: StoredData;
   plans: IPlan[];
+  ownerData: IOwnerData
 }
 
 const PaymentBoard_Step3_5 = ({
-  selectedPlan,
-  selectedCard,
   storedData,
   plans,
+  ownerData
 }: IPaymentBoard_Step3_5) => {
-  const [cardFlag, setCardFlag] = useState<string>(
-    storedData ? storedData.paymentData.cardBrand : ''
-  );
 
-  const [plan, setPlan] = useState<IPlan | undefined>(
-    plans && storedData
-      ? plans.find((plan) => plan._id === storedData.propertyDataStep3.plan)
-      : undefined
-  );
+  const cardFlag = storedData ? storedData.paymentData.cardBrand : '';
+
+  const plan = plans && storedData
+    ? plans.find((plan) => plan._id === storedData.propertyDataStep3.plan)
+    : undefined;
+
+  const priceToPay = ownerData?.owner?.adCredits! > plan?.commonAd! ? plan?.price : '00';
 
   const classes = {
     paymentLabel: 'text-quaternary text-lg md:text-xl font-medium mb-4',
-    planLabel: 'text-quaternary  text-lg md:text-xl font-medium mb-4',
+    planLabel: 'text-quaternary text-lg md:text-xl font-medium mb-4',
   };
 
   return (
@@ -97,14 +96,40 @@ const PaymentBoard_Step3_5 = ({
 
 export default PaymentBoard_Step3_5;
 
-export async function getStaticProps() {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+  const session = (await getSession(context)) as any;
+  let ownerData;
+  const userId = session?.user.data._id || session?.user.id;
+
   const plans = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/plan`)
     .then((res) => res.json())
     .catch(() => ({}));
 
+  try {
+    const ownerIdResponse = await fetch(
+      `${baseUrl}/user/find-owner-by-user`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId }),
+      }
+    );
+
+    if (ownerIdResponse.ok) {
+      const response = await ownerIdResponse.json();
+      ownerData = response;
+    }
+  } catch (error) {
+    console.error(error);
+  }
+
   return {
     props: {
       plans,
+      ownerData
     },
     revalidate: 60,
   };

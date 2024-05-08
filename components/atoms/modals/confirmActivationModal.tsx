@@ -5,6 +5,7 @@ import ReactModal from 'react-modal';
 import { toast } from 'react-toastify';
 import { ErrorToastNames, showErrorToast } from '../../../common/utils/toasts';
 import CloseIcon from '../icons/closeIcon';
+import Loading from '../loading';
 ReactModal.setAppElement('#__next');
 
 interface IConfirmActivationModal {
@@ -23,9 +24,11 @@ export default function confirmActivationModal({
 
   const [isMobile, setIsMobile] = useState(false);
   const [isActive, _setIsActive] = useState<boolean>(isActiveProp);
-  const [propertyId, _setPropertyId] = useState<string>(propertyIdProp);
+  const [propertyId, _setPropertyId] = useState<string[]>([propertyIdProp]);
   const { data: session } = useSession() as any;
   const userId = session?.user?.data._id;
+  const apiUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     function handleResize() {
@@ -41,15 +44,16 @@ export default function confirmActivationModal({
   const handleIsActive = async () => {
     try {
       toast.loading('Desativando anúncio...');
+      setLoading(true);
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/property/property-activation`,
+        `${apiUrl}/property/property-activation`,
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            propertyId,
+            propertyId: propertyId,
             isActive: !isActive,
             userId,
           }),
@@ -58,17 +62,20 @@ export default function confirmActivationModal({
 
       if (response.ok) {
         toast.dismiss();
-        setModalIsOpen(false);
         window.location.reload();
       } else {
         toast.dismiss();
-        showErrorToast(ErrorToastNames.AdActivation);
+        setLoading(false)
+        if (!isActive) {
+          showErrorToast(ErrorToastNames.AdActivation);
+        } else {
+          showErrorToast(ErrorToastNames.AdDeActivation);
+        }
       }
     } catch (error) {
       toast.dismiss();
-      toast.error(
-        'Não foi possível estabelecer comunicação com o servidor no momento. Por favor, tente novamente mais tarde.'
-      );
+      setLoading(false)
+      showErrorToast(ErrorToastNames.ServerConnection)
     }
   };
 
@@ -133,14 +140,20 @@ export default function confirmActivationModal({
           } este anúncio?`}</h1>
         <p className="font-bold text-xs text-quaternary mb-4">
           {isActive
-            ? 'Caso queira reativar este anúncio no futuro será cobrado um crédito de anúncio de seu plano.'
-            : 'A reativação do anúncio custa um crédito. Tem certeza que deseja reativá-lo?'}
+            ? 'Se decidir reativá-lo no futuro, será necessário utilizar um crédito de anúncio do seu plano. 😉'
+            : 'Tem certeza de que deseja reativar o anúncio? Lembre-se de que a reativação custa um crédito do seu plano. 😊'}
         </p>
         <button
-          className="md:w-fit h-[50px] bg-primary p-2.5 rounded-[50px] font-normal text-xl text-tertiary leading-6 mx-auto mt-5 transition-colors duration-300 hover:bg-red-600 hover:text-white"
+          // className="md:w-[75%] h-[50px] flex justify-center bg-primary p-2.5 rounded-[50px] font-normal text-xl text-tertiary leading-6 mx-auto mt-5 transition-colors duration-300 hover:bg-red-600 hover:text-white"
+          className={`flex items-center flex-row justify-center w-[75%] h-14 text-tertiary rounded-full mx-auto font-bold text-lg md:text-xl ${loading ?
+            'bg-red-300 transition-colors duration-300' :
+            'bg-primary transition-colors duration-300 hover:bg-red-600 hover:text-white cursor-pointer'
+            }`}
           onClick={handleIsActive}
+          disabled={loading}
         >
-          Confirmar
+          <span className={`${loading ? 'mr-5' : ''}`}>Continuar</span>
+          {loading && <Loading />}
         </button>
       </div>
     </ReactModal>

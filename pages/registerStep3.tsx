@@ -243,8 +243,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
       !confirmAdsToDeactivate &&
       ownerPlan !== undefined &&
       selectedPlanData !== undefined &&
-      selectedPlan !== ownerPlan._id
-      //selectedPlanData.price < ownerPlan.price
+      selectedPlan !== ownerPlan._id &&
+      docs.some((doc) => doc.isActive === true)
     ) {
       setPropsToDeactivateIsOpen(true);
       return;
@@ -776,6 +776,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
               setConfirmAdsToDeactivate={(isConfirmed: boolean) => setConfirmAdsToDeactivate(isConfirmed)}
               onSubmit={(isConfirmed: boolean) => handleSubmit(isConfirmed)}
               docsToDeactivate={(docs: string[]) => setDocsToDeactivate(docs)}
+              ownerData={ownerData}
             />
           </div >
 

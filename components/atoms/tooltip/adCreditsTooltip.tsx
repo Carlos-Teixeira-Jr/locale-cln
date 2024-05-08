@@ -25,9 +25,9 @@ const AdCreditsTooltip: React.FC<IAdCreditsTooltip> = ({
   const isMobile = useIsMobile();
 
   const changePlansInfo = {
-    free: ownerPlan !== clickedCard?._id ? 'Ao mudar seu plano para o GRÁTIS você poderá manter somente 1 anúncio ativo' : `Este é seu plano atual e ainda há ${creditsLeft} anúncios disponíveis.`,
-    basic: ownerPlan !== clickedCard?._id ? 'Ao mudar seu plano para o BÁSICO você poderá manter somente 4 anúncios ativos e o valor de seu plano será atualizado na próxima cobrança.' : `Este é seu plano atual e ainda há ${creditsLeft} anúncios disponíveis.`,
-    plus: ownerPlan !== clickedCard?._id ? 'Ao trocar para o LOCALE PLUS, você mantém 7 anúncios ativos, destaca 1 anúncio, pode adquirir créditos extras para novos anúncios e o valor será atualizado na próxima cobrança.' : `Este é seu plano atual e ainda há ${creditsLeft} anúncios disponíveis.`
+    free: ownerPlan !== clickedCard?._id ? `Ao mudar seu plano para o GRÁTIS você poderá manter somente ${clickedCard?.commonAd} anúncio ativo` : `Este é seu plano atual e ainda há ${creditsLeft} anúncios disponíveis.`,
+    basic: ownerPlan !== clickedCard?._id ? `Ao mudar seu plano para o BÁSICO você poderá manter somente ${clickedCard?.commonAd} anúncios ativos e o valor de seu plano será atualizado na próxima cobrança.` : `Este é seu plano atual e ainda há ${creditsLeft} anúncios disponíveis.`,
+    plus: ownerPlan !== clickedCard?._id ? `Ao trocar para o LOCALE PLUS, você mantém ${clickedCard?.commonAd} anúncios ativos, destaca ${clickedCard?.highlightAd} anúncio, pode adquirir créditos extras para novos anúncios e o valor será atualizado na próxima cobrança.` : `Este é seu plano atual e ainda há ${creditsLeft} anúncios disponíveis.`
   }
 
   useEffect(() => {

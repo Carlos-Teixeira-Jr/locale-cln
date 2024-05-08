@@ -37,6 +37,7 @@ export enum ErrorToastNames {
   DeleteUser = 'deleteUser',
   EmailAlreadyInUse = 'emailAlreadyInUse',
   AdActivation = 'adActivation',
+  AdDeActivation = 'adDeActivation',
   EmailNotFound = 'emailNotFound',
   ImagesMaxLimit = 'imagesMaxLimit',
   LoadImages = 'loadImages',
@@ -204,6 +205,12 @@ const errorToastMessages: Record<ErrorToastNames, ToastMessage> = {
   },
   [ErrorToastNames.AdActivation]: {
     message: 'Não foi possível alterar o status de ativação deste imóvel. Verifique se você ainda tem créditos restantes para realizar essa operação.',
+    options: {
+      autoClose: 7000,
+    },
+  },
+  [ErrorToastNames.AdDeActivation]: {
+    message: 'Não foi possível alterar o status de ativação deste imóvel. Por favor, tente novamente mais tarde.',
     options: {
       autoClose: 7000,
     },

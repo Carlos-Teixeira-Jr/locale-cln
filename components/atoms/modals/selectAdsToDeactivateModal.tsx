@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import ReactModal from "react-modal";
+import { IOwnerData } from "../../../common/interfaces/owner/owner";
 import { IData } from "../../../common/interfaces/property/propertyData";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import MiniPropertyCards from "../../molecules/cards/miniCards/miniPropertyCards";
@@ -11,7 +12,8 @@ export interface ISelectAdsToDeactivateModal {
   creditsLeft: number,
   setConfirmAdsToDeactivate: (isConfirmed: boolean) => void,
   onSubmit: (confirmChange: boolean) => void,
-  docsToDeactivate: (docs: string[]) => void
+  docsToDeactivate: (docs: string[]) => void,
+  ownerData: IOwnerData
 }
 
 const SelectAdsToDeactivateModal = ({
@@ -21,13 +23,14 @@ const SelectAdsToDeactivateModal = ({
   creditsLeft,
   setConfirmAdsToDeactivate,
   onSubmit,
-  docsToDeactivate
+  docsToDeactivate,
+  ownerData
 }: ISelectAdsToDeactivateModal) => {
 
   const isMobile = useIsMobile();
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
   const [unselectedCards, setUnselectedCards] = useState<string[]>([])
-  const [credits, setCredits] = useState(0);
+  const [credits, setCredits] = useState(ownerData?.owner !== undefined ? ownerData?.owner?.adCredits : 0);
 
   useEffect(() => {
     // Update unselectedCards based on docs and selectedCards
@@ -46,7 +49,7 @@ const SelectAdsToDeactivateModal = ({
   }, [unselectedCards]);
 
   useEffect(() => {
-    setCredits(creditsLeft)
+    setCredits(credits + creditsLeft)
   }, [creditsLeft])
 
   const handleSelectedCards = (card: string) => {
