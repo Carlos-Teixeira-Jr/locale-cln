@@ -5,6 +5,7 @@ import Modal from 'react-modal';
 import { toast } from 'react-toastify';
 import { ErrorToastNames, SuccessToastNames, showErrorToast, showSuccessToast } from '../../../common/utils/toasts';
 import CloseIcon from '../icons/closeIcon';
+import Loading from '../loading';
 
 export interface IEmailDataProp {
   email: string | null | string[],
@@ -27,6 +28,7 @@ const VerifyEmailModal: React.FC<IVerifyEmailModal> = ({
   const [input, setInput] = useState('');
   const [verificationCodeError, setVerificationCodeError] = useState('');
   const [showResendMessage, setShowResendMessage] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [emailVerificationData, setEmailVerificationData] = useState<IEmailDataProp>({
     email: null,
     emailVerificationCode: '',
@@ -93,6 +95,7 @@ const VerifyEmailModal: React.FC<IVerifyEmailModal> = ({
   const handleResendVerifyEmailCode = async (e: React.MouseEvent<HTMLParagraphElement>) => {
     e.preventDefault();
     try {
+      setLoading(true);
       toast.loading('Enviando...');
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/re-send-email-verify`,
@@ -126,6 +129,7 @@ const VerifyEmailModal: React.FC<IVerifyEmailModal> = ({
       }
     } catch (error) {
       showErrorToast(ErrorToastNames.ServerConnection);
+      setLoading(true);
       console.error(error);
     }
   };
@@ -216,10 +220,14 @@ const VerifyEmailModal: React.FC<IVerifyEmailModal> = ({
           )}
 
           <button
-            className="md:w-fit h-[50px] bg-primary p-2.5 rounded-[50px] font-normal text-xl text-tertiary leading-6 mx-auto mt-5 transition-colors duration-300 hover:bg-red-600 hover:text-white"
+            className={`flex items-center flex-row justify-around w-[75%] h-14 mx-auto mt-5 text-tertiary rounded-full font-bold text-lg md:text-xl ${loading ?
+              'bg-red-300 transition-colors duration-300' :
+              'bg-primary transition-colors duration-300 hover:bg-red-600 hover:text-white cursor-pointer'
+              }`}
             onClick={handleSubmit}
           >
-            Confirmar
+            <span className={`${loading ? 'ml-5' : ''}`}>Confirmar</span>
+            {loading && <Loading />}
           </button>
         </div>
 

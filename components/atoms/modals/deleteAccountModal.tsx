@@ -1,11 +1,13 @@
 import { signOut, useSession } from "next-auth/react";
 import Image from 'next/image';
 import { useRouter } from "next/router";
+import { useState } from "react";
 import Modal from 'react-modal';
 import { toast } from "react-toastify";
 import { ErrorToastNames, SuccessToastNames, showErrorToast, showSuccessToast } from "../../../common/utils/toasts";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import CloseIcon from "../icons/closeIcon";
+import Loading from "../loading";
 Modal.setAppElement('#__next');
 
 export interface IDeleteAccountModal {
@@ -22,9 +24,11 @@ const DeleteAccountModal = ({
   const { data: session } = useSession() as any;
   const userId = session?.user?.data?._id;
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   const handleDeleteAccount = async () => {
     try {
+      setLoading(true);
       toast.loading('Enviando');
       const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/user`, {
         method: 'DELETE',
@@ -43,10 +47,12 @@ const DeleteAccountModal = ({
         router.push('/login');
       } else {
         toast.dismiss();
+        setLoading(false);
         showErrorToast(ErrorToastNames.DeleteUser)
       }
     } catch (error) {
       toast.dismiss();
+      setLoading(false);
       console.error(error)
       showErrorToast(ErrorToastNames.ServerConnection)
     }
@@ -128,10 +134,14 @@ const DeleteAccountModal = ({
           {buttons.map((btn) => (
             <button
               key={btn.key}
-              className="md:w-40 h-[50px] bg-primary p-2.5 rounded-[50px] font-normal text-xl text-tertiary leading-6 mx-auto mt-5 transition-colors duration-300 hover:bg-red-600 hover:text-white"
+              className={`flex items-center flex-row justify-around w-44 h-14 text-tertiary rounded-full mt-5 font-bold text-lg md:text-xl ${loading ?
+                'bg-red-300 transition-colors duration-300' :
+                'bg-primary transition-colors duration-300 hover:bg-red-600 hover:text-white cursor-pointer'
+                }`}
               onClick={btn.onClick}
             >
-              {btn.label}
+              <span className={`${loading ? 'ml-5' : ''}`}>{btn.label}</span>
+              {loading && btn.key === 'confirm' && <Loading />}
             </button>
           ))}
         </div>

@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { ReactNode, useEffect, useState } from 'react';
-
 import { IMessage } from '../../../common/interfaces/message/messages';
 import BellIcon from '../../atoms/icons/bellIcon';
 import CartIcon from '../../atoms/icons/cartIcon';
@@ -41,6 +40,7 @@ const SideMenu: React.FC<SideMenuProps> = ({
   const [notReadNots, setNotReadNots] = useState<INotification[]>([]);
   const isOwner = isOwnerProp;
   const [loadingIconId, setLoadingIconId] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const classNames = {
     notesIcon: 'before:content-[attr(data-nots)] before:text-xs before:bg-tertiary before:font-medium before:text-primary before:border-secondary before:rounded-full before:border before:flex before:items-center before:justify-center before:min-w-[1.4em] before:min-h-[0.4em]'
@@ -235,9 +235,16 @@ const SideMenu: React.FC<SideMenuProps> = ({
 
         {isOwnerProp !== undefined && notifications !== undefined && (
           <div className="flex justify-center mt-10">
-            <Link href={'/register'}>
-              <button className="bg-primary rounded-[30px] text-tertiary text-lg font-bold leading-6 px-10 py-2.5 transition-colors duration-300 hover:bg-red-600 hover:text-white">
-                {isOwner ? 'Novo Anúncio' : 'Anunciar'}
+            <Link href={'/register'} onClick={() => setLoading(true)}>
+              <button
+                // className="bg-primary rounded-[30px] text-tertiary text-lg font-bold leading-6 px-10 py-2.5 transition-colors duration-300 hover:bg-red-600 hover:text-white"
+                className={`flex items-center flex-row justify-around w-fit h-14 px-5 text-tertiary rounded-full font-bold text-lg md:text-xl ${loading ?
+                  'bg-red-300 transition-colors duration-300' :
+                  'bg-primary transition-colors duration-300 hover:bg-red-600 hover:text-white cursor-pointer'
+                  }`}
+              >
+                <span className={`${loading ? 'mr-5' : ''}`}>{isOwner ? 'Novo Anúncio' : 'Anunciar'}</span>
+                {loading && <Loading />}
               </button>
             </Link>
           </div>
