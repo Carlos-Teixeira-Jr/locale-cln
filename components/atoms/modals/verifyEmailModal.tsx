@@ -53,6 +53,7 @@ const VerifyEmailModal: React.FC<IVerifyEmailModal> = ({
   const handleSubmit = async () => {
     try {
       toast.loading('Enviando');
+      setLoading(true)
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/verify-email`,
         {
@@ -81,14 +82,13 @@ const VerifyEmailModal: React.FC<IVerifyEmailModal> = ({
           'Insira corretamente o código de validação enviado para o e-mail de cadastro.'
         );
         toast.dismiss();
-        showErrorToast(ErrorToastNames.VerificationCode)
+        showErrorToast(ErrorToastNames.VerificationCode);
+        setLoading(false);
       }
     } catch (error) {
       toast.dismiss();
       showErrorToast(ErrorToastNames.ServerConnection);
-      console.log(
-        `Erro ao validar o código de verificação de e-mail: ${error}`
-      );
+      setLoading(false);
     }
   };
 
@@ -226,6 +226,7 @@ const VerifyEmailModal: React.FC<IVerifyEmailModal> = ({
               'bg-primary transition-colors duration-300 hover:bg-red-600 hover:text-white cursor-pointer'
               }`}
             onClick={handleSubmit}
+            disabled={loading}
           >
             <span className={`${loading ? 'mr-5' : ''}`}>Confirmar</span>
             {loading && <Loading />}

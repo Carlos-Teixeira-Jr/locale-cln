@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import ReactModal from "react-modal";
 import { IOwnerData } from "../../../common/interfaces/owner/owner";
@@ -26,13 +27,13 @@ const SelectAdsToDeactivateModal = ({
   docsToDeactivate,
   ownerData
 }: ISelectAdsToDeactivateModal) => {
-  console.log("🚀 ~ creditsLeft:", creditsLeft)
-  console.log("🚀 ~ ownerData?.owner?.adCredits:", ownerData?.owner?.adCredits)
 
   const isMobile = useIsMobile();
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
   const [unselectedCards, setUnselectedCards] = useState<string[]>([])
   const [credits, setCredits] = useState<number>(0);
+  const router = useRouter();
+  const { pathname } = router;
 
   useEffect(() => {
     if (creditsLeft !== undefined && ownerData?.owner?.adCredits !== undefined) {
@@ -56,10 +57,6 @@ const SelectAdsToDeactivateModal = ({
   useEffect(() => {
     docsToDeactivate(unselectedCards);
   }, [unselectedCards]);
-
-  // useEffect(() => {
-  //   setCredits(credits + creditsLeft)
-  // }, [creditsLeft])
 
   const handleSelectedCards = (card: string) => {
     if (!selectedCards.includes(card)) {
