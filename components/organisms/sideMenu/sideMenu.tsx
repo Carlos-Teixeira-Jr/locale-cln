@@ -237,8 +237,7 @@ const SideMenu: React.FC<SideMenuProps> = ({
           <div className="flex justify-center mt-10">
             <Link href={'/register'} onClick={() => setLoading(true)}>
               <button
-                // className="bg-primary rounded-[30px] text-tertiary text-lg font-bold leading-6 px-10 py-2.5 transition-colors duration-300 hover:bg-red-600 hover:text-white"
-                className={`flex items-center flex-row justify-around w-fit h-14 px-5 text-tertiary rounded-full font-bold text-lg md:text-xl ${loading ?
+                className={`flex items-center flex-row justify-around w-[209px] h-14 px-5 text-tertiary rounded-full font-semibold text-md md:text-lg ${loading ?
                   'bg-red-300 transition-colors duration-300' :
                   'bg-primary transition-colors duration-300 hover:bg-red-600 hover:text-white cursor-pointer'
                   }`}
