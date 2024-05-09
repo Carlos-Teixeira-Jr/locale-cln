@@ -117,6 +117,7 @@ const VerifyEmailModal: React.FC<IVerifyEmailModal> = ({
         }, 60000); // 60 seconds in milliseconds
         toast.dismiss();
         showSuccessToast(SuccessToastNames.VerificationCode);
+        setLoading(false)
         const data = await response.json();
 
         const newEmailVerificationCode = data.emailVerificationCode;
@@ -214,19 +215,19 @@ const VerifyEmailModal: React.FC<IVerifyEmailModal> = ({
           />
 
           {verificationCodeError && (
-            <span className="text-red-500 text-sm">
+            <span className="text-red-500 text-xs">
               {verificationCodeError}
             </span>
           )}
 
           <button
-            className={`flex items-center flex-row justify-around w-[75%] h-14 mx-auto mt-5 text-tertiary rounded-full font-bold text-lg md:text-xl ${loading ?
+            className={`flex items-center flex-row justify-center w-[75%] h-14 mx-auto mt-5 text-tertiary rounded-full font-bold text-lg md:text-xl ${loading ?
               'bg-red-300 transition-colors duration-300' :
               'bg-primary transition-colors duration-300 hover:bg-red-600 hover:text-white cursor-pointer'
               }`}
             onClick={handleSubmit}
           >
-            <span className={`${loading ? 'ml-5' : ''}`}>Confirmar</span>
+            <span className={`${loading ? 'mr-5' : ''}`}>Confirmar</span>
             {loading && <Loading />}
           </button>
         </div>

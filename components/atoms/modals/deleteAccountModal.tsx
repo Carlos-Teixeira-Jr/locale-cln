@@ -140,7 +140,7 @@ const DeleteAccountModal = ({
                 }`}
               onClick={btn.onClick}
             >
-              <span className={`${loading ? 'ml-5' : ''}`}>{btn.label}</span>
+              <span className={`${loading && btn.key === 'confirm' ? 'ml-5' : ''}`}>{btn.label}</span>
               {loading && btn.key === 'confirm' && <Loading />}
             </button>
           ))}

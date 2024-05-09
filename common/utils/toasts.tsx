@@ -47,7 +47,8 @@ export enum ErrorToastNames {
   ImagesUploadError = 'imagesUpload',
   UserNotFound = 'Nenhum usuário encontrado com o email ou senha informados.',
   EmptyCreditCardInfo = 'emptyCreditCArdInfo',
-  OwnerImageUpload = 'ownerImageUpload'
+  OwnerImageUpload = 'ownerImageUpload',
+  EmailNotVerified = 'emailNotVerified'
 }
 
 export enum InfoToastNames {
@@ -151,6 +152,12 @@ const errorToastMessages: Record<ErrorToastNames, ToastMessage> = {
   },
   [ErrorToastNames.VerificationCode]: {
     message: 'O código de verificação informado não corresponde ao código enviado para o e-mail de cadastro.',
+    options: {
+      autoClose: 7000,
+    },
+  },
+  [ErrorToastNames.EmailNotVerified]: {
+    message: 'O seu email ainda não foi verificado. Insira o código de verificação que foi enviado para o seu email no momento do cadastro.',
     options: {
       autoClose: 7000,
     },
