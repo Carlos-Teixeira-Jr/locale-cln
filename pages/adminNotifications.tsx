@@ -2,7 +2,7 @@ import { GetServerSidePropsContext } from 'next';
 import { getSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { IMessagesByOwner } from '../common/interfaces/message/messages';
-import { IOwner } from '../common/interfaces/owner/owner';
+import { IOwnerData } from '../common/interfaces/owner/owner';
 import { IPlan } from '../common/interfaces/plans/plans';
 import { IOwnerProperties } from '../common/interfaces/properties/propertiesList';
 import { IPropertyInfo } from '../common/interfaces/property/propertyData';
@@ -21,7 +21,7 @@ interface IMessageNotifications {
   ownerProperties?: IOwnerProperties | any;
   messages: IMessagesByOwner;
   plans: IPlan[];
-  owner: IOwner;
+  ownerData: IOwnerData;
 }
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
@@ -31,7 +31,7 @@ const MessageNotifications = ({
   notifications,
   messages,
   plans,
-  owner
+  ownerData
 }: IMessageNotifications) => {
 
   const isMobile = useIsMobile();
@@ -41,7 +41,7 @@ const MessageNotifications = ({
   const adminNots = notifications as [];
   const unreadMessages = messages?.docs?.length > 0 ? messages?.docs?.filter((message) => !message.isRead) : [];
   const plusPlan = plans.find((e) => e.name === 'Locale Plus');
-  const ownerIsPlus = owner?.plan === plusPlan?._id ? true : false;
+  const ownerIsPlus = ownerData?.owner?.plan === plusPlan?._id ? true : false;
 
   useEffect(() => {
     // Função a ser executada quando o componente for desmontado
@@ -83,7 +83,7 @@ const MessageNotifications = ({
 
   return (
     <main>
-      <AdminHeader isOwnerProp={isOwner} isPlus={ownerIsPlus} />
+      <AdminHeader isOwnerProp={isOwner} isPlus={ownerIsPlus} ownerData={ownerData} />
       <div className={classes.body}>
         <div className={classes.sideMenu}>
           {!isMobile ? (
@@ -165,7 +165,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const userId = session?.user.data._id || session?.user.id;
   const page = Number(context.query.page);
   let ownerId;
-  let owner;
+  let ownerData;
 
   if (!session) {
     return {
@@ -189,8 +189,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     );
 
     if (ownerIdResponse.ok) {
-      const ownerData = await ownerIdResponse.json();
-      owner = ownerData.owner;
+      const response = await ownerIdResponse.json();
+      ownerData = response;
       ownerId = ownerData?.owner?._id;
     } else {
       console.error('erro - find-owner-by-user:', ownerIdResponse);
@@ -255,7 +255,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       ownerProperties,
       messages,
       plans,
-      owner
+      ownerData
     },
   };
 }

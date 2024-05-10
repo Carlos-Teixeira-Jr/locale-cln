@@ -54,8 +54,7 @@ const RegisterStep4: NextPageWithLayout = () => {
               <div className={classes.textContainer}>
                 <h1 className={classes.h1}>Parabéns!!</h1>
                 <p className={classes.p}>
-                  O anúncio do seu imóvel está pronto e seu cadastro quase
-                  finalizado! A senha da sua conta foi enviada para o seu e-mail.
+                  Seu anúncio de imóvel está pronto! 🚀 Se você acabou de criar sua conta ao cadastrar o anúncio, uma senha temporária será enviada para o seu e-mail. 😊
                 </p>
 
                 <div className={classes.buttonContainer}>

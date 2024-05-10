@@ -12,6 +12,7 @@ import {
 } from '../../common/interfaces/property/propertyData';
 import DynamicMap from '../../components/atoms/maps/dinamycMap';
 import StaticMap from '../../components/atoms/maps/map';
+import VideoPlayer from '../../components/atoms/videoPlayer/videoPlayer';
 import PropertyCard from '../../components/molecules/cards/propertyCard/PropertyCard';
 import ContactBox from '../../components/molecules/contactBox/ContactBox';
 import Gallery from '../../components/molecules/gallery/gallery';
@@ -89,6 +90,10 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
             isFavourite={isFavourite}
             owner={ownerData}
           />
+        </div>
+
+        <div className='my-10'>
+          {property?.youtubeLink && <VideoPlayer videoUrl={property.youtubeLink} />}
         </div>
 
         <div className={classes.relatedProperties}>

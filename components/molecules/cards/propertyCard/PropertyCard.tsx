@@ -126,8 +126,8 @@ const PropertyCard: React.FC<IPropertyCard> = ({
 
   return (
     <div
-      className={`flex flex-col max-w-[350px] lg:max-w-[270px] md:max-w-[250px] bg-tertiary shadow-lg rounded-[30px] mt-2 cursor-pointer w-full ${expanded ? `min-h-[470px] max-h-fit` : 'max-h-[470px]'
-        }`}
+      className={`flex flex-col max-w-[350px] lg:max-w-[270px] md:max-w-[250px] shadow-lg rounded-[30px] mt-2 cursor-pointer w-full ${expanded ? `min-h-[470px] max-h-fit` : 'max-h-[470px]'
+        } ${highlighted ? 'bg-gradient-to-tr from-secondary to-primary' : 'bg-tertiary'}`}
     >
       <Link href={`/property/${id}`}>
         <div className="group relative h-[200px]">

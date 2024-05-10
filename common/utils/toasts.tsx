@@ -37,6 +37,7 @@ export enum ErrorToastNames {
   DeleteUser = 'deleteUser',
   EmailAlreadyInUse = 'emailAlreadyInUse',
   AdActivation = 'adActivation',
+  AdDeActivation = 'adDeActivation',
   EmailNotFound = 'emailNotFound',
   ImagesMaxLimit = 'imagesMaxLimit',
   LoadImages = 'loadImages',
@@ -46,7 +47,8 @@ export enum ErrorToastNames {
   ImagesUploadError = 'imagesUpload',
   UserNotFound = 'Nenhum usuário encontrado com o email ou senha informados.',
   EmptyCreditCardInfo = 'emptyCreditCArdInfo',
-  OwnerImageUpload = 'ownerImageUpload'
+  OwnerImageUpload = 'ownerImageUpload',
+  EmailNotVerified = 'emailNotVerified'
 }
 
 export enum InfoToastNames {
@@ -154,6 +156,12 @@ const errorToastMessages: Record<ErrorToastNames, ToastMessage> = {
       autoClose: 7000,
     },
   },
+  [ErrorToastNames.EmailNotVerified]: {
+    message: 'O seu email ainda não foi verificado. Insira o código de verificação que foi enviado para o seu email no momento do cadastro.',
+    options: {
+      autoClose: 7000,
+    },
+  },
   [ErrorToastNames.CreditCardUpdate]: {
     message: 'Não foi possível atualizar os dados de cartão de crédito. Por favor, tente mais tarde.',
     options: {
@@ -204,6 +212,12 @@ const errorToastMessages: Record<ErrorToastNames, ToastMessage> = {
   },
   [ErrorToastNames.AdActivation]: {
     message: 'Não foi possível alterar o status de ativação deste imóvel. Verifique se você ainda tem créditos restantes para realizar essa operação.',
+    options: {
+      autoClose: 7000,
+    },
+  },
+  [ErrorToastNames.AdDeActivation]: {
+    message: 'Não foi possível alterar o status de ativação deste imóvel. Por favor, tente novamente mais tarde.',
     options: {
       autoClose: 7000,
     },

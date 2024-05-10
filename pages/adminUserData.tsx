@@ -20,9 +20,9 @@ import { defaultProfileImage } from '../common/utils/images/defaultImage/default
 import { clearIndexDB, getAllImagesFromDB } from '../common/utils/indexDb';
 import {
   ErrorToastNames,
-  SuccessToastNames,
   showErrorToast,
-  showSuccessToast
+  showSuccessToast,
+  SuccessToastNames
 } from '../common/utils/toasts';
 import ArrowDownIcon from '../components/atoms/icons/arrowDownIcon';
 import Loading from '../components/atoms/loading';
@@ -85,7 +85,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const isMobile = useIsMobile();
   const userData = ownerData?.user;
   const reversedCards = [...plans].reverse();
-  const isOwner = properties?.docs?.length > 0 || ownerData?.owner ? true : false;
+  const isOwner = properties?.docs?.length > 0 ? true : false;
   const [selectedPlan, setSelectedPlan] = useState(
     ownerData?.owner ? ownerData?.owner?.plan : ''
   );
@@ -417,24 +417,35 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
 
         setLoading(true);
 
-        try {
-          const imagesResponse = await fetch(
-            `${baseUrl}/property/upload-profile-image/user`,
-            {
-              method: 'POST',
-              body: imagesForm,
-            }
-          );
-
-          if (imagesResponse.ok) {
-            clearIndexDB();
+        if (indexDbImages.length > 0) {
+          if (indexDbImages.length > 0) {
+            file = new File(
+              [indexDbImages[0].data],
+              `${indexDbImages[0].name}`
+            );
           } else {
-            clearIndexDB();
-            showErrorToast(ErrorToastNames.ImagesUploadError);
+            file = new File([], '');
           }
-        } catch (error) {
-          clearIndexDB();
-          showErrorToast(ErrorToastNames.ImageUploadError);
+
+          try {
+            const imagesResponse = await fetch(
+              `${baseUrl}/property/upload-profile-image/user`,
+              {
+                method: 'POST',
+                body: imagesForm,
+              }
+            );
+
+            if (imagesResponse.ok) {
+              clearIndexDB();
+            } else {
+              clearIndexDB();
+              showErrorToast(ErrorToastNames.ImagesUploadError);
+            }
+          } catch (error) {
+            clearIndexDB();
+            showErrorToast(ErrorToastNames.ImageUploadError);
+          }
         }
 
         try {

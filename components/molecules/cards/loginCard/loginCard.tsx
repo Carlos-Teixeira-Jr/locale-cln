@@ -212,9 +212,9 @@ const LoginCard: React.FC = () => {
                 showErrorToast(ErrorToastNames.ServerConnection);
               }
             } else {
-              setLoading(false);
-              showErrorToast(ErrorToastNames.VerificationCode);
+              showErrorToast(ErrorToastNames.EmailNotVerified);
               setVerifyEmailModalIsOpen(true);
+              setLoading(false);
             }
           } else {
             setLoading(false)
