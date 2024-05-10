@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import ReactModal from "react-modal";
 import { IOwnerData } from "../../../common/interfaces/owner/owner";
@@ -25,22 +24,18 @@ const SelectAdsToDeactivateModal = ({
   setConfirmAdsToDeactivate,
   onSubmit,
   docsToDeactivate,
-  ownerData
+  // ownerData
 }: ISelectAdsToDeactivateModal) => {
 
   const isMobile = useIsMobile();
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
   const [unselectedCards, setUnselectedCards] = useState<string[]>([])
+  console.log("🚀 ~ unselectedCards:", unselectedCards)
   const [credits, setCredits] = useState<number>(0);
-  const router = useRouter();
-  const { pathname } = router;
 
   useEffect(() => {
-    if (creditsLeft !== undefined && ownerData?.owner?.adCredits !== undefined) {
-      setCredits(creditsLeft + ownerData?.owner?.adCredits);
-    }
-  }, [creditsLeft, ownerData?.owner?.adCredits]);
-
+    setCredits(creditsLeft - 1);
+  }, [creditsLeft]);
 
   useEffect(() => {
     // Update unselectedCards based on docs and selectedCards

@@ -92,7 +92,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
   const [isChangePlan, setIsChangePlan] = useState(false);
   const [confirmAdsToDeactivate, setConfirmAdsToDeactivate] = useState(false);
   const [docsToDeactivate, setDocsToDeactivate] = useState<string[]>([])
-  console.log("🚀 ~ docsToDeactivate:", docsToDeactivate)
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
 
   // Atualiza o selectedPlanData
@@ -250,9 +249,10 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     ) {
       setPropsToDeactivateIsOpen(true);
       return;
-    } else {
-      setDocsToDeactivate([])
     }
+    // else {
+    //   setDocsToDeactivate([])
+    // }
 
     const error = `Este campo é obrigatório.`;
     const planErrorMessage = `Selecione um plano de anúncios.`

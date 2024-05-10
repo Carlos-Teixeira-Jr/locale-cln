@@ -484,6 +484,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
               <MaskedInput
                 mask={'area'}
                 className={classes.mediumInput}
+                maxLength={10}
                 onChange={(e: { target: { value: string } }) => {
                   const numericValue = parseInt(
                     e.target.value.replace(/\D/g, '')
@@ -526,6 +527,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
               <label className={classes.labelInput}>Área Útil (opcional)</label>
               <MaskedInput
                 mask={'area'}
+                maxLength={10}
                 className={classes.mediumInput}
                 onChange={(e: { target: { value: string } }) => {
                   const numericValue = parseInt(

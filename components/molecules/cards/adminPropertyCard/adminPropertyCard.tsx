@@ -126,8 +126,8 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
     <div className="flex flex-col items-center mb-10 justify-between">
       <Link href={`/property/${_id}`}>
         <div
-          className={`flex flex-col md:flex-row bg-tertiary h-fit md:h-64 w-full lg:w-[777px] shadow-lg ${isActive ? '' : 'opacity-100'
-            }`}
+          className={`flex flex-col md:flex-row h-fit md:h-64 w-full lg:w-[777px] shadow-lg ${isActive ? '' : 'opacity-100'
+            } ${highlighted ? 'bg-gradient-to-tr from-secondary to-primary' : 'bg-tertiary'}`}
         >
           <Image
             src={image}
@@ -165,17 +165,17 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
               {' '}
               {formattedPrice}
             </h1>
-            <div className="flex flex-row space-x-2 items-center justify-center md:justify-start text-quaternary font-bold text-md md:text-lg">
-              <ViewIcon />
+            <div className={`flex flex-row space-x-2 items-center justify-center md:justify-start font-bold text-md md:text-lg ${highlighted ? 'text-tertiary' : 'text-quaternary'}`}>
+              <ViewIcon fill={highlighted ? '#F7F7F6' : '#6B7280'} />
               <span>{views}</span>
               <h2>{views === 1 ? 'visualização' : 'visualizações'}</h2>
             </div>
-            <div className="flex flex-row space-x-2 items-center justify-center md:justify-start text-quaternary font-bold text-md md:text-lg">
-              <MessageIcon />
+            <div className={`flex flex-row space-x-2 items-center justify-center md:justify-start font-bold text-md md:text-lg ${highlighted ? 'text-tertiary' : 'text-quaternary'}`}>
+              <MessageIcon fill={highlighted ? '#F7F7F6' : '#6B7280'} />
               <span>{messages.length}</span>
               <h2>{messages.length === 1 ? 'mensagem' : 'mensagens'}</h2>
             </div>
-            <h3 className="w-fit text-quaternary mx-auto md:mx-0 font-bold text-sm my-auto justify-center md:justify-start">
+            <h3 className={`w-fit  mx-auto md:mx-0 font-bold text-sm my-auto justify-center md:justify-start ${highlighted ? 'text-tertiary' : 'text-quaternary'}`}>
               {location}
             </h3>
           </div>

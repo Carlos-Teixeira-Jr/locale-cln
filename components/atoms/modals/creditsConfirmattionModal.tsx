@@ -68,7 +68,7 @@ const CreditsConfirmationModal = ({
         <h1 className='w-full md:text-2xl font-bold text-quaternary'>Confirmação de compra de créditos</h1>
         <p>Você está comprando:</p>
 
-        <div className='flex flex-col border border-primary text-center gap-2'>
+        <div className='flex flex-col border border-primary text-center gap-2 py-2'>
           {credits.adCredits > ownerAdCredits && (
             <p className='font-semibold text-xl'>{adCreditsDifference}  {`${adCreditsDifference > 1 ? 'x créditos' : 'x crédito'}`} de anúncio.</p>
           )}
@@ -99,7 +99,7 @@ const CreditsConfirmationModal = ({
           <p className='text-base'>Ao confirmar o valor da compra, ele será acrescentado ao valor do seu plano em todas as próximas faturas. Isso significa que você verá esse valor adicional refletido em seus próximos pagamentos, facilitando o acompanhamento dos seus gastos e do custo total do serviço ao longo do tempo.</p>
         </div>
 
-        <div className='w-full flex gap-10 justify-between text-tertiary mt-10'>
+        <div className='w-full flex gap-10 justify-between text-tertiary mt-8'>
           <button
             className={`flex items-center flex-row justify-around w-full md:w-44 md:h-14 h-10 text-tertiary rounded font-bold text-lg md:text-xl bg-primary transition-colors duration-300 hover:bg-red-600 hover:text-white cursor-pointer`}
             onClick={() => setModalIsOpen(false)}
