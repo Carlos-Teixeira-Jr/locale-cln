@@ -78,7 +78,7 @@ const MessageModal: React.FC<IMessageModal> = ({
       onChange: (event: ChangeEvent<any>) => {
         const input = event.target;
         const value = input.value;
-        const maskedValue = applyNumericMask(value, '(99) 9999-9999');
+        const maskedValue = applyNumericMask(value, '(99) 99999-9999');
         const selectionStart = input.selectionStart || 0;
         const selectionEnd = input.selectionEnd || 0;
         const previousValue = input.value;
@@ -112,12 +112,7 @@ const MessageModal: React.FC<IMessageModal> = ({
       error: errors.message,
       type: 'text',
       maxLength: 1000,
-      onChange: (event: any) => {
-        const onlyLetters = /^[a-zA-Z\s]+$/;
-        if (onlyLetters.test(event.target.value)) {
-          setFormData({ ...formData, message: event.target.value });
-        }
-      },
+      onChange: (event: any) => setFormData({ ...formData, message: event.target.value })
     },
   ];
 

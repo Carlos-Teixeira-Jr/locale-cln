@@ -364,7 +364,7 @@ const PropertyDifferentials = ({
         <input
           className={classes.mediumInput}
           onChange={(e) => setUpdatedYouTubeLink(e.target.value)}
-          maxLength={50}
+          maxLength={150}
         />
       </div>
     </div>

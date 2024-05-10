@@ -3,7 +3,8 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { InfoToastNames, showInfoToast } from '../../../../common/utils/toasts';
+import { ErrorToastNames, InfoToastNames, showErrorToast, showInfoToast } from '../../../../common/utils/toasts';
+import Loading from '../../../atoms/loading';
 import UnverifiedEmailModal from '../../../atoms/modals/unverifiedEmailModal';
 import SocialAuthButton from '../../buttons/socialAuthButtons';
 
@@ -13,9 +14,9 @@ const RegisterCard: React.FC = () => {
   const router = useRouter();
   const [email, setEmail] = useState<string>(userEmail! ? userEmail : '');
   const [emailError, setEmailError] = useState<string>('');
-  const [unverifiedEmailModal, setUnverifiedEmailModal] =
-    useState<boolean>(false);
+  const [unverifiedEmailModal, setUnverifiedEmailModal] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (email !== '') {
@@ -55,6 +56,7 @@ const RegisterCard: React.FC = () => {
       showInfoToast(InfoToastNames.AnnouncementInfo);
     } else {
       try {
+        setLoading(true);
         toast.loading('Enviando...');
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_BASE_API_URL}/user/find-by-email`,
@@ -95,7 +97,8 @@ const RegisterCard: React.FC = () => {
           });
         }
       } catch (error) {
-        console.log('Nenhum usuário cadastrado com o e-mail informado.');
+        setLoading(false);
+        showErrorToast(ErrorToastNames.UserNotFound)
       }
     }
   };
@@ -130,10 +133,14 @@ const RegisterCard: React.FC = () => {
       </div>
       <div>
         <button
-          className="md:w-fit lg:w-[220px] w-[100px] md:h-[50px] bg-primary p-2.5 gap-2.5 rounded-[50px] font-normal md:text-xl text-lg text-tertiary leading-6 m-5 md:m-9 transition-colors duration-300 hover:bg-red-600 hover:text-white"
+          className={`flex items-center flex-row justify-around md:w-fit lg:w-52 h-14 text-tertiary rounded-full m-5 font-bold text-lg md:text-xl ${loading ?
+            'bg-red-300 transition-colors duration-300' :
+            'bg-primary transition-colors duration-300 hover:bg-red-600 hover:text-white cursor-pointer'
+            }`}
           onClick={handleContinueBtn}
         >
-          Anunciar
+          <span className={`${loading ? 'ml-5' : ''}`}>Continuar</span>
+          {loading && <Loading />}
         </button>
       </div>
       <div className="flex">

@@ -74,7 +74,6 @@ const CreditsShop = ({
   };
 
   const handleSubmit = async () => {
-    console.log("entrou")
     try {
       setSubmitLoading(true)
       const response = await fetch(
@@ -101,9 +100,9 @@ const CreditsShop = ({
 
       if (response.ok) {
         showSuccessToast(SuccessToastNames.CreditsSuccess);
+        setSubmitLoading(false);
         window.location.reload();
       }
-      setSubmitLoading(false);
     } catch (error) {
       showErrorToast(ErrorToastNames.ServerConnection);
       console.error(error);

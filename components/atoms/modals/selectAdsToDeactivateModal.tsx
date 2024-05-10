@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import ReactModal from "react-modal";
+import { IOwnerData } from "../../../common/interfaces/owner/owner";
 import { IData } from "../../../common/interfaces/property/propertyData";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import MiniPropertyCards from "../../molecules/cards/miniCards/miniPropertyCards";
@@ -11,7 +12,8 @@ export interface ISelectAdsToDeactivateModal {
   creditsLeft: number,
   setConfirmAdsToDeactivate: (isConfirmed: boolean) => void,
   onSubmit: (confirmChange: boolean) => void,
-  docsToDeactivate: (docs: string[]) => void
+  docsToDeactivate: (docs: string[]) => void,
+  ownerData: IOwnerData
 }
 
 const SelectAdsToDeactivateModal = ({
@@ -21,13 +23,19 @@ const SelectAdsToDeactivateModal = ({
   creditsLeft,
   setConfirmAdsToDeactivate,
   onSubmit,
-  docsToDeactivate
+  docsToDeactivate,
+  // ownerData
 }: ISelectAdsToDeactivateModal) => {
 
   const isMobile = useIsMobile();
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
   const [unselectedCards, setUnselectedCards] = useState<string[]>([])
-  const [credits, setCredits] = useState(0);
+  console.log("🚀 ~ unselectedCards:", unselectedCards)
+  const [credits, setCredits] = useState<number>(0);
+
+  useEffect(() => {
+    setCredits(creditsLeft - 1);
+  }, [creditsLeft]);
 
   useEffect(() => {
     // Update unselectedCards based on docs and selectedCards
@@ -44,10 +52,6 @@ const SelectAdsToDeactivateModal = ({
   useEffect(() => {
     docsToDeactivate(unselectedCards);
   }, [unselectedCards]);
-
-  useEffect(() => {
-    setCredits(creditsLeft)
-  }, [creditsLeft])
 
   const handleSelectedCards = (card: string) => {
     if (!selectedCards.includes(card)) {
@@ -111,20 +115,24 @@ const SelectAdsToDeactivateModal = ({
       </div>
 
       <div className="flex gap-2 md:gap-3 lg:gap-4 flex-wrap justify-between md:justify-start">
-        {docs?.length > 0 && docs?.map((doc) => (
-          <MiniPropertyCards
-            key={doc?._id}
-            _id={doc?._id}
-            src={doc?.images[0]}
-            streetName={doc?.address.streetName}
-            neighborhood={doc?.address.neighborhood}
-            city={doc?.address.uf}
-            price={doc?.prices[0].value.toString()}
-            isSelected={selectedCards.includes(doc._id)}
-            setSelectedCard={(card: string) => handleSelectedCards(card)}
-          />
-        ))}
+        {docs?.length > 0 &&
+          docs
+            .filter((doc) => doc.isActive === true) // Filtrar apenas os documentos ativos
+            .map((doc) => (
+              <MiniPropertyCards
+                key={doc?._id}
+                _id={doc?._id}
+                src={doc?.images[0]}
+                streetName={doc?.address.streetName}
+                neighborhood={doc?.address.neighborhood}
+                city={doc?.address.uf}
+                price={doc?.prices[0].value.toString()}
+                isSelected={selectedCards.includes(doc._id)}
+                setSelectedCard={(card: string) => handleSelectedCards(card)}
+              />
+            ))}
       </div>
+
 
       <div className="w-full flex gap-5 md:gap-0 md:flex-row flex-col-reverse mt-5 mx-auto md:justify-between">
         <button

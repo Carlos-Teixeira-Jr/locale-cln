@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
 import { IMessage, IMessagesByOwner } from '../common/interfaces/message/messages';
-import { IOwner } from '../common/interfaces/owner/owner';
+import { IOwnerData } from '../common/interfaces/owner/owner';
 import { IPlan } from '../common/interfaces/plans/plans';
 import { IOwnerProperties } from '../common/interfaces/properties/propertiesList';
 import { IData } from '../common/interfaces/property/propertyData';
@@ -20,7 +20,7 @@ interface AdminPageProps {
   ownerProperties: IOwnerProperties;
   notifications: INotification[];
   messages: IMessagesByOwner;
-  owner: IOwner;
+  ownerData: IOwnerData;
   plans: IPlan[]
 }
 
@@ -28,7 +28,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
   ownerProperties,
   notifications,
   messages,
-  owner,
+  ownerData,
   plans
 }) => {
 
@@ -41,7 +41,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
   const unreadMessages = messages?.docs?.length > 0 ? messages?.docs.filter((message) => !message.isRead) : [];
   const userName = session?.user?.data?.name;
   const plusPlan = plans.find((e) => e.name === 'Locale Plus');
-  const ownerIsPlus = owner?.plan === plusPlan?._id ? true : false;
+  const ownerIsPlus = ownerData?.owner?.plan === plusPlan?._id ? true : false;
 
   useEffect(() => {
     setIsOwner(ownerProperties?.docs?.length > 0 ? true : false);
@@ -76,7 +76,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
 
   return (
     <div>
-      <AdminHeader isOwnerProp={isOwner} isPlus={ownerIsPlus} />
+      <AdminHeader isOwnerProp={isOwner} isPlus={ownerIsPlus} ownerData={ownerData} />
       <div className="flex flex-row items-center justify-evenly xl:w-fit 2xl:w-full w-full max-w-full">
         <div className={classes.sideMenu}>
           <SideMenu
@@ -86,11 +86,11 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
             isPlus={ownerIsPlus}
           />
         </div>
-        <div className={`flex flex-col items-center mt-24 ${width < 1080 ? 'justify-center w-full' : 'lg:ml-[26rem]'}`}>
+        <div className={`flex flex-col items-center mt-24 ${width < 1080 ? 'justify-center w-full' : `${ownerProperties?.docs?.length <= 0 ? 'lg:ml-[43rem]' : 'lg:ml-[26rem]'}`}`}>
 
           <div className="mb-10 md:px-5 lg:px-0">
             <h1 className="font-extrabold text-xl md:text-3xl text-quaternary md:mb-5 md:mr-20. text-center">
-              {userName! ? `Bem vindo ${userName}` : 'Bem vindo'}
+              {userName! ? `Bem vindo ${userName ? userName : ownerData?.owner?.name}` : 'Bem vindo'}
             </h1>
             {isOwner && ownerProperties?.docs && (
               <Pagination
@@ -139,7 +139,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const userId = session?.user.data._id || session?.user.id;
   const page = Number(context.query.page);
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
-  let owner;
+  let ownerData;
 
   if (!session) {
     return {
@@ -163,9 +163,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     );
 
     if (ownerIdResponse.ok) {
-      const ownerData = await ownerIdResponse.json();
-      if (ownerData?.owner?._id) {
-        owner = ownerData?.owner;
+      const response = await ownerIdResponse.json();
+      if (response?.owner?._id) {
+        ownerData = response;
       } else {
         return {
           redirect: {
@@ -188,7 +188,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        ownerId: owner?._id,
+        ownerId: ownerData?.owner?._id,
         page,
       }),
     })
@@ -211,7 +211,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        ownerId: owner?._id,
+        ownerId: ownerData?.owner?._id,
         page,
       }),
     })
@@ -236,7 +236,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       ownerProperties,
       notifications,
       messages,
-      owner,
+      ownerData,
       plans
     },
   };

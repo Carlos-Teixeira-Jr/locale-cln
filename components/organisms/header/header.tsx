@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import DropdownMenu from '../../atoms/dropdowns/dropdownMenu';
 import MenuIcon from '../../atoms/icons/menuIcon';
 import UserIcon from '../../atoms/icons/userIcon';
+import Loading from '../../atoms/loading';
 import LocaleLogo from '../../atoms/logos/locale';
 
 export interface IHeader extends React.ComponentPropsWithoutRef<'header'> { }
@@ -17,6 +18,7 @@ const Header: React.FC<IHeader> = () => {
   const [isRent, setIsRent] = useState(false);
   const [open, setOpen] = useState(false);
   const ref = useRef();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     document.addEventListener('click', handleClick);
@@ -81,22 +83,27 @@ const Header: React.FC<IHeader> = () => {
         <div className="flex flex-row items-center justify-end">
           {session ? (
             <div className="flex gap-2">
-              <Link href={'/admin?page=1'}>
-                {session.user.data.picture!! ? (
-                  <Image
-                    src={session.user?.data.picture!!}
-                    alt={'Admin image'}
-                    width={50}
-                    height={50}
-                    className="border border-primary rounded-full w-10 h-10 object-cover"
-                  />
-                ) : (
-                  <UserIcon
-                    className="border border-secondary rounded-full w-10 h-10 p-1 bg-white"
-                    fill="#F75D5F"
-                  />
-                )}
+              <Link href={'/admin?page=1'} onClick={() => setLoading(true)}>
+                {!loading ? (
+                  session.user.data.picture ? (
+                    <Image
+                      src={session.user.data.picture}
+                      alt={'Admin image'}
+                      width={50}
+                      height={50}
+                      className="border border-primary rounded-full w-10 h-10 object-cover"
+                    />
+                  ) : (
+                    <UserIcon
+                      className="border border-secondary rounded-full w-10 h-10 p-1 bg-white"
+                      fill="#F75D5F"
+                    />
+                  )
+                ) : null}
               </Link>
+
+              {loading && <Loading fill='#F75D5F' className='h-[40px] w-[40px] text-gray-200 animate-spin dark:text-gray-600 fill-tertiary' />}
+
               <button
                 className="my-auto cursor-pointer mx-2 text-primary font-semibold text-md"
                 onClick={() => signOut()}
