@@ -21,7 +21,7 @@ type StoredData = {
 export interface IPaymentBoard_Step3_5 {
   storedData: StoredData;
   plans: IPlan[];
-  ownerData: IOwnerData
+  ownerData?: IOwnerData
 }
 
 const PaymentBoard_Step3_5 = ({
