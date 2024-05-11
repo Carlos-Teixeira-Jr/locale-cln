@@ -25,6 +25,7 @@ import {
   showSuccessToast
 } from '../../../common/utils/toasts';
 import ArrowDownIconcon from '../../../components/atoms/icons/arrowDownIcon';
+import Loading from '../../../components/atoms/loading';
 import Address from '../../../components/molecules/address/address';
 import { INotification } from '../../../components/molecules/cards/notificationCard/notificationCard';
 import UploadImages from '../../../components/molecules/uploadImages/uploadImages';
@@ -54,6 +55,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
   const router = useRouter();
   const plusPlan = plans.find((e) => e.name === 'Locale Plus');
   const ownerIsPlus = ownerData?.plan === plusPlan?._id ? true : false;
+  const [loading, setLoading] = useState(false);
 
   const isEdit = router.pathname == '/property/modify/[id]';
 
@@ -220,11 +222,9 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
 
     if (!mainFeatures.description) newMainFeaturesErrors.description = error;
     if (!mainFeatures.size.totalArea) newMainFeaturesErrors.totalArea = error;
-    if (!mainFeatures.propertyValue)
-      newMainFeaturesErrors.propertyValue = error;
+    if (!mainFeatures.propertyValue || mainFeatures.propertyValue === '0') newMainFeaturesErrors.propertyValue = error;
     if (mainFeatures.condominium) {
-      if (!mainFeatures.condominiumValue)
-        newMainFeaturesErrors.condominiumValue = error;
+      if (!mainFeatures.condominiumValue) newMainFeaturesErrors.condominiumValue = error;
     }
     if (mainFeatures.iptu) {
       if (!mainFeatures.iptuValue) newMainFeaturesErrors.iptuValue = error;
@@ -306,6 +306,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
 
       try {
         toast.loading('Enviando...');
+        setLoading(true);
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_BASE_API_URL}/property/edit-property`,
           {
@@ -358,6 +359,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
             }
           } catch (error) {
             toast.dismiss();
+            setLoading(false);
             showErrorToast(ErrorToastNames.ImageUploadError);
           }
           clearIndexDB();
@@ -366,14 +368,17 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
           router.push('/admin?page=1');
         } else {
           toast.dismiss();
+          setLoading(false);
           showErrorToast(ErrorToastNames.PropertyUpdate);
         }
       } catch (error) {
         toast.dismiss();
+        setLoading(false);
         showErrorToast(ErrorToastNames.ServerConnection);
       }
     } else {
       showErrorToast(ErrorToastNames.EmptyFields);
+      setLoading(false);
 
       const addressErrorSection = Object.values(newAddressErrors).some(
         (error) => error !== ''
@@ -404,6 +409,24 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
     }
   };
 
+  const classes = {
+    body: 'flex flex-row justify-center w-full',
+    sideMenu: 'fixed left-0 top-7 sm:hidden hidden md:hidden lg:hidden xl:flex',
+    content:
+      'flex flex-col items-center mt-16 max-w-[900px] px-2 md:px-10 sm:ml-0 ml-0 xl:ml-24 2xl:ml-24',
+    content2: 'font-bold text-xl lg:text-2xl text-quaternary mb-5 mx-auto',
+    labelAccordion:
+      'flex flex-row items-center justify-between sm:min-w-[300px] md:min-w-[620px] lg:min-w-[600px] xl:min-w-[800px] 2xl:min-w-[1000px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 mx-4 text-lg transition bg-opacity-90 hover:bg-gray-300',
+    accordionContainer: 'accordion__content hidden bg-grey-lighter dis',
+    title: 'font-bold text-xl lg:text-2xl text-quaternary text-center mt-5 mx-auto',
+    buttonContainer: 'flex self-end md:justify-end justify-center mb-32 mt-16 mx-3',
+    button:
+      `flex items-center flex-row justify-around w-64 h-14 text-tertiary rounded font-normal text-md md:text-xl ${loading ?
+        'bg-red-300 transition-colors duration-300' :
+        'bg-primary transition-colors duration-300 hover:bg-red-600 hover:text-white cursor-pointer'
+      }`,
+  };
+
   return (
     <div>
       <AdminHeader isOwnerProp={true} isPlus={ownerIsPlus} />
@@ -416,6 +439,8 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
         <div className={classes.content}>
           <h1 className={classes.title}>
             Edição do Anúncio
+          </h1>
+          <div className={classes.content2}>
             <div className="accordion flex flex-col">
               <div>
                 <input
@@ -504,54 +529,54 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
                       editarPropertyType={property.propertyType}
                       editarPropertySubtype={property.propertySubtype}
                       editarNumBedroom={
-                        property.metadata.find((obj) => obj.type === 'bedroom')
+                        property?.metadata?.find((obj) => obj.type === 'bedroom')
                           ?.amount || 0
                       }
                       editarNumBathroom={
-                        property.metadata.find((obj) => obj.type === 'bathroom')
+                        property?.metadata?.find((obj) => obj.type === 'bathroom')
                           ?.amount || 0
                       }
                       editarNumGarage={
-                        property.metadata.find(
+                        property?.metadata?.find(
                           (obj: IMetadata) => obj.type === 'garage'
                         )?.amount || 0
                       }
                       editarNumDependencies={
-                        property.metadata.find(
+                        property?.metadata?.find(
                           (obj: IMetadata) => obj.type === 'dependencies'
                         )?.amount || 0
                       }
                       editarNumSuite={
-                        property.metadata.find((obj) => obj.type === 'suites')
+                        property?.metadata?.find((obj) => obj.type === 'suites')
                           ?.amount || 0
                       }
                       editarDescription={property.description}
-                      editarPropertyValue={property.prices[0].value.toString()}
-                      editarCondominium={property.prices.some(
+                      editarPropertyValue={'0'}
+                      editarCondominium={property?.prices?.some(
                         (obj: IPrices) =>
                           obj.type === 'condominio' && obj.value !== null
                       )}
                       editarCondominiumValue={
-                        property.prices.find(
+                        property?.prices?.find(
                           (obj: IPrices) => obj.type === 'condominio'
                         )?.value !== null
-                          ? property.prices
-                            .find(
+                          ? property?.prices
+                            ?.find(
                               (obj: IPrices) => obj.type === 'condominio'
                             )!
                             .value.toString()
                           : ''
                       }
                       editarIptuValue={
-                        property.prices.find(
+                        property?.prices?.find(
                           (price) => price.type === 'IPTU'
                         ) !== undefined
-                          ? property.prices
-                            .find((price) => price.type === 'IPTU')!
+                          ? property?.prices
+                            ?.find((price) => price.type === 'IPTU')!
                             .value?.toString()
                           : ''
                       }
-                      editarIptu={property.prices.some(
+                      editarIptu={property?.prices?.some(
                         (obj: IPrices) => obj.type === 'IPTU'
                       )}
                       isEdit={isEdit}
@@ -585,10 +610,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
                 <div className={classes.accordionContainer} id="accordion-4">
                   <div className="accordion__body mx-2" id="painel4">
                     <PropertyDifferentials
-                      shouldRenderCondDiv={
-                        property.propertyType === 'apartamento' ||
-                        property.propertySubtype === 'Casa de condomínio'
-                      }
+                      shouldRenderCondDiv={property.condominiumTags.length > 0}
                       property={property}
                       isEdit={isEdit}
                       onTagsUpdate={(updatedTags: string[]) =>
@@ -606,11 +628,16 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
               </div>
             </div>
             <div className={classes.buttonContainer}>
-              <button className={classes.button} onClick={handleSubmit}>
-                Atualizar Dados
+              <button
+                className={classes.button}
+                onClick={handleSubmit}
+                disabled={loading}
+              >
+                <span className={`${loading ? 'ml-5' : ''}`}>Atualizar Dados</span>
+                {loading && <Loading />}
               </button>
             </div>
-          </h1>
+          </div>
         </div>
       </div>
     </div>
@@ -625,7 +652,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     session?.user.data._id !== undefined
       ? session?.user.data._id
       : session?.user.id;
-  const propertyId = Number(context.query.id);
+  const propertyId = context.query.id;
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
   let ownerId;
 
@@ -638,7 +665,33 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     };
   }
 
-  const [notifications, property, ownerData, plans] = await Promise.all([
+  try {
+    const ownerIdResponse = await fetch(
+      `${baseUrl}/user/find-owner-by-user`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId }),
+      }
+    );
+    if (ownerIdResponse.ok) {
+      const ownerData = await ownerIdResponse.json();
+      ownerId = ownerData?.owner?._id;
+    } else {
+      return {
+        redirect: {
+          destination: '/adminFavProperties?page=1',
+          permanent: false,
+        },
+      };
+    }
+  } catch (error) {
+    console.error(error);
+  }
+
+  const [notifications, property, ownerData, plans, messages] = await Promise.all([
     fetch(`${baseUrl}/notification/user/${userId}`, {
       method: 'GET',
       headers: {
@@ -662,31 +715,32 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     fetch(`${baseUrl}/plan`)
       .then((res) => res.json())
       .catch(() => []),
+    fetch(`${baseUrl}/message/find-all-by-ownerId`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        ownerId,
+        page: 1,
+      }),
+    })
+      .then((res) => res.json())
+      .catch(() => []),
     fetchJson(`${baseUrl}/notification/user/${userId}`),
     fetchJson(`${baseUrl}/property/${propertyId}?isEdit=true`),
     fetchJson(`${baseUrl}/user/find-owner-by-user`),
     fetchJson(`${baseUrl}/plan`),
+    fetchJson(`${baseUrl}/message/find-all-by-ownerId`),
   ]);
 
   return {
     props: {
+      notifications,
       property,
       ownerData,
-      plans
+      plans,
+      messages
     },
   };
 }
-
-const classes = {
-  body: 'flex flex-row justify-center w-full',
-  sideMenu: 'fixed left-0 top-7 sm:hidden hidden md:hidden lg:hidden xl:flex',
-  content:
-    'flex flex-col items-center mt-16 max-w-[900px] px-2 md:px-10 sm:ml-0 ml-0 xl:ml-24 2xl:ml-24',
-  labelAccordion:
-    'flex flex-row items-center justify-between sm:min-w-[300px] md:min-w-[620px] lg:min-w-[600px] xl:min-w-[800px] 2xl:min-w-[1000px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 mx-4 text-lg transition bg-opacity-90 hover:bg-gray-300',
-  accordionContainer: 'accordion__content hidden bg-grey-lighter dis',
-  title: 'font-bold text-xl lg:text-2xl text-quaternary my-10 mx-auto',
-  buttonContainer: 'flex self-end md:justify-end justify-center mb-32 mt-16',
-  button:
-    'bg-primary w-56 h-12 text-lg text-tertiary rounded transition-colors duration-300 hover:bg-red-600 hover:text-white',
-};
