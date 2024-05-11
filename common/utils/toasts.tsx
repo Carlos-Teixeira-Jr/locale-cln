@@ -48,7 +48,8 @@ export enum ErrorToastNames {
   UserNotFound = 'Nenhum usuário encontrado com o email ou senha informados.',
   EmptyCreditCardInfo = 'emptyCreditCArdInfo',
   OwnerImageUpload = 'ownerImageUpload',
-  EmailNotVerified = 'emailNotVerified'
+  EmailNotVerified = 'emailNotVerified',
+  InvalidRegisterData = 'invalidRegisterData'
 }
 
 export enum InfoToastNames {
@@ -284,6 +285,12 @@ const errorToastMessages: Record<ErrorToastNames, ToastMessage> = {
   },
   [ErrorToastNames.OwnerImageUpload]: {
     message: 'Houve um erro ao cadastrar a imagem do proprietário do imóvel.',
+    options: {
+      autoClose: 7000,
+    },
+  },
+  [ErrorToastNames.InvalidRegisterData]: {
+    message: 'Algum dos dados de cadastro está incorreto. Verifique e tente novamente.',
     options: {
       autoClose: 7000,
     },

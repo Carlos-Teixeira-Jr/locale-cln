@@ -106,6 +106,7 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
                   prices={prop.prices}
                   description={prop.description}
                   images={prop.images}
+                  location={prop.address}
                   bedrooms={
                     prop.metadata.find((item) => item.type === 'bedroom')
                       ?.amount

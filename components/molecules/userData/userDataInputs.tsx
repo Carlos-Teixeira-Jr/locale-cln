@@ -74,7 +74,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
       : '',
     // cpf: ownerData?.user?.cpf ? ownerData?.user?.cpf : '',
     cpf: "366.422.100-18",
-    cellPhone: ownerData && ownerData.owner ? ownerData.owner.cellPhone : '',
+    cellPhone: ownerData && ownerData.user ? ownerData.user.phone : '',
     picture: { id: '', src: '' },
     phone: ownerData && ownerData.owner ? ownerData.owner.phone : '',
     wppNumber: ownerData?.owner?.wppNumber ? ownerData?.owner?.wppNumber : '',

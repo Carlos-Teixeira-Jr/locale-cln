@@ -8,6 +8,7 @@ export type User = {
   email: string;
   address: IAddress;
   picture: string;
+  phone: string
 };
 
 export interface IUserDataComponent {

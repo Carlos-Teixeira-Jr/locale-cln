@@ -28,12 +28,15 @@ const PropertyDifferentials = ({
   onCondominiumTagsUpdate,
   onVideoLinkUpdate,
 }: Props) => {
+  console.log("🚀 ~ property:", property)
   const [firstInputValue, setFirstInputValue] = useState('');
   const [secondInputValue, setSecondInputValue] = useState('');
   const storedData = store.get('propertyData');
+  const [updatedYouTubeLink, setUpdatedYouTubeLink] = useState<string>(property?.youtubeLink ? property.youtubeLink : '');
+  console.log("🚀 ~ updatedYouTubeLink:", updatedYouTubeLink)
 
   const [updatedTags, setUpdatedTags] = useState<string[]>(() => {
-    if (property && property.tags) {
+    if (property && property.tags.length > 0) {
       return property.tags;
     } else if (storedData && storedData?.tags?.length > 0) {
       return storedData.tags
@@ -51,8 +54,6 @@ const PropertyDifferentials = ({
       return [];
     }
   });
-
-  const [updatedYouTubeLink, setUpdatedYouTubeLink] = useState<string>('');
 
   const handleAddWithEnter = (event: React.KeyboardEvent<HTMLInputElement>, type: string) => {
     if (event.key === 'Enter') {
@@ -89,8 +90,9 @@ const PropertyDifferentials = ({
   }, [updatedCondominiumTags]);
 
   useEffect(() => {
-    onVideoLinkUpdate!(updatedYouTubeLink);
-  }, [updatedYouTubeLink]);
+    // Verifica se onVideoLinkUpdate não é undefined antes de chamar
+    onVideoLinkUpdate?.(updatedYouTubeLink);
+  }, [updatedYouTubeLink, onVideoLinkUpdate]);
 
   const classes = {
     tagLabel:
@@ -362,6 +364,7 @@ const PropertyDifferentials = ({
           </div>
         </div>
         <input
+          value={updatedYouTubeLink}
           className={classes.mediumInput}
           onChange={(e) => setUpdatedYouTubeLink(e.target.value)}
           maxLength={150}

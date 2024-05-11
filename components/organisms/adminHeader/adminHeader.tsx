@@ -16,7 +16,6 @@ interface IAdminHeader {
 }
 
 const AdminHeader: React.FC<IAdminHeader> = ({ isOwnerProp, ownerData, isPlus }) => {
-  console.log("🚀 ~ ownerData:", ownerData)
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
@@ -26,9 +25,6 @@ const AdminHeader: React.FC<IAdminHeader> = ({ isOwnerProp, ownerData, isPlus })
     ? session?.user?.user?.data?.picture
     : session?.user?.data?.picture
   );
-
-  console.log("🚀 ~ userPicture:", userPicture)
-
 
   // Atualiza a foto do usuário caso ela seja alterada na tela de edição de dados do usuário
   useEffect(() => {

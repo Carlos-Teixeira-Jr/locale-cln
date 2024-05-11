@@ -75,6 +75,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
   errors,
   mainFeaturesInputRefs,
 }: IMainFeatures) => {
+  console.log("🚀 ~ isEdit:", isEdit)
 
   //Handles the error auto scroll behavior;
   const mainFeaturesErrorScroll = {
@@ -91,7 +92,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
   );
 
   const [isRent, setIsRent] = useState(
-    !isEdit ? false : editarAdType === 'alugar' ? true : false
+    editarAdType && editarAdType === 'alugar' ? true : false
   )
 
   const [isCommercial, setIsCommercial] = useState(
@@ -133,10 +134,10 @@ const MainFeatures: React.FC<IMainFeatures> = ({
       propertySubtype: isEdit ? editarPropertySubtype! : 'padrao',
       description: isEdit ? editarDescription! : '',
       size: {
-        width: isEdit ? editarSize!.width : 0,
-        height: isEdit ? editarSize!.height : 0,
-        totalArea: isEdit ? editarSize!.totalArea : 0,
-        useableArea: isEdit ? editarSize!.useableArea : 0,
+        width: isEdit && editarSize ? editarSize?.width : 0,
+        height: isEdit && editarSize ? editarSize?.height : 0,
+        totalArea: isEdit && editarSize ? editarSize?.totalArea : 0,
+        useableArea: isEdit && editarSize ? editarSize?.useableArea : 0,
       },
       propertyValue: isEdit ? `${editarPropertyValue}` : '',
       condominium: isEdit ? editarCondominium! : false,

@@ -169,12 +169,13 @@ const LoginCard: React.FC = () => {
           setLoading(false)
         }
       } else {
-        toast.error('Alguma informação está faltando.');
+        showErrorToast(ErrorToastNames.InvalidRegisterData)
         setLoading(false)
       }
     } else {
       if (email && password) {
         try {
+          setLoading(true)
           const data = await sendRequest(
             `${baseUrl}/user/find-by-email`,
             'POST',
@@ -189,12 +190,11 @@ const LoginCard: React.FC = () => {
                   email,
                   password,
                   redirect: false,
-                }).then(({ ok, error }: any) => {
+                }).then(({ ok }: any) => {
                   if (ok) {
                     toast.dismiss();
                     router.push('/');
                   } else {
-                    console.error(error);
                     toast.dismiss();
                     showErrorToast(ErrorToastNames.UserNotFound);
                     setLoading(false);
@@ -203,7 +203,7 @@ const LoginCard: React.FC = () => {
 
                 if (signInResponse === null) {
                   setLoading(false);
-                  //showErrorToast(ErrorToastNames.UserNotFound)
+                  showErrorToast(ErrorToastNames.UserNotFound)
                 }
               } catch (error) {
                 toast.dismiss();
@@ -223,10 +223,8 @@ const LoginCard: React.FC = () => {
           toast.dismiss();
           setLoading(false);
           showErrorToast(ErrorToastNames.ServerConnection);
-          console.error(error);
         }
       } else {
-        toast.warn('alguma informação está faltando');
         showErrorToast(ErrorToastNames.EmptyFields);
         setLoading(false)
       }
@@ -359,9 +357,9 @@ const LoginCard: React.FC = () => {
         )}
       </div>
 
-      <div>
+      <div className='w-full px-10'>
         <button
-          className={`md:w-[400px] w-full px-10 md:h-14 bg-primary p-2.5 gap-2.5 rounded-[50px] font-normal text-xl text-tertiary my-5 transition-colors duration-300 ${loading ?
+          className={`w-full px-10 md:h-14 bg-primary p-2.5 gap-2.5 rounded-[50px] font-normal text-xl text-tertiary my-5 transition-colors duration-300 ${loading ?
             'flex justify-center bg-red-300' :
             ' hover:bg-red-600 hover:text-white'
             }`}
