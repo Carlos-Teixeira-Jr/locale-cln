@@ -24,13 +24,11 @@ const SelectAdsToDeactivateModal = ({
   setConfirmAdsToDeactivate,
   onSubmit,
   docsToDeactivate,
-  // ownerData
 }: ISelectAdsToDeactivateModal) => {
 
   const isMobile = useIsMobile();
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
   const [unselectedCards, setUnselectedCards] = useState<string[]>([])
-  console.log("🚀 ~ unselectedCards:", unselectedCards)
   const [credits, setCredits] = useState<number>(0);
 
   useEffect(() => {

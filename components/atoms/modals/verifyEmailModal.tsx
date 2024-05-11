@@ -111,17 +111,16 @@ const VerifyEmailModal: React.FC<IVerifyEmailModal> = ({
       );
 
       if (response.ok) {
-        setShowResendMessage(false); // Hide the message after clicking
+        setShowResendMessage(false);
         setTimeout(() => {
-          setShowResendMessage(true); // Show the message after 60 seconds
-        }, 60000); // 60 seconds in milliseconds
+          setShowResendMessage(true);
+        }, 60000);
         toast.dismiss();
         showSuccessToast(SuccessToastNames.VerificationCode);
         setLoading(false)
         const data = await response.json();
 
         const newEmailVerificationCode = data.emailVerificationCode;
-        const newEmailVerificationExpiry = data.emailVerificationExpiry;
 
         setEmailVerificationData({
           ...emailVerificationData,
@@ -131,7 +130,6 @@ const VerifyEmailModal: React.FC<IVerifyEmailModal> = ({
     } catch (error) {
       showErrorToast(ErrorToastNames.ServerConnection);
       setLoading(true);
-      console.error(error);
     }
   };
 

@@ -2,10 +2,11 @@ import Image from 'next/image';
 import React, { MouseEvent, useState } from 'react';
 import Modal from 'react-modal';
 import { toast } from 'react-toastify';
-import { SuccessToastNames, showSuccessToast } from '../../../common/utils/toasts';
+import { ErrorToastNames, SuccessToastNames, showErrorToast, showSuccessToast } from '../../../common/utils/toasts';
 import { sendRequest } from '../../../hooks/sendRequest';
 import { useIsMobile } from '../../../hooks/useIsMobile';
 import CloseIcon from '../icons/closeIcon';
+import Loading from '../loading';
 Modal.setAppElement('#__next');
 
 export interface IForgotPasswordModal {
@@ -20,6 +21,7 @@ const ForgotPasswordModal: React.FC<IForgotPasswordModal> = ({
   const [emailForChangePassword, setEmailForChangePassword] =
     useState<string>('');
   const isMobile = useIsMobile();
+  const [loading, setLoading] = useState(false)
 
   const handleOnChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
@@ -35,6 +37,7 @@ const ForgotPasswordModal: React.FC<IForgotPasswordModal> = ({
   const handleOnSubmit = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     try {
+      setLoading(true);
       const data = await sendRequest(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/request-password`,
         'POST',
@@ -50,10 +53,11 @@ const ForgotPasswordModal: React.FC<IForgotPasswordModal> = ({
         const errorData = await data.json();
         const errorMessage = errorData.message;
         toast.error(errorMessage);
+        setLoading(false);
       }
     } catch (error) {
-      //showErrorToast(ErrorToastNames.ServerConnection);
-      console.error(error);
+      showErrorToast(ErrorToastNames.ServerConnection);
+      setLoading(false)
     }
   };
 
@@ -120,7 +124,7 @@ const ForgotPasswordModal: React.FC<IForgotPasswordModal> = ({
           E-mail
         </label>
         <input
-          className="w-full h-fit md:h-12 rounded-[10px] border-[1px] border-quaternary drop-shadow-xl bg-tertiary text-quaternary md:p-2 text-xl font-semibold"
+          className="w-full h-fit md:h-12 rounded-[10px] border-[1px] border-quaternary drop-shadow-xl bg-tertiary text-quaternary p-2 md:text-xl font-semibold"
           type="text"
           value={emailForChangePassword}
           onChange={handleOnChangeEmail}
@@ -128,10 +132,12 @@ const ForgotPasswordModal: React.FC<IForgotPasswordModal> = ({
         />
 
         <button
-          className="md:w-fit h-[50px] bg-primary p-2.5 rounded-[50px] font-normal text-xl text-tertiary leading-6 mx-auto mt-5 transition-colors duration-300 hover:bg-red-600 hover:text-white"
+          className={`w-full md:w-fit h-[50px] flex justify-center gap-2 p-2.5 rounded-[50px] font-normal text-xl transition-colors duration-300 text-tertiary mx-auto mt-5 ${loading ? 'bg-red-300' : 'bg-primary hover:bg-red-600 hover:text-white'}`}
           onClick={handleOnSubmit}
+          disabled={loading}
         >
-          Redefinir senha
+          <span className={`${loading ? 'ml-5' : ''}`}>Redefinir senha</span>
+          {loading && <Loading />}
         </button>
       </div>
     </Modal>
