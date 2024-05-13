@@ -28,6 +28,7 @@ import ArrowDownIcon from '../components/atoms/icons/arrowDownIcon';
 import Loading from '../components/atoms/loading';
 import UserAddress from '../components/molecules/address/userAdress';
 import { PlansCardsHidden } from '../components/molecules/cards';
+import Coupons from '../components/molecules/coupons/coupons';
 import CreditCard, {
   CreditCardForm,
 } from '../components/molecules/userData/creditCard';
@@ -68,7 +69,8 @@ type EditUserBody = {
     password: string,
     passwordConfirmattion: string
   },
-  creditCard?: CreditCardType
+  creditCard?: CreditCardType;
+  coupon?: string
 }
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
@@ -99,6 +101,8 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const unreadMessages = messages?.docs?.length > 0 ? messages?.docs?.filter((message) => !message.isRead) : [];
   const plusPlan = plans.find((e) => e.name === 'Locale Plus');
   const ownerIsPlus = ownerData?.owner?.plan === plusPlan?._id ? true : false;
+  const [useCoupon, setUseCoupon] = useState(false);
+  const [coupon, setCoupon] = useState('');
 
   // Mostrar os dados do cartão na tela;
   const creditCardInfo = ownerData?.owner?.paymentData?.creditCardInfo
@@ -150,6 +154,8 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     passwordConfirmattion: '',
   });
 
+  const [couponError, setCouponError] = useState('');
+
   const userDataInputRefs = {
     username: useRef<HTMLElement>(null),
     email: useRef<HTMLElement>(null),
@@ -161,6 +167,8 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     password: useRef<HTMLElement>(null),
     passwordConfimattion: useRef<HTMLElement>(null),
   };
+
+  const couponInputRef = useRef<HTMLElement>(null);
 
   const [address, setAddress] = useState<IAddress>({
     // zipCode: userData ? userData.address?.zipCode : '',
@@ -221,8 +229,11 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       'A senha e a confirmação de senha precisam ser iguais';
     const invalidPasswordLenght = 'A senha precisa ter pelo meno 6 caracteres';
     const emptyCreditCardError = 'Há algum dado do cartão de crédito faltando';
+    const invalidCouponError = 'Cupom de desconto inválido.'
 
     let newCreditCardError = '';
+
+    let newCouponError = '';
 
     setFormDataErrors({
       username: '',
@@ -250,7 +261,9 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       expiry: '',
       ccv: '',
       cpfCnpj: ''
-    })
+    });
+
+    setCouponError('');
 
     const newFormDataErrors = {
       username: '',
@@ -303,10 +316,12 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     ) {
       newCreditCardError = emptyCreditCardError;
     }
+    if (useCoupon && !coupon) newCouponError = invalidCouponError
 
     setFormDataErrors(newFormDataErrors);
     setAddressErrors(newAddressErrors);
     setPasswordErrors(newPasswordErrors);
+    setCouponError(newCouponError);
 
     // Insere a mensagem de erro nos inputs vazios do form de credit card;
     Object.keys(creditCard).forEach((e) => {
@@ -330,6 +345,13 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
         ...newAddressErrors,
         ...newFormDataErrors,
       };
+    }
+
+    if (useCoupon) {
+      combinedErrors = {
+        ...combinedErrors,
+        newCouponError
+      }
     }
 
     if (isEditPassword) combinedErrors;
@@ -392,6 +414,13 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
           }
         }
 
+        if (useCoupon) {
+          body = {
+            ...body,
+            coupon
+          }
+        }
+
         const indexDbImages = (await getAllImagesFromDB()) as {
           id: string;
           data: Blob;
@@ -450,8 +479,13 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
 
         try {
           toast.loading('Enviando...');
-          const response = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_API_URL}/user/edit-user`,
+          let responseUrl;
+          if (useCoupon) {
+            responseUrl = `${process.env.NEXT_PUBLIC_BASE_API_URL}/user/edit-user-coupon`
+          } else {
+            responseUrl = `${process.env.NEXT_PUBLIC_BASE_API_URL}/user/edit-user`
+          }
+          const response = await fetch(responseUrl,
             {
               method: 'POST',
               headers: {
@@ -535,7 +569,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                 userDataInputRefs={userDataInputRefs}
                 picture={formData.picture ? formData.picture : { id: '1', src: defaultProfileImage }}
               />
-              <div className="mx-5 my-10">
+              <div className="mx-5 mt-10">
                 <EditPassword
                   onPasswordUpdate={(passwordData: IPasswordData) =>
                     setPasswordFormData(passwordData)
@@ -546,6 +580,14 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                     setIsEditPassword(isEditPassword)
                   }
                 />
+
+                <Coupons
+                  onCouponChange={(coupon: string) => setCoupon(coupon)}
+                  onUseCouponSwitchChange={(isUseCoupon: boolean) => setUseCoupon(isUseCoupon)}
+                  couponInputRefs={couponInputRef}
+                  error={couponError}
+                />
+
               </div>
 
               <h2 className={classes.h2}>Dados de Cobrança</h2>
