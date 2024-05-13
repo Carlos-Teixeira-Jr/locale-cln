@@ -313,6 +313,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       selectedPlan !== ownerData?.owner?.plan
       && planObj?.name !== 'Free'
       && Object.values(creditCard).some((value) => value === '')
+      && !useCoupon
     ) {
       newCreditCardError = emptyCreditCardError;
     }
@@ -479,13 +480,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
 
         try {
           toast.loading('Enviando...');
-          let responseUrl;
-          if (useCoupon) {
-            responseUrl = `${process.env.NEXT_PUBLIC_BASE_API_URL}/user/edit-user-coupon`
-          } else {
-            responseUrl = `${process.env.NEXT_PUBLIC_BASE_API_URL}/user/edit-user`
-          }
-          const response = await fetch(responseUrl,
+          const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/user/edit-user`,
             {
               method: 'POST',
               headers: {
