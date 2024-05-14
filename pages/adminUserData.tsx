@@ -311,6 +311,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
         newPasswordErrors.passwordConfirmattion = invalidPasswordLenght;
     }
     if (
+      selectedPlan !== '' &&
       selectedPlan !== ownerData?.owner?.plan
       && planObj?.name !== 'Free'
       && Object.values(creditCard).some((value) => value === '')

@@ -75,11 +75,11 @@ const PropertyDifferentials = ({
     }
   };
 
-  useEffect(() => {
-    if (property) {
-      setUpdatedYouTubeLink(property.youtubeLink);
-    }
-  });
+  // useEffect(() => {
+  //   if (property) {
+  //     setUpdatedYouTubeLink(property.youtubeLink);
+  //   }
+  // });
 
   useEffect(() => {
     onTagsUpdate!(updatedTags);
