@@ -10,6 +10,7 @@ import VisaIcon from '../../atoms/icons/visaIcon';
 export type PaymentData = {
   cardBrand: string;
   value: string;
+  couponUsed: boolean
 };
 
 type StoredData = {
@@ -29,14 +30,17 @@ const PaymentBoard_Step3_5 = ({
   plans,
   ownerData
 }: IPaymentBoard_Step3_5) => {
+  console.log("🚀 ~ ownerData:", ownerData)
 
   const cardFlag = storedData ? storedData.paymentData.cardBrand : '';
+  const couponWasUsed = storedData?.paymentData?.couponUsed ? true : false
 
-  const plan = plans && storedData
-    ? plans.find((plan) => plan._id === storedData.propertyDataStep3.plan)
+  const plan = plans && ownerData?.owner
+    ? plans.find((plan) => plan._id === ownerData?.owner?.plan)
     : undefined;
 
-  const priceToPay = ownerData?.owner?.adCredits! > plan?.commonAd! ? plan?.price : '00';
+  console.log("🚀 ~ plan:", plan)
+
 
   const classes = {
     paymentLabel: 'text-quaternary text-lg md:text-xl font-medium mb-4',
@@ -73,8 +77,12 @@ const PaymentBoard_Step3_5 = ({
               </div>
             )}
 
-            <h2 className={classes.planLabel}>{plan?.name}</h2>
-            <h2 className={classes.planLabel}>R$ {plan?.price},00</h2>
+            <h2 className={classes.planLabel}>
+              {plan?.name}
+            </h2>
+            <h2 className={classes.planLabel}>
+              R$ {plan?.price !== undefined ? plan?.price : '00'},00
+            </h2>
             <h2 className="text-quaternary text-3xl font-medium mb-4">
               -{'-'}
             </h2>
@@ -87,7 +95,7 @@ const PaymentBoard_Step3_5 = ({
           TOTAL
         </h2>
         <h2 className="text-quaternary text-lg md:text-xl w-fit font-medium mb-4 md:px-0">
-          R$ {plan?.price},00
+          R$ {plan?.price !== undefined ? plan?.price : '00'},00
         </h2>
       </div>
     </>

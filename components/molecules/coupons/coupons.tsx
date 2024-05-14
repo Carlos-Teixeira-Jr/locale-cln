@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import CheckIcon from "../../atoms/icons/checkIcon";
 
@@ -19,9 +20,12 @@ const Coupons = ({
     ...couponInputRefs,
   };
 
+  const { pathname } = useRouter();
+
   const [useCoupon, setUseCoupon] = useState(false);
   const [coupon, setCoupon] = useState('');
   const [couponError, setCouponError] = useState(error);
+  const isAdminPage = pathname === '/adminUserData' ? true : false;
 
   useEffect(() => {
     onCouponChange(coupon)
@@ -47,8 +51,8 @@ const Coupons = ({
   }, [useCoupon])
 
   return (
-    <div className="flex flex-col mb-5 md:mb-10">
-      <div className="flex">
+    <div className={`flex flex-col mb-5 md:mb-10 ${isAdminPage ? '' : 'justify-center'}`}>
+      <div className={`flex ${isAdminPage ? '' : 'justify-center'}`}>
         <h3 className="md:text-2xl text-xl leading-10 text-quaternary font-bold my-auto">
           Usar cupom de desconto
         </h3>
@@ -77,7 +81,7 @@ const Coupons = ({
           value={coupon}
           style={couponError ? { border: '1px solid red' } : {}}
           maxLength={15}
-          className="border w-full md:w-1/2 p-5 h-12 my-5 border-quaternary rounded-[10px] bg-tertiary font-bold text-lg text-quaternary leading-7 drop-shadow-xl"
+          className={`border w-full p-5 h-12 my-5 border-quaternary rounded-[10px] bg-tertiary font-bold text-lg text-quaternary leading-7 drop-shadow-xl ${isAdminPage ? 'md:w-1/2' : 'mx-auto md:w-1/3'}`}
           onChange={(e) => setCoupon(e.target.value)}
         />
       )}

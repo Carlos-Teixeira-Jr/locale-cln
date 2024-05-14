@@ -103,6 +103,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const ownerIsPlus = ownerData?.owner?.plan === plusPlan?._id ? true : false;
   const [useCoupon, setUseCoupon] = useState(false);
   const [coupon, setCoupon] = useState('');
+  const hasProperties = properties?.docs?.length > 0 ? true : false;
 
   // Mostrar os dados do cartão na tela;
   const creditCardInfo = ownerData?.owner?.paymentData?.creditCardInfo
@@ -547,6 +548,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
               notifications={notifications}
               unreadMessages={unreadMessages}
               isPlus={ownerIsPlus}
+              hasProperties={hasProperties}
             />
           </div>
         )}

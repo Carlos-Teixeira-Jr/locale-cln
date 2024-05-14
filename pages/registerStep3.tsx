@@ -28,6 +28,7 @@ import Address from '../components/molecules/address/address';
 import ChangeAddressCheckbox from '../components/molecules/address/changeAddressCheckbox';
 import OwnerPlanBoard from '../components/molecules/boards/owwnerPlanBoard';
 import PlansCardsHidden from '../components/molecules/cards/plansCards/plansCardHidden';
+import Coupons from '../components/molecules/coupons/coupons';
 import PaymentBoard from '../components/molecules/payment/paymentBoard';
 import CreditCard, {
   CreditCardForm,
@@ -54,7 +55,8 @@ type BodyReq = {
   cellPhone: string;
   creditCardData?: CreditCardForm;
   picture?: string;
-  deactivateProperties: string[]
+  deactivateProperties: string[];
+  coupon?: string
 };
 
 // To-do: verificar se a página está exigindo os dados do cartão mesmo quando o usuário ainda tem créditos no plano;
@@ -93,6 +95,12 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
   const [confirmAdsToDeactivate, setConfirmAdsToDeactivate] = useState(false);
   const [docsToDeactivate, setDocsToDeactivate] = useState<string[]>([])
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+  const [coupon, setCoupon] = useState('');
+  console.log("🚀 ~ coupon:", coupon)
+  const [useCoupon, setUseCoupon] = useState(false);
+  console.log("🚀 ~ useCoupon:", useCoupon)
+  const [couponError, setCouponError] = useState('');
+  const couponInputRef = useRef<HTMLElement>(null);
 
   // Atualiza o selectedPlanData
   useEffect(() => {
@@ -250,13 +258,11 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
       setPropsToDeactivateIsOpen(true);
       return;
     }
-    // else {
-    //   setDocsToDeactivate([])
-    // }
 
     const error = `Este campo é obrigatório.`;
     const planErrorMessage = `Selecione um plano de anúncios.`
     const emptyCreditsErrorMsg = 'Parece que você esgotou seus créditos de anúncio no seu plano atual. Não se preocupe! Você pode mudar para um plano diferente ou comprar mais créditos para continuar anunciando seus imóveis.'
+    const invalidCouponError = 'Cupom de desconto inválido.'
 
     // Limpa o estado de erro da seleção do plano, verifica se um plano foi selecionado e emite um erro caso contrário
     const planData: IPlan | undefined = plans.find(
@@ -282,7 +288,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
 
     setTermsError('');
     setPaymentError('');
-    setPlanError('')
+    setPlanError('');
+    setCouponError('');
 
     const newUserDataErrors = {
       username: '',
@@ -308,9 +315,9 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     };
 
     let newPlanError = '';
-
     let newChangePlanError = '';
     let newPaymentError = '';
+    let newCouponError = '';
 
     if (ownerData?.owner?.adCredits! < 1 &&
       selectedPlan === ownerData?.owner?.plan
@@ -320,7 +327,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     }
     if (ownerPlan?._id !== selectedPlan && ownerPlan !== undefined && !confirmChange) newChangePlanError = `Você está alterando seu plano de ${ownerPlan?.name === 'Free' ? 'Grátis' : ownerPlan?.name} para o plano ${selectedPlanData?.name === 'Free' ? 'Grátis' : selectedPlanData?.name}. A diferença entre os valores dos planos será cobrada na próxima fatura do seu cartão de crédito.`;
     if (!userDataForm?.username) newUserDataErrors.username = error;
-    if (!selectedPlan) newPlanError = planErrorMessage;
+    if (!selectedPlan && !useCoupon) newPlanError = planErrorMessage;
     if (!userDataForm?.email) newUserDataErrors.email = error;
     if (!userDataForm?.cpf) newUserDataErrors.cpf = error;
     if (!userDataForm?.cellPhone) newUserDataErrors.cellPhone = error;
@@ -338,17 +345,20 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
         if (!creditCard.cpfCnpj) newCreditCardErrors.cpfCnpj = error;
       }
     }
+    if (useCoupon && !coupon) newCouponError = invalidCouponError
 
     setUserDataErrors(newUserDataErrors);
     setAddressErrors(newAddressErrors);
     setCreditCardErrors(newCreditCardErrors);
     setPlanError(newPlanError);
+    setCouponError(newCouponError);
 
     const combinedErrors = {
       ...newAddressErrors,
       ...newUserDataErrors,
       ...newCreditCardErrors,
-      newPlanError
+      newPlanError,
+      newCouponError
     };
 
     const hasErrors = Object.values(combinedErrors).some(
@@ -448,7 +458,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
         try {
           toast.loading('Enviando...');
           setLoading(true);
-          const body: BodyReq = {
+          let body: BodyReq = {
             propertyData,
             userData,
             plan: propertyDataStep3.plan,
@@ -460,6 +470,13 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
 
           if (!isPlanFree) {
             body.creditCardData = creditCard;
+          }
+
+          if (useCoupon) {
+            body = {
+              ...body,
+              coupon
+            }
           }
 
           const response = await fetch(`${baseUrl}/property`, {
@@ -475,14 +492,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
             const paymentData = {
               cardBrand: data.creditCardBrand ? data.creditCardBrand : 'Free',
               value: data.paymentValue ? data.paymentValue : '00',
+              couponUsed: useCoupon && coupon ? true : false
             };
-            // store.set('creditCard', paymentData);
-            // toast.dismiss();
-            // store.set('propertyData', {
-            //   propertyDataStep3,
-            //   storedData,
-            //   paymentData,
-            // });
 
             const indexDbImages = (await getAllImagesFromDB()) as {
               id: string;
@@ -633,7 +644,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
               </div>
 
               <div className='flex flex-col'>
-                <div ref={plansRef} className={`md:flex ${planError !== "" ? 'border-2 pt-7 border-red-500 transition-opacity ease-in-out opacity-100' : ''}`}>
+                <div ref={plansRef} className={`md:flex justify-center gap-10 ${planError !== "" ? 'border-2 pt-7 border-red-500 transition-opacity ease-in-out opacity-100' : ''}`}>
                   {ownerData?.owner?.adCredits! === 0 || isChangePlan || !ownerData.owner ? (
                     reversedCards.map(
                       ({ _id, name, price, highlightAd, commonAd, smartAd }: IPlan) => (
@@ -679,6 +690,12 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
                 )}
               </div>
 
+              <Coupons
+                onUseCouponSwitchChange={(isUseCoupon: boolean) => setUseCoupon(isUseCoupon)}
+                error={couponError}
+                onCouponChange={(coupon: string) => setCoupon(coupon)}
+                couponInputRefs={couponInputRef}
+              />
 
               <div className="lg:mx-0">
                 <div className={classes.userData}>

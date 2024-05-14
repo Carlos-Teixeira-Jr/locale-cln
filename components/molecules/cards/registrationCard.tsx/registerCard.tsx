@@ -79,22 +79,22 @@ const RegisterCard: React.FC = () => {
             toast.dismiss();
             setUnverifiedEmailModal(true);
           } else {
-            toast.dismiss();
             router.push({
               pathname: '/register',
               query: {
                 email
               }
             });
+            toast.dismiss();
           }
         } else {
-          toast.dismiss();
           router.push({
             pathname: '/register',
             query: {
               email,
             },
           });
+          toast.dismiss();
         }
       } catch (error) {
         setLoading(false);
