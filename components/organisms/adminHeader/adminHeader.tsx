@@ -75,7 +75,7 @@ const AdminHeader: React.FC<IAdminHeader> = ({ isOwnerProp, ownerData, isPlus })
           </div>
         </Link>
         <div ref={ref} onClick={() => setOpen(!open)}>
-          <button className="visible lg:hidden cursor-pointer decoration-transparent mx-5">
+          <button className="visible lg:hidden cursor-pointer decoration-transparent m-5">
             <MenuIcon width={isMobile ? 24 : 50} height={isMobile ? 24 : 50} />
           </button>
         </div>
