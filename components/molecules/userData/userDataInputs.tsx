@@ -407,7 +407,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
                 className="md:max-w-[250px]"
                 ref={userDataErrorScroll.whatsapp}
               >
-                <h3 className="text-xl font-normal text-quaternary leading-7">
+                <h3 className="text-lg font-normal text-quaternary leading-7">
                   WhatsApp
                 </h3>
                 <input

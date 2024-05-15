@@ -95,7 +95,7 @@ const PropertyDifferentials = ({
 
   const classes = {
     tagLabel:
-      'text-sm font-normal leading-7 drop-shadow-md text-quaternary mx-2 my-auto',
+      'text-sm font-normal leading-7 drop-shadow-md text-quaternary mx-2 my-auto whitespace-nowrap overflow-hidden truncate',
     addButton:
       'bg-secondary text-tertiary mx-5 px-7 py-2 rounded-full text-lg font-bold leading-7 drop-shadow-md transition-colors duration-300 hover:bg-yellow-500',
     mediumInput:
@@ -111,18 +111,18 @@ const PropertyDifferentials = ({
       'text-lg my-5 font-bold leading-7 text-quaternary drop-shadow-sm ml-3',
     tagSpan:
       'bg-tertiary text-quaternary text-sm font-semibold rounded-full drop-shadow-lg grid grid-flow-col border border-quaternary mb-2 ml-3',
-    checkBox: 'flex my-5 w-[150px] max-w-[30%] ml-3',
+    checkBox: 'flex my-5 w-[150px] ml-3',
   };
 
   return (
-    <div>
+    <div className='w-full'>
       <h2 className="text-quaternary md:text-xl text-lg font-semibold leading-9 mt-4 mb-2 mx-3">
         Diferenciais do Imóvel:
       </h2>
 
-      <div className="flex flex-wrap sm:justify-between md:justify-start gap-x-4 sm:gap-x-5 mx-3">
+      <div className="flex flex-wrap justify-between md:justify-start gap-x-4 md:mx-3">
         {propertyTags.map((tag, i) => (
-          <div className="flex my-2 w-32 sm:w-40" key={i}>
+          <div className="flex my-2 md:w-36 w-40" key={i}>
             <div
               className={classes.checkContainer}
               onClick={() => {
@@ -181,7 +181,7 @@ const PropertyDifferentials = ({
       <div className="flex flex-wrap mt-4">
         {updatedTags.map((tag) => (
           <span className={classes.tagSpan} key={tag}>
-            <p className="m-1 mb-2">{tag}</p>
+            <p className="my-1 ml-2 mb-2">{tag}</p>
             <div
               className={classes.handleTag}
               onClick={() => {
@@ -201,7 +201,7 @@ const PropertyDifferentials = ({
 
           <h3 className={classes.h3Title}>Lazer:</h3>
 
-          <div className="flex flex-wrap">
+          <div className="flex justify-between flex-wrap">
             {condominiumTagsDefault.map((tag, i) => (
               <div className={classes.checkBox} key={i}>
                 <div
@@ -228,7 +228,7 @@ const PropertyDifferentials = ({
                     />
                   )}
                 </div>
-                <p className={classes.tagLabel} id="tag-pets">
+                <p className={classes.tagLabel} >
                   {tag}
                 </p>
               </div>
@@ -237,9 +237,9 @@ const PropertyDifferentials = ({
 
           <h3 className={classes.h3Title}>Acessibilidade e Serviços:</h3>
 
-          <div className="flex flex-wrap">
+          <div className="flex flex-wrap justify-between">
             {accessibilityTags.map((tag, i) => (
-              <div className={classes.checkBox} key={i}>
+              <div className="flex my-5 w-[150px] ml-3" key={i}>
                 <div
                   className={classes.checkContainer}
                   onClick={() => {
@@ -264,7 +264,7 @@ const PropertyDifferentials = ({
                     />
                   )}
                 </div>
-                <p className={classes.tagLabel} id="tag-pets">
+                <p className="text-sm font-normal leading-7 drop-shadow-md text-quaternary mx-2 my-auto whitespace-nowrap overflow-hidden truncate" id="tag-pets">
                   {tag}
                 </p>
               </div>
@@ -273,7 +273,7 @@ const PropertyDifferentials = ({
 
           <h3 className={classes.h3Title}>Segurança:</h3>
 
-          <div className="flex flex-wrap">
+          <div className="flex flex-wrap justify-between">
             {securityTags.map((tag, i) => (
               <div className={classes.checkBox} key={i}>
                 <div
@@ -311,7 +311,7 @@ const PropertyDifferentials = ({
             <h2 className="text-quaternary text-lg font-semibold leading-9 ml-3 my-2">
               Outras Características do Condomínio
             </h2>
-            <div className="flex flex-col md:block mx-3">
+            <div className="flex flex-col gap-2 md:block mx-3">
               <input
                 className={classes.mediumInput}
                 id="second-input"

@@ -136,13 +136,13 @@ const classes = {
   body: 'flex flex-col mx-auto max-w-[1215px]',
   stepLabel:
     'md:mt-26 mt-28 sm:mt-32 md:mb-8 lg:mb-2 w-full mx-auto xl:mx-auto',
-  card: 'bg-[#F7F7F6] border-4 border-[#4BB543] flex flex-row justify-between items-center p-7 md:p-14 min-h-[198px] my-8',
+  card: 'bg-[#F7F7F6] border-4 border-[#4BB543] flex flex-row justify-between items-center p-5 md:p-7 md:p-14 min-h-[198px] my-8 mx-2',
   h1: 'text-[#4BB543] text-xl md:text-2xl font-bold mb-6',
-  p: 'text-quaternary text-md md:text-xl font-bold',
+  p: 'text-quaternary text-sm md:text-xl font-bold',
   buttonContainer:
     'flex md:justify-end justify-center lg:justify-end xl:justify-end my-4 max-w-[1215px]',
   button:
     'active:bg-gray-500 cursor-pointer flex items-center flex-row justify-around bg-primary w-44 h-14 text-tertiary rounded transition-colors duration-300 font-bold text-lg md:text-xl hover:bg-red-600 hover:text-white',
   checkIcon:
-    'rounded-full bg-[#4BB543] w-20 h-20 flex items-center justify-center shrink-0',
+    'rounded-full bg-[#4BB543] md:w-20 md:h-20 flex items-center justify-center shrink-0',
 };

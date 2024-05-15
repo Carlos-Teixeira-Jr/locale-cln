@@ -28,7 +28,7 @@ const LinearStepper = ({ activeStep }: ILinearStepper) => {
   ]
 
   return (
-    <div className='flex w-full'>
+    <div className='flex w-full px-2'>
       {steps?.map((step, idx) => (
         <>
           <div className={`rounded-full w-7 h-7 mx-1 shrink-0 text-tertiary text-center font-semibold pt-[2px] my-auto ${step.key < activeStep + 2 ?
