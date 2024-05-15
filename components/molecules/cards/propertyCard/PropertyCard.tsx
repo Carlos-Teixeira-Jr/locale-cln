@@ -38,7 +38,7 @@ const PropertyCard: React.FC<IPropertyCard> = ({
   favorited,
   highlighted,
 }) => {
-  console.log("🚀 ~ location:", location)
+
   const { data: session } = useSession() as any;
   const userId = session?.user.data.id || session?.user?.data._id;
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -94,8 +94,6 @@ const PropertyCard: React.FC<IPropertyCard> = ({
       location,
     };
   }, [id, prices, description, bedrooms, bathrooms, parking_spaces, location]);
-
-  console.log("🚀 ~ memoizedCardInfos ~ memoizedCardInfos:", memoizedCardInfos)
 
   const handleFavouriteIcon = async () => {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;

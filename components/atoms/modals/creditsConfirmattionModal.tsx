@@ -79,19 +79,19 @@ const CreditsConfirmationModal = ({
         </div>
         <div className='flex flex-col'>
 
-          <div className='flex gap-2'>
-            <p className='font-normal text-base'>Valor do plano Locale Plus:</p>
-            <span className='text-lg font-semibold'>{` R$ 50,00`}</span>
+          <div className='flex gap-2 justify-between'>
+            <p className='font-normal text-base max-w-[75%]'>• Valor do plano Locale Plus:</p>
+            <span className='text-lg font-semibold my-auto'>{` R$ 50,00`}</span>
           </div>
 
-          <div className='flex gap-2'>
-            <p className='font-normal text-base'>Valor da compra atual de créditos:</p>
-            <span className='text-lg font-semibold'>{` R$ ${totalPrice},00`}</span>
+          <div className='flex gap-2 justify-between'>
+            <p className='font-normal text-base max-w-[75%]'>• Valor da compra atual de créditos:</p>
+            <span className='text-lg font-semibold my-auto'>{` R$ ${totalPrice},00`}</span>
           </div>
 
-          <div className='flex gap-2'>
-            <p className='font-normal text-base'>Plano + créditos anteriores + compra atual:</p>
-            <span>{`R$ ${ownerPlanPrice + totalPrice},00`}</span>
+          <div className='flex gap-2 justify-between'>
+            <p className='font-normal text-base max-w-[70%]'>• Plano + créditos anteriores + compra atual:</p>
+            <span className='my-auto'>{`R$ ${ownerPlanPrice + totalPrice},00`}</span>
           </div>
         </div>
 

@@ -258,9 +258,6 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
       (error) => error !== ''
     );
 
-    console.log("🚀 ~ handleSubmit ~ combinedErrors:", combinedErrors)
-
-
     if (
       errorHandler.current.prop === '' &&
       errorHandler.current.error === '' &&

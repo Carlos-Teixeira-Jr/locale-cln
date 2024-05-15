@@ -44,9 +44,6 @@ const LoginCard: React.FC = () => {
     password: password,
   });
 
-  console.log("🚀 ~ emailVerificationData:", emailVerificationData)
-
-
   useEffect(() => {
     setLoading(false)
   }, [loading]);

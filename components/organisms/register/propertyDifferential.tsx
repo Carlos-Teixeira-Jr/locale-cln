@@ -28,12 +28,11 @@ const PropertyDifferentials = ({
   onCondominiumTagsUpdate,
   onVideoLinkUpdate,
 }: Props) => {
-  console.log("🚀 ~ property:", property)
+
   const [firstInputValue, setFirstInputValue] = useState('');
   const [secondInputValue, setSecondInputValue] = useState('');
   const storedData = store.get('propertyData');
   const [updatedYouTubeLink, setUpdatedYouTubeLink] = useState<string>(property?.youtubeLink ? property.youtubeLink : '');
-  console.log("🚀 ~ updatedYouTubeLink:", updatedYouTubeLink)
 
   const [updatedTags, setUpdatedTags] = useState<string[]>(() => {
     if (property && property.tags.length > 0) {

@@ -35,9 +35,6 @@ const VerifyEmailModal: React.FC<IVerifyEmailModal> = ({
     password: null,
   });
 
-  console.log("🚀 ~ emailVerificationData:", emailVerificationData)
-
-
   useEffect(() => {
     setEmailVerificationData(emailVerificationDataProp);
   }, [emailVerificationDataProp]);

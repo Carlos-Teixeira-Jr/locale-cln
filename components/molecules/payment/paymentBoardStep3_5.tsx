@@ -30,7 +30,6 @@ const PaymentBoard_Step3_5 = ({
   plans,
   ownerData
 }: IPaymentBoard_Step3_5) => {
-  console.log("🚀 ~ ownerData:", ownerData)
 
   const cardFlag = storedData ? storedData.paymentData.cardBrand : '';
   const couponWasUsed = storedData?.paymentData?.couponUsed ? true : false
@@ -38,9 +37,6 @@ const PaymentBoard_Step3_5 = ({
   const plan = plans && ownerData?.owner
     ? plans.find((plan) => plan._id === ownerData?.owner?.plan)
     : undefined;
-
-  console.log("🚀 ~ plan:", plan)
-
 
   const classes = {
     paymentLabel: 'text-quaternary text-lg md:text-xl font-medium mb-4',

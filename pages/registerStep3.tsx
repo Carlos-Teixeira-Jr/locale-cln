@@ -96,9 +96,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
   const [docsToDeactivate, setDocsToDeactivate] = useState<string[]>([])
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
   const [coupon, setCoupon] = useState('');
-  console.log("🚀 ~ coupon:", coupon)
   const [useCoupon, setUseCoupon] = useState(false);
-  console.log("🚀 ~ useCoupon:", useCoupon)
   const [couponError, setCouponError] = useState('');
   const couponInputRef = useRef<HTMLElement>(null);
 
