@@ -110,7 +110,10 @@ const MessagePage = ({ ownerProperties, message, notifications, ownerData, plans
           <SideMenu
             isOwnerProp={isOwner}
             notifications={notifications}
-            unreadMessages={unreadMessages} isPlus={false} />
+            unreadMessages={unreadMessages}
+            isPlus={isPlus}
+            hasProperties={ownerProperties?.docs && ownerProperties?.docs?.length > 0}
+          />
         </div>
         <div className={classes.contentContainer}>
           <div className={classes.content}>
