@@ -79,24 +79,24 @@ const CreditsConfirmationModal = ({
         </div>
         <div className='flex flex-col'>
 
-          <div className='flex gap-2 justify-between'>
+          <div className='flex md:gap-2 justify-between'>
             <p className='font-normal text-base max-w-[75%]'>• Valor do plano Locale Plus:</p>
             <span className='text-lg font-semibold my-auto'>{` R$ 50,00`}</span>
           </div>
 
-          <div className='flex gap-2 justify-between'>
+          <div className='flex md:gap-2 justify-between'>
             <p className='font-normal text-base max-w-[75%]'>• Valor da compra atual de créditos:</p>
             <span className='text-lg font-semibold my-auto'>{` R$ ${totalPrice},00`}</span>
           </div>
 
-          <div className='flex gap-2 justify-between'>
+          <div className='flex md:gap-2 justify-between'>
             <p className='font-normal text-base max-w-[70%]'>• Plano + créditos anteriores + compra atual:</p>
             <span className='my-auto'>{`R$ ${ownerPlanPrice + totalPrice},00`}</span>
           </div>
         </div>
 
         <div>
-          <p className='text-base'>Ao confirmar o valor da compra, ele será acrescentado ao valor do seu plano em todas as próximas faturas. Isso significa que você verá esse valor adicional refletido em seus próximos pagamentos, facilitando o acompanhamento dos seus gastos e do custo total do serviço ao longo do tempo.</p>
+          <p className='text-sm md:text-base'>Ao confirmar o valor da compra, ele será acrescentado ao valor do seu plano em todas as próximas faturas. Isso significa que você verá esse valor adicional refletido em seus próximos pagamentos, facilitando o acompanhamento dos seus gastos e do custo total do serviço ao longo do tempo.</p>
         </div>
 
         <div className='w-full flex gap-10 justify-between text-tertiary mt-8'>

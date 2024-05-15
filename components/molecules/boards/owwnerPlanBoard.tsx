@@ -23,8 +23,8 @@ const OwnerPlanBoard = ({
   }, [isChangePlanActive])
 
   return (
-    <section className="w-[40rem] text-quaternary px-20 h-fit p-5 flex flex-col mx-auto mb-5 gap-3 border border-quaternary bg-tertiary">
-      <h2 className="text-2xl font-bold text-quaternary">{`Seu plano atual é o ${ownerPlan?.name === 'Free' ? 'GRÁTIS' : ownerPlan?.name?.toUpperCase()}`}</h2>
+    <section className="md:w-[40rem] mt-5 md:mt-0 text-quaternary md:px-20 h-fit p-5 flex flex-col md:mx-auto mb-5 gap-3 border border-quaternary bg-tertiary mx-2">
+      <h2 className="md:text-2xl text-lg text-center font-bold text-quaternary">{`Seu plano atual é o ${ownerPlan?.name === 'Free' ? 'GRÁTIS' : ownerPlan?.name?.toUpperCase()}`}</h2>
 
       <h3 className="mt-2">Você ainda têm:</h3>
 

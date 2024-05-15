@@ -88,8 +88,8 @@ const ContactBox: React.FC<IContactBox> = ({ ownerInfo, property }: IContactBox)
 
   return (
     <>
-      <div className="lg:w-fit md:h-10 md:pt-0 flex flex-col md:flex-row md:grid items-center justify-items-center align-middle justify lg:ml-2 mx-5 lg:m-0">
-        <div className="flex flex-row w-full lg:w-72 justify-evenly md:justify-between items-center">
+      <div className="lg:w-fit md:h-10 md:pt-0 flex flex-col md:flex-row md:grid items-center justify-items-center align-middle justify lg:ml-2 md:mx-5 mx-2 lg:m-0">
+        <div className="flex flex-row gap-2 w-full lg:w-72 justify-between items-center mt-5">
           {picture ? (
             <Image
               src={picture}

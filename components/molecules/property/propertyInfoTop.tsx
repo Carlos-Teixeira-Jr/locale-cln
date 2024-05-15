@@ -47,7 +47,7 @@ const PropertyInfoTop = ({ propertyID }: IPropertyInfoTop) => {
   const iptuValue = propertyID?.prices[2]?.value;
 
   return (
-    <div className="mx-5 lg:m-5 lg:mx-auto md:w-2/3">
+    <div className="mx-2 md:mx-5 lg:m-5 lg:mx-auto md:w-2/3">
       <div className="md:m-5 lg:mx-auto lg:mt-0">
         <div className="lg:w-fit font-normal text-xs md:text-sm text-quaternary mb-2 md:mb-0">
           <div className="grid grid-flow-col justify-start">
@@ -80,7 +80,7 @@ const PropertyInfoTop = ({ propertyID }: IPropertyInfoTop) => {
           )}
         </div>
       </div>
-      <div className="flex flex-row items-end. justify-center text-quaternary font-semibold text-sm md:text-lg md:justify-between mt-2 md:mt-0">
+      <div className="flex flex-row items-end. w-full justify-between text-quaternary font-semibold text-sm md:text-lg md:justify-between mt-2 md:mt-0">
         {getSections(
           propertyID.size?.totalArea,
           propertyID.metadata.find(

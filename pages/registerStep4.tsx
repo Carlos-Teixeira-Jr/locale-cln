@@ -27,7 +27,7 @@ const RegisterStep4: NextPageWithLayout = () => {
     body: 'md:mx-20 md:mb-20 flex flex-col justify-center mx-auto',
     textContainer: 'flex flex-col m-5 md:w-2/3 mx-auto',
     h1: 'text-3xl text-red-500 text-center font-bold mb-5',
-    p: 'font-medium text-lg lg:text-xl text-quaternary inline-block mx-5',
+    p: 'font-medium text-md lg:text-xl text-quaternary inline-block mx-5',
     buttonContainer: 'flex justify-center items-center my-4 max-w-[1215px]',
     button:
       `flex items-center flex-row justify-around w-44 h-14 text-tertiary rounded font-bold text-lg md:text-xl ${loading ?

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { IMessagesByOwner } from "../common/interfaces/message/messages";
 import { IOwner } from "../common/interfaces/owner/owner";
 import { IPlan } from "../common/interfaces/plans/plans";
+import { IOwnerProperties } from "../common/interfaces/properties/propertiesList";
 import { fetchJson } from "../common/utils/fetchJson";
 import { ErrorToastNames, showErrorToast, showSuccessToast, SuccessToastNames } from "../common/utils/toasts";
 import Loading from "../components/atoms/loading";
@@ -20,7 +21,8 @@ interface ICreditsShop {
   owner: IOwner;
   plans: IPlan[];
   ownerPlanPrice: number
-  ownerPlan: IPlan
+  ownerPlan: IPlan;
+  ownerProperties: IOwnerProperties
 }
 
 const CreditsShop = ({
@@ -28,7 +30,8 @@ const CreditsShop = ({
   messages,
   owner,
   ownerPlanPrice,
-  ownerPlan
+  ownerPlan,
+  ownerProperties
 }: ICreditsShop) => {
 
   const [width] = useDeviceSize();
@@ -41,6 +44,7 @@ const CreditsShop = ({
   const [totalPrice, setTotalPrice] = useState(0);
   const ownerIsPlus = ownerPlan?.name === "Locale Plus" ? true : false;
   const [redirectModalIsOpen, setRedirectModalIsOpen] = useState(false);
+  const isOwner = ownerProperties?.docs?.length > 0 ? true : false
 
   const [credits, setCredits] = useState<Credits>({
     adCredits: owner.adCredits,
@@ -124,7 +128,7 @@ const CreditsShop = ({
         <Loading width='md:w-20' height='md:h-20' />
       ) : (
         <main>
-          <AdminHeader isOwnerProp={true} isPlus={ownerIsPlus} />
+          <AdminHeader isOwnerProp={isOwner} isPlus={ownerIsPlus} />
 
           <div className="flex flex-row items-center justify-evenly xl:w-fit 2xl:w-full w-full max-w-full">
             <div className={classes.sideMenu}>
@@ -246,7 +250,19 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     console.error(error);
   }
 
-  const [notifications, messages, ownerPlan] = await Promise.all([
+  const [ownerProperties, notifications, messages, ownerPlan] = await Promise.all([
+    fetch(`${baseUrl}/property/owner-properties`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        ownerId: owner?._id,
+        page,
+      }),
+    })
+      .then((res) => res.json())
+      .catch(() => []),
     fetch(
       `${baseUrl}/notification/${userId}`,
       {
@@ -287,6 +303,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   return {
     props: {
+      ownerProperties,
       notifications,
       messages,
       owner,
