@@ -96,6 +96,7 @@ const AdminMessages = ({
               notifications={notifications}
               unreadMessages={unreadMessages}
               isPlus={ownerIsPlus}
+              hasProperties={ownerProperties?.docs && ownerProperties?.docs?.length > 0 ? true : false}
             />
           ) : (
             ''
