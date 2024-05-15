@@ -27,12 +27,16 @@ const RegisterStep35: NextPageWithLayout<IRegisterStep35> = ({ plans }) => {
   const query = router.query;
   const urlEmail = query.email as string;
   const storedData = store.get('propertyData');
+  const [couponWasUsed, setCouponWasUsed] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       if (storedData) {
         if (storedData?.paymentData?.cardBrand) {
           setCardBrand(storedData?.creditCard?.cardBrand);
+        }
+        if (storedData?.paymentData?.couponUsed) {
+          setCouponWasUsed(true);
         }
       }
     }
@@ -76,12 +80,12 @@ const RegisterStep35: NextPageWithLayout<IRegisterStep35> = ({ plans }) => {
               <div className={classes.card}>
                 <div className="flex flex-col p-4">
                   <h1 className={classes.h1}>
-                    {!cardBrand || cardBrand === 'Free'
+                    {!cardBrand || cardBrand === 'Free' || couponWasUsed
                       ? 'Imóvel Cadastrado!'
                       : 'Pagamento Confirmado!'}
                   </h1>
                   <p className={classes.p}>
-                    {!cardBrand || cardBrand === 'Free'
+                    {!cardBrand || cardBrand === 'Free' || couponWasUsed
                       ? 'Seu imóvel foi cadastrado e agora falta bem pouco para o seu anúncio estar no ar!'
                       : 'Seu pagamento foi confirmado e agora falta bem pouco para o seu anúncio estar no ar!'}
                   </p>

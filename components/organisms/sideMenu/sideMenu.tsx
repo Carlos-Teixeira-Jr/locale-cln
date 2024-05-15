@@ -25,14 +25,16 @@ type SideMenuProps = {
   notifications?: INotification[];
   isMobileProp?: boolean;
   unreadMessages?: IMessage[];
-  isPlus: boolean
+  isPlus: boolean;
+  hasProperties: boolean
 };
 
 const SideMenu: React.FC<SideMenuProps> = ({
   isOwnerProp,
   notifications,
   unreadMessages,
-  isPlus
+  isPlus,
+  hasProperties
 }) => {
 
   const router = useRouter();
@@ -89,7 +91,7 @@ const SideMenu: React.FC<SideMenuProps> = ({
       ),
       title: 'Meus anúncios',
       link: '/admin',
-      cases: ['owner', 'plus']
+      cases: hasProperties ? ['owner', 'plus'] : []
     },
     {
       key: 'myData',
@@ -185,7 +187,7 @@ const SideMenu: React.FC<SideMenuProps> = ({
       ),
       title: 'Comprar créditos',
       link: '/creditsShop',
-      cases: ['plus']
+      cases: ['plus', 'owner']
     },
   ];
 

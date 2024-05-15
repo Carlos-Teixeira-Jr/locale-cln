@@ -104,14 +104,13 @@ const EditPassword = ({
 
   return (
     <div>
-      <div className="flex">
+      <div className="flex mb-5 md:mb-0">
         <h1 className="md:text-2xl text-xl leading-10 text-quaternary font-bold md:mb-10">
           Alterar Senha
         </h1>
         <div
-          className={`mx-5 w-10 h-10 border bg-tertiary rounded-[10px] drop-shadow-lg cursor-pointer shrink-0 ${
-            editPasswordIsOn ? 'border-secondary' : 'border-quaternary'
-          }`}
+          className={`mx-5 w-10 h-10 border bg-tertiary rounded-[10px] drop-shadow-lg cursor-pointer shrink-0 ${editPasswordIsOn ? 'border-secondary' : 'border-quaternary'
+            }`}
           onClick={() => {
             setEditPasswordIsOn(!editPasswordIsOn);
             setFormData({
@@ -124,16 +123,15 @@ const EditPassword = ({
             <CheckIcon
               fill="#F5BF5D"
               width="36"
-              className={`pl-1 pb-2 ${
-                editPasswordIsOn ? ' border-secondary' : ''
-              }`}
+              className={`pl-1 pb-2 ${editPasswordIsOn ? ' border-secondary' : ''
+                }`}
             />
           )}
         </div>
       </div>
 
       {editPasswordIsOn && (
-        <div className="flex flex-col md:flex-row gap-10">
+        <div className="flex flex-col md:flex-row gap-10 mb-10">
           {inputs.map((input) => (
             <div key={input.key} className="w-full">
               <label className="text-xl font-normal text-quaternary">

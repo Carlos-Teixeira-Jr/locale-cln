@@ -92,7 +92,7 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
           />
         </div>
 
-        <div className='my-10'>
+        <div className='my-10 w-full p-5'>
           {property?.youtubeLink && <VideoPlayer videoUrl={property.youtubeLink} />}
         </div>
 

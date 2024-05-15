@@ -11,6 +11,7 @@ import { IPlan } from '../../../common/interfaces/plans/plans';
 import { IAddress } from '../../../common/interfaces/property/propertyData';
 import { IUserDataComponent } from '../../../common/interfaces/user/user';
 import { applyNumericMask } from '../../../common/utils/masks/numericMask';
+import { ErrorToastNames, showErrorToast } from '../../../common/utils/toasts';
 
 export type CreditCardForm = {
   cardName: string;
@@ -287,15 +288,11 @@ const CreditCard = ({
           }
         } else {
           toast.dismiss();
-          toast.error(
-            'Não foi possível atualizar os dados de cartão de crédito. Por favor, tente mais tarde.'
-          );
+          showErrorToast(ErrorToastNames.CreditCardUpdate)
         }
       } catch (error) {
         toast.dismiss();
-        toast.error(
-          'Não foi posssível se conectar ao servidorno momento. Pro favor, tente mais tarde.'
-        );
+        showErrorToast(ErrorToastNames.ServerConnection)
       }
     }
   };

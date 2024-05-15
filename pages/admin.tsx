@@ -84,6 +84,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
             notifications={notifications}
             unreadMessages={unreadMessages}
             isPlus={ownerIsPlus}
+            hasProperties={ownerProperties?.docs?.length > 0}
           />
         </div>
         <div className={`flex flex-col items-center mt-24 ${width < 1080 ? 'justify-center w-full' : `${ownerProperties?.docs?.length <= 0 ? 'lg:ml-[43rem]' : 'lg:ml-[26rem]'}`}`}>

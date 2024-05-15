@@ -60,15 +60,15 @@ const DeleteAccountModal = ({
 
   const buttons = [
     {
+      key: 'cancel',
+      label: 'Cancelar',
+      onClick: () => setModalIsOpen(false)
+    },
+    {
       key: 'confirm',
       label: 'Confirmar',
       onClick: handleDeleteAccount
     },
-    {
-      key: 'cancel',
-      label: 'Cancelar',
-      onClick: () => setModalIsOpen(false)
-    }
   ]
 
   return (
@@ -134,7 +134,7 @@ const DeleteAccountModal = ({
           {buttons.map((btn) => (
             <button
               key={btn.key}
-              className={`flex items-center flex-row justify-around w-44 h-14 text-tertiary rounded-full mt-5 font-bold text-lg md:text-xl ${loading ?
+              className={`flex items-center flex-row justify-around w-28 h-10 md:w-44 md:h-14 text-tertiary rounded-full mt-5 font-bold text-lg md:text-xl ${loading ?
                 'bg-red-300 transition-colors duration-300' :
                 'bg-primary transition-colors duration-300 hover:bg-red-600 hover:text-white cursor-pointer'
                 }`}
