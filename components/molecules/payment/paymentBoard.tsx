@@ -49,20 +49,20 @@ const PaymentBoard: React.FC<IPaymentBoard> = ({
       <div
         className="mt-10 bg-tertiary border border-quaternary md:py-5 md:px-56 p-5 flex flex-col"
       >
-        <div className="flex justify-between mb-5">
-          <p className="md:text-2xl text-xl font-semibold leading-7 text-quaternary">
+        <div className="flex justify-between mb-5 gap-14 md:gap-0">
+          <p className="md:text-2xl text-md font-semibold leading-7 text-quaternary">
             Plano Selecionado:
           </p>
-          <span className="md:text-2xl text-xl font-semibold leading-7 text-quaternary">
+          <span className="md:text-2xl text-md font-semibold leading-7 text-quaternary">
             Plano {selectedPlanCard ? selectedPlanCard?.name : defaultPlan?.name}
             <span className="text-sm">{isSamePlan && ` - (plano atual)`}</span>
           </span>
         </div>
         <div className="flex justify-between mb-5">
-          <p className="md:text-2xl text-xl font-semibold leading-7 text-quaternary">
+          <p className="md:text-2xl text-md font-semibold leading-7 text-quaternary">
             Valor do Plano:
           </p>
-          <span className="md:text-2xl text-xl font-semibold leading-7 text-quaternary">
+          <span className="md:text-2xl text-md font-semibold leading-7 text-quaternary">
             {isSamePlan ? 'R$ 0,00' : `R$ ${selectedPlanCard?.price},00`}
           </span>
         </div>

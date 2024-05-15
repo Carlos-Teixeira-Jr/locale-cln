@@ -101,14 +101,14 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
         >
           <div className='w-full h-full bg-tertiary md:grid md:grid-cols-3 rounded-[30px]'>
             <div className="group relative md:h-full">
-              <div className="flex flex-row w-full overflow-hidden scroll-smooth rounded-tl-[30px] md:h-full h-[250px]">
+              <div className="flex flex-row w-full overflow-hidden scroll-smooth rounded-t-[30px] md:h-full h-[250px]">
                 <Image
                   src={images[currentIndex]}
                   key={currentIndex}
                   alt={'Property Image'}
                   width="312"
                   height="265"
-                  className="w-full object-cover rounded-l-[30px]"
+                  className="w-full object-cover rounded-t-[30px]"
                 />
                 {highlighted && (
                   <div className="bg-black absolute m-5 rounded-lg bg-opacity-50">
@@ -225,7 +225,7 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
                 </div>
 
                 <button
-                  className="bg-primary max-w-[114px] md:max-w-fit ml-auto md:w-fit h-full py-1 px-2 rounded-full transition-colors duration-300 hover:bg-red-600 hover:text-white text-tertiary leading-tight"
+                  className="bg-primary max-w-[114px] md:max-w-fit ml-auto md:w-fit h-full py-1 px-2 rounded-full transition-colors duration-300 hover:bg-red-600 hover:text-white text-tertiary leading-tight shadow-md"
                   onClick={handleMessageBtnClick}
                 >
                   Enviar Mensagem

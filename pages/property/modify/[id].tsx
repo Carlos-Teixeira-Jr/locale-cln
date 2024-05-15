@@ -413,10 +413,10 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
     body: 'flex flex-row justify-center w-full',
     sideMenu: 'fixed left-0 top-7 sm:hidden hidden md:hidden lg:hidden xl:flex',
     content:
-      'flex flex-col items-center mt-16 max-w-[900px] px-2 md:px-10 sm:ml-0 ml-0 xl:ml-24 2xl:ml-24',
-    content2: 'font-bold text-xl lg:text-2xl text-quaternary mb-5 mx-auto',
+      'flex flex-col items-center w-full mt-16 max-w-[900px] px-2 md:px-10 sm:ml-0 ml-0 xl:ml-24 2xl:ml-24',
+    content2: 'font-bold text-xl lg:text-2xl text-quaternary w-full mb-5 mx-auto',
     labelAccordion:
-      'flex flex-row items-center justify-between sm:min-w-[300px] md:min-w-[620px] lg:min-w-[600px] xl:min-w-[800px] 2xl:min-w-[1000px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 mx-4 text-lg transition bg-opacity-90 hover:bg-gray-300',
+      'flex flex-row items-center justify-between sm:min-w-[300px] md:min-w-[620px] lg:min-w-[600px] xl:min-w-[800px] 2xl:min-w-[1000px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 md:mx-4 text-lg transition bg-opacity-90 hover:bg-gray-300',
     accordionContainer: 'accordion__content hidden bg-grey-lighter dis',
     title: 'font-bold text-xl lg:text-2xl text-quaternary text-center mt-5 mx-auto',
     buttonContainer: 'flex self-end md:justify-end justify-center mb-32 mt-16 mx-3',

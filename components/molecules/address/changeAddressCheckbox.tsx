@@ -59,7 +59,7 @@ const ChangeAddressCheckbox: React.FC<IChangeAddressCheckbox> = ({
               <div className="bg-secondary w-4 h-4 rounded-full mt-[5px]"></div>
             )}
           </div>
-          <p className="text-xl font-normal text-quaternary leading-7">
+          <p className="md:text-xl font-normal text-quaternary leading-7">
             Usar o mesmo endereço do imóvel
           </p>
         </div>
@@ -75,7 +75,7 @@ const ChangeAddressCheckbox: React.FC<IChangeAddressCheckbox> = ({
               <div className="bg-secondary w-4 h-4 rounded-full mt-1"></div>
             )}
           </div>
-          <p className="text-xl font-normal text-quaternary leading-7">
+          <p className="md:text-xl font-normal text-quaternary leading-7">
             Usar outro endereço
           </p>
         </div>

@@ -381,7 +381,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
   const classes = {
     labelInput: 'text-base font-normal text-quaternary leading-7',
     mediumInput:
-      'border border-quaternary rounded-[10px] h-12 w-full text-quaternary text-sm font-bold p-2 md:font-bold drop-shadow-lg bg-tertiary mt-1',
+      'border border-quaternary rounded-[10px] h-12 w-full md:w-[328px] text-quaternary text-sm font-bold p-2 md:font-bold drop-shadow-lg bg-tertiary mt-1',
     errorLabel: 'text-red-500 mt-2 text-xs',
   };
 
@@ -670,8 +670,8 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                 (valor mensal)
               </p>
             </div>
-            <div className="lg:flex md:w-96 lg:ml-0">
-              <div className="flex flex-col">
+            <div className="flex justify-between gap-2 md:justify-start md:w-96 lg:ml-0">
+              <div className="flex flex-col w-full">
                 <input
                   value={
                     propertyFeaturesData.condominium
@@ -680,7 +680,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                   }
                   placeholder="R$"
                   maxLength={15}
-                  className={`border border-quaternary rounded-[10px] h-12 lg:ml-0 md:ml-0 text-quaternary text-sm font-bold md:px-2 drop-shadow-lg mt-1 p-2 ${!propertyFeaturesData.condominium
+                  className={`border border-quaternary rounded-[10px] h-12 md:ml-0 text-quaternary text-sm font-bold md:px-2 drop-shadow-lg mt-1 p-2 ${!propertyFeaturesData.condominium
                     ? 'bg-[#CACACA]'
                     : 'bg-tertiary'
                     }`}
@@ -709,35 +709,38 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                 )}
               </div>
 
-              <div
-                className={`lg:ml-5 w-12 h-12 shrink-0 border bg-tertiary rounded-[10px] mt-1 drop-shadow-lg cursor-pointer ${propertyFeaturesData.condominium
-                  ? 'border-secondary'
-                  : 'border-quaternary'
-                  }`}
-                onClick={() =>
-                  setPropertyFeaturesData({
-                    ...propertyFeaturesData,
-                    condominium: !propertyFeaturesData.condominium,
-                  })
-                }
-              >
-                {propertyFeaturesData.condominium && (
-                  <CheckIcon
-                    fill="#F5BF5D"
-                    width="42"
-                    className={`pl-1 ${propertyFeaturesData.condominium
-                      ? ' border-secondary'
-                      : ''
-                      }`}
-                  />
-                )}
+              <div className='flex flex-col'>
+                <div
+                  className={`lg:ml-5 w-[53px] h-12 shrink-0 border bg-tertiary rounded-[10px] mt-1 drop-shadow-lg cursor-pointer ${propertyFeaturesData.condominium
+                    ? 'border-secondary'
+                    : 'border-quaternary'
+                    }`}
+                  onClick={() =>
+                    setPropertyFeaturesData({
+                      ...propertyFeaturesData,
+                      condominium: !propertyFeaturesData.condominium,
+                    })
+                  }
+                >
+                  {propertyFeaturesData.condominium && (
+                    <CheckIcon
+                      fill="#F5BF5D"
+                      width="42"
+                      className={`pl-1 mx-auto ${propertyFeaturesData.condominium
+                        ? ' border-secondary'
+                        : ''
+                        }`}
+                    />
+                  )}
+                </div>
+                <p className="text-sm text- font-light text-quaternary leading-7 lg:ml-2">
+                  {!propertyFeaturesData.condominium ? 'Aplicar' : 'Remover'}
+                </p>
               </div>
-              <p className="text-sm md:text-base font-light text-quaternary leading-7 mt-2 lg:mt-4 lg:ml-2">
-                {!propertyFeaturesData.condominium ? 'Aplicar' : 'Remover'}
-              </p>
+
             </div>
             <div
-              className="flex mt-10 "
+              className="flex"
               ref={mainFeaturesErrorScroll.iptuValue}
             >
               <label className={classes.labelInput}>IPTU</label>
@@ -747,7 +750,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
               </p>
             </div>
             <div className="lg:flex md:w-96 lg:ml-0">
-              <div className="flex flex-col">
+              <div className="flex gap-2">
                 <input
                   value={
                     propertyFeaturesData.iptu
@@ -756,7 +759,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                   }
                   placeholder="R$"
                   maxLength={15}
-                  className={`border border-quaternary rounded-[10px] h-12 lg:ml-0 md:ml-0 text-quaternary text-sm font-bold md:px-2 drop-shadow-lg mt-1 p-2 ${!propertyFeaturesData.iptu ? 'bg-[#CACACA]' : 'bg-tertiary'
+                  className={`border border-quaternary rounded-[10px] md:w-[328px] h-12 lg:ml-0 md:ml-0 text-quaternary text-sm font-bold md:px-2 drop-shadow-lg mt-1 p-2 w-full ${!propertyFeaturesData.iptu ? 'bg-[#CACACA]' : 'bg-tertiary'
                     }`}
                   style={
                     propertyFeaturesErrors.iptuValue
@@ -782,33 +785,36 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                     <span className={classes.errorLabel}>
                       {propertyFeaturesErrors.iptuValue}
                     </span>
-                  )}
-              </div>
-
-              <div
-                className={`lg:ml-5 w-12 h-12 border bg-tertiary rounded-[10px] mt-1 drop-shadow-lg cursor-pointer shrink-0 ${propertyFeaturesData.iptu
-                  ? 'border-secondary'
-                  : 'border-quaternary'
-                  }`}
-                onClick={() => {
-                  setPropertyFeaturesData({
-                    ...propertyFeaturesData,
-                    iptu: !propertyFeaturesData.iptu,
-                  });
-                }}
-              >
-                {propertyFeaturesData.iptu && (
-                  <CheckIcon
-                    fill="#F5BF5D"
-                    width="42"
-                    className={`pl-1 ${propertyFeaturesData.iptu ? ' border-secondary' : ''
+                  )
+                }
+                <div className='flex flex-col'>
+                  <div
+                    className={`lg:ml-5 w-[53px] h-12 border bg-tertiary rounded-[10px] mt-1 drop-shadow-lg cursor-pointer shrink-0 ${propertyFeaturesData.iptu
+                      ? 'border-secondary'
+                      : 'border-quaternary'
                       }`}
-                  />
-                )}
+                    onClick={() => {
+                      setPropertyFeaturesData({
+                        ...propertyFeaturesData,
+                        iptu: !propertyFeaturesData.iptu,
+                      });
+                    }}
+                  >
+                    {propertyFeaturesData.iptu && (
+                      <CheckIcon
+                        fill="#F5BF5D"
+                        width="42"
+                        className={`pl-1 mx-auto ${propertyFeaturesData.iptu ? ' border-secondary' : ''
+                          }`}
+                      />
+                    )}
+                  </div>
+                  <p className="text-sm font-light text-quaternary leading-7 lg:ml-2">
+                    {!propertyFeaturesData.iptu ? 'Aplicar' : 'Remover'}
+                  </p>
+                </div>
+
               </div>
-              <p className="text-sm md:text-base font-light text-quaternary leading-7 mt-2 lg:mt-4 lg:ml-2">
-                {!propertyFeaturesData.iptu ? 'Aplicar' : 'Remover'}
-              </p>
             </div>
           </div>
         </div>

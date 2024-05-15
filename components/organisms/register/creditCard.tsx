@@ -68,7 +68,7 @@ export default function PaymentForm({
         />
       </div>
 
-      <form className="lg:flex flex-col w-full">
+      <form className="lg:flex flex-col w-full px-5 md:px-0">
         <MaskedInput
           type="tel"
           name="cardNumber"

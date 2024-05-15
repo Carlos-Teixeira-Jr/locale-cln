@@ -265,7 +265,7 @@ const classes = {
   sideMenu: 'fixed left-0 top-7 sm:hidden hidden md:hidden lg:flex',
   title:
     'font-extrabold text-lg md:text-2xl text-quaternary md:my-5 text-center md:mx-auto',
-  h1: 'text-2xl text-quaternary mt-2',
+  h1: 'md:text-2xl text-quaternary mt-2',
   favPropertiesContainer:
     'flex flex-col items-center justify-center my-5 max-w-[1215px]',
   notFound:

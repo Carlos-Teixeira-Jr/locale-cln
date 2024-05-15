@@ -232,6 +232,15 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     fetchJson(`${baseUrl}/message/find-all-by-ownerId`),
   ]);
 
+  if (ownerProperties?.docs?.length === 0) {
+    return {
+      redirect: {
+        destination: '/adminFavProperties?page=1',
+        permanent: false,
+      },
+    };
+  }
+
   return {
     props: {
       ownerProperties,
