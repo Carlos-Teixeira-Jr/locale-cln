@@ -26,6 +26,7 @@ const Coupons = ({
   const [coupon, setCoupon] = useState('');
   const [couponError, setCouponError] = useState(error);
   const isAdminPage = pathname === '/adminUserData' ? true : false;
+  console.log("🚀 ~ isAdminPage:", isAdminPage)
 
   useEffect(() => {
     onCouponChange(coupon)
@@ -51,8 +52,8 @@ const Coupons = ({
   }, [useCoupon])
 
   return (
-    <div className={`flex flex-col mb-5 md:mb-10 ${isAdminPage ? '' : 'justify-center'}`}>
-      <div className={`flex gap-2 ${isAdminPage ? '' : 'justify-center'}`}>
+    <div className={`flex flex-col mb-5 md:mb-10 ${isAdminPage ? '' : 'justify-between md:justify-center'}`}>
+      <div className={`flex justify-between ${isAdminPage ? '' : 'justify-between md:justify-center'}`}>
         <h3 className="md:text-2xl text-xl leading-10 text-quaternary font-bold my-auto">
           Usar cupom de desconto
         </h3>

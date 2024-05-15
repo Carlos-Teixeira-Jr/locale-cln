@@ -11,7 +11,7 @@ export default function MenuIcon({ children, width = "24", height = "24" }: Menu
       width={width}
       height={height}
       fill="currentColor"
-      className="bi bi-list text-primary cursor-pointer mr-2 my-auto"
+      className="bi bi-list text-primary cursor-pointer mr-2 m-auto"
       viewBox="0 0 16 16"
     >
       <path

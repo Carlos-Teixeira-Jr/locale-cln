@@ -129,7 +129,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     username: '',
     email: '',
     cpf: '366.422.100-18',
-    cellPhone: '',
+    cellPhone: '(53) 99177-4545',
     phone: '',
     picture: {
       id: '1',
@@ -141,7 +141,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const [formDataErrors, setFormDataErrors] = useState({
     username: '',
     email: '',
-    cpf: '366.422.100-18',
+    cpf: '',
     cellPhone: '',
   });
 
@@ -378,7 +378,8 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
           _id: ownerData?.owner ? ownerData.owner._id : '',
           ownername: formData.username,
           phone: formData.phone,
-          cellPhone: formData.cellPhone,
+          // cellPhone: formData.cellPhone,
+          cellPhone: '(53) 99177-4545',
           userId: userData._id,
           email: formData.email ? formData.email : '',
           adCredits: ownerData.owner?.adCredits ? ownerData.owner?.adCredits : 0,

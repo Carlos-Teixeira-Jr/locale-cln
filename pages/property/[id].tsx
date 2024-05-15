@@ -92,9 +92,11 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
           />
         </div>
 
-        <div className='my-10 w-full p-5'>
-          {property?.youtubeLink && <VideoPlayer videoUrl={property.youtubeLink} />}
-        </div>
+        {property?.youtubeLink && (
+          <div className='my-10 w-full p-5'>
+            <VideoPlayer videoUrl={property.youtubeLink} />
+          </div>
+        )}
 
         <div className={classes.relatedProperties}>
           {relatedProperties.docs.length > 0 &&
