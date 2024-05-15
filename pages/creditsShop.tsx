@@ -8,6 +8,7 @@ import { fetchJson } from "../common/utils/fetchJson";
 import { ErrorToastNames, showErrorToast, showSuccessToast, SuccessToastNames } from "../common/utils/toasts";
 import Loading from "../components/atoms/loading";
 import CreditsConfirmationModal from "../components/atoms/modals/creditsConfirmattionModal";
+import RedirectToUserDataModal from "../components/atoms/modals/redirectModal";
 import { INotification } from "../components/molecules/cards/notificationCard/notificationCard";
 import { AdminHeader, SideMenu } from "../components/organisms";
 import CreditsShopBoard, { Credits } from "../components/organisms/creditsShop/creditsShopBoard";
@@ -18,7 +19,7 @@ interface ICreditsShop {
   messages: IMessagesByOwner,
   owner: IOwner;
   plans: IPlan[];
-  ownerPlanPrice: number;
+  ownerPlanPrice: number
   ownerPlan: IPlan
 }
 
@@ -39,6 +40,7 @@ const CreditsShop = ({
   const [btnIsDisabled, setBtnIsDisabled] = useState(true);
   const [totalPrice, setTotalPrice] = useState(0);
   const ownerIsPlus = ownerPlan?.name === "Locale Plus" ? true : false;
+  const [redirectModalIsOpen, setRedirectModalIsOpen] = useState(false);
 
   const [credits, setCredits] = useState<Credits>({
     adCredits: owner.adCredits,
@@ -47,14 +49,17 @@ const CreditsShop = ({
 
   useEffect(() => {
     if (
-      notifications! &&
-      messages! &&
-      owner! &&
-      ownerPlanPrice!
+      notifications !== undefined
+      && messages !== undefined
+      && owner !== undefined
+      && ownerPlanPrice !== undefined
     ) {
-      setPageLoading(false)
+      setPageLoading(false);
+    } else {
+      setPageLoading(true); // Set back to true if any of the dependencies become undefined
     }
-  }, [notifications, messages, owner, ownerPlanPrice])
+  }, [notifications, messages, owner, ownerPlanPrice]);
+
 
   // Controla o disable do botão;
   useEffect(() => {
@@ -102,6 +107,9 @@ const CreditsShop = ({
         showSuccessToast(SuccessToastNames.CreditsSuccess);
         setSubmitLoading(false);
         window.location.reload();
+      } else {
+        showErrorToast(ErrorToastNames.EmptyCreditCardInfo)
+        setRedirectModalIsOpen(true);
       }
     } catch (error) {
       showErrorToast(ErrorToastNames.ServerConnection);
@@ -125,6 +133,7 @@ const CreditsShop = ({
                 notifications={notifications}
                 unreadMessages={unreadMessages}
                 isPlus={true}
+                hasProperties={false}
               />
             </div>
 
@@ -164,15 +173,22 @@ const CreditsShop = ({
             ownerAdCredits={owner?.adCredits}
             ownerHighlightCredits={owner?.highlightCredits!}
             totalPrice={totalPrice}
-            ownerPlanPrice={ownerPlanPrice}
+            ownerPlanPrice={ownerPlanPrice ? ownerPlanPrice : 0}
             onConfirm={() => {
               setShowCreditsConfirmationModal(false); // Fecha o modal
               handleSubmit(); // Chama a função de envio do formulário após a confirmação
             }}
           />
+
+          <RedirectToUserDataModal
+            isOpen={redirectModalIsOpen}
+            setModalIsOpen={(isOpen) => {
+              setRedirectModalIsOpen(isOpen);
+              setSubmitLoading(false);
+            }}
+          />
         </main>
       )}
-
     </>
   )
 }
@@ -267,7 +283,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     fetchJson(`${paymentUrl}/payment/subscription/${ownerSubscription}`),
   ]);
 
-  ownerPlanPrice = ownerPlan?.value;
+  ownerPlanPrice = ownerPlan?.value ? ownerPlan?.value : 0;
 
   return {
     props: {

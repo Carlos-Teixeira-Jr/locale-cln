@@ -81,6 +81,7 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
               notifications={notifications}
               unreadMessages={unreadMessages}
               isPlus={ownerIsPlus}
+              hasProperties={ownerProperties?.docs?.length > 0}
             />
           ) : (
             ''
@@ -266,7 +267,7 @@ const classes = {
     'font-extrabold text-lg md:text-2xl text-quaternary md:my-5 text-center md:mx-auto',
   h1: 'text-2xl text-quaternary mt-2',
   favPropertiesContainer:
-    'flex flex-col items-center justify-center mb-5 max-w-[1215px]',
+    'flex flex-col items-center justify-center my-5 max-w-[1215px]',
   notFound:
     'flex flex-col items-center text-center align-middle lg:mt-36 justify-center mr-0 lg:mx-auto',
   favProperties:

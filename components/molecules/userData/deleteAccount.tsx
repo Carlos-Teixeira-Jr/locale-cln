@@ -5,8 +5,8 @@ const DeleteAccount = () => {
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
 
   return (
-    <div className="my-2 relative">
-      <p className="font-normal text-lg text-quaternary mx-5 my-5 md:my-0 md:mb-4 md:mx-4 pt-2 relative inline-block cursor-pointer">
+    <div className="my-1 md:my-2 relative">
+      <p className="font-normal text-lg text-quaternary mx-5 my-5 md:my-0 md:mb-4 md:mx-4 md:pt-2 relative inline-block cursor-pointer">
         Ao deletar sua conta você não poderá mais acessar seus anúncios.
       </p>
 

@@ -231,7 +231,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
     }
     if (!address.zipCode) newAddressErrors.zipCode = error;
     if (!address.streetName) newAddressErrors.streetName = error;
-    if (!address.streetNumber) newAddressErrors.streetNumber = error;
+    //if (!address.streetNumber) newAddressErrors.streetNumber = error;
     if (!address.city) newAddressErrors.city = error;
     if (!address.uf) newAddressErrors.uf = error;
     if (images.length < 5) {
@@ -434,7 +434,9 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
         <div className={classes.sideMenu}>
           <SideMenu
             isOwnerProp={property !== undefined && true}
-            notifications={notifications} isPlus={ownerIsPlus} />
+            notifications={notifications} isPlus={ownerIsPlus}
+            hasProperties={true}
+          />
         </div>
         <div className={classes.content}>
           <h1 className={classes.title}>

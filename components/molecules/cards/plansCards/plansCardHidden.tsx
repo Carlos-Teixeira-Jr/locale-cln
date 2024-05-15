@@ -222,7 +222,7 @@ export default PlansCardsHidden;
 const classes = {
   adminPage: 'flex lg:flex-row justify-center lg:mb-10 mx-10 md:mx-auto',
   notAdminPage:
-    'md:flex md:flex-row justify-center md:mb-5 px-5 md:px-0 md:mx-auto',
+    'md:flex md:flex-row justify-center md:mb-5 px-5 md:px-0 md:mx-auto.',
   cardAdminHeader:
     'flex bg-primary px-1 rounded-t-[30px] md:w-[230px] md:h-[66px]',
   cardHeader: 'flex bg-primary px-1 rounded-t-[30px] md:w-60 md:h-fit py-2',

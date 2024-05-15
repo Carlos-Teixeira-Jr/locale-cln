@@ -75,7 +75,6 @@ const MainFeatures: React.FC<IMainFeatures> = ({
   errors,
   mainFeaturesInputRefs,
 }: IMainFeatures) => {
-  console.log("🚀 ~ isEdit:", isEdit)
 
   //Handles the error auto scroll behavior;
   const mainFeaturesErrorScroll = {

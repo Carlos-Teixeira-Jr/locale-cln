@@ -62,14 +62,6 @@ export default function DropdownAdmin({ isOwnerProp, isPlus }: IDropdownAdmin) {
       className: optionsClassname,
       ownerOption: isPlus ? false : true,
     },
-    // {
-    //   key: 'logOut',
-    //   title: 'Sair',
-    //   ref: '/index',
-    //   className:
-    //     'translate-x-[1px] w-[150px] h-[50px] text-primary text-sm hover:bg-quaternary hover:text-tertiary py-3',
-    //   ownerOption: true
-    // },
   ];
 
   return (
@@ -119,6 +111,20 @@ export default function DropdownAdmin({ isOwnerProp, isPlus }: IDropdownAdmin) {
                 {option.title}
               </Link>
             )
+          } else if (!isOwner && isPlus) {
+            return option.key !== 'myMessages' && option.key !== 'myAnnouncements' && (
+              <Link
+                key={option.key}
+                href={option.ref}
+                className={
+                  idx === 0
+                    ? option.className + ' rounded-t-xl'
+                    : option.className
+                }
+              >
+                {option.title}
+              </Link>
+            )
           }
         })}
 
@@ -128,80 +134,6 @@ export default function DropdownAdmin({ isOwnerProp, isPlus }: IDropdownAdmin) {
         >
           Sair
         </button>
-
-        {/* {!isOwner
-          ? option.map((option, index) => {
-            if (option.ownerOption) {
-              return option.key !== 'logOut' ? (
-                <Link
-                  key={option.key}
-                  href={option.ref}
-                  className={
-                    index === 0
-                      ? option.className + ' rounded-t-xl'
-                      : option.className
-                  }
-                >
-                  {option.title}
-                </Link>
-              ) : (
-                <button
-                  key={option.key}
-                  className={option.className}
-                  onClick={() => signOut()}
-                >
-                  Sair
-                </button>
-              );
-            }
-          })
-          : option.map((option, index) => {
-            if (isPlus) {
-              return option.key !== 'logOut' ? (
-                <Link
-                  key={option.key}
-                  href={option.ref}
-                  className={
-                    index === 0
-                      ? option.className + 'rounded-t-xl'
-                      : option.className
-                  }
-                >
-                  {option.title}
-                </Link>
-              ) : (
-                <button
-                  key={option.key}
-                  className={option.className}
-                  onClick={() => signOut()}
-                >
-                  Sair
-                </button>
-              );
-            } else {
-              return option.key !== 'logOut' && option.key !== 'creditShop' ? (
-                <Link
-                  key={option.key}
-                  href={option.ref}
-                  className={
-                    index === 0
-                      ? option.className + 'rounded-t-xl'
-                      : option.className
-                  }
-                >
-                  {option.title}
-                </Link>
-              ) : (
-                <button
-                  key={option.key}
-                  className={option.className}
-                  onClick={() => signOut()}
-                >
-                  Sair
-                </button>
-              );
-            }
-          })} */}
       </div>
     </div>
   );
