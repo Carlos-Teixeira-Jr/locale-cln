@@ -47,7 +47,7 @@ const PropertyInfoTop = ({ propertyID }: IPropertyInfoTop) => {
   const iptuValue = propertyID?.prices[2]?.value;
 
   return (
-    <div className="mx-2 md:mx-5 lg:m-5 lg:mx-auto md:w-2/3">
+    <div className="mx-2 md:mx-5 lg:mb-5 lg:mx-auto md:w-2/3">
       <div className="md:m-5 lg:mx-auto lg:mt-0">
         <div className="lg:w-fit font-normal text-xs md:text-sm text-quaternary mb-2 md:mb-0">
           <div className="grid grid-flow-col justify-start">

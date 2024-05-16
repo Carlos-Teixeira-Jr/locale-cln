@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
+import { useIsMobile } from '../../../hooks/useIsMobile';
 import DropdownMenu from '../../atoms/dropdowns/dropdownMenu';
 import MenuIcon from '../../atoms/icons/menuIcon';
 import UserIcon from '../../atoms/icons/userIcon';
@@ -19,6 +20,7 @@ const Header: React.FC<IHeader> = () => {
   const [open, setOpen] = useState(false);
   const ref = useRef();
   const [loading, setLoading] = useState(false);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     document.addEventListener('click', handleClick);
@@ -47,32 +49,40 @@ const Header: React.FC<IHeader> = () => {
 
   return (
     <div>
-      <div className="top-0 fixed z-40 w-[95%] justify-between grid grid-cols-2 md:grid md:grid-cols-3 bg-tertiary h-fit shadow-md mt-8 py-1.5 rounded-[50px] left-1/2 transform -translate-x-1/2">
+      <div
+        // className="top-0 fixed z-40 w-[95%] justify-between grid grid-cols-2 md:grid md:grid-cols-3 bg-tertiary h-fit shadow-md mt-8 py-1.5 rounded-[50px] left-1/2 transform -translate-x-1/2"
+        className="top-0 fixed z-40 items-center w-[95%] justify-between grid grid-cols-3 bg-tertiary h-fit shadow-md mt-8 py-1.5 rounded-[50px] left-1/2 transform -translate-x-1/2"
+      >
         <Link
           href="/"
-          className="relative flex items-center cursor-pointer my-auto ml-4"
+          className="relative flex items-center cursor-pointer my-auto"
         >
-          <LocaleLogo />
+          <LocaleLogo width={isMobile ? '100' : '136'} />
         </Link>
-        <div className="hidden md:flex md:flex-row md:items-center justify-between space-x-2 text-md ml-5 md:ml-0 font-bold text-quaternary">
-          <Link
-            className={`cursor-pointer ${isBuy
-              ? 'border-b-4  border-red-400'
-              : 'hover:border-b-4 border-red-400 hover:border-primary border-transparent transition duration-500'
-              }`}
-            href="/search?adType=comprar"
-          >
-            Comprar
-          </Link>
-          <Link
-            className={`cursor-pointer ${isRent
-              ? 'border-b-4  border-red-400'
-              : 'hover:border-b-4 border-red-400 hover:border-primary border-transparent transition duration-500'
-              }`}
-            href="/search?adType=alugar"
-          >
-            Alugar
-          </Link>
+        <div className="hidden. text-center md:text-start w-full md:flex md:flex-row md:items-center justify-between space-x-2 text-md font-bold text-quaternary text-sm">
+          {!isMobile && (
+            <>
+              <Link
+                className={`cursor-pointer ${isBuy
+                  ? 'border-b-4  border-red-400'
+                  : 'hover:border-b-4 border-red-400 hover:border-primary border-transparent transition duration-500'
+                  }`}
+                href="/search?adType=comprar"
+              >
+                Comprar
+              </Link>
+              <Link
+                className={`cursor-pointer ${isRent
+                  ? 'border-b-4  border-red-400'
+                  : 'hover:border-b-4 border-red-400 hover:border-primary border-transparent transition duration-500'
+                  }`}
+                href="/search?adType=alugar"
+              >
+                Alugar
+              </Link>
+            </>
+          )}
+
           <Link
             className="hover:border-b-4 border-red-400 hover:border-primary border-transparent transition duration-500"
             href="/announcement"
@@ -91,11 +101,11 @@ const Header: React.FC<IHeader> = () => {
                       alt={'Admin image'}
                       width={50}
                       height={50}
-                      className="border border-primary rounded-full w-10 h-10 object-cover"
+                      className="border border-primary rounded-full w-8 h-8 md:w-10 md:h-10 object-cover"
                     />
                   ) : (
                     <UserIcon
-                      className="border border-secondary rounded-full w-10 h-10 p-1 bg-white"
+                      className="border border-secondary rounded-full w-8 h-8 md:w-10 md:h-10 p-1 bg-white"
                       fill="#F75D5F"
                     />
                   )
@@ -114,7 +124,7 @@ const Header: React.FC<IHeader> = () => {
           ) : (
             <>
               <Link href="/login">
-                <button className="bg-primary justify-self-end cursor-pointer text-tertiary rounded-3xl font-normal py-1 text-xl w-[100px] md:w-[124px] mr-2 shadow-md transition-colors duration-300 hover:bg-red-600 hover:text-white">
+                <button className="bg-primary justify-self-end cursor-pointer text-tertiary rounded-3xl font-normal md:py-1 md:text-xl w-20 md:w-[124px] mr-2 shadow-md transition-colors duration-300 hover:bg-red-600 hover:text-white">
                   Entrar
                 </button>
               </Link>

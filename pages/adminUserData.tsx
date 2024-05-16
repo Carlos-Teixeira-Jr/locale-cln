@@ -101,6 +101,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const unreadMessages = messages?.docs?.length > 0 ? messages?.docs?.filter((message) => !message.isRead) : [];
   const plusPlan = plans.find((e) => e.name === 'Locale Plus');
   const ownerIsPlus = ownerData?.owner?.plan === plusPlan?._id ? true : false;
+  console.log("🚀 ~ ownerIsPlus:", ownerIsPlus)
   const [useCoupon, setUseCoupon] = useState(false);
   const [coupon, setCoupon] = useState('');
   const hasProperties = properties?.docs?.length > 0 ? true : false;
