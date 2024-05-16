@@ -207,7 +207,7 @@ const UserAddress = ({
   return (
     <div className="px-5 lg:mx-auto w-full mx-auto max-w-[1215px]">
       <form>
-        <div className="mt-10 mb-5 md:w-96">
+        <div className="my-5 md:w-96">
           <h3 className="md:text-2xl text-lg text-quaternary font-semibold leading-9 my-5">
             Endereço
           </h3>

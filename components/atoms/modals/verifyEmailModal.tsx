@@ -198,7 +198,7 @@ const VerifyEmailModal: React.FC<IVerifyEmailModal> = ({
             Código de verificação
           </label>
           <input
-            className={`w-full h-fit md:h-12 rounded-[10px] border-[1px]  drop-shadow-xl bg-tertiary text-quaternary md:p-2 text-xl font-semibold ${verificationCodeError ? 'border-red-500' : 'border-quaternary'
+            className={`w-full h-12 rounded-[10px] border-[1px] drop-shadow-xl bg-tertiary text-quaternary p-2 text-xl font-semibold ${verificationCodeError ? 'border-red-500' : 'border-quaternary'
               }`}
             type="text"
             value={input}
@@ -233,7 +233,7 @@ const VerifyEmailModal: React.FC<IVerifyEmailModal> = ({
 
         {showResendMessage && (
           <p
-            className="font-bold text-xs text-quaternary mx-5 my-5 md:my-0 md:mb-4 md:mx-auto pt-2 relative inline-block group transition-colors duration-300 hover:text-secondary cursor-pointer w-full text-center"
+            className="font-bold text-xs text-quaternary mx-auto my-5 md:my-0 md:mb-4 md:mx-auto pt-2 relative inline-block group transition-colors duration-300 hover:text-secondary cursor-pointer w-full text-center"
             onClick={handleResendVerifyEmailCode}
           >
             Reenviar código de verificação de email.

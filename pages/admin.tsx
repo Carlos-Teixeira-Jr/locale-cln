@@ -226,13 +226,13 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     })
       .then((res) => res.json())
       .catch(() => []),
-    fetchJson(`${baseUrl}/plan`),
     fetchJson(`${baseUrl}/property/owner-properties`),
     fetchJson(`${baseUrl}/notification/user/${userId}`),
     fetchJson(`${baseUrl}/message/find-all-by-ownerId`),
+    fetchJson(`${baseUrl}/plan`),
   ]);
 
-  if (ownerProperties?.docs?.length === 0) {
+  if (ownerProperties?.docs?.length === 0 && notifications?.length > 0) {
     return {
       redirect: {
         destination: '/adminFavProperties?page=1',

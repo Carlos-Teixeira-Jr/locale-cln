@@ -60,7 +60,6 @@ const CreditCard = ({
   // const actualCreditCardNumber = creditCardInfo
   //   ? `---- ---- ---- ${creditCardInfo?.creditCardNumber}`
   //   : '';
-  const actualCreditCardNumber = '5418 9319 3954 4954';
 
   const [creditCardFormData, setCreditCardFormData] = useState<CreditCardForm>({
     // cardName: '',
@@ -73,6 +72,8 @@ const CreditCard = ({
     expiry: '0225',
     cpfCnpj: '366.422.100-18'
   });
+
+  const userId = userInfo?._id !== undefined ? userInfo?._id : ownerData?.user?._id;
 
   const [emptyAddressError, setEmptyAddressError] = useState('');
 
@@ -240,7 +241,7 @@ const CreditCard = ({
       newErrors.cardNumber = invalidCardNumberError;
     if (!creditCardFormData.expiry) newErrors.expiry = emptyFieldError;
     if (!creditCardFormData.ccv) newErrors.ccv = emptyFieldError;
-    if (!creditCardFormData.cpfCnpj) newErrors.cpfCnpj = emptyFieldError;
+    //if (!creditCardFormData.cpfCnpj) newErrors.cpfCnpj = emptyFieldError;
 
     setErrors(newErrors);
 
@@ -260,7 +261,8 @@ const CreditCard = ({
         const body = {
           ...creditCardFormData,
           email: userInfo?.email,
-          phone: userInfo?.cellPhone,
+          // phone: userInfo?.cellPhone,
+          phone: '(53) 99177-4545',
           plan: selectedPlan,
           //: userAddress?.zipCode,
           zipCode: '96215-180',
@@ -268,6 +270,7 @@ const CreditCard = ({
           streetNumber: '123',
           owner: ownerData?.owner,
           customerId,
+          userId
         };
 
         const response = await fetch(`${baseUrl}/user/edit-credit-card`, {
