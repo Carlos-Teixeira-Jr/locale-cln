@@ -101,14 +101,14 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
         >
           <div className='w-full h-full bg-tertiary md:grid md:grid-cols-3 rounded-[30px]'>
             <div className="group relative md:h-full">
-              <div className="flex flex-row w-full overflow-hidden scroll-smooth rounded-t-[30px] md:h-full h-[250px]">
+              <div className="flex flex-row w-full overflow-hidden scroll-smooth rounded-l-[30px] md:h-full h-[250px]">
                 <Image
                   src={images[currentIndex]}
                   key={currentIndex}
                   alt={'Property Image'}
                   width="312"
                   height="265"
-                  className="w-full object-cover rounded-t-[30px]"
+                  className="w-full object-cover rounded-l-[30px]"
                 />
                 {highlighted && (
                   <div className="bg-black absolute m-5 rounded-lg bg-opacity-50">
