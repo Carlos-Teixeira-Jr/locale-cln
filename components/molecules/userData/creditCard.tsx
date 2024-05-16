@@ -241,7 +241,7 @@ const CreditCard = ({
       newErrors.cardNumber = invalidCardNumberError;
     if (!creditCardFormData.expiry) newErrors.expiry = emptyFieldError;
     if (!creditCardFormData.ccv) newErrors.ccv = emptyFieldError;
-    if (!creditCardFormData.cpfCnpj) newErrors.cpfCnpj = emptyFieldError;
+    //if (!creditCardFormData.cpfCnpj) newErrors.cpfCnpj = emptyFieldError;
 
     setErrors(newErrors);
 
