@@ -105,11 +105,8 @@ const EditPassword = ({
   return (
     <div>
       <div className="flex justify-between md:justify-start mb-5 md:mb-0">
-        <h1 className="md:text-2xl text-xl leading-10 text-quaternary font-bold md:mb-10">
-          Alterar Senha
-        </h1>
         <div
-          className={`md:mx-5 w-10 h-10 border bg-tertiary rounded-[10px] drop-shadow-lg cursor-pointer shrink-0 ${editPasswordIsOn ? 'border-secondary' : 'border-quaternary'
+          className={`w-10 h-10 border bg-tertiary rounded-[10px] drop-shadow-lg cursor-pointer shrink-0 ${editPasswordIsOn ? 'border-secondary' : 'border-quaternary'
             }`}
           onClick={() => {
             setEditPasswordIsOn(!editPasswordIsOn);
@@ -128,6 +125,9 @@ const EditPassword = ({
             />
           )}
         </div>
+        <h1 className="md:text-2xl text-xl mx-5 leading-10 text-quaternary font-bold md:mb-10">
+          Alterar Senha
+        </h1>
       </div>
 
       {editPasswordIsOn && (

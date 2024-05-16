@@ -324,7 +324,9 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     }
     if (
       selectedPlan !== '' &&
-      selectedPlan === ownerData?.owner?.plan
+      selectedPlan !== null &&
+      selectedPlan === ownerData?.owner?.plan &&
+      !useCoupon
     ) {
       newPlanError = samePlanError;
     }
@@ -512,7 +514,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
           if (response.ok) {
             toast.dismiss();
             showSuccessToast(SuccessToastNames.UserDataUpdate);
-            router.push('/admin?page=1');
+            router.push('/adminFavProperties?page=1');
           } else {
             setLoading(false);
             toast.dismiss();

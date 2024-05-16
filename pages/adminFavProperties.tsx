@@ -187,66 +187,65 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     ownerProperties,
     messages,
     plans
-  ] =
-    await Promise.all([
-      fetch(`${baseUrl}/notification/user/${userId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-        .then((res) => res.json())
-        .catch(() => []),
-      fetch(`${baseUrl}/user/favourite`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id: userId,
-          page: Number(page),
-        }),
-      })
-        .then((res) => res.json())
-        .catch(() => []),
-      fetch(`${baseUrl}/property/owner-properties`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ownerId,
-          page: 1,
-        }),
-      })
-        .then((res) => res.json())
-        .catch(() => []),
-      fetch(`${baseUrl}/message/find-all-by-ownerId`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ownerId,
-          page,
-        }),
-      })
-        .then((res) => res.json())
-        .catch(() => []),
-      fetch(`${baseUrl}/plan`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-        .then((res) => res.json())
-        .catch(() => []),
-      fetchJson(`${baseUrl}/notification/user/${userId}`),
-      fetchJson(`${baseUrl}/user/favourite`),
-      fetchJson(`${baseUrl}/property/owner-properties`),
-      fetchJson(`${baseUrl}/message/find-all-by-ownerId`),
-      fetchJson(`${baseUrl}/plan`),
-    ]);
+  ] = await Promise.all([
+    fetch(`${baseUrl}/notification/user/${userId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => res.json())
+      .catch(() => []),
+    fetch(`${baseUrl}/user/favourite`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id: userId,
+        page: Number(page),
+      }),
+    })
+      .then((res) => res.json())
+      .catch(() => []),
+    fetch(`${baseUrl}/property/owner-properties`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        ownerId,
+        page: 1,
+      }),
+    })
+      .then((res) => res.json())
+      .catch(() => []),
+    fetch(`${baseUrl}/message/find-all-by-ownerId`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        ownerId,
+        page,
+      }),
+    })
+      .then((res) => res.json())
+      .catch(() => []),
+    fetch(`${baseUrl}/plan`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => res.json())
+      .catch(() => []),
+    fetchJson(`${baseUrl}/notification/user/${userId}`),
+    fetchJson(`${baseUrl}/user/favourite`),
+    fetchJson(`${baseUrl}/property/owner-properties`),
+    fetchJson(`${baseUrl}/message/find-all-by-ownerId`),
+    fetchJson(`${baseUrl}/plan`),
+  ]);
 
   return {
     props: {
