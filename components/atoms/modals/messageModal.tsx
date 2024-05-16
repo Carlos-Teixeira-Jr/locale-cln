@@ -99,7 +99,7 @@ const MessageModal: React.FC<IMessageModal> = ({
       value: formData.email,
       error: errors.email,
       type: 'email',
-      maxLength: 30,
+      maxLength: 100,
       onChange: (event: any) => {
         const email = event.target.value;
         setFormData({ ...formData, email: email });
