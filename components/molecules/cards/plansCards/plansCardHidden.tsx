@@ -44,6 +44,7 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
   useEffect(() => {
     if (selectedPlanCard !== '') {
       setAnchorId(`card-${selectedPlanCard}`);
+      setSelectedPlanCard(selectedPlanCard)
     }
   }, [selectedPlanCard]);
 
