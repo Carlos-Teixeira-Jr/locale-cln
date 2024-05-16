@@ -1,5 +1,5 @@
-import Image from 'next/image';
 import { useIsMobile } from '../../../hooks/useIsMobile';
+import GoogleIcon from '../../atoms/icons/googleIcon';
 
 interface SocialAuthButtonProps {
   provider: 'google' | 'facebook';
@@ -18,12 +18,7 @@ const SocialAuthButton: React.FC<SocialAuthButtonProps> = ({
       onClick={onClick}
     >
       <div className="md:pl-0">
-        <Image
-          src={`/images/${provider}-icon.png`}
-          alt=""
-          width={!isMobile ? 32 : 52}
-          height={!isMobile ? 32 : 52}
-        />
+        <GoogleIcon width='50px' height='50px' />
       </div>
       {!isMobile && (
         <div>

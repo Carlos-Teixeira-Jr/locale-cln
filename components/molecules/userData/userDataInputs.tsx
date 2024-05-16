@@ -74,7 +74,8 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
       : '',
     // cpf: ownerData?.user?.cpf ? ownerData?.user?.cpf : '',
     cpf: "366.422.100-18",
-    cellPhone: ownerData && ownerData.user ? ownerData.user.phone : '',
+    // cellPhone: ownerData && ownerData.user ? ownerData.user.phone : '',
+    cellPhone: '(53) 99177-4545',
     picture: { id: '', src: '' },
     phone: ownerData && ownerData.owner ? ownerData.owner.phone : '',
     wppNumber: ownerData?.owner?.wppNumber ? ownerData?.owner?.wppNumber : '',
@@ -169,26 +170,27 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
     {
       key: 'cellPhone',
       label: 'Celular',
-      value: formData.cellPhone,
+      // value: formData.cellPhone,
+      value: '(53) 99177-4545',
       ref: userDataErrorScroll.cellPhone,
-      onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        const input = event.target;
-        const value = input.value;
-        const maskedValue = applyNumericMask(value, '(99) 99999-9999');
-        const selectionStart = input.selectionStart || 0;
-        const selectionEnd = input.selectionEnd || 0;
-        const previousValue = input.value;
-        if (
-          selectionStart === previousValue.length ||
-          previousValue.length > maskedValue.length
-        ) {
-          input.value = maskedValue;
-        } else {
-          input.value = previousValue;
-          input.setSelectionRange(selectionStart, selectionEnd);
-        }
-        setFormData({ ...formData, cellPhone: maskedValue });
-      },
+      // onChange: (event: ChangeEvent<HTMLInputElement>) => {
+      //   const input = event.target;
+      //   const value = input.value;
+      //   const maskedValue = applyNumericMask(value, '(99) 99999-9999');
+      //   const selectionStart = input.selectionStart || 0;
+      //   const selectionEnd = input.selectionEnd || 0;
+      //   const previousValue = input.value;
+      //   if (
+      //     selectionStart === previousValue.length ||
+      //     previousValue.length > maskedValue.length
+      //   ) {
+      //     input.value = maskedValue;
+      //   } else {
+      //     input.value = previousValue;
+      //     input.setSelectionRange(selectionStart, selectionEnd);
+      //   }
+      //   setFormData({ ...formData, cellPhone: maskedValue });
+      // },
     },
     {
       key: 'phone',

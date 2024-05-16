@@ -49,7 +49,8 @@ export enum ErrorToastNames {
   EmptyCreditCardInfo = 'emptyCreditCArdInfo',
   OwnerImageUpload = 'ownerImageUpload',
   EmailNotVerified = 'emailNotVerified',
-  InvalidRegisterData = 'invalidRegisterData'
+  InvalidRegisterData = 'invalidRegisterData',
+  SamePlanError = 'samePlanError'
 }
 
 export enum InfoToastNames {
@@ -291,6 +292,12 @@ const errorToastMessages: Record<ErrorToastNames, ToastMessage> = {
   },
   [ErrorToastNames.InvalidRegisterData]: {
     message: 'Algum dos dados de cadastro está incorreto. Verifique e tente novamente.',
+    options: {
+      autoClose: 7000,
+    },
+  },
+  [ErrorToastNames.SamePlanError]: {
+    message: 'Você selecionou o mesmo plano que já foi contratado e ainda possui créditos. Por favor, selecione outro plano.',
     options: {
       autoClose: 7000,
     },

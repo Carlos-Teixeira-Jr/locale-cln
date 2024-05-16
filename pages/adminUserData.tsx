@@ -120,7 +120,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     cardNumber: '',
     ccv: '',
     expiry: '',
-    cpfCnpj: ''
+    cpfCnpj: '366.422.100-18'
   })
 
   const planObj = plans.find((plan) => plan._id === selectedPlan);
@@ -129,7 +129,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     username: '',
     email: '',
     cpf: '366.422.100-18',
-    cellPhone: '',
+    cellPhone: '(53) 99177-4545',
     phone: '',
     picture: {
       id: '1',
@@ -141,7 +141,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const [formDataErrors, setFormDataErrors] = useState({
     username: '',
     email: '',
-    cpf: '366.422.100-18',
+    cpf: '',
     cellPhone: '',
   });
 
@@ -156,6 +156,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   });
 
   const [couponError, setCouponError] = useState('');
+  const [planError, setPlanError] = useState('');
 
   const userDataInputRefs = {
     username: useRef<HTMLElement>(null),
@@ -231,10 +232,11 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     const invalidPasswordLenght = 'A senha precisa ter pelo meno 6 caracteres';
     const emptyCreditCardError = 'Há algum dado do cartão de crédito faltando';
     const invalidCouponError = 'Cupom de desconto inválido.'
+    const samePlanError = 'O plano selecionado é o mesmo que você já contratou e você ainda possui créditos.'
 
     let newCreditCardError = '';
-
     let newCouponError = '';
+    let newPlanError = '';
 
     setFormDataErrors({
       username: '',
@@ -265,6 +267,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     });
 
     setCouponError('');
+    setPlanError('');
 
     const newFormDataErrors = {
       username: '',
@@ -319,6 +322,14 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     ) {
       newCreditCardError = emptyCreditCardError;
     }
+    if (
+      selectedPlan !== '' &&
+      selectedPlan !== null &&
+      selectedPlan === ownerData?.owner?.plan &&
+      !useCoupon
+    ) {
+      newPlanError = samePlanError;
+    }
     if (useCoupon && !coupon) newCouponError = invalidCouponError
 
     setFormDataErrors(newFormDataErrors);
@@ -328,7 +339,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
 
     // Insere a mensagem de erro nos inputs vazios do form de credit card;
     Object.keys(creditCard).forEach((e) => {
-      if (creditCardErrors[e] === '') {
+      if (creditCardErrors[e] !== '') {
         setCreditCardErrors({ ...creditCardErrors, [e]: newCreditCardError })
       }
     })
@@ -342,18 +353,21 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
         ...newAddressErrors,
         ...newFormDataErrors,
         ...newPasswordErrors,
+        newPlanError
       };
     } else {
       combinedErrors = {
         ...newAddressErrors,
         ...newFormDataErrors,
+        newPlanError
       };
     }
 
     if (useCoupon) {
       combinedErrors = {
         ...combinedErrors,
-        newCouponError
+        newCouponError,
+        newPlanError
       }
     }
 
@@ -364,6 +378,10 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     );
 
     if (newCreditCardError === '') {
+      if (newPlanError !== '') {
+        showErrorToast(ErrorToastNames.SamePlanError)
+        return
+      }
       if (!hasErrors) {
         const userFormData: IUser = {
           id: userData._id,
@@ -378,7 +396,8 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
           _id: ownerData?.owner ? ownerData.owner._id : '',
           ownername: formData.username,
           phone: formData.phone,
-          cellPhone: formData.cellPhone,
+          // cellPhone: formData.cellPhone,
+          cellPhone: '(53) 99177-4545',
           userId: userData._id,
           email: formData.email ? formData.email : '',
           adCredits: ownerData.owner?.adCredits ? ownerData.owner?.adCredits : 0,
@@ -495,7 +514,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
           if (response.ok) {
             toast.dismiss();
             showSuccessToast(SuccessToastNames.UserDataUpdate);
-            router.push('/admin?page=1');
+            router.push('/adminFavProperties?page=1');
           } else {
             setLoading(false);
             toast.dismiss();

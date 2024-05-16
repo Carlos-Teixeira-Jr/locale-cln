@@ -12,6 +12,7 @@ export type User = {
 };
 
 export interface IUserDataComponent {
+  _id?: string
   username: string;
   email: string;
   cpf: string;

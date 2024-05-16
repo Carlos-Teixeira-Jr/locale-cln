@@ -134,17 +134,21 @@ const DeleteAccountModal = ({
           {buttons.map((btn) => (
             <button
               key={btn.key}
-              className={`flex items-center flex-row justify-around w-28 h-10 md:w-44 md:h-14 text-tertiary rounded-full mt-5 font-bold text-lg md:text-xl ${loading ?
-                'bg-red-300 transition-colors duration-300' :
-                'bg-primary transition-colors duration-300 hover:bg-red-600 hover:text-white cursor-pointer'
+              className={`flex items-center flex-row justify-around w-28 h-10 md:w-44 md:h-14 text-tertiary rounded-full mt-5 font-bold text-lg md:text-xl ${loading
+                ? 'bg-red-300 transition-colors duration-300'
+                : 'bg-primary transition-colors duration-300 hover:bg-red-600 hover:text-white cursor-pointer'
                 }`}
               onClick={btn.onClick}
             >
-              <span className={`${loading && btn.key === 'confirm' ? 'ml-5' : ''}`}>{btn.label}</span>
-              {loading && btn.key === 'confirm' && <Loading />}
+              {loading && btn.key === 'confirm' ? (
+                <Loading />
+              ) : (
+                <span className={`${loading && btn.key === 'confirm' ? 'ml-5' : ''}`}>{btn.label}</span>
+              )}
             </button>
           ))}
         </div>
+
 
       </div>
     </Modal>
