@@ -141,7 +141,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
   const [userDataForm, setUserDataForm] = useState<IUserDataComponent>({
     username: '',
     email: '',
-    cpf: '366.422.100-18',
+    cpf: '314.715.150-60',
     cellPhone: '',
     phone: '',
     picture: {
@@ -178,9 +178,9 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
   const [creditCard, setCreditCard] = useState<CreditCardForm>({
     cardName: 'Teste Locale',
     cardNumber: '5418931939544954',
-    ccv: '647',
-    expiry: '0225',
-    cpfCnpj: '366.422.100-18',
+    ccv: '776',
+    expiry: '0525',
+    cpfCnpj: '314.715.150-60',
     cardBrand: ''
   });
 
@@ -194,6 +194,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
   });
 
   const [planError, setPlanError] = useState('');
+
   useEffect(() => {
     if (planError !== '' && plansRef.current) {
       plansRef.current.scrollIntoView({
@@ -261,6 +262,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     const planErrorMessage = `Selecione um plano de anúncios.`
     const emptyCreditsErrorMsg = 'Parece que você esgotou seus créditos de anúncio no seu plano atual. Não se preocupe! Você pode mudar para um plano diferente ou comprar mais créditos para continuar anunciando seus imóveis.'
     const invalidCouponError = 'Cupom de desconto inválido.'
+    const noCreditsError = 'Você não possui mais créditos para criar anuncios em seu plano. Contrate um novo plano para poder continuar anunciando seus imóveis.'
 
     // Limpa o estado de erro da seleção do plano, verifica se um plano foi selecionado e emite um erro caso contrário
     const planData: IPlan | undefined = plans.find(
@@ -286,7 +288,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
 
     setTermsError('');
     setPaymentError('');
-    setPlanError('');
     setCouponError('');
 
     const newUserDataErrors = {
@@ -317,13 +318,20 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     let newPaymentError = '';
     let newCouponError = '';
 
-    if (ownerData?.owner?.adCredits! < 1 &&
-      selectedPlan === ownerData?.owner?.plan
+    if (
+      ownerData?.owner?.adCredits &&
+      ownerData?.owner?.adCredits < 1 &&
+      selectedPlan === ownerPlan?._id
     ) {
       setPaymentError(emptyCreditsErrorMsg);
       newPaymentError = emptyCreditsErrorMsg;
     }
     if (ownerPlan?._id !== selectedPlan && ownerPlan !== undefined && !confirmChange) newChangePlanError = `Você está alterando seu plano de ${ownerPlan?.name === 'Free' ? 'Grátis' : ownerPlan?.name} para o plano ${selectedPlanData?.name === 'Free' ? 'Grátis' : selectedPlanData?.name}. A diferença entre os valores dos planos será cobrada na próxima fatura do seu cartão de crédito.`;
+    if (
+      ownerData?.owner?.adCredits === 0 &&
+      ownerPlan?._id === selectedPlan &&
+      selectedPlan !== ''
+    ) newPlanError = noCreditsError;
     if (!userDataForm?.username) newUserDataErrors.username = error;
     if (!selectedPlan && !useCoupon) newPlanError = planErrorMessage;
     if (!userDataForm?.email) newUserDataErrors.email = error;
@@ -354,20 +362,23 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     const combinedErrors = {
       ...newAddressErrors,
       ...newUserDataErrors,
-      ...newCreditCardErrors,
+      //...newCreditCardErrors,
       newPlanError,
       newCouponError
     };
+    console.log("🚀 ~ handleSubmit ~ combinedErrors:", combinedErrors)
+
 
     const hasErrors = Object.values(combinedErrors).some(
       (error) => error !== ''
     );
+
     const hasPaymentError = newPaymentError !== '' ? true : false;
     const planWasChanged = newChangePlanError !== '' && !confirmChange ? true : false;
 
+
     if (!hasErrors && termsAreRead) {
       if (!hasPaymentError && !planWasChanged) {
-        console.log("entrou")
         try {
 
           const result = await geocodeAddress(addressData);
@@ -390,7 +401,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
           username: userDataForm.username,
           email: userDataForm.email,
           // cpf: userDataForm.cpf,
-          cpf: "366.422.100-18",
+          cpf: "314.715.150-60",
           cellPhone: userDataForm.cellPhone,
           picture: userDataForm.picture
             ? userDataForm.picture
@@ -407,7 +418,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
             ? [coordinates?.lng, coordinates?.lat]
             : [-52.1872864, -32.1013804],
           plan: selectedPlan !== '' ? selectedPlan : freePlan,
-          isPlanFree,
+          isPlanFree: ownerPlan?.name === 'Free' && selectedPlanData?.name === 'Free' ? true : false,
           propertyAddress,
         };
 
@@ -460,7 +471,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
             propertyData,
             userData,
             plan: propertyDataStep3.plan,
-            isPlanFree: isFreePlan,
+            isPlanFree: ownerPlan?.name === 'Free' && selectedPlanData?.name === 'Free' ? true : false,
             phone: userDataForm.phone,
             cellPhone: userDataForm.cellPhone !== '' ? `${userDataForm.cellPhone}` : '123',
             deactivateProperties: docsToDeactivate
@@ -583,7 +594,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
           } else {
             toast.dismiss();
             const error = await response.json();
-            console.error(response);
             setPaymentError(error.message);
             setFailPaymentModalIsOpen(true);
             setLoading(false)
@@ -591,9 +601,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
         } catch (error) {
           toast.dismiss();
           setLoading(false);
-          toast.error(
-            'Não foi possivel se conectar ao servidor. Por favor, tente novamente mais tarde.'
-          );
+          showErrorToast(ErrorToastNames.ServerConnection)
           console.error(error);
         }
       } else {
@@ -608,7 +616,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
         }
       }
     } else {
-      toast.error(`Algum campo obrigatório não foi preenchido.`);
+      showErrorToast(ErrorToastNames.EmptyFields)
       setLoading(false)
     }
   };
@@ -642,7 +650,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
               </div>
 
               <div className='flex flex-col'>
-                <div ref={plansRef} className={`md:flex justify-center gap-10 ${planError !== "" ? 'border-2 pt-7 border-red-500 transition-opacity ease-in-out opacity-100' : ''}`}>
+                <div ref={plansRef} className={`md:flex md:w-fit mx-auto md:px-8 justify-center gap-10 ${planError !== "" ? 'border-2 rounded-xl pt-7 border-red-500 transition-opacity ease-in-out opacity-100' : ''}`}>
                   {ownerData?.owner?.adCredits! === 0 || isChangePlan || !ownerData.owner ? (
                     reversedCards.map(
                       ({ _id, name, price, highlightAd, commonAd, smartAd }: IPlan) => (
@@ -651,6 +659,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
                           selectedPlanCard={selectedPlan}
                           setSelectedPlanCard={(selectedCard: string) => {
                             setSelectedPlan(selectedCard);
+                            setPlanError('');
                             const planData = plans.find(
                               (plan) => plan._id === selectedCard
                             );

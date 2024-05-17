@@ -187,7 +187,7 @@ const SideMenu: React.FC<SideMenuProps> = ({
       ),
       title: 'Comprar créditos',
       link: '/creditsShop',
-      cases: ['plus', 'owner']
+      cases: ['plus']
     },
   ];
 

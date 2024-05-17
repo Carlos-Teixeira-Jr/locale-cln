@@ -65,11 +65,11 @@ const RegisterFormStep3: React.FC<IProps> = ({ selectedPlanCard }) => {
     termsAreRead: '',
   });
 
-  const [cvc, setCvc] = useState('647');
-  const [expiry, setExpiry] = useState('0225');
+  const [cvc, setCvc] = useState('776');
+  const [expiry, setExpiry] = useState('0525');
   const [focus, setFocus] = useState<Focused | undefined>();
   const [cardName, setCardName] = useState('Teste Locale');
-  const [cardNumber, setCardNumber] = useState('5418 9319 3954 4954');
+  const [cardNumber, setCardNumber] = useState('5343 5087 6915 0373');
   const [cardFlag, setCardFlag] = useState('');
 
   const handleInputFocus = (e: any) => {

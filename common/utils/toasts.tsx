@@ -141,7 +141,7 @@ const errorToastMessages: Record<ErrorToastNames, ToastMessage> = {
     },
   },
   [ErrorToastNames.EmptyFields]: {
-    message: 'Você esqueceu de preencher algum campo obrigatório!',
+    message: 'Algum campo obrigatório não foi preenchido corretamente!',
     options: {
       autoClose: 7000,
     },

@@ -101,7 +101,6 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const unreadMessages = messages?.docs?.length > 0 ? messages?.docs?.filter((message) => !message.isRead) : [];
   const plusPlan = plans.find((e) => e.name === 'Locale Plus');
   const ownerIsPlus = ownerData?.owner?.plan === plusPlan?._id ? true : false;
-  console.log("🚀 ~ ownerIsPlus:", ownerIsPlus)
   const [useCoupon, setUseCoupon] = useState(false);
   const [coupon, setCoupon] = useState('');
   const hasProperties = properties?.docs?.length > 0 ? true : false;
@@ -121,7 +120,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     cardNumber: '',
     ccv: '',
     expiry: '',
-    cpfCnpj: '366.422.100-18'
+    cpfCnpj: '314.715.150-60'
   })
 
   const planObj = plans.find((plan) => plan._id === selectedPlan);
@@ -129,7 +128,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const [formData, setFormData] = useState<IUserDataComponent>({
     username: '',
     email: '',
-    cpf: '366.422.100-18',
+    cpf: '314.715.150-60',
     cellPhone: '(53) 99177-4545',
     phone: '',
     picture: {
@@ -314,15 +313,15 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       if (passwordFormData.passwordConfirmattion.length < 6)
         newPasswordErrors.passwordConfirmattion = invalidPasswordLenght;
     }
-    if (
-      selectedPlan !== '' &&
-      selectedPlan !== ownerData?.owner?.plan
-      && planObj?.name !== 'Free'
-      && Object.values(creditCard).some((value) => value === '')
-      && !useCoupon
-    ) {
-      newCreditCardError = emptyCreditCardError;
-    }
+    // if (
+    //   selectedPlan !== '' &&
+    //   selectedPlan !== ownerData?.owner?.plan
+    //   && planObj?.name !== 'Free'
+    //   && Object.values(creditCard).some((value) => value === '')
+    //   && !useCoupon
+    // ) {
+    //   newCreditCardError = emptyCreditCardError;
+    // }
     if (
       selectedPlan !== '' &&
       selectedPlan !== null &&
@@ -338,14 +337,15 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     setPasswordErrors(newPasswordErrors);
     setCouponError(newCouponError);
 
+    console.log("🚀 ~ Object.keys ~ creditCardErrors antes:", creditCardErrors)
+
     // Insere a mensagem de erro nos inputs vazios do form de credit card;
     Object.keys(creditCard).forEach((e) => {
       if (creditCardErrors[e] !== '') {
-        setCreditCardErrors({ ...creditCardErrors, [e]: newCreditCardError })
+        // setCreditCardErrors({ ...creditCardErrors, [e]: newCreditCardError });
+        // setCreditCardIsOpen(true);
       }
     })
-
-    setCreditCardIsOpen(true);
 
     let combinedErrors;
 
@@ -390,7 +390,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
           username: formData.username,
           email: formData.email,
           // cpf: formData.cpf,
-          cpf: '366.422.100-18',
+          cpf: '314.715.150-60',
         };
 
         const ownerFormData: IOwner = {
@@ -531,7 +531,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
         showErrorToast(ErrorToastNames.EmptyFields);
       }
     } else {
-      showErrorToast(ErrorToastNames.EmptyCreditCardInfo);
+      //showErrorToast(ErrorToastNames.EmptyCreditCardInfo);
     }
   };
 
@@ -690,24 +690,24 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                     userAddress={address}
                     ownerData={ownerData}
                     handleEmptyAddressError={(error: string) => {
-                      const updatedErrors: AddressErrors = {
-                        zipCode: '',
-                        city: '',
-                        streetName: '',
-                        streetNumber: '',
-                        uf: ''
-                      };
-                      for (const key in addressErrors) {
-                        if (Object.prototype.hasOwnProperty.call(addressErrors, key)) {
-                          if (addressErrors[key] === '') {
-                            updatedErrors[key] = error;
-                          } else {
-                            updatedErrors[key] = addressErrors[key];
-                          }
-                        }
-                      }
+                      // const updatedErrors: AddressErrors = {
+                      //   zipCode: '',
+                      //   city: '',
+                      //   streetName: '',
+                      //   streetNumber: '',
+                      //   uf: ''
+                      // };
+                      // for (const key in addressErrors) {
+                      //   if (Object.prototype.hasOwnProperty.call(addressErrors, key)) {
+                      //     if (addressErrors[key] === '') {
+                      //       updatedErrors[key] = error;
+                      //     } else {
+                      //       updatedErrors[key] = addressErrors[key];
+                      //     }
+                      //   }
+                      // }
                       // Atualiza o estado com o objeto de erros atualizado
-                      setAddressErrors(updatedErrors);
+                      //setAddressErrors(updatedErrors);
                     }}
                     onCreditCardUpdate={(creditCard: CreditCardType) => setCreditCard(creditCard)}
                   />

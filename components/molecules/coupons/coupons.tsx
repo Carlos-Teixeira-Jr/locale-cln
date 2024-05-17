@@ -51,8 +51,8 @@ const Coupons = ({
   }, [useCoupon])
 
   return (
-    <div className={`flex flex-col mb-5 md:mb-10 ${isAdminPage ? '' : 'justify-between md:justify-center'}`}>
-      <div className={`flex`}>
+    <div className={`flex flex-col mb-5 md:my-10`}>
+      <div className={`flex  ${isAdminPage ? '' : 'justify-between md:justify-center'}`}>
         <div
           className={`w-10 h-10 border bg-tertiary rounded-[10px] drop-shadow-lg cursor-pointer my-auto shrink-0 ${useCoupon ? 'border-secondary' : 'border-quaternary'
             }`}
