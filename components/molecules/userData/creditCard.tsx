@@ -65,12 +65,12 @@ const CreditCard = ({
     // cardName: '',
     cardName: 'Teste Locale',
     // cardNumber: creditCardInfo ? actualCreditCardNumber : '',
-    cardNumber: '5418 9319 3954 4954',
+    cardNumber: '5343 5087 6915 0373',
     // ccv: '',
-    ccv: '647',
+    ccv: '776',
     // expiry: '',
-    expiry: '0225',
-    cpfCnpj: '366.422.100-18'
+    expiry: '0525',
+    cpfCnpj: '314.715.150-60'
   });
 
   const userId = userInfo?._id !== undefined ? userInfo?._id : ownerData?.user?._id;
@@ -174,7 +174,7 @@ const CreditCard = ({
       type: 'string',
       label: 'Número do Cartão',
       // value: creditCardFormData.cardNumber,
-      value: '5418 9319 3954 4954'
+      value: '5343 5087 6915 0373'
     },
     {
       key: 'cardName',
@@ -208,7 +208,7 @@ const CreditCard = ({
       type: 'text',
       label: 'CPF/CNPJ',
       // value: creditCardFormData.cpfCnpj,
-      value: '366.422.100-18'
+      value: '314.715.150-60'
     },
   ];
 
@@ -314,7 +314,7 @@ const CreditCard = ({
             focused={focus}
             name={creditCardFormData.cardName}
             // number={creditCardFormData.cardNumber}
-            number={'5418 9319 3954 4954'}
+            number={'5343 5087 6915 0373'}
           />
         </div>
 

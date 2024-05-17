@@ -27,7 +27,7 @@ const MiniPropertyCards = ({
   return (
     <div
       key={_id}
-      className={`md:max-w-[112px] w-36 lg:w-28 rounded-3xl flex flex-col hover:shadow-2xl transition-shadow ease-in-out duration-200 cursor-pointer my-5 ${isSelected ? 'shadow-2xl border-2 border-secondary opacity-100' : 'shadow-md opacity-50'}`}
+      className={`md:max-w-[112px] w-36 lg:w-28 rounded-3xl flex flex-col hover:shadow-2xl transition-shadow ease-in-out duration-200 cursor-pointer md:my-5 ${isSelected ? 'shadow-2xl border-2 border-secondary opacity-100' : 'shadow-md opacity-50'}`}
       onClick={() => {
         setSelectedCard(_id);
       }}

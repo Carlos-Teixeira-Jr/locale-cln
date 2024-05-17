@@ -381,7 +381,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
   const classes = {
     labelInput: 'text-base font-normal text-quaternary leading-7',
     mediumInput:
-      'border border-quaternary rounded-[10px] h-12 w-full md:w-[328px] text-quaternary text-sm font-bold p-2 md:font-bold drop-shadow-lg bg-tertiary mt-1',
+      'border border-quaternary rounded-[10px] h-12 w-full md:w-96 text-quaternary text-sm font-bold p-2 md:font-bold drop-shadow-lg bg-tertiary mt-1',
     errorLabel: 'text-red-500 mt-2 text-xs',
   };
 
@@ -477,7 +477,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
           </h3>
           <div className="md:flex gap-5">
             <div
-              className="flex flex-col md:w-full lg:mr-5 my-3 md:mt-0"
+              className="flex flex-col lg:mr-5 my-3 md:mt-0"
               ref={mainFeaturesErrorScroll.totalArea}
             >
               <label className={classes.labelInput}>Área Total</label>
@@ -549,7 +549,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
           </div>
         </div>
 
-        <div className="my-5 lg:flex grid grid-cols-2 md:grid-cols-3 w-full lg:justify-between">
+        <div className="my-5 lg:flex grid grid-cols-2 md:grid-cols-3 w-full lg:gap-20">
           {metadataButtons.map((btn) => (
             <div className="ml-5 lg:ml-0 flex flex-col" key={btn.key}>
               <label className="text-sm font-normal text-center text-quaternary leading-7 lg:flex justify-center drop-shadow-lg">
@@ -569,7 +569,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                 </span>
                 <div className="rounded-full md:w-7 md:h-7 w-7 h-7 border border-secondary drop-shadow-xl md:flex justify-center">
                   <p
-                    className="text-secondary font-extrabold text-2xl flex align-middle justify-center leading-[23px] cursor-pointer"
+                    className="text-secondary font-extrabold text-2xl flex align-middle mb-1 justify-center leading-[23px] cursor-pointer"
                     onClick={btn.clickAdd}
                   >
                     +
@@ -733,7 +733,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                     />
                   )}
                 </div>
-                <p className="text-sm text- font-light text-quaternary leading-7 lg:ml-2">
+                <p className="text-sm text- font-light text-quaternary leading-7 lg:ml-5">
                   {!propertyFeaturesData.condominium ? 'Aplicar' : 'Remover'}
                 </p>
               </div>
@@ -750,7 +750,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
               </p>
             </div>
             <div className="lg:flex md:w-96 lg:ml-0">
-              <div className="flex gap-2">
+              <div className="flex gap-2 w-full">
                 <input
                   value={
                     propertyFeaturesData.iptu
@@ -759,7 +759,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                   }
                   placeholder="R$"
                   maxLength={15}
-                  className={`border border-quaternary rounded-[10px] md:w-[328px] h-12 lg:ml-0 md:ml-0 text-quaternary text-sm font-bold md:px-2 drop-shadow-lg mt-1 p-2 w-full ${!propertyFeaturesData.iptu ? 'bg-[#CACACA]' : 'bg-tertiary'
+                  className={`border border-quaternary rounded-[10px] md:w-full h-12 lg:ml-0 md:ml-0 text-quaternary text-sm font-bold md:px-2 drop-shadow-lg mt-1 p-2 w-full ${!propertyFeaturesData.iptu ? 'bg-[#CACACA]' : 'bg-tertiary'
                     }`}
                   style={
                     propertyFeaturesErrors.iptuValue
@@ -809,7 +809,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                       />
                     )}
                   </div>
-                  <p className="text-sm font-light text-quaternary leading-7 lg:ml-2">
+                  <p className="text-sm font-light text-quaternary leading-7 lg:ml-5">
                     {!propertyFeaturesData.iptu ? 'Aplicar' : 'Remover'}
                   </p>
                 </div>

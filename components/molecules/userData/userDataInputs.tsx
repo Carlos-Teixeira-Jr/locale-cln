@@ -73,7 +73,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
       ? ownerData?.user?.email
       : '',
     // cpf: ownerData?.user?.cpf ? ownerData?.user?.cpf : '',
-    cpf: "366.422.100-18",
+    cpf: "314.715.150-60",
     // cellPhone: ownerData && ownerData.user ? ownerData.user.phone : '',
     cellPhone: '(53) 99177-4545',
     picture: { id: '', src: '' },
@@ -146,7 +146,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
       key: 'cpf',
       label: 'CPF',
       // value: formData.cpf,
-      value: '366.422.100-18',
+      value: '314.715.150-60',
       ref: userDataErrorScroll.cpf,
       // onChange: (event: ChangeEvent<HTMLInputElement>) => {
       //   const input = event.target;
@@ -199,7 +199,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
         const input = event.target;
         const value = input.value;
-        const maskedValue = applyNumericMask(value, '(99) 9999-9999');
+        const maskedValue = applyNumericMask(value, '(99) 99999-9999');
         const selectionStart = input.selectionStart || 0;
         const selectionEnd = input.selectionEnd || 0;
         const previousValue = input.value;

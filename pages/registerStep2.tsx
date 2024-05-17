@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import { MouseEvent, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import useProgressRedirect from '../common/utils/stepProgressHandler';
+import { ErrorToastNames, showErrorToast } from '../common/utils/toasts';
 import Loading from '../components/atoms/loading';
 import LinearStepper from '../components/atoms/stepper/stepper';
 import UploadImages from '../components/molecules/uploadImages/uploadImages';
@@ -86,9 +87,7 @@ const RegisterStep2: NextPageWithLayout = () => {
         router.push('/registerStep3');
       }
     } else {
-      toast.error(
-        `Algum campo obrigatório ${errorInfo.prop} não foi preenchido.`
-      );
+      showErrorToast(ErrorToastNames.EmptyFields)
       setLoading(false);
     }
   };

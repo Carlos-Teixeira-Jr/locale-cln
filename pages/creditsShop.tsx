@@ -137,7 +137,7 @@ const CreditsShop = ({
                 notifications={notifications}
                 unreadMessages={unreadMessages}
                 isPlus={true}
-                hasProperties={false}
+                hasProperties={ownerProperties?.docs?.length > 0 ? true : false}
               />
             </div>
 
