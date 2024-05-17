@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import Modal from 'react-modal';
+import { useIsMobile } from '../../../hooks/useIsMobile';
 import CheckIcon from '../icons/checkIcon';
 Modal.setAppElement('#__next');
 
@@ -19,6 +20,7 @@ const ChangePlanModal: React.FC<IChangePlanModal> = ({
 }) => {
 
   const [loading, setIsLoading] = useState(false);
+  const isMobile = useIsMobile()
 
   const handleCloseModal = () => {
     setModalIsOpen(false);
@@ -59,28 +61,28 @@ const ChangePlanModal: React.FC<IChangePlanModal> = ({
           marginRight: '-50%',
           transform: 'translate(-50%, -50%)',
           height: 'auto',
-          width: 'auto',
+          width: isMobile ? '90%' : 'auto',
           margin: '0 auto 0 auto',
           boxShadow: '0px 4px 4px 0px rgba(0, 0, 0, 0.25)',
         },
       }}
     >
-      <div className="p-10 flex">
+      <div className="p-5 md:p-10 flex md:flex-row flex-col-reverse">
         <div className='my-auto'>
-          <h1 className="text-3xl text-green-500 font-bold mb-5">
+          <h1 className="text-xl md:text-3xl text-green-500 font-bold mb-5">
             Você está trocando seu plano
           </h1>
-          <p className="font-bold text-xl leading-6 text-quaternary ">
+          <p className="font-bold md:text-xl leading-6 text-quaternary ">
             {message}
           </p>
         </div>
-        <div className="w-[66px] h-[66px] rounded-full bg-green-500 shrink-0 flex justify-center my-auto ml-10">
+        <div className="w-[66px] h-[66px] rounded-full bg-green-500 shrink-0 flex justify-center mb-5 md:my-auto mx-auto md:ml-10">
           <CheckIcon fill="white" className='my-auto' />
         </div>
       </div>
       <div className='flex flex-row-reverse justify-between w-full'>
         <button
-          className={`flex items-center flex-row justify-around w-44 h-14 text-tertiary rounded font-bold text-lg md:text-xl ${loading ?
+          className={`flex items-center flex-row justify-around px-5 py-2 md:w-44 md:h-14 text-tertiary rounded font-bold text-lg md:text-xl ${loading ?
             'bg-red-300 transition-colors duration-300' :
             'bg-primary transition-colors duration-300 hover:bg-red-600 hover:text-white cursor-pointer'
             }`}
@@ -89,7 +91,7 @@ const ChangePlanModal: React.FC<IChangePlanModal> = ({
           Confirmar
         </button>
         <button
-          className={`flex items-center flex-row justify-around w-44 h-14 text-tertiary rounded font-bold text-lg md:text-xl ${loading ?
+          className={`flex items-center flex-row justify-around px-5 py-2 md:w-44 md:h-14 text-tertiary rounded font-bold text-lg md:text-xl ${loading ?
             'bg-red-300 transition-colors duration-300' :
             'bg-primary transition-colors duration-300 hover:bg-red-600 hover:text-white cursor-pointer'
             }`}

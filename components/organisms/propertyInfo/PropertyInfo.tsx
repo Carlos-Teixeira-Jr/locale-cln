@@ -168,7 +168,7 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
 
   return (
     <>
-      <div className="flex flex-col md:flex-row justify-between py-1 md:py-5 px-4 lg:w-full bg-tertiary drop-shadow-lg">
+      <div className="flex flex-col md:flex-row justify-between py-1 md:py-5 px-4 lg:w-full bg-tertiary drop-shadow-lg mt-5">
         <div className="flex flex-col">
           <h1 className="font-extrabold text-quaternary md:text-2xl text-lg">
             Características do imóvel

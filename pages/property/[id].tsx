@@ -84,7 +84,7 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
           <ContactBox property={property} ownerInfo={ownerData?.owner} />
         </div>
 
-        <div className="w-full h-fit">
+        <div className="w-full h-fit mt-5">
           <PropertyInfo
             property={property}
             isFavourite={isFavourite}

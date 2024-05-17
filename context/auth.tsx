@@ -3,6 +3,7 @@ import { parseCookies, setCookie } from 'nookies';
 import { createContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { ErrorToastNames, showErrorToast } from '../common/utils/toasts';
 import { Api } from '../services/api';
 
 type User = {
@@ -29,6 +30,7 @@ export function AuthProvider({ children }: any) {
   const [user, setUser] = useState<User | null>(null);
   const isAuthenticated = !!user;
   const router = useRouter();
+  const apiUrl = process.env.NEXT_PUBLIC_BASE_API_URL
 
   useEffect(() => {
     const { 'locale.token': token } = parseCookies();
@@ -62,7 +64,7 @@ export function AuthProvider({ children }: any) {
   async function signIn(email: string, password: string) {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/login`,
+        `${apiUrl}/auth/login`,
         {
           method: 'POST',
           headers: {
@@ -101,12 +103,10 @@ export function AuthProvider({ children }: any) {
 
         router.push('/admin?page=1');
       } else {
-        console.error('Erro ao fazer login');
-        const data = await response.json();
-        toast.error(data.message);
+        showErrorToast(ErrorToastNames.InvalidLoginData)
       }
     } catch (error) {
-      console.error('Erro ao conectar com o servidor');
+      showErrorToast(ErrorToastNames.ServerConnection)
     }
   }
 
@@ -161,12 +161,10 @@ export function AuthProvider({ children }: any) {
 
         router.push('/admin?page=1');
       } else {
-        console.error('Erro ao fazer o cadastro');
-        const data = await response.json();
-        toast.error(data.message);
+        showErrorToast(ErrorToastNames.InvalidRegisterData)
       }
     } catch (error) {
-      console.error('Erro ao conectar com o servidor');
+      showErrorToast(ErrorToastNames.ServerConnection);
     }
   }
 

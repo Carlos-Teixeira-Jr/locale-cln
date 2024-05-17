@@ -86,7 +86,7 @@ const MaskedInput: React.FC<InputProps> = ({
   );
 
   return (
-    <div className="relative">
+    <div className="relative w-fit">
       {prefix && <span className={spanClassName}>{prefix}</span>}
       <input
         id="input"

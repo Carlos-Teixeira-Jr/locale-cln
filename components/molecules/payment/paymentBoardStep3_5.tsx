@@ -54,16 +54,15 @@ const PaymentBoard_Step3_5 = ({
             <h2 className={classes.paymentLabel}>PAGAMENTO</h2>
             <h2 className={classes.paymentLabel}>PLANO</h2>
             <h2 className={classes.paymentLabel}>VALOR</h2>
-            <h2 className={classes.paymentLabel}>PARCELAS</h2>
           </div>
           <div className="flex flex-col items-end">
             {cardFlag === '' ? (
-              <h2 className="text-quaternary text-lg md:text-2xl font-medium mb-4">
+              <h2 className="text-quaternary text-lg md:text-2xl font-medium">
                 Cartão de crédito
               </h2>
             ) : (
               <div className="flex flex-row items-center justify-between">
-                <h2 className="text-quaternary text-lg md:text-2xl font-medium mb-4">
+                <h2 className="text-quaternary text-lg md:text-2xl font-medium">
                   {plan?.price === 0 ? '---' : 'Cartão de crédito'}
                 </h2>
                 {cardFlag === 'MASTERCARD' && plan?.price! > 0 && (

@@ -51,8 +51,8 @@ const Coupons = ({
   }, [useCoupon])
 
   return (
-    <div className={`flex flex-col mb-5 md:mb-10 ${isAdminPage ? '' : 'justify-between md:justify-center'}`}>
-      <div className={`flex`}>
+    <div className={`flex flex-col md:mt-5 md:mb-10`}>
+      <div className={`flex  ${isAdminPage ? '' : 'justify-start md:justify-center px-5'}`}>
         <div
           className={`w-10 h-10 border bg-tertiary rounded-[10px] drop-shadow-lg cursor-pointer my-auto shrink-0 ${useCoupon ? 'border-secondary' : 'border-quaternary'
             }`}
@@ -81,7 +81,7 @@ const Coupons = ({
           value={coupon}
           style={couponError ? { border: '1px solid red' } : {}}
           maxLength={15}
-          className={`border p-5 h-12 my-5 border-quaternary rounded-[10px] bg-tertiary font-bold text-lg text-quaternary leading-7 drop-shadow-xl ${isAdminPage ? 'md:w-1/2' : 'md:mx-auto mx-2 md:w-1/3'}`}
+          className={`border p-5 h-12 my-5 border-quaternary rounded-[10px] bg-tertiary font-bold text-lg text-quaternary leading-7 drop-shadow-xl ${isAdminPage ? 'md:w-1/2' : 'md:mx-auto mx-5 md:w-1/3'}`}
           onChange={(e) => setCoupon(e.target.value)}
         />
       )}

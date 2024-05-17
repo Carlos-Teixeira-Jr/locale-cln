@@ -4,6 +4,7 @@ import { MouseEvent, useEffect, useRef, useState } from 'react';
 import Modal from 'react-modal';
 import { IData } from '../../../../common/interfaces/property/propertyData';
 import { monetaryFormat } from '../../../../common/utils/masks/monetaryFormat';
+import { useIsMobile } from '../../../../hooks/useIsMobile';
 import BathroomIcon from '../../../atoms/icons/bathroomIcon';
 import BedroomIcon from '../../../atoms/icons/bedroomIcon';
 import DotIcon from '../../../atoms/icons/dotIcon';
@@ -46,8 +47,9 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
   highlighted,
   propertyInfo,
 }) => {
-  const [modalIsOpen, setModalIsOpen] = useState(false);
 
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const isMobile = useIsMobile()
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const [expanded, setExpanded] = useState(false);
@@ -101,14 +103,14 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
         >
           <div className='w-full h-full bg-tertiary md:grid md:grid-cols-3 rounded-[30px]'>
             <div className="group relative md:h-full">
-              <div className="flex flex-row w-full overflow-hidden scroll-smooth rounded-l-[30px] md:h-full h-[250px]">
+              <div className={`flex flex-row w-full overflow-hidden scroll-smooth h-full md:h-[250px] ${isMobile ? 'rounded-t-[30px]' : 'rounded-l-[30px]'}`}>
                 <Image
                   src={images[currentIndex]}
                   key={currentIndex}
                   alt={'Property Image'}
                   width="312"
                   height="265"
-                  className="w-full object-cover rounded-l-[30px]"
+                  className={`w-full object-cover ${isMobile ? 'rounded-t-[30px] max-h-72' : 'rounded-l-[30px]'}`}
                 />
                 {highlighted && (
                   <div className="bg-black absolute m-5 rounded-lg bg-opacity-50">
