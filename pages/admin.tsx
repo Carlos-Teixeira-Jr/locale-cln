@@ -170,7 +170,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       } else {
         return {
           redirect: {
-            destination: '/adminFavProperties?page=1',
+            destination: '/adminUserData?page=1',
             permanent: false,
           },
         };

@@ -22,6 +22,7 @@ const ForgotPasswordModal: React.FC<IForgotPasswordModal> = ({
     useState<string>('');
   const isMobile = useIsMobile();
   const [loading, setLoading] = useState(false)
+  const apiUrl = process.env.NEXT_PUBLIC_BASE_API_URL
 
   const handleOnChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
@@ -39,7 +40,7 @@ const ForgotPasswordModal: React.FC<IForgotPasswordModal> = ({
     try {
       setLoading(true);
       const data = await sendRequest(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/request-password`,
+        `${apiUrl}/auth/request-password`,
         'POST',
         { email: emailForChangePassword }
       );
@@ -51,8 +52,7 @@ const ForgotPasswordModal: React.FC<IForgotPasswordModal> = ({
         showSuccessToast(SuccessToastNames.PasswordRecovery);
       } else if (data.status === 404) {
         const errorData = await data.json();
-        const errorMessage = errorData.message;
-        toast.error(errorMessage);
+        showErrorToast(ErrorToastNames.PasswordRecovery)
         setLoading(false);
       }
     } catch (error) {

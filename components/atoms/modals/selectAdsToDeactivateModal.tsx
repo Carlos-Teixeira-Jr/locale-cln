@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import ReactModal from "react-modal";
-import { IOwnerData } from "../../../common/interfaces/owner/owner";
+import { IPlan } from "../../../common/interfaces/plans/plans";
 import { IData } from "../../../common/interfaces/property/propertyData";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import MiniPropertyCards from "../../molecules/cards/miniCards/miniPropertyCards";
@@ -9,31 +9,34 @@ export interface ISelectAdsToDeactivateModal {
   isOpen: boolean,
   setModalIsOpen: (value: boolean) => void;
   docs: IData[],
-  creditsLeft: number,
   setConfirmAdsToDeactivate: (isConfirmed: boolean) => void,
   onSubmit: (confirmChange: boolean) => void,
   docsToDeactivate: (docs: string[]) => void,
-  ownerData: IOwnerData
+  selectedPlan: IPlan | undefined
 }
 
 const SelectAdsToDeactivateModal = ({
   isOpen,
   setModalIsOpen,
   docs,
-  creditsLeft,
   setConfirmAdsToDeactivate,
   onSubmit,
   docsToDeactivate,
+  selectedPlan
 }: ISelectAdsToDeactivateModal) => {
 
   const isMobile = useIsMobile();
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
   const [unselectedCards, setUnselectedCards] = useState<string[]>([])
   const [credits, setCredits] = useState<number>(0);
+  const [confirm, setConfirm] = useState(false)
+  console.log("🚀 ~ confirm:", confirm)
 
   useEffect(() => {
-    setCredits(creditsLeft - 1);
-  }, [creditsLeft]);
+    if (selectedPlan) {
+      setCredits(selectedPlan?.commonAd - 1);
+    }
+  }, [selectedPlan]);
 
   useEffect(() => {
     // Update unselectedCards based on docs and selectedCards
@@ -44,7 +47,7 @@ const SelectAdsToDeactivateModal = ({
       return acc;
     }, []);
 
-    setUnselectedCards(newUnselectedCards); // Update state
+    setUnselectedCards(newUnselectedCards);
   }, [docs, selectedCards]);
 
   useEffect(() => {
@@ -52,21 +55,27 @@ const SelectAdsToDeactivateModal = ({
   }, [unselectedCards]);
 
   const handleSelectedCards = (card: string) => {
-    if (!selectedCards.includes(card)) {
-      setSelectedCards((prevState) => [...prevState, card]);
-      setCredits((prevState) => prevState - 1);
-    } else {
+    if (selectedCards.includes(card)) {
       const filteredArray = selectedCards.filter((prevCard) => prevCard !== card);
       setSelectedCards(filteredArray);
-      setCredits((prevState) => prevState + 1)
+      setCredits((prevState) => prevState + 1);
+    } else if (credits > 0) {
+      setSelectedCards((prevState) => [...prevState, card]);
+      setCredits((prevState) => prevState - 1);
     }
-  }
+  };
 
   const handleConfirmAdsToDeactivate = () => {
-    setConfirmAdsToDeactivate(true);
+    setConfirm(true);
     setModalIsOpen(false);
     onSubmit(false);
   }
+
+  useEffect(() => {
+    console.log("🚀 ~ useEffect ~ confirm:", confirm)
+
+    if (confirm) setConfirmAdsToDeactivate(true);
+  }, [confirm])
 
   return (
     <ReactModal

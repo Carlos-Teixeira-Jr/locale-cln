@@ -9,6 +9,7 @@ import {
   IRegisterMainFeatures,
   IRegisterPropertyData_Step1,
 } from '../common/interfaces/property/register/register';
+import { ErrorToastNames, showErrorToast } from '../common/utils/toasts';
 import Loading from '../components/atoms/loading';
 import LinearStepper from '../components/atoms/stepper/stepper';
 import Address from '../components/molecules/address/address';
@@ -222,7 +223,7 @@ const Register = () => {
         router.push('/registerStep2');
       }
     } else {
-      toast.error(`Algum campo obrigatório não foi preenchido.`);
+      showErrorToast(ErrorToastNames.EmptyFields)
       setLoading(false);
     }
   };

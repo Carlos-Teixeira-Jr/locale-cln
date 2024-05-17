@@ -569,7 +569,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                 </span>
                 <div className="rounded-full md:w-7 md:h-7 w-7 h-7 border border-secondary drop-shadow-xl md:flex justify-center">
                   <p
-                    className="text-secondary font-extrabold text-2xl flex align-middle justify-center leading-[23px] cursor-pointer"
+                    className="text-secondary font-extrabold text-2xl flex align-middle mb-1 justify-center leading-[23px] cursor-pointer"
                     onClick={btn.clickAdd}
                   >
                     +

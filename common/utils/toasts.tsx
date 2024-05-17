@@ -23,6 +23,9 @@ export enum SuccessToastNames {
 }
 
 export enum ErrorToastNames {
+  InvalidLoginData = 'invalidLoginData',
+  UpdateFavourites = 'updateFavourites',
+  PasswordRecovery = 'passwordRecovery',
   ServerConnection = 'serverConnection',
   EmptyFields = 'emptyFields',
   SendMessage = 'sendMessage',
@@ -301,7 +304,25 @@ const errorToastMessages: Record<ErrorToastNames, ToastMessage> = {
     options: {
       autoClose: 7000,
     },
-  }
+  },
+  [ErrorToastNames.PasswordRecovery]: {
+    message: 'Não foi possível enviar a recuperação de senha. Por favor, tente novamente mais tarde.',
+    options: {
+      autoClose: 7000,
+    },
+  },
+  [ErrorToastNames.UpdateFavourites]: {
+    message: 'Não foi possível atualizar seus favoritos. Por favor, tente novamente mais tarde.',
+    options: {
+      autoClose: 7000,
+    },
+  },
+  [ErrorToastNames.InvalidLoginData]: {
+    message: 'Email ou senha inválidos.',
+    options: {
+      autoClose: 7000,
+    },
+  },
 };
 
 const infoToastMessages: Record<InfoToastNames, ToastMessage> = {

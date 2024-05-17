@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { IAddress, IPrices } from '../../../../common/interfaces/property/propertyData';
 import { monetaryFormat } from '../../../../common/utils/masks/monetaryFormat';
+import { ErrorToastNames, showErrorToast } from '../../../../common/utils/toasts';
 import BathroomIcon from '../../../atoms/icons/bathroomIcon';
 import BedroomIcon from '../../../atoms/icons/bedroomIcon';
 import DotIcon from '../../../atoms/icons/dotIcon';
@@ -115,13 +116,11 @@ const PropertyCard: React.FC<IPropertyCard> = ({
         window.location.reload();
       } else {
         toast.dismiss();
-        toast.error('Ocorreu um erro ao tentar atualizar seus favoritos.');
+        showErrorToast(ErrorToastNames.UpdateFavourites)
       }
     } catch (error) {
       toast.dismiss();
-      toast.error(
-        'Não foi possível estabelecer uma conexão com o servidor. Por favor tente novamente.'
-      );
+      showErrorToast(ErrorToastNames.ServerConnection)
     }
   };
 
@@ -130,7 +129,7 @@ const PropertyCard: React.FC<IPropertyCard> = ({
       className={`flex flex-col max-w-[350px] lg:max-w-[270px] md:max-w-[250px] shadow-lg hover:shadow-2xl rounded-[30px] md:mt-2 mb-2 cursor-pointer w-full p-1 ${expanded ? `min-h-[470px] max-h-fit` : 'max-h-[470px]'
         } ${highlighted ? 'bg-gradient-to-tr from-secondary to-primary' : 'bg-tertiary'}`}
     >
-      <div className='w-full h-full bg-tertiary rounded-[30px]'>
+      <div className='w-full h-full. bg-tertiary rounded-[30px]'>
         <Link href={`/property/${id}`}>
           <div className="group relative h-[200px]">
             <div className="flex flex-row w-full overflow-hidden scroll-smooth rounded-t-[30px] h-[200px]">

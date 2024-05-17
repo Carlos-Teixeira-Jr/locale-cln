@@ -515,7 +515,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
           if (response.ok) {
             toast.dismiss();
             showSuccessToast(SuccessToastNames.UserDataUpdate);
-            router.push('/adminFavProperties?page=1');
+            window.location.reload()
           } else {
             setLoading(false);
             toast.dismiss();

@@ -8,6 +8,7 @@
     "type": "apartamento",
     "key": 2,
     "subTypes": [
+      "Apartamento",
       "Cobertura",
       "flat",
       "Térreo",

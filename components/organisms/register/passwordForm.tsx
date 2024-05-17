@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import store from 'store';
 import { IRegisterPropertyData_Step3 } from '../../../common/interfaces/property/register/register';
 import { IStoredData } from '../../../common/interfaces/property/register/store';
+import { ErrorToastNames, showErrorToast } from '../../../common/utils/toasts';
 import { sendRequest } from '../../../hooks/sendRequest';
 import EyeIcon from '../../atoms/icons/eyeIcon';
 import TurnedOffEyeIcon from '../../atoms/icons/turnedOffEyeIcon';
@@ -36,6 +37,7 @@ const PasswordForm: React.FC<IPasswordForm> = ({ userEmail, storedData }) => {
   const [showPasswordConfirmation, setShowPasswordConfirmation] =
     useState(false);
   const email = userEmail ? userEmail : storedData.propertyDataStep3.email;
+  const apiUrl = process.env.NEXT_PUBLIC_BASE_API_URL
 
   const inputs = [
     {
@@ -86,7 +88,7 @@ const PasswordForm: React.FC<IPasswordForm> = ({ userEmail, storedData }) => {
       try {
         toast.loading('Enviando...');
         const response = await sendRequest(
-          `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/register`,
+          `${apiUrl}/auth/register`,
           'POST',
           {
             email,
@@ -96,8 +98,7 @@ const PasswordForm: React.FC<IPasswordForm> = ({ userEmail, storedData }) => {
         );
 
         if (!response.ok) {
-          const data = await response.json();
-          toast.error('Servidor respondeu com erro');
+          showErrorToast(ErrorToastNames.ServerConnection)
         } else {
           try {
             const signInResponse = await signIn('credentials', {
@@ -113,29 +114,25 @@ const PasswordForm: React.FC<IPasswordForm> = ({ userEmail, storedData }) => {
                 router.push('/admin?page=1');
               } else {
                 console.error(error);
-                toast.dismiss();
-                toast.error('Email ou senha inválidos.', { type: 'error' });
               }
             });
 
             if (signInResponse === null) {
-              toast.warn('Dados de login inválidos ou usuário não encontrado');
+              showErrorToast(ErrorToastNames.InvalidLoginData)
             }
           } catch (error) {
             toast.dismiss();
             console.error(error);
-            toast.error('Erro ao fazer login');
+            showErrorToast(ErrorToastNames.ServerConnection)
           }
         }
       } catch (error) {
         toast.dismiss();
         console.error(error);
-        toast.error(
-          'Não foi possível se conectar com o servidor. Por favor tente novamente mais tarde.'
-        );
+        showErrorToast(ErrorToastNames.ServerConnection)
       }
     } else {
-      toast.error('Você não inseriu a senha ou confirmação de senha');
+      showErrorToast(ErrorToastNames.EmptyFields)
     }
   };
 
@@ -164,14 +161,14 @@ const PasswordForm: React.FC<IPasswordForm> = ({ userEmail, storedData }) => {
               {input.visibility ? (
                 <EyeIcon
                   fill="#6B7280"
-                  // width={!isMobile ? '40' : '30'}
-                  // height={!isMobile ? '40' : '30'}
+                // width={!isMobile ? '40' : '30'}
+                // height={!isMobile ? '40' : '30'}
                 />
               ) : (
                 <TurnedOffEyeIcon
                   fill="#6B7280"
-                  // width={!isMobile ? '40' : '30'}
-                  // height={!isMobile ? '40' : '30'}
+                // width={!isMobile ? '40' : '30'}
+                // height={!isMobile ? '40' : '30'}
                 />
               )}
             </button>

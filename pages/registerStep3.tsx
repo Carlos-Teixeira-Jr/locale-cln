@@ -800,11 +800,10 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
               isOpen={propsToDeactivateIsOpen}
               setModalIsOpen={(isOpen: boolean) => setPropsToDeactivateIsOpen(isOpen)}
               docs={docs}
-              creditsLeft={selectedPlanData?.commonAd!}
               setConfirmAdsToDeactivate={(isConfirmed: boolean) => setConfirmAdsToDeactivate(isConfirmed)}
               onSubmit={(isConfirmed: boolean) => handleSubmit(isConfirmed)}
               docsToDeactivate={(docs: string[]) => setDocsToDeactivate(docs)}
-              ownerData={ownerData}
+              selectedPlan={selectedPlanData}
             />
           </div >
 

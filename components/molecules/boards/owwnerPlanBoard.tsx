@@ -30,7 +30,7 @@ const OwnerPlanBoard = ({
 
       <div className="gap-1 flex flex-col text-md text-quaternary">
         <span>{`${owner?.adCredits} x ${owner?.adCredits === 1 ? 'Crédito' : 'Créditos'} de anúncio`}</span>
-        <span>{`${owner?.highlightCredits} x ${owner?.highlightCredits === 1 ? 'Crédito' : 'Créditos'} de anúncio`}</span>
+        <span>{`${owner?.highlightCredits} x ${owner?.highlightCredits === 1 ? 'Crédito' : 'Créditos'} de destaque`}</span>
       </div>
 
       <div className="mt-5">
