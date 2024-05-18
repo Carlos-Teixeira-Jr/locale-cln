@@ -112,7 +112,7 @@ const Header: React.FC<IHeader> = () => {
                 ) : null}
               </Link>
 
-              {loading && <Loading fill='#F75D5F' className='h-[40px] w-[40px] text-gray-200 animate-spin dark:text-gray-600 fill-tertiary' />}
+              {loading && <Loading fill='#F75D5F' className='h-[2rem] w-[2rem] text-gray-200 animate-spin dark:text-gray-600 fill-tertiary' />}
 
               <button
                 className="my-auto cursor-pointer mx-2 text-primary font-semibold text-md"

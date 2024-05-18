@@ -366,8 +366,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
       newPlanError,
       newCouponError
     };
-    console.log("🚀 ~ handleSubmit ~ combinedErrors:", combinedErrors)
-
 
     const hasErrors = Object.values(combinedErrors).some(
       (error) => error !== ''

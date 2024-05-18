@@ -34,7 +34,6 @@ const FilterList: React.FC<IFilterListProps> = ({
   onSearchBtnClick,
   locationChangeProp,
 }) => {
-  const ref = useRef<HTMLDivElement>(null);
   const dropDownRef = useRef<HTMLDivElement>(null);
   const refPropertyType = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -154,8 +153,11 @@ const FilterList: React.FC<IFilterListProps> = ({
   };
 
   const filterLocation = (value: string) => {
+    const separatedStringsArr = value.split(',');
     const filtered = locationProp.filter((city) =>
-      city.name.toLowerCase().startsWith(value.toLowerCase())
+      separatedStringsArr.some((str) =>
+        city.name.toLowerCase().startsWith(str.trim().toLowerCase())
+      )
     );
     setFilteredLocations(filtered);
   };
@@ -209,6 +211,13 @@ const FilterList: React.FC<IFilterListProps> = ({
   useEffect(() => {
     locationChangeProp(location);
   }, [location]);
+
+  useEffect(() => {
+    if (location?.length > 0) {
+      const locationString = location.map(e => e.name).join('+');
+      setLocationInput(locationString);
+    }
+  }, [location])
 
   useEffect(() => {
     if (firstRender) {
@@ -277,8 +286,10 @@ const FilterList: React.FC<IFilterListProps> = ({
 
     let updatedTags: string[];
 
-    if (tags.includes(item)) {
-      updatedTags = tags.filter((tag) => tag !== item);
+    const itemToCheck = item.trim().toLowerCase();
+
+    if (tags.map(tag => tag.trim().toLowerCase()).includes(itemToCheck)) {
+      updatedTags = tags.filter((tag) => tag.trim().toLowerCase() !== itemToCheck);
     } else {
       updatedTags = [...tags, item];
     }
@@ -438,6 +449,7 @@ const FilterList: React.FC<IFilterListProps> = ({
   };
 
   const handleRemoveFilters = () => {
+    setLocation([]);
     const { pathname } = router;
     const emptyParams = new URLSearchParams();
     emptyParams.set('page', '1');
@@ -449,7 +461,7 @@ const FilterList: React.FC<IFilterListProps> = ({
 
   return (
     <div
-      className={`lg:block md:w-full lg:max-w-[400px] h-fit bg-tertiary shadow-md rounded-[30px] px-2 md:px-5 md:py-8 pt-8 pb-2 lg:ml-7 mt-12 ${!mobileFilterIsOpen ? 'hidden' : ''
+      className={`lg:block md:w-full lg:max-w-[400px] h-fit bg-tertiary shadow-md rounded-[30px] px-2 md:px-5 md:py-8 pt-8 pb-2 lg:ml-7 mt-2 ${!mobileFilterIsOpen ? 'hidden' : ''
         }`}
     >
       {mobileFilterIsOpen && (
@@ -556,7 +568,7 @@ const FilterList: React.FC<IFilterListProps> = ({
                 );
               }}
               value={locationInput.indexOf('+') !== -1 ? locationInput.slice(locationInput.indexOf('+') + 1) : locationInput}
-              maxLength={30}
+              maxLength={50}
             />
             <div
               className={`dropdown-input z-30 w-full h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md ${openLocationDropdown ? 'md:flex' : 'hidden'
@@ -972,13 +984,13 @@ const FilterList: React.FC<IFilterListProps> = ({
                 <div className="flex flex-row items-center mb-2" key={name}>
                   <div
                     id={name}
-                    className={`w-5 h-5 border border-quaternary rounded-[3px] bg-tertiary ${query.tags?.toLowerCase().includes(name.toLowerCase())
+                    className={`w-5 h-5 border border-quaternary rounded-[3px] bg-tertiary ${query.tags?.toLowerCase().split(',').map((tag: string) => tag.trim()).includes(name.toLowerCase())
                       ? 'border-yellow-500'
                       : ''
                       }`}
                     onClick={() => toggleSelection(name.toLowerCase())}
                   >
-                    {query.tags?.toLowerCase().includes(name.toLowerCase()) && (
+                    {query.tags?.toLowerCase().split(',').map((tag: string) => tag.trim()).includes(name.toLowerCase()) && (
                       <CheckIcon
                         width="20"
                         height="20"

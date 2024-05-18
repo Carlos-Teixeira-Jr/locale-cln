@@ -246,6 +246,11 @@ const HomeFilter: React.FC<IHomeFilter> = ({
                       onClick={() => {
                         setAllLocations(!allLocations);
                         setLocation([]);
+                        if (inputValue !== 'todos') {
+                          setInputValue('todos')
+                        } else {
+                          setInputValue('')
+                        }
                       }}
                     >
                       <div
