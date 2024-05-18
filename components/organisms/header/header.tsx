@@ -59,7 +59,7 @@ const Header: React.FC<IHeader> = () => {
         >
           <LocaleLogo width={isMobile ? '100' : '136'} />
         </Link>
-        <div className="hidden. text-center md:text-start w-full md:flex md:flex-row md:items-center justify-between space-x-2 text-md font-bold text-quaternary text-sm">
+        <div className="text-center md:text-start w-full md:flex md:flex-row md:items-center justify-between space-x-2 text-md font-bold text-quaternary text-sm pr-5 md:mr-auto">
           {!isMobile && (
             <>
               <Link
@@ -124,9 +124,16 @@ const Header: React.FC<IHeader> = () => {
           ) : (
             <>
               <Link href="/login">
-                <button className="bg-primary justify-self-end cursor-pointer text-tertiary rounded-3xl font-normal md:py-1 md:text-xl w-20 md:w-[124px] mr-2 shadow-md transition-colors duration-300 hover:bg-red-600 hover:text-white">
-                  Entrar
-                </button>
+                {!loading ? (
+                  <button className="bg-primary justify-self-end cursor-pointer text-tertiary rounded-3xl font-normal md:py-1 md:text-xl w-20 md:w-[124px] mr-2 shadow-md transition-colors duration-300 hover:bg-red-600 hover:text-white" onClick={() => setLoading(true)}>
+                    Entrar
+                  </button>
+                ) : (
+                  <div className='w-20'>
+                    <Loading fill='#F75D5F' className='h-[2rem] w-[2rem] text-gray-200 animate-spin dark:text-gray-600 fill-tertiary' />
+                  </div>
+                )}
+
               </Link>
               <div className='flex items-center' ref={ref as any} onClick={() => setOpen(!open)}>
                 <button className="visible md:hidden cursor-pointer decoration-transparent">
