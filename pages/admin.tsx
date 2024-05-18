@@ -239,6 +239,13 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         permanent: false,
       },
     };
+  } else if (ownerProperties?.docs?.length === 0) {
+    return {
+      redirect: {
+        destination: '/adminUserData?page=1',
+        permanent: false,
+      },
+    };
   }
 
   return {

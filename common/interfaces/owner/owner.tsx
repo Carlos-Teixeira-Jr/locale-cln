@@ -35,7 +35,7 @@ export type Owner = {
   cellPhone: string;
   email: string;
   phone: string;
-  wppNumber: string;
+  wwpNumber: string;
   plan: string;
   creditCardInfo: ICreditCardInfo;
   customerId: string;
@@ -60,5 +60,6 @@ export interface IOwner {
   email: string;
   adCredits: number;
   plan: string
-  highlightCredits?: number
+  highlightCredits?: number;
+  wwpNumber: string
 }

@@ -67,9 +67,9 @@ const ChangePlanModal: React.FC<IChangePlanModal> = ({
         },
       }}
     >
-      <div className="p-5 md:p-10 flex md:flex-row flex-col-reverse">
+      <div className="py-5 md:p-10 flex md:flex-row flex-col-reverse">
         <div className='my-auto'>
-          <h1 className="text-xl md:text-3xl text-green-500 font-bold mb-5">
+          <h1 className="text-xl md:text-3xl text-green-500 font-bold mb-5 text-center">
             Você está trocando seu plano
           </h1>
           <p className="font-bold md:text-xl leading-6 text-quaternary ">

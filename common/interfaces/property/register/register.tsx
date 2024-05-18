@@ -54,7 +54,7 @@ export interface IRegisterPropertyData_Step3 {
   cpf: string;
   cellPhone: string;
   phone: string;
-  wppNumber: string;
+  wwpNumber: string;
   zipCode: string;
   city: string;
   uf: string;
@@ -83,7 +83,7 @@ export interface ICreateProperty_propertyData {
     name: string;
     phones: string[];
     picture: ProfilePicture;
-    wppNumber: string;
+    wwpNumber: string;
   };
   size: ISize;
   tags: string[];
