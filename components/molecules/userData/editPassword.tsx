@@ -104,7 +104,7 @@ const EditPassword = ({
 
   return (
     <div>
-      <div className="flex justify-between md:justify-start mb-5 md:mb-0">
+      <div className="flex justify-between. md:justify-start mb-5 md:mb-0">
         <div
           className={`w-10 h-10 border bg-tertiary rounded-[10px] drop-shadow-lg cursor-pointer shrink-0 ${editPasswordIsOn ? 'border-secondary' : 'border-quaternary'
             }`}

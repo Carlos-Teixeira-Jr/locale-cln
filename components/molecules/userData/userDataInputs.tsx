@@ -78,7 +78,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
     cellPhone: '(53) 99177-4545',
     picture: { id: '', src: '' },
     phone: ownerData && ownerData.owner ? ownerData.owner.phone : '',
-    wppNumber: ownerData?.owner?.wppNumber ? ownerData?.owner?.wppNumber : '',
+    wwpNumber: ownerData?.owner?.wwpNumber ? ownerData?.owner?.wwpNumber : '',
   });
 
   useEffect(() => {
@@ -253,7 +253,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
   const classes = {
     title: 'text-lg font-normal text-quaternary leading-7',
     input:
-      'border w-full p-5 h-12 border-quaternary rounded-[10px] bg-tertiary font-bold  text-sm md:text-base text-quaternary leading-7 drop-shadow-xl',
+      'border w-full md:w-[344px] p-5 h-12 border-quaternary rounded-[10px] bg-tertiary font-bold  text-sm md:text-base text-quaternary leading-7 drop-shadow-xl',
     error: 'text-red-500 text-xs',
   };
 
@@ -305,7 +305,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
           <div className="my-5 w-full" ref={inputs[0].ref}>
             <h3 className={classes.title}>{inputs[0].label}</h3>
             <input
-              className={classes.input}
+              className={`border w-full p-5 h-12 border-quaternary rounded-[10px] bg-tertiary font-bold  text-sm md:text-base text-quaternary leading-7 drop-shadow-xl`}
               onChange={inputs[0].onChange}
               value={inputs[0].value}
               required
@@ -417,7 +417,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
                     userDataErrors.whatsapp ? { border: '1px solid red' } : {}
                   }
                   className={classes.input}
-                  value={formData.wppNumber}
+                  value={formData.wwpNumber}
                   maxLength={200}
                   required={isSameNumber ? false : true}
                   onChange={(event) => {
@@ -439,7 +439,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
                       input.value = previousValue;
                       input.setSelectionRange(selectionStart, selectionEnd);
                     }
-                    setFormData({ ...formData, wppNumber: maskedValue });
+                    setFormData({ ...formData, wwpNumber: maskedValue });
                   }}
                 />
                 {userDataErrors.whatsapp && (

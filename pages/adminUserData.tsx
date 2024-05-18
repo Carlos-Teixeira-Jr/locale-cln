@@ -83,6 +83,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   messages
 }) => {
 
+  const plansRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const isMobile = useIsMobile();
   const userData = ownerData?.user;
@@ -135,7 +136,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       id: '1',
       src: ownerData?.user?.picture
     },
-    wppNumber: ''
+    wwpNumber: ownerData?.owner?.wwpNumber ? ownerData?.owner?.wwpNumber : ''
   });
 
   const [formDataErrors, setFormDataErrors] = useState({
@@ -222,6 +223,15 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     }
   }, [router.pathname]);
 
+  useEffect(() => {
+    if (planError !== '' && plansRef.current) {
+      plansRef.current.scrollIntoView({
+        behavior: 'auto',
+        block: 'center',
+      });
+    }
+  }, [planError]);
+
   const handleUpdateBtn = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const error = 'Este campo é obrigatório';
@@ -232,7 +242,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     const invalidPasswordLenght = 'A senha precisa ter pelo meno 6 caracteres';
     const emptyCreditCardError = 'Há algum dado do cartão de crédito faltando';
     const invalidCouponError = 'Cupom de desconto inválido.'
-    const samePlanError = 'O plano selecionado é o mesmo que você já contratou e você ainda possui créditos.'
+    const samePlanError = 'Você já contratou este plano e ainda possui créditos. Para mudar de plano, escolha um diferente ou desselecione este.'
 
     let newCreditCardError = '';
     let newCouponError = '';
@@ -313,6 +323,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       if (passwordFormData.passwordConfirmattion.length < 6)
         newPasswordErrors.passwordConfirmattion = invalidPasswordLenght;
     }
+    // To-do: descomentar verificação de erro do cartão na versão final;
     // if (
     //   selectedPlan !== '' &&
     //   selectedPlan !== ownerData?.owner?.plan
@@ -336,6 +347,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     setAddressErrors(newAddressErrors);
     setPasswordErrors(newPasswordErrors);
     setCouponError(newCouponError);
+    setPlanError(newPlanError);
 
     // Insere a mensagem de erro nos inputs vazios do form de credit card;
     Object.keys(creditCard).forEach((e) => {
@@ -378,7 +390,6 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
 
     if (newCreditCardError === '') {
       if (newPlanError !== '') {
-        showErrorToast(ErrorToastNames.SamePlanError)
         return
       }
       if (!hasErrors) {
@@ -400,7 +411,8 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
           userId: userData._id,
           email: formData.email ? formData.email : '',
           adCredits: ownerData.owner?.adCredits ? ownerData.owner?.adCredits : 0,
-          plan: selectedPlan
+          plan: selectedPlan,
+          wwpNumber: formData.wwpNumber ? formData.wwpNumber : ''
         };
 
         const editPasswordFormData = {
@@ -585,7 +597,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                 userDataInputRefs={userDataInputRefs}
                 picture={formData.picture ? formData.picture : { id: '1', src: defaultProfileImage }}
               />
-              <div className="mx-5 mt-10">
+              <div className="mx-5 mt-10 my-10 md:my-0">
                 <EditPassword
                   onPasswordUpdate={(passwordData: IPasswordData) =>
                     setPasswordFormData(passwordData)
@@ -607,7 +619,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
               </div>
 
               <h2 className={classes.h2}>Dados de Cobrança</h2>
-              <div className={classes.plans}>
+              <div ref={isMobile ? plansRef : null} className={`grid sm:grid-cols-1 grid-cols-1 md:grid-cols-3 xl:grid-cols-3 md:gap-6 ${planError !== "" ? 'border-2 rounded-xl md:pt-7 md:px-7 border-red-500 transition-opacity ease-in-out opacity-100' : ''}`}>
                 {reversedCards.map(
                   ({
                     _id,
@@ -622,6 +634,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                         selectedPlanCard={selectedPlan}
                         setSelectedPlanCard={(selectedCard: string) => {
                           setSelectedPlan(selectedCard);
+                          setPlanError('');
                         }}
                         isAdminPage={isAdminPage}
                         key={_id}
@@ -639,6 +652,10 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                   )
                 )}
               </div>
+
+              {planError !== "" && (
+                <span ref={isMobile ? plansRef : null} className='text-sm w-[90%] text-red-500 font-normal text-center px-2 md:px-auto'>{planError}</span>
+              )}
 
               <div className="flex mt-1 md:mt-1">
                 <UserAddress

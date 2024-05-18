@@ -64,11 +64,11 @@ const AdminHeader: React.FC<IAdminHeader> = ({ isOwnerProp, ownerData, isPlus })
                 alt={'User profile picture'}
                 width={50}
                 height={50}
-                className="border border-primary rounded-full w-12 h-12 object-cover"
+                className="border border-primary rounded-full w-8 h-8 md:w-10 md:h-10 object-cover"
               />
             ) : (
               <UserIcon
-                className="border border-secondary rounded-full w-12 h-12 p-1 bg-white hover:bg-black hover:opacity-25 transition duration-300 ease-in-out"
+                className="border border-secondary rounded-full w-8 h-8 md:w-10 md:h-10 p-1 bg-white hover:bg-black hover:opacity-25 transition duration-300 ease-in-out"
                 fill="#F75D5F"
               />
             )}

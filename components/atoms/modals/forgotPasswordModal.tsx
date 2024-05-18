@@ -132,7 +132,7 @@ const ForgotPasswordModal: React.FC<IForgotPasswordModal> = ({
         />
 
         <button
-          className={`w-full md:w-fit h-[50px] flex justify-center gap-2 p-2.5 rounded-[50px] font-normal text-xl transition-colors duration-300 text-tertiary mx-auto mt-5 ${loading ? 'bg-red-300' : 'bg-primary hover:bg-red-600 hover:text-white'}`}
+          className={`w-full md:w-2/3 h-[50px] flex justify-center gap-2 p-2.5 rounded-[50px] font-normal text-xl transition-colors duration-300 text-tertiary mx-auto mt-5 ${loading ? 'bg-red-300' : 'bg-primary hover:bg-red-600 hover:text-white'}`}
           onClick={handleOnSubmit}
           disabled={loading}
         >

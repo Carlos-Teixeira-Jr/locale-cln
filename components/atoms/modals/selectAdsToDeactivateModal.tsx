@@ -30,7 +30,6 @@ const SelectAdsToDeactivateModal = ({
   const [unselectedCards, setUnselectedCards] = useState<string[]>([])
   const [credits, setCredits] = useState<number>(0);
   const [confirm, setConfirm] = useState(false)
-  console.log("🚀 ~ confirm:", confirm)
 
   useEffect(() => {
     if (selectedPlan) {
@@ -72,8 +71,6 @@ const SelectAdsToDeactivateModal = ({
   }
 
   useEffect(() => {
-    console.log("🚀 ~ useEffect ~ confirm:", confirm)
-
     if (confirm) setConfirmAdsToDeactivate(true);
   }, [confirm])
 

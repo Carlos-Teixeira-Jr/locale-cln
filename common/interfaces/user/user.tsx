@@ -18,7 +18,7 @@ export interface IUserDataComponent {
   cpf: string;
   cellPhone: string;
   phone: string;
-  wppNumber: string | undefined;
+  wwpNumber: string | undefined;
   picture: ProfilePicture;
 }
 

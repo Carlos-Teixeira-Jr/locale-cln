@@ -148,7 +148,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
       id: '',
       src: ''
     },
-    wppNumber: ''
+    wwpNumber: ''
   });
 
   const [userDataErrors, setUserDataErrors] = useState({
@@ -405,7 +405,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
             ? userDataForm.picture
             : { id: '1', src: defaultProfileImage },
           phone: userDataForm.phone,
-          wppNumber: userDataForm.wppNumber ? userDataForm.wppNumber : '',
+          wwpNumber: userDataForm.wwpNumber ? userDataForm.wwpNumber : '',
           // zipCode: addressData.zipCode,
           zipCode: '96215180',
           city: addressData.city,
@@ -449,7 +449,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
               : { id: '1', src: defaultProfileImage },
             name: userDataForm.username,
             phones: [`${userDataForm.cellPhone}`, userDataForm.phone],
-            wppNumber: userDataForm.wppNumber ? `55 ${userDataForm.wppNumber}` : ''
+            wwpNumber: userDataForm.wwpNumber ? `55 ${userDataForm.wwpNumber}` : ''
           },
           tags: storedData.tags,
           condominiumTags: storedData.condominiumTags,
