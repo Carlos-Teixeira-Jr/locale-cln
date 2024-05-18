@@ -93,7 +93,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
             <h1 className="font-extrabold text-xl md:text-3xl text-quaternary md:mb-5 md:mr-20. text-center">
               {userName! ? `Bem vindo ${userName ? userName : ownerData?.owner?.name}` : 'Bem vindo'}
             </h1>
-            {isOwner && ownerProperties?.docs && (
+            {ownerProperties?.docs && (
               <Pagination
                 totalPages={ownerProperties.totalPages}
                 setCurrentPage={setCurrentPage}

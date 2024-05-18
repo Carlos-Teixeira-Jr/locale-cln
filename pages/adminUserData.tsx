@@ -337,8 +337,6 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     setPasswordErrors(newPasswordErrors);
     setCouponError(newCouponError);
 
-    console.log("🚀 ~ Object.keys ~ creditCardErrors antes:", creditCardErrors)
-
     // Insere a mensagem de erro nos inputs vazios do form de credit card;
     Object.keys(creditCard).forEach((e) => {
       if (creditCardErrors[e] !== '') {
