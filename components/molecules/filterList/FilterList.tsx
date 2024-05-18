@@ -284,19 +284,14 @@ const FilterList: React.FC<IFilterListProps> = ({
         ? query.tags.split(',')
         : [];
 
-    console.log("🚀 ~ toggleSelection ~ tags:", tags)
-
-
     let updatedTags: string[];
 
     const itemToCheck = item.trim().toLowerCase();
 
     if (tags.map(tag => tag.trim().toLowerCase()).includes(itemToCheck)) {
       updatedTags = tags.filter((tag) => tag.trim().toLowerCase() !== itemToCheck);
-      console.log("🚀 ~ toggleSelection ~ updatedTags:", updatedTags)
     } else {
       updatedTags = [...tags, item];
-      console.log("🚀 ~ toggleSelection ~ updatedTags:", updatedTags)
     }
 
     const updatedQueryTags = updatedTags.join(',');
