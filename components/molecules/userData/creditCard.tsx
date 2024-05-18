@@ -191,7 +191,7 @@ const CreditCard = ({
       name: 'expiry',
       type: 'text',
       label: 'Validade',
-      value: creditCardFormData.expiry,
+      value: '0525',
     },
     {
       key: 'ccv',
@@ -199,7 +199,7 @@ const CreditCard = ({
       name: 'ccv',
       type: 'text',
       label: 'CCV',
-      value: creditCardFormData.ccv,
+      value: '776',
     },
     {
       key: 'cpfCnpj',

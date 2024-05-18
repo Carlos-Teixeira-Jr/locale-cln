@@ -117,10 +117,15 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
 
   // Dados do cartão de crédito usado nesse update;
   const [creditCard, setCreditCard] = useState<CreditCardForm>({
-    cardName: '',
-    cardNumber: '',
-    ccv: '',
-    expiry: '',
+    // cardName: '',
+    // cardNumber: '',
+    // ccv: '',
+    // expiry: '',
+    // cpfCnpj: '314.715.150-60'
+    cardName: 'Teste Locale',
+    cardNumber: '5343 5087 6915 0373',
+    ccv: '776',
+    expiry: '0525',
     cpfCnpj: '314.715.150-60'
   })
 
@@ -439,11 +444,17 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
 
         if (selectedPlanData?.name !== 'Free') {
           body.creditCard = {
-            cardName: creditCard.cardName,
-            cardNumber: creditCard.cardNumber,
-            expiry: creditCard.expiry,
-            ccv: creditCard.ccv,
-            cpfCnpj: creditCard.cpfCnpj
+            // cardName: creditCard.cardName,
+            // cardNumber: creditCard.cardNumber,
+            // expiry: creditCard.expiry,
+            // ccv: creditCard.ccv,
+            // cpfCnpj: creditCard.cpfCnpj
+            // cardName: '',
+            cardName: 'Teste Locale',
+            cardNumber: '5343 5087 6915 0373',
+            ccv: '776',
+            expiry: '0525',
+            cpfCnpj: '314.715.150-60'
           }
         }
 
