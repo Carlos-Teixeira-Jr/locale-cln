@@ -3,6 +3,7 @@ import { SessionProvider } from 'next-auth/react';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import Script from 'next/script';
 import { useEffect, useState } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
 import { checkAndClearLocalStorage } from '../common/utils/clearStoredData';
@@ -40,6 +41,19 @@ export default function App({
           <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
           <meta name="google-site-verification" content="9Det8YF5WkhISHSSBu7sSjtTFH58r04dttWNQrqcwU8" />
         </Head>
+        <Script
+          id="gtm-script"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+              new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+              j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+              'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+              })(window,document,'script','dataLayer','GTM-NGLK74MM');
+            `,
+          }}
+        />
         <ProgressProvider>
           <ToastWrapper autoCloseTime={5000} />
           <Component {...pageProps} />
