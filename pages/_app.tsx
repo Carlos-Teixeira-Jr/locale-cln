@@ -38,6 +38,7 @@ export default function App({
         <Head>
           <title>{modifyString(pathname)}</title>
           <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
+          <meta name="google-site-verification" content="9Det8YF5WkhISHSSBu7sSjtTFH58r04dttWNQrqcwU8" />
         </Head>
         <ProgressProvider>
           <ToastWrapper autoCloseTime={5000} />
