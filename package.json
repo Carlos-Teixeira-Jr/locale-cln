@@ -9,11 +9,12 @@
   },
   "scripts": {
     "dev": " cross-env NODE_OPTIONS='--inspect' next dev",
-    "build": "next build",
+    "build": "next build && npm run generate-sitemap",
     "start": "next start",
     "lint": "next lint",
     "prettier": "prettier --write .",
-    "prepare": "yarn husky install"
+    "prepare": "yarn husky install",
+    "generate-sitemap": "ts-node generate-sitemap.js"
   },
   "dependencies": {
     "@emotion/react": "^11.10.6",
@@ -45,6 +46,7 @@
     "eslint": "8.29.0",
     "eslint-config-next": "13.0.6",
     "framer-motion": "^10.4.0",
+    "fs": "^0.0.1-security",
     "google-map-react": "^2.2.0",
     "imask": "^6.4.3",
     "intl": "^1.2.5",
@@ -53,6 +55,7 @@
     "next": "13.5.2",
     "next-auth": "^4.22.3",
     "nookies": "^2.5.2",
+    "path": "^0.12.7",
     "postcss": "^8.4.21",
     "react": "18.2.0",
     "react-credit-cards": "^0.8.3",
