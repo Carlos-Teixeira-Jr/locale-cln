@@ -59,7 +59,7 @@ const Header: React.FC<IHeader> = () => {
         >
           <LocaleLogo width={isMobile ? '100' : '136'} />
         </Link>
-        <div className="text-center md:text-start w-full md:flex md:flex-row md:items-center justify-between space-x-2 text-md font-bold text-quaternary text-sm pr-5 md:mr-auto">
+        <div className="text-center md:text-start w-full md:flex md:flex-row md:items-center justify-between space-x-2 text-md font-bold text-quaternary text-sm md:pr-5 md:mr-auto">
           {!isMobile && (
             <>
               <Link
