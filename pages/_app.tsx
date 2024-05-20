@@ -57,7 +57,7 @@ export default function App({
             `,
           }}
         />
-        <Script
+        {/* <Script
           id="gtm-script"
           strategy="afterInteractive"
           dangerouslySetInnerHTML={{
@@ -69,7 +69,27 @@ export default function App({
               })(window,document,'script','dataLayer','GTM-NGLK74MM');
             `,
           }}
+        /> */}
+        <Script
+          id="gtm-script"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                var w = window;
+                var d = document;
+                var s = 'script';
+                var l = 'dataLayer';
+                var i = 'GTM-NGLK74MM';
+                w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});
+                var f=d.getElementsByTagName(s)[0];
+                var j=d.createElement(s); j.async=true; j.src='https://www.googletagmanager.com/gtm.js?id='+i;
+                f.parentNode.insertBefore(j,f);
+              })();
+            `
+          }}
         />
+
         <ProgressProvider>
           <ToastWrapper autoCloseTime={5000} />
           <Component {...pageProps} />
