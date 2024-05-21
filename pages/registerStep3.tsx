@@ -61,8 +61,6 @@ type BodyReq = {
 
 // To-do: verificar se a página está exigindo os dados do cartão mesmo quando o usuário ainda tem créditos no plano;
 // To-do: Se não for feita uma nova compra não deve mostrar o valor no box do final da página;
-// To-do: não está salvando a foto do owner no imóvel;
-// To-do: refazer o payload da desativação de imoveis no admin para enviar um array de strings;
 
 const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerData, docs }) => {
 
@@ -80,6 +78,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
   const ownerPlan = plans?.find((plan) => plan._id === ownerData?.owner?.plan)
   const [selectedPlan, setSelectedPlan] = useState(chosenPlan !== '' ? chosenPlan : ownerPlan?._id);
   const [selectedPlanData, setSelectedPlanData] = useState(plans?.find((plan) => plan._id === selectedPlan));
+  console.log("🚀 ~ selectedPlanData:", selectedPlanData)
   const reversedCards = [...plans].reverse();
   const [isAdminPage, setIsAdminPage] = useState(false);
   const [isSameAddress, setIsSameAddress] = useState(false);
@@ -416,7 +415,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
             ? [coordinates?.lng, coordinates?.lat]
             : [-52.1872864, -32.1013804],
           plan: selectedPlan !== '' ? selectedPlan : freePlan,
-          isPlanFree: ownerPlan?.name === 'Free' && selectedPlanData?.name === 'Free' ? true : false,
+          isPlanFree: selectedPlanData?.name === 'Free' ? true : false,
           propertyAddress,
         };
 
@@ -469,7 +468,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
             propertyData,
             userData,
             plan: propertyDataStep3.plan,
-            isPlanFree: ownerPlan?.name === 'Free' && selectedPlanData?.name === 'Free' ? true : false,
+            isPlanFree: selectedPlanData?.name === 'Free' ? true : false,
             phone: userDataForm.phone,
             cellPhone: userDataForm.cellPhone !== '' ? `${userDataForm.cellPhone}` : '123',
             deactivateProperties: docsToDeactivate
