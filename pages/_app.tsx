@@ -35,10 +35,13 @@ export default function App({
 
   useEffect(() => {
     const handleRouteChange = (url: URL) => {
-      window.dataLayer.push({
-        event: 'pageview',
-        page: url
-      });
+      const urlString = url.toString();
+      if (urlString.includes('/property/')) {
+        window?.dataLayer?.push({
+          event: 'view_property',
+          page: url
+        });
+      }
     };
     router.events.on('routeChangeComplete', handleRouteChange);
     return () => {
@@ -89,6 +92,7 @@ export default function App({
             `,
           }}
         />
+
 
         <ProgressProvider>
           <ToastWrapper autoCloseTime={5000} />
