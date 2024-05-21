@@ -76,7 +76,7 @@ const Gallery: React.FC<IGallery> = ({
               className={`max-w-[653px] max-h-[520px] bg-[#434343] rounded-l-3xl md:rounded-l-3xl 
                 ${isModalOpen ? '' : 'z-30'} text-center`}
             >
-              <div className='bg-primary rounded-full w-fit h-fit absolute bottom-0 ml-5 p-2 flex gap-2cursor-pointer'>
+              <div className='bg-primary rounded-full w-fit h-fit absolute top-[36rem] ml-5 p-2 flex gap-2cursor-pointer'>
                 <CameraIcon />
                 <p className='text-sm text-tertiary font-semibold'>{`${propertyID?.images?.length} `}Fotos</p>
               </div>

@@ -87,7 +87,8 @@ const MainFeatures: React.FC<IMainFeatures> = ({
   const refPropertyType = useRef<HTMLDivElement>(null);
 
   const [isBuy, setIsBuy] = useState(
-    editarAdType && editarAdType === 'comprar' ? true : false
+    editarAdType && editarAdType === 'comprar' ||
+      editarAdType === 'vender' ? true : false
   );
 
   const [isRent, setIsRent] = useState(

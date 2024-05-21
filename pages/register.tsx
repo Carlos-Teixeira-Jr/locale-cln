@@ -268,7 +268,7 @@ const Register = () => {
 
             <MainFeatures
               propertyId={''}
-              editarAdType={'comprar'}
+              editarAdType={router.pathname === '/register' ? 'vender' : 'comprar'}
               editarSubType={'comercial'}
               editarPropertyType={'apartamento'}
               editarPropertySubtype={'cobertura'}

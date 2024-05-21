@@ -1,4 +1,4 @@
-export type announcementType = 'comprar' | 'alugar';
+export type announcementType = 'comprar' | 'vender' | 'alugar';
 export type announcementSubtype = 'comercial' | 'residencial';
 export type propType =
   | 'apartamento'
