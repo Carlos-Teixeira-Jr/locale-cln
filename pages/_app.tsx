@@ -59,18 +59,6 @@ export default function App({
           strategy="afterInteractive"
         />
         <Script
-          id="google-analytics"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-9N0HWE8K9Q');
-            `,
-          }}
-        />
-        <Script
           id="gtm-script"
           strategy="afterInteractive"
           dangerouslySetInnerHTML={{
@@ -87,6 +75,18 @@ export default function App({
                 f.parentNode.insertBefore(j,f);
               })();
             `
+          }}
+        />
+        <Script
+          id="google-analytics"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-9N0HWE8K9Q');
+            `,
           }}
         />
 
