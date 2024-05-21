@@ -33,6 +33,19 @@ export default function App({
     checkAndClearLocalStorage(pathname);
   }, [pathname]);
 
+  useEffect(() => {
+    const handleRouteChange = (url: URL) => {
+      window.dataLayer.push({
+        event: 'pageview',
+        page: url
+      });
+    };
+    router.events.on('routeChangeComplete', handleRouteChange);
+    return () => {
+      router.events.off('routeChangeComplete', handleRouteChange);
+    };
+  }, [router.events]);
+
   return (
     <>
       <SessionProvider session={session}>
