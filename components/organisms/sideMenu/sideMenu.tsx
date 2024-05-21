@@ -193,7 +193,7 @@ const SideMenu: React.FC<SideMenuProps> = ({
 
   return (
     <>
-      <div className="w-fit h-screen bg-tertiary px-2 mt-10 drop-shadow-xl left-0">
+      <div className="w-fit h-screen bg-tertiary px-2 mt-9 drop-shadow-xl left-0">
         {options.map((option: Options) => {
           const shouldRender =
             (isOwner && option.cases.includes('owner')) ||
