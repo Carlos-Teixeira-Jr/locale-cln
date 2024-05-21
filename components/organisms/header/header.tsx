@@ -101,18 +101,18 @@ const Header: React.FC<IHeader> = () => {
                       alt={'Admin image'}
                       width={50}
                       height={50}
-                      className="border border-primary rounded-full w-8 h-8 md:w-10 md:h-10 object-cover"
+                      className="border border-primary rounded-full w-8 h-8 md:w-8 md:h-8 object-cover"
                     />
                   ) : (
                     <UserIcon
-                      className="border border-secondary rounded-full w-8 h-8 md:w-10 md:h-10 p-1 bg-white"
+                      className="border border-secondary rounded-full w-8 h-8 md:w-8 md:h-8 p-1 bg-white"
                       fill="#F75D5F"
                     />
                   )
                 ) : null}
               </Link>
 
-              {loading && <Loading fill='#F75D5F' className='h-[2rem] w-[2rem] text-gray-200 animate-spin dark:text-gray-600 fill-tertiary' />}
+              {loading && <Loading fill='#F75D5F' className='h-[2rem] w-[2rem] p-1 text-gray-200 animate-spin dark:text-gray-600 fill-tertiary' />}
 
               <button
                 className="my-auto cursor-pointer mx-2 text-primary font-semibold text-md"
@@ -125,7 +125,7 @@ const Header: React.FC<IHeader> = () => {
             <>
               <Link href="/login">
                 {!loading ? (
-                  <button className="bg-primary justify-self-end cursor-pointer text-tertiary rounded-3xl font-normal md:py-1 md:text-xl w-20 md:w-[124px] mr-2 shadow-md transition-colors duration-300 hover:bg-red-600 hover:text-white" onClick={() => setLoading(true)}>
+                  <button className="bg-primary justify-self-end cursor-pointer text-tertiary rounded-3xl font-normal md:py-1 md:text-xl w-20 md:w-[124px] md:h-[2rem] mr-2 shadow-md transition-colors duration-300 hover:bg-red-600 hover:text-white" onClick={() => setLoading(true)}>
                     Entrar
                   </button>
                 ) : (

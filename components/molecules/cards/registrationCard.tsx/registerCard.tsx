@@ -133,7 +133,7 @@ const RegisterCard: React.FC = () => {
       </div>
       <div>
         <button
-          className={`flex items-center flex-row justify-around md:w-fit lg:w-52 h-14 text-tertiary rounded-full m-5 font-bold text-lg md:text-xl ${loading ?
+          className={`flex items-center flex-row justify-around md:w-fit lg:w-56 h-14 text-tertiary rounded-full m-5 font-bold text-lg md:text-xl ${loading ?
             'bg-red-300 transition-colors duration-300' :
             'bg-primary transition-colors duration-300 hover:bg-red-600 hover:text-white cursor-pointer'
             }`}
