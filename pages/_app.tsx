@@ -11,8 +11,8 @@ import { verifyCookiesPolicy } from '../common/utils/verifyCookiesPolicy';
 import CookiesModal from '../components/atoms/modals/cookiesModal';
 import ToastWrapper from '../components/atoms/toast/toastWrapper';
 import { ProgressProvider } from '../context/registerProgress';
-import modifyString from '../hooks/modifyStrig';
 import '../styles/globals.css';
+import UnderDevelopmentPage from './underDevelopment';
 
 export default function App({
   Component,
@@ -53,7 +53,8 @@ export default function App({
     <>
       <SessionProvider session={session}>
         <Head>
-          <title>{modifyString(pathname)}</title>
+          {/* <title>{modifyString(pathname)}</title> */}
+          <title>Locale Imóveis - Em Construção</title>
           <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
           <meta name="google-site-verification" content="9Det8YF5WkhISHSSBu7sSjtTFH58r04dttWNQrqcwU8" />
         </Head>
@@ -96,7 +97,8 @@ export default function App({
 
         <ProgressProvider>
           <ToastWrapper autoCloseTime={5000} />
-          <Component {...pageProps} />
+          {/* <Component {...pageProps} /> */}
+          <UnderDevelopmentPage />
         </ProgressProvider>
       </SessionProvider>
 
