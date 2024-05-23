@@ -107,7 +107,7 @@ const RegisterCard: React.FC = () => {
     <div className="md:w-fit md:h-fit md:rounded-[30px] bg-tertiary drop-shadow-xl grid grid-flow-rows justify-items-center">
       <div className="md:mt-2">
         <Image
-          src={'/images/logo-marker.png'}
+          src={'/images/Logo_Locale_HD.png'}
           alt={'Locale imóveis logomarca'}
           width={200}
           height={90}

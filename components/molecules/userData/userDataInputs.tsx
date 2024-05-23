@@ -77,7 +77,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
     // cellPhone: ownerData && ownerData.user ? ownerData.user.phone : '',
     cellPhone: '(53) 99177-4545',
     picture: { id: '', src: '' },
-    phone: ownerData && ownerData.owner ? ownerData.owner.phone : '',
+    phone: ownerData && ownerData?.user ? ownerData?.user?.phone : '',
     wwpNumber: ownerData?.owner?.wwpNumber ? ownerData?.owner?.wwpNumber : '',
   });
 

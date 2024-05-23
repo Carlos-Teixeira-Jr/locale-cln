@@ -51,10 +51,10 @@ const Coupons = ({
   }, [useCoupon])
 
   return (
-    <div className={`flex flex-col md:mt-5 md:mb-10`}>
-      <div className={`flex  ${isAdminPage ? '' : 'justify-start md:justify-center px-5 my-5 md:my-0'}`}>
+    <div className={`flex flex-col md:mt-3 md:mb-10`}>
+      <div className={`flex  ${isAdminPage ? '' : 'justify-start md:justify-center px-5 my-5 md:my-0 md:mt-10'}`}>
         <div
-          className={`w-10 h-10 border bg-tertiary rounded-[10px] drop-shadow-lg cursor-pointer my-auto shrink-0 ${useCoupon ? 'border-secondary' : 'border-quaternary'
+          className={`w-10 h-10 border z-0 bg-tertiary rounded-[10px] drop-shadow-lg cursor-pointer my-auto shrink-0 ${useCoupon ? 'border-secondary' : 'border-quaternary'
             }`}
           onClick={() => {
             setUseCoupon(!useCoupon);

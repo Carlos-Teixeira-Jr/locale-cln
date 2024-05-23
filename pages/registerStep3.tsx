@@ -447,7 +447,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
               ? userDataForm.picture
               : { id: '1', src: defaultProfileImage },
             name: userDataForm.username,
-            phones: [`${userDataForm.cellPhone}`, userDataForm.phone],
+            phone: userDataForm.phone,
+            cellPhone: userDataForm.cellPhone,
             wwpNumber: userDataForm.wwpNumber ? `55 ${userDataForm.wwpNumber}` : ''
           },
           tags: storedData.tags,

@@ -28,6 +28,7 @@ import ArrowDownIcon from '../components/atoms/icons/arrowDownIcon';
 import Loading from '../components/atoms/loading';
 import UserAddress from '../components/molecules/address/userAdress';
 import { PlansCardsHidden } from '../components/molecules/cards';
+import ChangePlanCheckbox from '../components/molecules/changePlanCheckBox/changePlanCheckBox';
 import Coupons from '../components/molecules/coupons/coupons';
 import CreditCard, {
   CreditCardForm,
@@ -70,7 +71,8 @@ type EditUserBody = {
     passwordConfirmattion: string
   },
   creditCard?: CreditCardType;
-  coupon?: string
+  coupon?: string;
+  isChangePlan: boolean
 }
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
@@ -105,6 +107,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const [useCoupon, setUseCoupon] = useState(false);
   const [coupon, setCoupon] = useState('');
   const hasProperties = properties?.docs?.length > 0 ? true : false;
+  const [isChangePlan, setIsChangePlan] = useState(false);
 
   // Mostrar os dados do cartão na tela;
   const creditCardInfo = ownerData?.owner?.paymentData?.creditCardInfo
@@ -342,6 +345,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       selectedPlan !== '' &&
       selectedPlan !== null &&
       selectedPlan === ownerData?.owner?.plan &&
+      isChangePlan &&
       !useCoupon
     ) {
       newPlanError = samePlanError;
@@ -405,6 +409,8 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
           email: formData.email,
           // cpf: formData.cpf,
           cpf: '314.715.150-60',
+          phone: formData.phone,
+          cellPhone: formData.cellPhone
         };
 
         const ownerFormData: IOwner = {
@@ -434,11 +440,13 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
             user: userFormData,
             owner: ownerFormData,
             password: editPasswordFormData,
+            isChangePlan
           };
         } else {
           body = {
             user: userFormData,
             owner: ownerFormData,
+            isChangePlan
           };
         }
 
@@ -571,7 +579,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       'flex flex-row items-center justify-between max-w-[1232px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 text-lg text-quaternary rounded-xl font-bold transition bg-opacity-90 hover:bg-gray-300',
     plans:
       'grid sm:grid-cols-1 grid-cols-1 md:grid-cols-3 xl:grid-cols-3 md:gap-6',
-    h2: 'md:text-2xl text-lg leading-10 text-quaternary font-bold mb-5 lg:mb-10 mx-5',
+    h2: 'md:text-2xl text-lg leading-10 text-quaternary font-bold mb-5 lg:mb-5 mx-5',
     userData: 'my-5 lg:mx-10 md:mx-2 max-w-[1232px]',
     content: 'flex flex-col mt-16 xl:ml-80 max-w-[1232px] justify-center md:mx-5',
   };
@@ -629,44 +637,52 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
 
               </div>
 
-              <h2 className={classes.h2}>Dados de Cobrança</h2>
-              <div ref={isMobile ? plansRef : null} className={`grid sm:grid-cols-1 grid-cols-1 md:grid-cols-3 xl:grid-cols-3 md:gap-6 ${planError !== "" ? 'border-2 rounded-xl md:pt-7 md:px-7 border-red-500 transition-opacity ease-in-out opacity-100' : ''}`}>
-                {reversedCards.map(
-                  ({
-                    _id,
-                    name,
-                    price,
-                    highlightAd,
-                    commonAd,
-                    smartAd,
-                  }: IPlan) => (
-                    <>
-                      <PlansCardsHidden
-                        selectedPlanCard={selectedPlan}
-                        setSelectedPlanCard={(selectedCard: string) => {
-                          setSelectedPlan(selectedCard);
-                          setPlanError('');
-                        }}
-                        isAdminPage={isAdminPage}
-                        key={_id}
-                        name={name}
-                        price={price}
-                        commonAd={commonAd}
-                        highlightAd={highlightAd}
-                        smartAd={smartAd}
-                        id={_id}
-                        isEdit={isEdit}
-                        userPlan={ownerData?.owner ? ownerData?.owner?.plan : ''}
-                        plans={[]}
-                      />
-                    </>
-                  )
-                )}
+              <div>
+                <ChangePlanCheckbox onChangePlanClick={(isChecked: boolean) => setIsChangePlan(isChecked)} />
               </div>
+              {isChangePlan && (
+                <>
+                  <div ref={isMobile ? plansRef : null} className={`grid sm:grid-cols-1 grid-cols-1 md:grid-cols-3 xl:grid-cols-3 md:gap-6 ${planError !== "" ? 'border-2 rounded-xl md:pt-7 md:px-7 border-red-500 transition-opacity ease-in-out opacity-100' : ''}`}>
+                    {reversedCards.map(
+                      ({
+                        _id,
+                        name,
+                        price,
+                        highlightAd,
+                        commonAd,
+                        smartAd,
+                      }: IPlan) => (
+                        <>
+                          <PlansCardsHidden
+                            selectedPlanCard={selectedPlan}
+                            setSelectedPlanCard={(selectedCard: string) => {
+                              setSelectedPlan(selectedCard);
+                              setPlanError('');
+                            }}
+                            isAdminPage={isAdminPage}
+                            key={_id}
+                            name={name}
+                            price={price}
+                            commonAd={commonAd}
+                            highlightAd={highlightAd}
+                            smartAd={smartAd}
+                            id={_id}
+                            isEdit={isEdit}
+                            userPlan={ownerData?.owner ? ownerData?.owner?.plan : ''}
+                            plans={[]}
+                          />
+                        </>
+                      )
+                    )}
+                  </div>
 
-              {planError !== "" && (
-                <span ref={isMobile ? plansRef : null} className='text-sm w-[90%] text-red-500 font-normal text-center px-2 md:px-auto'>{planError}</span>
+                  {planError !== "" && (
+                    <span ref={isMobile ? plansRef : null} className='text-sm w-[90%] text-red-500 font-normal text-center px-2 md:px-auto'>{planError}</span>
+                  )}
+                </>
               )}
+
+              <h2 className={classes.h2}>Dados de Cobrança</h2>
 
               <div className="flex mt-1 md:mt-1">
                 <UserAddress
