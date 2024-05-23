@@ -8,7 +8,8 @@ export type User = {
   email: string;
   address: IAddress;
   picture: string;
-  phone: string
+  phone: string;
+  cellPhone: string
 };
 
 export interface IUserDataComponent {
@@ -33,6 +34,8 @@ export interface IUser {
   cpf: string;
   address: IAddress;
   picture?: string;
+  phone: string;
+  cellPhone: string
 }
 
 export type IUserDataComponentErrors = {
