@@ -182,7 +182,7 @@ const VerifyEmailModal: React.FC<IVerifyEmailModal> = ({
           </div>
 
           <Image
-            src={'/images/logo-marker.png'}
+            src={'/images/Logo_Locale_HD.png'}
             alt={'Locale imóveis logomarca'}
             width={300}
             height={150}

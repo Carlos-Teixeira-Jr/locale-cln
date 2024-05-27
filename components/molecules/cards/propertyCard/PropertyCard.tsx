@@ -2,6 +2,7 @@ import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useSwipeable } from 'react-swipeable';
 import { toast } from 'react-toastify';
 import { IAddress, IPrices } from '../../../../common/interfaces/property/propertyData';
 import { monetaryFormat } from '../../../../common/utils/masks/monetaryFormat';
@@ -96,6 +97,12 @@ const PropertyCard: React.FC<IPropertyCard> = ({
     };
   }, [id, prices, description, bedrooms, bathrooms, parking_spaces, location]);
 
+  const swipeHandlers = useSwipeable({
+    onSwipedLeft: () => nextImage(),
+    onSwipedRight: () => prevImage(),
+    trackMouse: true,
+  });
+
   const handleFavouriteIcon = async () => {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
     try {
@@ -131,7 +138,7 @@ const PropertyCard: React.FC<IPropertyCard> = ({
     >
       <div className='w-full h-full. bg-tertiary rounded-[30px]'>
         <Link href={`/property/${id}`}>
-          <div className="group relative h-[200px]">
+          <div className="group relative h-[200px]" {...swipeHandlers}>
             <div className="flex flex-row w-full overflow-hidden scroll-smooth rounded-t-[30px] h-[200px]">
               <Image
                 src={memoizedCardImage}

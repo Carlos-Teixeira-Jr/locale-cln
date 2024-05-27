@@ -70,6 +70,7 @@
     "react-modal": "^3.16.1",
     "react-payment-card-component": "^0.2.1",
     "react-scroll": "^1.8.9",
+    "react-swipeable": "^7.0.1",
     "react-text-mask": "^5.5.0",
     "react-tippy": "^1.4.0",
     "react-toastify": "^9.1.3",

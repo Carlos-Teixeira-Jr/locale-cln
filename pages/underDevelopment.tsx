@@ -2,7 +2,7 @@ import Image from "next/image"
 import Link from "next/link"
 import FacebookIcon from "../components/atoms/icons/facebookIcon"
 import InstagramFilledIcon from "../components/atoms/icons/instagramFilledIcon"
-import XSocialMediaIcon from "../components/atoms/icons/xSocialMediaIcon"
+import XSocialMediaFilledIcon from "../components/atoms/icons/xSocialMediaFilledIcon"
 
 const UnderDevelopmentPage = () => {
   return (
@@ -28,7 +28,7 @@ const UnderDevelopmentPage = () => {
         </Link>
         <Link href={"https://twitter.com/locale_oficial"} legacyBehavior>
           <a target="_blank">
-            <XSocialMediaIcon fill="#F75D5F" className="w-12 h-12 transform hover:scale-110 transition-transform duration-300" />
+            <XSocialMediaFilledIcon fill="#F75D5F" className="w-12 h-12 transform hover:scale-110 transition-transform duration-300" />
           </a>
         </Link>
         <Link href={"https://instagram.com/locale.imoveis.oficial"} legacyBehavior>

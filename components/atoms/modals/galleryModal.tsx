@@ -46,7 +46,7 @@ const GalleryModal: React.FC<IGalleryModal> = ({
   };
 
   const nextImage = () => {
-    const isLastImage = currentIndex === property.images.length;
+    const isLastImage = currentIndex === property.images.length - 1;
     const newIndex = isLastImage ? 0 : currentIndex + 1;
     setCurrentIndex(newIndex);
   };
@@ -71,7 +71,7 @@ const GalleryModal: React.FC<IGalleryModal> = ({
         ) : (
           <NextImage
             src={property.images[currentIndex]}
-            alt=""
+            alt="property image"
             width={imageDimensions.width}
             height={imageDimensions.height}
             className="rounded-3xl md:mx-5 lg:mx-0 max-h-full object-contain px-2 md:px-0"

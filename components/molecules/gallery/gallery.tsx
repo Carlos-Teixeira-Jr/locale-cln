@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
+import { useSwipeable } from 'react-swipeable';
 import { IData } from '../../../common/interfaces/property/propertyData';
 import { useIsMobile } from '../../../hooks/useIsMobile';
 import CameraIcon from '../../atoms/icons/cameraIcon';
@@ -46,6 +47,18 @@ const Gallery: React.FC<IGallery> = ({
     document.documentElement.style.overflow = 'hidden'; // Desabilita o scroll na tag HTML
     document.body.style.overflow = 'hidden'; // Desabilita o scroll no corpo da página
   };
+
+  const handleTap = () => {
+    setSelectedImage(currentIndex);
+    setModalIsOpen(true);
+    desabilitarScroll();
+  };
+
+  const handlers = useSwipeable({
+    onSwipedLeft: nextImage,
+    onSwipedRight: prevImage,
+    onTap: handleTap,
+  });
 
   useEffect(() => {
     if (!modalIsOpen) {
@@ -240,7 +253,7 @@ const Gallery: React.FC<IGallery> = ({
       ) : (
         <>
           <Header />
-          <div className="group relative md:h-[200px]">
+          <div className="group relative md:h-[200px]"  {...handlers}>
             {/* Images */}
             <div className="flex flex-row w-full max-w-max overflow-hidden scroll-smooth h-[350px]">
               <Image
@@ -250,13 +263,7 @@ const Gallery: React.FC<IGallery> = ({
                 width={405}
                 height={350}
                 className=' object-cover'
-                onClick={() => {
-                  setSelectedImage(currentIndex);
-                  setModalIsOpen(true);
-                  document
-                    ?.getElementById('desabilitarScrollBtn')
-                    ?.addEventListener('click', desabilitarScroll);
-                }}
+                onClick={handleTap}
               />
             </div>
             {/* Index */}
