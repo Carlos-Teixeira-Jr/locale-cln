@@ -1,7 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import FacebookIcon from "../components/atoms/icons/facebookIcon"
-import InstragramIcon from "../components/atoms/icons/instagramIcon"
+import InstagramFilledIcon from "../components/atoms/icons/instagramFilledIcon"
 import XSocialMediaIcon from "../components/atoms/icons/xSocialMediaIcon"
 
 const UnderDevelopmentPage = () => {
@@ -33,7 +33,7 @@ const UnderDevelopmentPage = () => {
         </Link>
         <Link href={"https://instagram.com/locale.imoveis.oficial"} legacyBehavior>
           <a target="_blank">
-            <InstragramIcon fill="#F75D5F" className="w-10 h-10 mt-2 transform hover:scale-110 transition-transform duration-300" />
+            <InstagramFilledIcon fill="#F75D5F" width="3rem" height="3rem" className="transform hover:scale-110 transition-transform duration-300" />
           </a>
         </Link>
         {/* <Link href={"https://linkedin.com/"}></Link> */}
