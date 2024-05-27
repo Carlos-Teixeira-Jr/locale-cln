@@ -81,7 +81,8 @@ export interface ICreateProperty_propertyData {
   geolocation: IGeolocation;
   ownerInfo: {
     name: string;
-    phones: string[];
+    phone: string;
+    cellPhone: string
     picture: ProfilePicture;
     wwpNumber: string;
   };

@@ -235,7 +235,7 @@ const LoginCard: React.FC = () => {
     <div className={`lg:w-fit md:w-[60%] md:h-fit md:rounded-[30px] bg-tertiary drop-shadow-xl grid grid-flow-rows justify-items-center`}>
       <div className="md:m-2 w-[125px]">
         <Image
-          src={'/images/logo-marker.png'}
+          src={'/images/Logo_Locale_HD.png'}
           alt={'Locale imóveis logomarca'}
           width={230}
           height={110}

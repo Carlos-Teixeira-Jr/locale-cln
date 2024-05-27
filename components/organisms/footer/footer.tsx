@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import useDeviceSize from '../../../hooks/deviceSize';
 import EmailIcon from '../../atoms/icons/emailIcon';
 import InstragramIcon from '../../atoms/icons/instagramIcon';
-import TwitterIcon from '../../atoms/icons/twitterIcon';
+import XSocialMediaIcon from '../../atoms/icons/xSocialMediaIcon';
 
 const Footer = () => {
   const [width, height] = useDeviceSize();
@@ -120,20 +120,20 @@ const Footer = () => {
             <ul className="list-none mb-0">
               <li>
                 <Link
-                  href="https://www.instagram.com/locale_imoveis/"
+                  href="https://www.instagram.com/locale.imoveis.oficial/"
                   target="blank"
                   className="text-gray-800"
                 >
                   <InstragramIcon />
                 </Link>
               </li>
-              <li>
+              <li className='flex justify-center'>
                 <a
-                  href="https://twitter.com/locale_imoveis"
+                  href="https://x.com/locale_oficial"
                   target="blank"
-                  className="text-gray-800"
+                  className="text-gray-800 transition duration-300 ease-in-out transform hover:scale-125 hover:translate-y-0 hover:no-transform"
                 >
-                  <TwitterIcon />
+                  <XSocialMediaIcon width='26px' height='26px' />
                 </a>
               </li>
               <li>
