@@ -1,4 +1,5 @@
 import Document, { Head, Html, Main, NextScript } from 'next/document';
+import Analytics from '../components/atoms/analytics/analytics';
 
 class MyDocument extends Document {
   render() {
@@ -16,6 +17,7 @@ class MyDocument extends Document {
           </noscript>
           <Main />
           <NextScript />
+          <Analytics />
         </body>
       </Html>
     );
