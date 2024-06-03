@@ -10,7 +10,7 @@ import Loading from '../../atoms/loading';
 import { toggleSelection } from './toggleSelection';
 
 type LoadingState = {
-  [key: string]: boolean; // Index signature para acessar propriedades dinâmicas como boolean
+  [key: string]: boolean;
 };
 
 export interface ISearchShortcut {

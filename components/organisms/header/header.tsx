@@ -22,6 +22,33 @@ const Header: React.FC<IHeader> = () => {
   const [loading, setLoading] = useState(false);
   const isMobile = useIsMobile();
 
+  const headerOptions = [
+    {
+      id: 'blog',
+      title: 'Blog',
+      link: '/blog',
+      mobile: ['mobile', 'desktop']
+    },
+    {
+      id: 'buy',
+      title: 'Comprar',
+      link: '/search?adType=comprar',
+      mobile: ['desktop']
+    },
+    {
+      id: 'rent',
+      title: 'Alugar',
+      link: '/search?adType=alugar',
+      mobile: ['desktop']
+    },
+    {
+      id: 'announce',
+      title: 'Anunciar',
+      link: '/announcement',
+      mobile: ['mobile', 'desktop']
+    },
+  ];
+
   useEffect(() => {
     document.addEventListener('click', handleClick);
     return () => document.removeEventListener('click', handleClick);
@@ -50,8 +77,7 @@ const Header: React.FC<IHeader> = () => {
   return (
     <div>
       <div
-        // className="top-0 fixed z-40 w-[95%] justify-between grid grid-cols-2 md:grid md:grid-cols-3 bg-tertiary h-fit shadow-md mt-8 py-1.5 rounded-[50px] left-1/2 transform -translate-x-1/2"
-        className="top-0 fixed z-40 items-center w-[95%] justify-between grid grid-cols-3 bg-tertiary h-fit shadow-md mt-8 py-1.5 rounded-[50px] left-1/2 transform -translate-x-1/2"
+        className="top-0 fixed z-40 items-center w-[95%] flex justify-evenly bg-tertiary h-fit shadow-md mt-8 py-1.5 rounded-[50px] left-1/2 transform -translate-x-1/2"
       >
         <Link
           href="/"
@@ -59,37 +85,26 @@ const Header: React.FC<IHeader> = () => {
         >
           <LocaleLogo width={isMobile ? '100' : '136'} />
         </Link>
-        <div className="text-center md:text-start w-full md:flex md:flex-row md:items-center justify-between space-x-2 text-md font-bold text-quaternary text-sm md:pr-5 md:mr-auto">
-          {!isMobile && (
-            <>
-              <Link
-                className={`cursor-pointer ${isBuy
-                  ? 'border-b-4  border-red-400'
-                  : 'hover:border-b-4 border-red-400 hover:border-primary border-transparent transition duration-500'
-                  }`}
-                href="/search?adType=comprar"
-              >
-                Comprar
-              </Link>
-              <Link
-                className={`cursor-pointer ${isRent
-                  ? 'border-b-4  border-red-400'
-                  : 'hover:border-b-4 border-red-400 hover:border-primary border-transparent transition duration-500'
-                  }`}
-                href="/search?adType=alugar"
-              >
-                Alugar
-              </Link>
-            </>
-          )}
 
-          <Link
-            className="hover:border-b-4 border-red-400 hover:border-primary border-transparent transition duration-500"
-            href="/announcement"
-          >
-            Anunciar
-          </Link>
+        <div className="text-center flex md:text-start w-full md:flex md:flex-row md:items-center justify-center gap-10 md:gap-20 md:space-x-2 text-md font-bold text-quaternary text-sm md:pr-5 md:mr-auto">
+          {headerOptions
+            .filter(opt => !isMobile || opt.mobile.includes('mobile'))
+            .map((opt) => (
+              <Link
+                key={opt.id}
+                id={opt.id}
+                className={`cursor-pointer ${isBuy
+                  ? 'border-b-4 border-red-400'
+                  : 'hover:border-b-4 border-red-400 hover:border-primary border-transparent transition duration-500'
+                  }`}
+                href={opt.link}
+              >
+                {opt.title}
+              </Link>
+            ))
+          }
         </div>
+
         <div className="flex flex-row items-center justify-end">
           {session ? (
             <div className="flex gap-2">
