@@ -48,8 +48,8 @@ const PostContainer = ({
   }, []);
 
   return (
-    <section className="px-32 text-quaternary space-y-5">
-      <h1 className="text-4xl font-bold">{post.title}</h1>
+    <section className="md:px-32 p-5 text-quaternary space-y-5">
+      <h1 className="text-3xl md:text-4xl font-bold">{post.title}</h1>
       <h2 className="text-xl font-normal">{post.resume}</h2>
 
       <div className="flex">
@@ -61,8 +61,8 @@ const PostContainer = ({
 
       <Image src={post.img} alt={"Imagem da notícia"} width={1000} height={1000} className="w-full" />
 
-      <div className="flex">
-        <div className={`top-[15%] left-50 ${filterFixed ? 'fixed' : ''}`}>
+      <div className="flex lg:flex-row flex-col">
+        <div className={`lg:top-[15%] lg:left-50 mx-auto md:block ${filterFixed ? 'lg:fixed' : ''}`}>
           <HomeFilter
             isBuyProp={isBuy}
             isRentProp={isRent}
@@ -73,7 +73,7 @@ const PostContainer = ({
           />
         </div>
 
-        <div className="flex flex-col gap-5 w-1/2 ml-auto pl-5">
+        <div className="flex flex-col gap-5 lg:w-1/2 ml-auto pl-5">
           {post.post.map((e) => (
             <>
               {e.subImg !== '' && (
