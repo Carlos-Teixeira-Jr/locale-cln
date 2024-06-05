@@ -90,7 +90,7 @@ const BlogShortcuts = ({ onPageSelect }: IBlogShortcut) => {
   }
 
   return (
-    <section className="overflow-x-scroll overflow-y-hidden scroll-smooth md:overflow-hidden lg:overflow-hidden xl:overflow-hidden flex flex-row items-center justify-between max-w-full lg:w-[95%] h-[70px] bg-tertiary shadow-md mt-2 md:mt-8 lg:mt-28 mx-auto rounded-[30px] px-2 gap-5">
+    <section className="overflow-x-scroll overflow-y-hidden scroll-smooth md:overflow-hidden lg:overflow-hidden xl:overflow-hidden flex flex-row items-center justify-between max-w-full lg:w-[95%] h-[70px] bg-tertiary shadow-md mt-24 lg:mt-28 mx-auto rounded-[30px] px-2 gap-5">
       {getThemes().map((option) => (
         <div
           key={option.key}
@@ -117,7 +117,7 @@ const BlogShortcuts = ({ onPageSelect }: IBlogShortcut) => {
               <span>{option.icon}</span>
             )}
             <h3
-              className={`font-semibold text-quaternary text-sm leading-5 group-hover:text-tertiary mx-4 ${selectedPage[option.key]
+              className={`font-semibold text-quaternary text-sm leading-5 group-hover:text-tertiary mx-4 whitespace-nowrap ${selectedPage[option.key]
                 ? 'font-extrabold text-secondary'
                 : 'font-bold'
                 }`}

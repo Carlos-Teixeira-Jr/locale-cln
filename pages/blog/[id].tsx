@@ -47,10 +47,11 @@ const PostPage = ({
     <main>
       <Header />
 
-      <BlogShortcuts onPageSelect={(pageSelected: LoadingState) => setSelectedPage(pageSelected)} />
-
-      <div className="w-full px-10 py-2 text-quaternary">
-        <div className="flex w-1/2">
+      <div className="px-5">
+        <BlogShortcuts onPageSelect={(pageSelected: LoadingState) => setSelectedPage(pageSelected)} />
+      </div>
+      <div className="w-full px-5 md:px-10 py-2 text-quaternary">
+        <div className="flex md:flex-row flex-col w-full lg:w-1/2">
           <input
             className="border border-quaternary w-full rounded-md font-semibold text-lg h-10 my-2 pl-5 shadow-md"
             type="text"
@@ -98,7 +99,7 @@ const PostPage = ({
         propertyInfo={propertyInfo}
       />
 
-      <div className="mt-[20rem]">
+      <div className="md:mt-[20rem]">
         <Footer />
       </div>
 
@@ -109,12 +110,11 @@ const PostPage = ({
 export default PostPage;
 
 export async function getStaticPaths() {
-  // Get the ids of blog posts
   const postIds = Post.map(post => ({ params: { id: post.id.toString() } }));
 
   return {
     paths: postIds,
-    fallback: false // or true if you want to enable fallback behavior
+    fallback: false
   };
 }
 
