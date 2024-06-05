@@ -17,6 +17,9 @@ module.exports = {
         quaternary: '#6B7280',
         quinary: '#FFFFFF',
       },
+      backgroundImage: {
+        'blog-image': "url('/images/header-image.png')",
+      },
     },
     rccs: {
       size: '800px',
