@@ -46,7 +46,7 @@ const PropertyCard: React.FC<IPropertyCard> = ({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [expanded, setExpanded] = useState(false);
   const [isExpandable, setIsExpandable] = useState(false);
-  const price = prices[0].value;
+  const price = prices ? prices[0]?.value : '';
   const formattedPrice = monetaryFormat(price.toString());
 
   const descriptionRef = useRef<HTMLParagraphElement>(null);
@@ -82,7 +82,9 @@ const PropertyCard: React.FC<IPropertyCard> = ({
   };
 
   const memoizedCardImage = useMemo(() => {
-    return images[currentIndex];
+    if (images) {
+      return images[currentIndex];
+    }
   }, [images, currentIndex]);
 
   const memoizedCardInfos = useMemo(() => {
@@ -141,7 +143,7 @@ const PropertyCard: React.FC<IPropertyCard> = ({
           <div className="group relative h-[200px]" {...swipeHandlers}>
             <div className="flex flex-row w-full overflow-hidden scroll-smooth rounded-t-[30px] h-[200px]">
               <Image
-                src={memoizedCardImage}
+                src={memoizedCardImage ? memoizedCardImage : ''}
                 key={currentIndex}
                 alt={'Property Image'}
                 width={350}
@@ -183,7 +185,7 @@ const PropertyCard: React.FC<IPropertyCard> = ({
               </button>
             </div>
             <div className="flex top-4 justify-center mt-[-28px]">
-              {images.map((images: string, imagesIndex: number) => (
+              {images?.map((images: string, imagesIndex: number) => (
                 <div
                   key={imagesIndex}
                   onClick={() => goToImage(imagesIndex)}

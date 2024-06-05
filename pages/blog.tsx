@@ -1,27 +1,23 @@
-import { useState } from "react";
-import AdvertiseIcon from "../components/atoms/icons/advertiseIcon";
-import BlogIcon from "../components/atoms/icons/blogIcon";
-import BuyIcon from "../components/atoms/icons/buyIcon";
-import CloseIcon from "../components/atoms/icons/closeIcon";
-import DataIcon from "../components/atoms/icons/dataIcon";
-import RentIcon from "../components/atoms/icons/rentIcon";
-import Loading from "../components/atoms/loading";
-import { Header } from "../components/organisms";
-
-type LoadingState = {
-  [key: string]: boolean;
-};
+import { useEffect, useState } from "react";
+import Pagination from "../components/atoms/pagination/pagination";
+import { Footer, Header } from "../components/organisms";
+import BlogBanner from "../components/organisms/blog/blogBanner";
+import BlogSearchBox from "../components/organisms/blog/blogSearchBox";
+import BlogShortcuts, { LoadingState } from "../components/organisms/blog/blogShortcuts";
+import BlogUpdatesContainer from "../components/organisms/blog/blogUpdatesContainer";
+import PostCard from "../components/organisms/blog/postCards";
+import Posts from "../data/blog/blogPosts.json";
 
 const BlogPage = () => {
 
-  const [loading, setLoading] = useState<LoadingState>({
-    home: false,
-    data: false,
-    rent: false,
-    buy: false,
-    advertise: false
+  const [searchInput, setSearchInput] = useState('');
+  console.log("🚀 ~ BlogPage ~ searchInput:", searchInput)
+  const [isSearch, setIsSearch] = useState(false);
+  const posts = Posts.filter((post) => {
+    return post.tags.some(tag => tag.includes(searchInput));
   });
-
+  const totalPages = Posts.length / 6 >= 1 ? Posts.length / 6 : 1;
+  const currentPage = 1;
   const [selectedPage, setSelectedPage] = useState<LoadingState>({
     home: true,
     data: false,
@@ -30,96 +26,93 @@ const BlogPage = () => {
     advertise: false
   });
 
-  const getThemes = () => {
-    const iconClassName = "group-hover:fill-tertiary mx-2";
-    const iconFill = "#6B7280";
-    const loadingFill = "#6B7280";
-    const tagsShortcuts = [
-      {
-        label: 'Home',
-        key: 'home',
-        icon: !loading.blog ? <BlogIcon fill={iconFill} className={iconClassName} /> : <Loading fill={loadingFill} />,
-      },
-      {
-        label: 'Dados & Índices',
-        key: 'data',
-        icon: !loading.data ? <DataIcon fill={iconFill} className={iconClassName} /> : <Loading fill={loadingFill} />,
-      },
-      {
-        label: 'Para quem quer alugar',
-        key: 'rent',
-        icon: !loading.rent ? <RentIcon fill={iconFill} className={iconClassName} /> : <Loading fill={loadingFill} />,
-      },
-      {
-        label: 'Para quem quer comprar',
-        key: 'buy',
-        icon: !loading.buy ? <BuyIcon fill={iconFill} className={iconClassName} /> : <Loading fill={loadingFill} />,
-      },
-      {
-        label: 'Para quem quer anunciar',
-        key: 'advertise',
-        icon: !loading.advertise ? <AdvertiseIcon
-          fill={iconFill}
-          width="24"
-          height="48"
-          className={iconClassName}
-        /> : <Loading fill={loadingFill} />
-      },
-    ];
-    return tagsShortcuts;
-  };
+  useEffect(() => {
+    if (selectedPage.home) {
+      setSearchInput('');
+      setIsSearch(false);
+    }
+    if (selectedPage.data) {
+      setSearchInput('dados');
+      setIsSearch(true);
+    }
+    if (selectedPage.rent) {
+      setSearchInput('aluguel');
+    }
+    if (selectedPage.buy) {
+      setSearchInput('comprar');
+    }
+    if (selectedPage.advertise) {
+      setSearchInput('anunciar');
+    }
+  }, [selectedPage])
 
-  const handleClick = (key: string) => {
-    setSelectedPage(prevState => {
-      const newState = Object.keys(prevState).reduce((acc, currKey) => {
-        acc[currKey] = currKey === key;
-        return acc;
-      }, {} as LoadingState);
-      return newState;
-    });
-  }
+  useEffect(() => {
+    if (searchInput === '') {
+      setIsSearch(false)
+    }
+  }, [searchInput])
 
   return (
-    <main className="overflow-x-scroll overflow-y-hidden scroll-smooth md:overflow-hidden lg:overflow-hidden xl:overflow-hidden flex flex-row items-center justify-between max-w-full lg:w-[95%] h-[70px] bg-tertiary shadow-md mt-2 md:mt-8 lg:mt-28 mx-auto rounded-[30px] px-2 gap-5">
+    <main>
 
       <Header />
 
-      {getThemes().map((option) => (
-        <div
-          key={option.key}
-          onClick={() => handleClick(option.key)}
-          className={`group flex flex-row items-center w-fit h-[40px] border rounded-[30px] p-3 bg-transparent hover:bg-quaternary cursor-pointer ${selectedPage[option.key]
-            ? 'border-2 border-secondary'
-            : 'border-quaternary'
-            }`}
-        >
-          <div
-            className="flex flex-row items-center justify-between"
-          >
-            {selectedPage[option.key] ? (
-              <CloseIcon
-                width="40"
-                height="40"
-                fill="quaternary"
-                className={`group-hover:fill-tertiary p-1 ${selectedPage[option.key]
-                  ? 'fill-secondary'
-                  : 'fill-quaternary'
-                  }`}
-              />
-            ) : (
-              <span>{option.icon}</span>
-            )}
-            <h3
-              className={`font-semibold text-quaternary text-sm leading-5 group-hover:text-tertiary mx-4 ${selectedPage[option.key]
-                ? 'font-extrabold text-secondary'
-                : 'font-bold'
-                }`}
+      <BlogShortcuts onPageSelect={(pageSelected: LoadingState) => setSelectedPage(pageSelected)} />
+
+      {!isSearch ? (
+        <>
+          <BlogBanner
+            onChangeSearchInput={(text: string) => setSearchInput(text)}
+            isSearch={isSearch}
+            onSearchBtnClick={(isClicked: boolean) => setIsSearch(isClicked)}
+          />
+
+          <BlogUpdatesContainer posts={Posts} />
+        </>
+      ) : (
+        <div className="w-full px-10 py-5 text-quaternary space-y-5">
+          <h1 className="font-bold text-xl">Resultados encontrados para: {searchInput}</h1>
+          <div className="flex w-1/2">
+            <input
+              className="border border-quaternary w-full rounded-md font-semibold text-lg h-12 my-5 pl-5 shadow-md"
+              type="text"
+              value={searchInput}
+              placeholder="Digite aqui o que você precisa..."
+              maxLength={500}
+              onChange={(e) => setSearchInput(e.target.value)}
+            />
+            <button
+              className="bg-primary rounded-full text-tertiary text-xl font-semibold py-2 px-5 my-5 mx-2 h-12 hover:bg-red-600 ease-in-out duration-300 shadow-md"
+              onClick={() => {
+                setIsSearch(false);
+                setIsSearch(true);
+              }}
             >
-              {option.label}
-            </h3>
+              Procurar
+            </button>
           </div>
+
+          <hr className="h-[0.10rem] bg-quaternary w-full my-5" />
+
+          <div className="flex flex-wrap gap-10">
+            {posts.map((post) => (
+              <div key={post.id} className="w-[31%]">
+                <PostCard post={post} />
+              </div>
+            ))}
+          </div>
+
+          <Pagination
+            totalPages={totalPages}
+            currentPage={currentPage}
+          />
         </div>
-      ))}
+      )}
+
+      <BlogSearchBox />
+
+      <Footer />
+
     </main>
   )
 }
