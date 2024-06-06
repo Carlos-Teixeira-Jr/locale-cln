@@ -18,7 +18,6 @@ const PostContainer = ({
   post,
   locations,
   propertyTypes,
-  propertyInfo
 }: IPostContainer) => {
 
   const [isBuy, setIsBuy] = useState(true);
@@ -36,7 +35,7 @@ const PostContainer = ({
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = window.scrollY || document.documentElement.scrollTop;
-      if (scrollTop > 900) { // Adjust this value as needed
+      if (scrollTop > 900) {
         setFilterFixed(true);
       } else {
         setFilterFixed(false);
@@ -59,7 +58,7 @@ const PostContainer = ({
 
       <p>Por {post.author} em 04/06/24 às 20:59</p>
 
-      <Image src={post.img} alt={"Imagem da notícia"} width={1000} height={1000} className="w-full" />
+      <Image src={post.img} alt={"Imagem da notícia"} width={1000} height={1000} className="w-full lg:max-h-[27rem]" />
 
       <div className="flex lg:flex-row flex-col">
         <div className={`lg:top-[15%] lg:left-50 mx-auto md:block ${filterFixed ? 'lg:fixed' : ''}`}>
