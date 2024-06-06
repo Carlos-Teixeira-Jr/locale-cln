@@ -201,7 +201,7 @@ const PropertyCard: React.FC<IPropertyCard> = ({
             </div>
           </div>
           <div
-            className={`flex flex-col gap-2 mt-2 justify-between ${expanded ? 'h-fit' : 'md:h-28'
+            className={`flex flex-col gap-2 lg:gap-0 mt-2 justify-between ${expanded ? 'h-fit' : 'md:h-28'
               }`}
           >
             {favorited ? (
@@ -239,7 +239,7 @@ const PropertyCard: React.FC<IPropertyCard> = ({
                 WebkitLineClamp: expanded ? 'unset' : 2,
                 WebkitBoxOrient: 'vertical',
               }}
-              className="font-medium text-xs text-quaternary mt-4. max-w-[350px] px-4"
+              className="font-medium text-xs text-quaternary max-w-[350px] px-4"
             >
               {memoizedCardInfos.description}
             </p>

@@ -22,6 +22,8 @@ const GalleryModal: React.FC<IGalleryModal> = ({
   const [imageDimensions, setImageDimensions] = useState({ width: 0, height: 0 });
   const [isLoading, setIsLoading] = useState(true);
   const isMobile = useIsMobile();
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
   // Função para carregar a imagem e obter suas dimensões
   useEffect(() => {
@@ -51,11 +53,42 @@ const GalleryModal: React.FC<IGalleryModal> = ({
     setCurrentIndex(newIndex);
   };
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isSwipe = Math.abs(distance) > 50; // ajuste este valor conforme necessário
+
+    if (isSwipe) {
+      if (distance > 0) {
+        nextImage();
+      } else {
+        prevImage();
+      }
+    }
+
+    setTouchStart(null);
+    setTouchEnd(null);
+  };
+
   return (
-    <div className={`right-0 left-0 top-0 my-auto pb-12 bg-black/90 fixed z-[214748364] group inset-x-0 overflow-x-hidden overflow-y-hidden overflow-hidden transition-opacity duration-700 ${imageDimensions.height < 480 ?
-      'md:h-full' :
-      'h-full'
-      } ${!modalIsOpen ? 'opcaity-0 hidden' : 'opacity-100 visible'}`}>
+    <div
+      className={`right-0 left-0 top-0 my-auto pb-12 bg-black/90 fixed z-[214748364] group inset-x-0 overflow-x-hidden overflow-y-hidden overflow-hidden transition-opacity duration-700 ${imageDimensions.height < 480 ?
+        'md:h-full' :
+        'h-full'
+        } ${!modalIsOpen ? 'opcaity-0 hidden' : 'opacity-100 visible'}`
+      }
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
       <div>
         <AiOutlineClose
           className="hidden group-hover:block absolute top-[4%] md:top-[5%] -translate-x-0 -translate-y-[50%] right-2 text-2xl rounded-full p-2 bg-black/20 text-white cursor-pointer"
@@ -81,14 +114,14 @@ const GalleryModal: React.FC<IGalleryModal> = ({
       <div>
         <BsChevronCompactLeft
           onClick={prevImage}
-          className="hidden group-hover:block absolute top-[90%] md:top-[50%] -translate-x-0 -translate-y-[50%] left-5 text-2xl rounded-full p-2 bg-black/20 text-white cursor-pointer"
+          className="hidden group-hover:block absolute top-[50%] -translate-x-0 -translate-y-[50%] left-5 text-2xl rounded-full p-2 bg-black/20 text-white cursor-pointer"
           size={isMobile ? 40 : 50}
         />
       </div>
       <div>
         <BsChevronCompactRight
           onClick={nextImage}
-          className="hidden group-hover:block absolute top-[90%] md:top-[50%] -translate-x-0 -translate-y-[50%] right-5 text-2xl rounded-full p-2 bg-black/20 text-white cursor-pointer"
+          className="hidden group-hover:block absolute top-[50%] -translate-x-0 -translate-y-[50%] right-5 text-2xl rounded-full p-2 bg-black/20 text-white cursor-pointer"
           size={isMobile ? 40 : 50}
         />
       </div>
