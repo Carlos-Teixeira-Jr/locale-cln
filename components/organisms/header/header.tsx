@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import { useIsMobile } from '../../../hooks/useIsMobile';
-import DropdownMenu from '../../atoms/dropdowns/dropdownMenu';
+import DropdownAdmin from '../../atoms/dropdowns/dropdownAdmin';
 import MenuIcon from '../../atoms/icons/menuIcon';
 import UserIcon from '../../atoms/icons/userIcon';
 import Loading from '../../atoms/loading';
@@ -21,6 +21,7 @@ const Header: React.FC<IHeader> = () => {
   const ref = useRef();
   const [loading, setLoading] = useState(false);
   const isMobile = useIsMobile();
+  const isOwner = session?.user?.data ? true : false;
 
   const headerOptions = [
     {
@@ -108,7 +109,12 @@ const Header: React.FC<IHeader> = () => {
         <div className="flex flex-row items-center justify-end">
           {session ? (
             <div className="flex gap-2">
-              <Link href={'/admin?page=1'} onClick={() => setLoading(true)}>
+              <div
+                className='cursor-pointer'
+                onClick={() => {
+                  setOpen(true);
+                }}
+              >
                 {!loading ? (
                   session.user.data.picture ? (
                     <Image
@@ -125,7 +131,7 @@ const Header: React.FC<IHeader> = () => {
                     />
                   )
                 ) : null}
-              </Link>
+              </div>
 
               {loading && <Loading fill='#F75D5F' className='h-[2rem] w-[2rem] p-1 text-gray-200 animate-spin dark:text-gray-600 fill-tertiary' />}
 
@@ -138,9 +144,9 @@ const Header: React.FC<IHeader> = () => {
             </div>
           ) : (
             <>
-              <Link href="/login">
+              <div onClick={() => setOpen(true)}>
                 {!loading ? (
-                  <button className="bg-primary justify-self-end cursor-pointer text-tertiary rounded-3xl font-normal md:py-1 md:text-xl w-20 md:w-[124px] md:h-[2rem] mr-2 shadow-md transition-colors duration-300 hover:bg-red-600 hover:text-white" onClick={() => setLoading(true)}>
+                  <button className="bg-primary justify-self-end cursor-pointer text-tertiary rounded-3xl font-normal md:text-xl w-20 md:w-[124px] md:h-[2rem] mr-2 shadow-md transition-colors duration-300 hover:bg-red-600 hover:text-white" onClick={() => setLoading(true)}>
                     Entrar
                   </button>
                 ) : (
@@ -149,7 +155,7 @@ const Header: React.FC<IHeader> = () => {
                   </div>
                 )}
 
-              </Link>
+              </div>
               <div className='flex items-center' ref={ref as any} onClick={() => setOpen(!open)}>
                 <button className="visible md:hidden cursor-pointer decoration-transparent">
                   <MenuIcon />
@@ -159,7 +165,7 @@ const Header: React.FC<IHeader> = () => {
           )}
         </div>
       </div>
-      {open && <DropdownMenu />}
+      {open && <DropdownAdmin isOwnerProp={false} isPlus={false} />}
     </div>
   );
 };

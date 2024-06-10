@@ -1,5 +1,6 @@
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 interface IDropdownAdmin {
   isOwnerProp: boolean;
@@ -9,6 +10,7 @@ interface IDropdownAdmin {
 export default function DropdownAdmin({ isOwnerProp, isPlus }: IDropdownAdmin) {
 
   const isOwner = isOwnerProp;
+  const { pathname } = useRouter();
   const optionsClassname =
     'translate-x-[1px] w-[150px] h-fit hover:bg-quaternary hover:text-tertiary py-3 ';
 
@@ -65,7 +67,7 @@ export default function DropdownAdmin({ isOwnerProp, isPlus }: IDropdownAdmin) {
   ];
 
   return (
-    <div className="flex absolute z-50 top-[66px] right-1 max-w-[150px] max-w h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md">
+    <div className={`flex absolute z-50 max-w h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md ${pathname.includes('admin') ? 'top-[66px] right-1' : 'top-[4.9rem] right-8'}`}>
       <div className="flex flex-col text-center font-medium text-md text-quaternary leading-5">
 
         {option.map((option, idx) => {

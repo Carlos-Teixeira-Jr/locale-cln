@@ -17,7 +17,7 @@ const BlogSearchBox = () => {
         <h3 className="text-2xl font-semibold">Procurando um Imóvel?</h3>
         <p className="text-3xl font-bold">Já pesquisou na Locale Imóveis?</p>
 
-        <div className="flex justify-between mt-7">
+        <div className="flex justify-center md:justify-between mt-7">
           <div className="flex flex-col gap-5 text-quaternary text-lg font-semibold">
             <Link href={"/search?adType=aluguel"}>
               <button className="md:p-5 p-4 bg-tertiary shadow-lg w-full">Imóveis para alugar</button>
@@ -26,9 +26,13 @@ const BlogSearchBox = () => {
               <button className="md:p-5 whitespace-nowrap p-4 bg-tertiary shadow-lg">Imóveis para comprar</button>
             </Link>
           </div>
-          <div className="flex justify-center p-2 md:p-0 w-full">
-            <HouseIcon className='mx-auto' width={isMobile ? '100' : '150'} height={isMobile ? '100' : '150'} />
-          </div>
+
+          {!isMobile && (
+            <div className="flex justify-center p-2 md:p-0 w-full">
+              <HouseIcon className='mx-auto' width={isMobile ? '100' : '150'} height={isMobile ? '100' : '150'} />
+            </div>
+          )}
+
         </div>
       </div>
     </section>

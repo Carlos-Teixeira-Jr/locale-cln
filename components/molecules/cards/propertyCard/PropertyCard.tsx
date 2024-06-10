@@ -23,9 +23,12 @@ export interface IPropertyCard {
   bathrooms?: number;
   parking_spaces?: number;
   images: string[];
-  location?: IAddress;
+  location?: string;
   favorited?: boolean;
   highlighted: boolean;
+  adType: string,
+  propertyType: string,
+  address: IAddress
 }
 
 const PropertyCard: React.FC<IPropertyCard> = ({
@@ -39,6 +42,9 @@ const PropertyCard: React.FC<IPropertyCard> = ({
   location,
   favorited,
   highlighted,
+  adType,
+  propertyType,
+  address
 }) => {
 
   const { data: session } = useSession() as any;
@@ -48,7 +54,7 @@ const PropertyCard: React.FC<IPropertyCard> = ({
   const [isExpandable, setIsExpandable] = useState(false);
   const price = prices ? prices[0]?.value : '';
   const formattedPrice = monetaryFormat(price.toString());
-
+  const params = `${adType}+${propertyType}+${address.city}+${address.neighborhood}+${address.streetName}+id=${id}`
   const descriptionRef = useRef<HTMLParagraphElement>(null);
 
   const toggleExpanded = (e: React.MouseEvent) => {
@@ -96,8 +102,9 @@ const PropertyCard: React.FC<IPropertyCard> = ({
       bathrooms,
       parking_spaces,
       location,
+      address
     };
-  }, [id, prices, description, bedrooms, bathrooms, parking_spaces, location]);
+  }, [id, prices, description, bedrooms, bathrooms, parking_spaces, location, address]);
 
   const swipeHandlers = useSwipeable({
     onSwipedLeft: () => nextImage(),
@@ -139,7 +146,7 @@ const PropertyCard: React.FC<IPropertyCard> = ({
         } ${highlighted ? 'bg-gradient-to-tr from-secondary to-primary' : 'bg-tertiary'}`}
     >
       <div className='w-full h-full. bg-tertiary rounded-[30px]'>
-        <Link href={`/property/${id}`}>
+        <Link href={`/property/${params}`}>
           <div className="group relative h-[200px]" {...swipeHandlers}>
             <div className="flex flex-row w-full overflow-hidden scroll-smooth rounded-t-[30px] h-[200px]">
               <Image
@@ -253,7 +260,7 @@ const PropertyCard: React.FC<IPropertyCard> = ({
             )}
 
             <h3 className="font-bold text-xs text-quaternary px-4">
-              {`${memoizedCardInfos.location?.streetName}, ${memoizedCardInfos.location?.city} - ${memoizedCardInfos.location?.uf}`}
+              {`${memoizedCardInfos.address?.streetName}, ${memoizedCardInfos.address?.city} - ${memoizedCardInfos.address?.uf}`}
             </h3>
           </div>
           <div className={`flex flex-row items-end justify-around my-4`}>

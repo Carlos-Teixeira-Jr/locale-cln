@@ -57,8 +57,8 @@ const HomeFilter: React.FC<IHomeFilter> = ({
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [buyOrRentOptions, setBuyOrRentOptions] = useState({
-    isBuy: true,
-    isRent: false
+    isBuy: false,
+    isRent: true
   });
   const [propertyType, setPropertyType] = useState({
     propertyType: '',

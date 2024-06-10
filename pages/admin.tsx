@@ -70,8 +70,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
   }, [currentPage]);
 
   const classes = {
-    sideMenu: `${width < 1080 ? 'hidden' : 'fixed left-0 top-7 lg:flex xl:flex md:hidden'
-      } `,
+    sideMenu: `${width < 1080 ? 'hidden' : 'fixed left-0 top-7 lg:flex xl:flex md:hidden'}`,
   };
 
   return (
@@ -110,6 +109,8 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
                   isActive,
                   highlighted,
                   views,
+                  adType,
+                  propertyType,
                 }: IData) => (
                   <AdminPropertyCard
                     key={_id}
@@ -123,6 +124,9 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
                     )}
                     isActiveProp={isActive}
                     highlighted={highlighted}
+                    adType={adType}
+                    propertyType={propertyType}
+                    address={address}
                   />
                 )
               )}
@@ -176,7 +180,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         };
       }
     } else {
-      console.log('erro - find-owner-by-user:', ownerIdResponse);
+      ownerData = {};
     }
   } catch (error) {
     console.error(error);
@@ -233,6 +237,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   ]);
 
   if (ownerProperties?.docs?.length === 0 && notifications?.length > 0) {
+    console.log("🚀 ~ getServerSideProps ~ ownerProperties?.docs?.length === 0 && notifications?.length > 0:", ownerProperties?.docs?.length === 0 && notifications?.length > 0)
     return {
       redirect: {
         destination: '/adminFavProperties?page=1',
@@ -240,22 +245,24 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       },
     };
   } else if (ownerProperties?.docs?.length === 0) {
+    console.log("🚀 ~ getServerSideProps ~ ownerProperties?.docs?.length === 0:", ownerProperties?.docs?.length === 0)
     return {
       redirect: {
         destination: '/adminUserData?page=1',
         permanent: false,
       },
     };
+  } else if (ownerProperties?.docs?.length > 0) {
+    console.log("🚀 ~ getServerSideProps ~ ownerProperties?.docs?.length > 0:", ownerProperties?.docs?.length > 0)
+    return {
+      props: {
+        ownerProperties,
+        notifications,
+        messages,
+        ownerData,
+        plans
+      },
+    };
   }
-
-  return {
-    props: {
-      ownerProperties,
-      notifications,
-      messages,
-      ownerData,
-      plans
-    },
-  };
 }
 

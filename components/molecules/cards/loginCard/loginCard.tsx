@@ -44,6 +44,29 @@ const LoginCard: React.FC = () => {
     password: password,
   });
 
+  console.log("🚀 ~ emailVerificationData:", emailVerificationData)
+
+  // Atualiza emailVerificationData com o valor do campo de email
+  useEffect(() => {
+    const input = document.querySelector<HTMLInputElement>('input[type="email"]');
+    if (input) {
+      const handleAutocomplete = () => {
+        if (input.value !== email) {
+          setEmail(input.value);
+          setEmailVerificationData((prevData) => ({
+            ...prevData,
+            email: input.value,
+          }));
+        }
+      };
+      input.addEventListener('change', handleAutocomplete);
+      handleAutocomplete();
+      return () => {
+        input.removeEventListener('change', handleAutocomplete);
+      };
+    }
+  }, [email]);
+
   useEffect(() => {
     setLoading(false)
   }, [loading]);
@@ -193,7 +216,7 @@ const LoginCard: React.FC = () => {
                 }).then(({ ok }: any) => {
                   if (ok) {
                     toast.dismiss();
-                    router.push('/');
+                    router.push('/admin?page=1');
                   } else {
                     toast.dismiss();
                     showErrorToast(ErrorToastNames.UserNotFound);
@@ -246,13 +269,26 @@ const LoginCard: React.FC = () => {
         <label className="md:text-xl text-lg font-bold text-quaternary drop-shadow-md md:w-fit mt-auto mb-1">
           E-mail
         </label>
-        <input
+        {/* <input
           className={`w-full h-fit md:h-12 rounded-[10px] border-[1px] border-quaternary drop-shadow-xl bg-tertiary text-quaternary p-2 md:text-xl font-semibold ${emailError === '' ? '' : 'border-[2px] border-red-500'
             }`}
           type="email"
           value={email}
           maxLength={80}
           onChange={(e) => setEmail(e.target.value)}
+        /> */}
+        <input
+          type="email"
+          value={email}
+          className={`w-full h-fit md:h-12 rounded-[10px] border-[1px] border-quaternary drop-shadow-xl bg-tertiary text-quaternary p-2 md:text-xl font-semibold ${emailError === '' ? '' : 'border-[2px] border-red-500'
+            }`}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            setEmailVerificationData((prevData) => ({
+              ...prevData,
+              email: e.target.value,
+            }));
+          }}
         />
 
         {emailError !== '' && (
@@ -407,12 +443,6 @@ const LoginCard: React.FC = () => {
             onClick={() => signIn('google')}
           />
         </div>
-        {/* <div>
-          <SocialAuthButton 
-            provider={'facebook'} 
-            onClick={() => signIn('facebook')}
-          />
-        </div> */}
       </div>
 
       <a

@@ -133,7 +133,9 @@ const Home: NextPageWithLayout<IHome> = ({
                         images,
                         metadata,
                         highlighted,
-                      }: any) => (
+                        adType,
+                        propertyType,
+                      }: IData) => (
                         <PropertyCard
                           key={_id}
                           prices={prices}
@@ -145,6 +147,9 @@ const Home: NextPageWithLayout<IHome> = ({
                           parking_spaces={metadata[2].amount}
                           id={_id}
                           highlighted={highlighted}
+                          adType={adType}
+                          propertyType={propertyType}
+                          address={address}
                         />
                       )
                     )
@@ -157,18 +162,23 @@ const Home: NextPageWithLayout<IHome> = ({
                         images,
                         metadata,
                         highlighted,
+                        adType,
+                        propertyType,
                       }: IData) => (
                         <PropertyCard
                           key={_id}
                           prices={prices}
                           description={description}
                           images={images}
-                          location={address}
+                          location={address.streetName}
                           bedrooms={metadata[0].amount}
                           bathrooms={metadata[1].amount}
                           parking_spaces={metadata[2].amount}
                           id={_id}
                           highlighted={highlighted}
+                          adType={adType}
+                          propertyType={propertyType}
+                          address={address}
                         />
                       )
                     )}

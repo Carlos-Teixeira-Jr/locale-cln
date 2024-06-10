@@ -116,7 +116,7 @@ const ForgotPasswordModal: React.FC<IForgotPasswordModal> = ({
           className="mx-auto"
         />
 
-        <p className="font-bold text-xs text-quaternary">
+        <p className="font-bold text-sm text-quaternary">
           Informe o e-mail para enviarmos um link de redefinição de senha.
         </p>
 

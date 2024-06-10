@@ -79,11 +79,11 @@ export default function unverifiedEmailModal({
         <h1 className="text-xl font-bold mb-4 text-primary">
           Email não verificado
         </h1>
-        <p className="font-bold text-xs text-quaternary mb-4">
+        <p className="font-bold text-sm text-quaternary mb-4">
           O email que você tentou usar já está vinculado a uma conta, mas ainda
           não foi verificado.
         </p>
-        <p className="font-bold text-xs text-quaternary">
+        <p className="font-bold text-sm text-quaternary">
           Você será redirecionado para a tela de login para completar o processo
           de verificação de email.
         </p>

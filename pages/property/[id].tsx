@@ -10,6 +10,7 @@ import {
   announcementType,
   metadataType,
 } from '../../common/interfaces/property/propertyData';
+import { fetchJson, handleResult } from '../../common/utils/fetchJson';
 import DynamicMap from '../../components/atoms/maps/dinamycMap';
 import StaticMap from '../../components/atoms/maps/map';
 import VideoPlayer from '../../components/atoms/videoPlayer/videoPlayer';
@@ -105,10 +106,13 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
               .map((prop: IData) => (
                 <PropertyCard
                   key={prop._id}
+                  adType={prop.adType}
+                  propertyType={prop.propertyType}
+                  address={prop.address}
                   prices={prop.prices}
                   description={prop.description}
                   images={prop.images}
-                  location={prop.address}
+                  location={prop.address.streetName}
                   bedrooms={
                     prop.metadata.find((item) => item.type === 'bedroom')
                       ?.amount
@@ -154,10 +158,13 @@ export default PropertyPage;
 
 export async function getStaticPaths() {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
-  const propertiesResponse = await fetch(`${baseUrl}/property/filter/?page=1&limit=100`);
-  const properties = await propertiesResponse.json();
+
+  const promises = [fetchJson(`${baseUrl}/property/filter/?page=1&limit=100`)];
+  const result = await Promise.allSettled(promises);
+  const properties = handleResult(result[0])
+
   const paths = properties.docs.map((property: IData) => ({
-    params: { id: property._id },
+    params: { id: `${property.adType}+${property.propertyType}+${property.address.city}+${property.address.neighborhood}+${property.address.streetName}+id=${property._id}` }
   }));
 
   return {
@@ -172,10 +179,12 @@ export async function getStaticProps(context: any) {
   let isFavourite: boolean = false;
   let ownerData;
   let ownerId;
+  const params = context.params?.id as string;
+  const id = params.split('id=')[1];
 
   try {
     const propertyResponse = await fetch(
-      `${baseUrl}/property/${context.params.id}?isEdit=false`
+      `${baseUrl}/property/${id}?isEdit=false`
     );
 
     if (propertyResponse.ok) {
