@@ -61,7 +61,7 @@ const PostContainer = ({
       <Image src={post.img} alt={"Imagem da notícia"} width={1000} height={1000} className="w-full lg:max-h-[27rem]" />
 
       <div className="flex lg:flex-row flex-col">
-        <div className={`lg:top-[15%] lg:left-50 mx-auto md:block ${filterFixed ? 'lg:fixed' : ''}`}>
+        <div className={`lg:top-[5rem] lg:left-50 mx-auto md:block ${filterFixed ? 'lg:fixed' : ''}`}>
           <HomeFilter
             isBuyProp={isBuy}
             isRentProp={isRent}
@@ -72,7 +72,7 @@ const PostContainer = ({
           />
         </div>
 
-        <div className="flex flex-col gap-5 lg:w-1/2 ml-auto pl-5">
+        <div className="flex flex-col gap-5 lg:w-[47%] ml-auto pl-5">
           {post.post.map((e) => (
             <>
               {e.subImg !== '' && (

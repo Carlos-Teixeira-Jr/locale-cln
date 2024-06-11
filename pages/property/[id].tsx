@@ -71,11 +71,12 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
     }`;
 
   return (
-    <>
+    <main className='flex flex-col min-h-screen'>
       <div className={classes.content}>
         <div className={galeryModalCSS}>
           <Gallery
             propertyID={property}
+            ownerData={ownerData}
             isModalOpen={isModalOpen}
             onGalleryModalOpen={(isOpen: boolean) => setIsModalOpen(isOpen)}
           />
@@ -156,7 +157,7 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
       </div>
 
       <Footer />
-    </>
+    </main>
   );
 };
 
@@ -274,7 +275,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 }
 
 const classes = {
-  content: 'flex flex-col max-w-5xl items-center mx-auto lg:pt-10 pt-[90px]',
+  content: 'flex flex-col flex-grow max-w-5xl items-center mx-auto lg:pt-10 pt-[90px]',
   relatedProperties:
     'flex flex-col md:flex-row gap-5 justify-center m-5 lg:my-5 lg:mx-0',
   mapContainer: 'w-full md:h-fit mx-auto mb-20 drop-shadow-xl',

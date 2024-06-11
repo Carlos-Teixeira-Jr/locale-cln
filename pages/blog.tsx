@@ -52,67 +52,70 @@ const BlogPage = () => {
   }, [searchInput])
 
   return (
-    <main>
+    <main className="min-h-screen flex flex-col">
 
-      <Header />
+      <Header userIsOwner={false} />
 
-      <div className="px-5">
-        <BlogShortcuts onPageSelect={(pageSelected: LoadingState) => setSelectedPage(pageSelected)} />
-      </div>
-
-      {!isSearch ? (
-        <>
-          <BlogBanner
-            onChangeSearchInput={(text: string) => setSearchInput(text)}
-            isSearch={isSearch}
-            onSearchBtnClick={(isClicked: boolean) => setIsSearch(isClicked)}
-          />
-
-          <BlogUpdatesContainer posts={Posts} />
-        </>
-      ) : (
-        <div className="w-full px-5 md:px-10 py-5 text-quaternary space-y-5">
-          <h1 className="font-bold text-xl">Resultados encontrados para: {searchInput}</h1>
-          <div className="flex md:flex-row flex-col w-full lg:w-1/2">
-            <input
-              className="border border-quaternary w-full rounded-md font-semibold text-lg h-12 my-2 lg:my-5 pl-5 shadow-md"
-              type="text"
-              value={searchInput}
-              placeholder="Digite aqui o que você precisa..."
-              maxLength={500}
-              onChange={(e) => setSearchInput(e.target.value)}
-            />
-            <button
-              className="bg-primary rounded-full text-tertiary text-xl font-semibold py-2 px-5 my-2 lg:my-5 mx-2 h-12 hover:bg-red-600 ease-in-out duration-300 shadow-md"
-              onClick={() => {
-                setIsSearch(false);
-                setIsSearch(true);
-              }}
-            >
-              Procurar
-            </button>
-          </div>
-
-          <hr className="h-[0.10rem] bg-quaternary w-full my-5" />
-
-          <div className="flex md:flex-row flex-col flex-wrap gap-10 md:gap-5 lg:gap-10">
-            {posts.map((post) => (
-              <div key={post.id} className="md:w-[31%]">
-                <PostCard post={post} />
-              </div>
-            ))}
-          </div>
-
-          {posts.length > 0 && (
-            <Pagination
-              totalPages={totalPages}
-              currentPage={currentPage}
-            />
-          )}
+      <div className="max-w-7xl mx-auto flex flex-col flex-grow">
+        <div className="px-5">
+          <BlogShortcuts onPageSelect={(pageSelected: LoadingState) => setSelectedPage(pageSelected)} />
         </div>
-      )}
 
-      <BlogSearchBox />
+        {!isSearch ? (
+          <div className="flex flex-col">
+            <BlogBanner
+              onChangeSearchInput={(text: string) => setSearchInput(text)}
+              isSearch={isSearch}
+              onSearchBtnClick={(isClicked: boolean) => setIsSearch(isClicked)}
+            />
+
+            <BlogUpdatesContainer posts={Posts} />
+          </div>
+        ) : (
+          <div className="flex flex-col w-full px-5 md:px-10 py-5 text-quaternary space-y-5">
+            <h1 className="font-bold text-xl">Resultados encontrados para: {searchInput}</h1>
+            <div className="flex md:flex-row flex-col w-full lg:w-1/2">
+              <input
+                className="border border-quaternary w-full rounded-md font-semibold text-lg h-12 my-2 lg:my-5 pl-5 shadow-md"
+                type="text"
+                value={searchInput}
+                placeholder="Digite aqui o que você precisa..."
+                maxLength={500}
+                onChange={(e) => setSearchInput(e.target.value)}
+              />
+              <button
+                className="bg-primary rounded-full text-tertiary text-xl font-semibold py-2 px-5 my-2 lg:my-5 mx-2 h-12 hover:bg-red-600 ease-in-out duration-300 shadow-md"
+                onClick={() => {
+                  setIsSearch(false);
+                  setIsSearch(true);
+                }}
+              >
+                Procurar
+              </button>
+            </div>
+
+            <hr className="h-[0.10rem] bg-quaternary w-full my-5" />
+
+            <div className="flex md:flex-row flex-col flex-wrap gap-10 md:gap-5 lg:gap-10">
+              {posts.map((post) => (
+                <div key={post.id} className="md:w-[31%]">
+                  <PostCard post={post} />
+                </div>
+              ))}
+            </div>
+
+            {posts.length > 0 && (
+              <Pagination
+                totalPages={totalPages}
+                currentPage={currentPage}
+              />
+            )}
+          </div>
+        )}
+
+        <BlogSearchBox />
+
+      </div>
 
       <Footer />
 

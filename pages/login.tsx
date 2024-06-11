@@ -12,9 +12,9 @@ const LoginPage: NextPageWithLayout = () => {
 
   return (
     <>
-      <div className={isMobile ? `md:flex md:flex-col min-h-screen justify-between` : ''}>
-        <Header />
-        <div className="flex justify-center items-center mt-32 lg:mb-20">
+      <div className={`min-h-screen flex flex-col ${isMobile ? `md:flex md:flex-col justify-between` : ''}`}>
+        <Header userIsOwner={false} />
+        <div className="flex-grow flex justify-center mt-32 lg:mb-20">
           <LoginCard />
         </div>
         <Footer />

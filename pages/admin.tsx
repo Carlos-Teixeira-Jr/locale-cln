@@ -86,7 +86,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
             hasProperties={ownerProperties?.docs?.length > 0}
           />
         </div>
-        <div className={`flex flex-col items-center mt-24 ${width < 1080 ? 'justify-center w-full' : `${ownerProperties?.docs?.length <= 0 ? 'lg:ml-[43rem]' : 'lg:ml-[26rem]'}`}`}>
+        <div className={`flex flex-col items-center mt-24 ${width < 1080 ? 'justify-center w-full' : `${ownerProperties?.docs?.length <= 0 ? 'lg:ml-[43rem] xl:mx-auto' : 'lg:ml-[26rem] xl:mx-auto'}`}`}>
 
           <div className="mb-10 md:px-5 lg:px-0">
             <h1 className="font-extrabold text-xl md:text-3xl text-quaternary md:mb-5 md:mr-20. text-center">

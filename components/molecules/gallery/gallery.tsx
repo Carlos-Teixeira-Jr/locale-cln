@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useSwipeable } from 'react-swipeable';
+import { IOwnerData } from '../../../common/interfaces/owner/owner';
 import { IData } from '../../../common/interfaces/property/propertyData';
 import { useIsMobile } from '../../../hooks/useIsMobile';
 import CameraIcon from '../../atoms/icons/cameraIcon';
@@ -13,17 +14,20 @@ export interface IGallery {
   propertyID: IData;
   isModalOpen: boolean;
   onGalleryModalOpen: (isOpen: boolean) => void;
+  ownerData: IOwnerData
 }
 
 const Gallery: React.FC<IGallery> = ({
   propertyID,
   isModalOpen,
   onGalleryModalOpen,
+  ownerData
 }: IGallery) => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const isMobile = useIsMobile();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedImage, setSelectedImage] = useState(0);
+  const isOwner = ownerData?.owner ? true : false;
 
   useEffect(() => {
     onGalleryModalOpen(modalIsOpen);
@@ -82,7 +86,7 @@ const Gallery: React.FC<IGallery> = ({
 
       {!isMobile ? (
         <div>
-          <Header />
+          <Header userIsOwner={isOwner} />
           <div className="hidden max-w-full max-h-[520px] md:flex flex-row items-center gap-1 mt-12">
             {/* Big image */}
             <div
@@ -252,7 +256,7 @@ const Gallery: React.FC<IGallery> = ({
         </div>
       ) : (
         <>
-          <Header />
+          <Header userIsOwner={isOwner} />
           <div className="group relative md:h-[200px]"  {...handlers}>
             {/* Images */}
             <div className="flex flex-row w-full max-w-max overflow-hidden scroll-smooth h-[350px]">

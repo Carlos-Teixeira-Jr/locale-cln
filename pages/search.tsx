@@ -124,7 +124,7 @@ const Search: NextPageWithLayout<ISearch> = ({
   };
 
   const classes = {
-    root: 'flex items-center justify-center mt-20',
+    root: 'flex justify-center mt-20 flex-grow',
     bodyContainer: 'lg:flex justify-center lg:max-w-[1232px] w-full md:w-none',
     body: 'flex flex-col lg:flex-row md:mt-0',
     content: 'flex flex-row items-center justify-between gap-7 ml-0 xl:ml-20',
@@ -148,8 +148,8 @@ const Search: NextPageWithLayout<ISearch> = ({
   };
 
   return (
-    <div>
-      <Header />
+    <main className='flex flex-col min-h-screen'>
+      <Header userIsOwner={false} />
       <div className={classes.root}>
         <div className={classes.bodyContainer}>
           <div className={classes.body}>
@@ -272,7 +272,9 @@ const Search: NextPageWithLayout<ISearch> = ({
                         images,
                         metadata,
                         highlighted,
-                        owner
+                        owner,
+                        adType,
+                        propertyType
                       }: IData) => (
                         <div className="md:w-60 lg:w-64" key={_id}>
                           <PropertyCard
@@ -280,12 +282,15 @@ const Search: NextPageWithLayout<ISearch> = ({
                             prices={prices}
                             description={description}
                             images={images.length > 0 ? images : [defaultPropertyPhoto]}
-                            location={address}
+                            location={address.streetName}
                             bedrooms={metadata[0].amount}
                             bathrooms={metadata[1].amount}
                             parking_spaces={metadata[2].amount}
                             id={_id}
                             highlighted={highlighted}
+                            adType={adType}
+                            propertyType={propertyType}
+                            address={address}
                           />
                         </div>
                       )
@@ -344,7 +349,7 @@ const Search: NextPageWithLayout<ISearch> = ({
         </div>
       </div>
       <Footer />
-    </div>
+    </main>
   );
 };
 

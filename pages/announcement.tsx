@@ -10,52 +10,55 @@ const AnnouncementPage: NextPageWithLayout = ({ plans }: any) => {
   const reversedCards = [...plans].reverse();
 
   return (
-    <>
-      <div className="fixed z-10 top-0 md:w-full">
-        <Header />
-      </div>
+    <main className='flex flex-col min-h-screen'>
+      <div className='flex flex-col flex-grow'>
+        <div className="fixed z-10 top-0 md:w-full">
+          <Header userIsOwner={false} />
+        </div>
 
-      <div className={classes.container}>
-        <div className="2xl:max-w-[1536px] 2xl:mx-auto">
-          <div className={classes.registerCard}>
-            <RegisterCard />
+        <div className={classes.container}>
+          <div className="2xl:max-w-[1536px] 2xl:mx-auto">
+            <div className={classes.registerCard}>
+              <RegisterCard />
+            </div>
+
+            <div className={classes.title}>
+              <p className={classes.p}>
+                A Melhor Solução para Anúnciar seu Imóvel
+              </p>
+            </div>
           </div>
+        </div>
 
-          <div className={classes.title}>
-            <p className={classes.p}>
-              A Melhor Solução para Anúnciar seu Imóvel
-            </p>
+        <div className="grid grid-flow-row mx-2 md:mb-10">
+          <AdvantagesArea />
+
+          <h1 className={classes.h1}>
+            Não perca mais tempo procurando por imóveis em outros lugares. Visite
+            nosso site hoje mesmo e encontre a propriedade dos seus sonhos!
+          </h1>
+
+          <div id='plans' className={classes.plans}>
+            {reversedCards.map(
+              ({ _id, name, price, highlightAd, commonAd, smartAd }: any) => (
+                <PlansCards
+                  key={_id}
+                  name={name}
+                  price={price}
+                  commonAd={commonAd}
+                  highlightAd={highlightAd}
+                  smartAd={smartAd}
+                  _id={_id}
+                />
+              )
+            )}
           </div>
         </div>
       </div>
 
-      <div className="grid grid-flow-row mx-2 md:mb-10">
-        <AdvantagesArea />
-
-        <h1 className={classes.h1}>
-          Não perca mais tempo procurando por imóveis em outros lugares. Visite
-          nosso site hoje mesmo e encontre a propriedade dos seus sonhos!
-        </h1>
-
-        <div id='plans' className={classes.plans}>
-          {reversedCards.map(
-            ({ _id, name, price, highlightAd, commonAd, smartAd }: any) => (
-              <PlansCards
-                key={_id}
-                name={name}
-                price={price}
-                commonAd={commonAd}
-                highlightAd={highlightAd}
-                smartAd={smartAd}
-                _id={_id}
-              />
-            )
-          )}
-        </div>
-      </div>
 
       <Footer />
-    </>
+    </main>
   );
 };
 

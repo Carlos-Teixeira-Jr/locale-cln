@@ -10,9 +10,12 @@ import UserIcon from '../../atoms/icons/userIcon';
 import Loading from '../../atoms/loading';
 import LocaleLogo from '../../atoms/logos/locale';
 
-export interface IHeader extends React.ComponentPropsWithoutRef<'header'> { }
+export interface IHeader {
+  userIsOwner: boolean
+}
 
-const Header: React.FC<IHeader> = () => {
+const Header = ({ userIsOwner }: IHeader) => {
+
   const { data: session } = useSession() as any;
   const router = useRouter();
   const [isBuy, setIsBuy] = useState(false);
@@ -21,7 +24,6 @@ const Header: React.FC<IHeader> = () => {
   const ref = useRef();
   const [loading, setLoading] = useState(false);
   const isMobile = useIsMobile();
-  const isOwner = session?.user?.data ? true : false;
 
   const headerOptions = [
     {
@@ -165,7 +167,7 @@ const Header: React.FC<IHeader> = () => {
           )}
         </div>
       </div>
-      {open && <DropdownAdmin isOwnerProp={false} isPlus={false} />}
+      {open && <DropdownAdmin isOwnerProp={userIsOwner} isPlus={false} />}
     </div>
   );
 };

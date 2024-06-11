@@ -67,7 +67,7 @@ export default function DropdownAdmin({ isOwnerProp, isPlus }: IDropdownAdmin) {
   ];
 
   return (
-    <div className={`flex absolute z-50 max-w h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md ${pathname.includes('admin') ? 'top-[66px] right-1' : 'top-[4.9rem] right-8'}`}>
+    <div className={`flex z-50 max-w h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md ${pathname.includes('admin') ? 'top-[66px] absolute right-1' : 'top-[4.9rem] right-8 fixed'}`}>
       <div className="flex flex-col text-center font-medium text-md text-quaternary leading-5">
 
         {option.map((option, idx) => {
