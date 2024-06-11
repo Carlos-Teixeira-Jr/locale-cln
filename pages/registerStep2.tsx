@@ -119,7 +119,7 @@ const RegisterStep2: NextPageWithLayout = () => {
         </div>
       ) : (
         <>
-          <Header />
+          <Header userIsOwner={false} />
           <div className={classes.body}>
             <div className={classes.stepLabel}>
               <LinearStepper activeStep={1} />

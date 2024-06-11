@@ -251,7 +251,7 @@ const Register = () => {
       ) : (
         <>
           <div>
-            <Header />
+            <Header userIsOwner={false} />
           </div>
           <AreaCalculatorModal
             open={open}
