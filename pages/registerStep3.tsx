@@ -78,7 +78,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
   const ownerPlan = plans?.find((plan) => plan._id === ownerData?.owner?.plan)
   const [selectedPlan, setSelectedPlan] = useState(chosenPlan !== '' ? chosenPlan : ownerPlan?._id);
   const [selectedPlanData, setSelectedPlanData] = useState(plans?.find((plan) => plan._id === selectedPlan));
-  console.log("🚀 ~ selectedPlanData:", selectedPlanData)
   const reversedCards = [...plans].reverse();
   const [isAdminPage, setIsAdminPage] = useState(false);
   const [isSameAddress, setIsSameAddress] = useState(false);
@@ -135,7 +134,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
   const [coordinates, setCoordinates] = useState<{
     lat: number;
     lng: number;
-  } | null>(null);
+  } | null>(storedData?.geolocation ? { lat: storedData?.geolocation[1], lng: storedData?.geolocation[0] } : null);
 
   const [userDataForm, setUserDataForm] = useState<IUserDataComponent>({
     username: '',
@@ -641,7 +640,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
       ) : (
         <>
           <div className={classes.body}>
-            <Header />
+            <Header userIsOwner={false} />
             <div className="justify-center">
               <div className={classes.stepLabel}>
                 <LinearStepper activeStep={2} />

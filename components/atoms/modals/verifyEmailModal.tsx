@@ -189,7 +189,7 @@ const VerifyEmailModal: React.FC<IVerifyEmailModal> = ({
             className="mx-auto"
           />
 
-          <p className="font-bold text-xs text-quaternary">
+          <p className="font-bold text-sm text-quaternary">
             Insira o código de verificação enviado para o e-mail usado no
             cadastro.
           </p>
@@ -233,7 +233,7 @@ const VerifyEmailModal: React.FC<IVerifyEmailModal> = ({
 
         {showResendMessage && (
           <p
-            className="font-bold text-xs text-quaternary mx-auto my-5 md:my-0 md:mb-4 md:mx-auto pt-2 relative inline-block group transition-colors duration-300 hover:text-secondary cursor-pointer w-full text-center"
+            className="font-bold text-sm text-quaternary mx-auto my-5 md:my-0 md:mb-4 md:mx-auto pt-2 relative inline-block group transition-colors duration-300 hover:text-secondary cursor-pointer w-full text-center"
             onClick={handleResendVerifyEmailCode}
           >
             Reenviar código de verificação de email.

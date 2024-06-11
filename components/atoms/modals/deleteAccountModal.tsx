@@ -126,7 +126,7 @@ const DeleteAccountModal = ({
           className="mx-auto"
         />
 
-        <p className="font-bold text-xs text-quaternary">
+        <p className="font-bold text-sm text-quaternary">
           Só para avisar: ao excluir sua conta, você não terá mais acesso aos seus anúncios e favoritos. 🙃 Tem certeza de que quer continuar?
         </p>
 

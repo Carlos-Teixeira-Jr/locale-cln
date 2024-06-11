@@ -4,6 +4,7 @@ import Link from 'next/link';
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import { IMessage } from '../../../../common/interfaces/message/messages';
+import { IAddress } from '../../../../common/interfaces/property/propertyData';
 import { monetaryFormat } from '../../../../common/utils/masks/monetaryFormat';
 import {
   ErrorToastNames,
@@ -21,10 +22,13 @@ interface IAdminPropertyCard {
   image: string;
   price: number;
   location: string;
-  views: number;
+  views: string[];
   messages: IMessage[];
   isActiveProp: boolean;
   highlighted: boolean;
+  adType: string;
+  propertyType: string;
+  address: IAddress
 }
 
 type btnTypes = {
@@ -44,6 +48,9 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
   messages,
   isActiveProp,
   highlighted,
+  adType,
+  propertyType,
+  address
 }: IAdminPropertyCard) => {
 
   const priceString = price.toString();
@@ -52,6 +59,7 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
   const { data: session } = useSession() as any;
   const user = session?.user?.data._id;
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const params = `${adType}+${propertyType}+${address.city}+${address.neighborhood}+${address.streetName}+id=${_id}`
 
   const handleHighlight = async () => {
     try {
@@ -124,7 +132,7 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
 
   return (
     <div className="flex flex-col items-center mb-10 justify-between p-1">
-      <Link href={`/property/${_id}`}>
+      <Link href={`/property/${params}`}>
         <div
           className={`flex flex-col md:flex-row h-fit md:h-64 w-full lg:w-[777px] shadow-lg p-2 ${isActive ? '' : 'opacity-100'
             } ${highlighted ? 'bg-gradient-to-tr from-secondary to-primary' : 'bg-tertiary'}`}
@@ -169,8 +177,8 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
               </h1>
               <div className={`flex flex-row space-x-2 items-center justify-center md:justify-start font-bold text-md md:text-lg text-quaternary`}>
                 <ViewIcon />
-                <span>{views}</span>
-                <h2>{views === 1 ? 'visualização' : 'visualizações'}</h2>
+                <span>{views.length}</span>
+                <h2>{views.length === 1 ? 'visualização' : 'visualizações'}</h2>
               </div>
               <div className={`flex flex-row space-x-2 items-center justify-center md:justify-start font-bold text-md md:text-lg text-quaternary`}>
                 <MessageIcon />

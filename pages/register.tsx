@@ -3,7 +3,7 @@ import { MouseEvent, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import {
   IAddress,
-  PricesType,
+  PricesType
 } from '../common/interfaces/property/propertyData';
 import {
   IRegisterMainFeatures,
@@ -25,6 +25,7 @@ const Register = () => {
   const handleClose = () => setOpen(false);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const [geocode, setGeocode] = useState<{ lat: number, lng: number }>();
 
   const [registration, setRegistration] = useState<IRegisterMainFeatures>({
     adType: 'comprar',
@@ -170,6 +171,7 @@ const Register = () => {
         propertyType: registration.propertyType,
         propertySubtype: registration.propertySubtype,
         address: address,
+        geolocation: { type: 'Point', coordinates: [geocode?.lng ? geocode?.lng : -52.1872864, geocode?.lat ? geocode?.lat : -32.1013804] },
         description: registration.description,
         metadata: registration.metadata,
         size: {
@@ -249,7 +251,7 @@ const Register = () => {
       ) : (
         <>
           <div>
-            <Header />
+            <Header userIsOwner={false} />
           </div>
           <AreaCalculatorModal
             open={open}
@@ -300,6 +302,7 @@ const Register = () => {
               }
               errors={addressErrors}
               addressInputRefs={addressInputRefs}
+              onGetGeocode={(geocode: any) => { if (geocode !== undefined) setGeocode(geocode) }}
             />
 
             <div className={classes.buttonContainer}>

@@ -1,3 +1,5 @@
+import { GetServerSidePropsContext } from 'next';
+import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import {
@@ -18,6 +20,7 @@ import ContactBox from '../../components/molecules/contactBox/ContactBox';
 import Gallery from '../../components/molecules/gallery/gallery';
 import PropertyInfoTop from '../../components/molecules/property/propertyInfoTop';
 import Footer from '../../components/organisms/footer/footer';
+import VisualizationsBox from '../../components/organisms/property-page/visualizationsBox';
 import PropertyInfo from '../../components/organisms/propertyInfo/PropertyInfo';
 import { NextPageWithLayout } from '../page';
 
@@ -68,23 +71,28 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
     }`;
 
   return (
-    <>
+    <main className='flex flex-col min-h-screen'>
       <div className={classes.content}>
         <div className={galeryModalCSS}>
           <Gallery
             propertyID={property}
+            ownerData={ownerData}
             isModalOpen={isModalOpen}
             onGalleryModalOpen={(isOpen: boolean) => setIsModalOpen(isOpen)}
           />
         </div>
 
         <div className="md:flex w-full justify-between mb-4">
-          <PropertyInfoTop propertyID={property} />
+          <div className='flex flex-col w-full'>
+            <PropertyInfoTop propertyID={property} />
+            <VisualizationsBox views={property.views} />
+          </div>
 
           <ContactBox property={property} ownerInfo={ownerData?.owner} />
         </div>
 
-        <div className="w-full h-fit mt-5">
+        <div className="w-full h-fit mt-5 md:mt-0">
+
           <PropertyInfo
             property={property}
             isFavourite={isFavourite}
@@ -105,10 +113,13 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
               .map((prop: IData) => (
                 <PropertyCard
                   key={prop._id}
+                  adType={prop.adType}
+                  propertyType={prop.propertyType}
+                  address={prop.address}
                   prices={prop.prices}
                   description={prop.description}
                   images={prop.images}
-                  location={prop.address}
+                  location={prop.address.streetName}
                   bedrooms={
                     prop.metadata.find((item) => item.type === 'bedroom')
                       ?.amount
@@ -146,36 +157,33 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
       </div>
 
       <Footer />
-    </>
+    </main>
   );
 };
 
 export default PropertyPage;
 
-export async function getStaticPaths() {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
-  const propertiesResponse = await fetch(`${baseUrl}/property/filter/?page=1&limit=100`);
-  const properties = await propertiesResponse.json();
-  const paths = properties.docs.map((property: IData) => ({
-    params: { id: property._id },
-  }));
-
-  return {
-    paths,
-    fallback: 'blocking',
-  };
-}
-
-export async function getStaticProps(context: any) {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const session = (await getSession(context)) as any;
+  const userId = session?.user.data._id || session?.user.id;
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
   let property;
   let isFavourite: boolean = false;
   let ownerData;
   let ownerId;
+  const params = context.params?.id as string;
+  const id = params.split('id=')[1];
 
   try {
     const propertyResponse = await fetch(
-      `${baseUrl}/property/${context.params.id}?isEdit=false`
+      `${baseUrl}/property/findOne/${id}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId, isEdit: false }),
+      }
     );
 
     if (propertyResponse.ok) {
@@ -230,7 +238,7 @@ export async function getStaticProps(context: any) {
 
             if (favourites.docs.length > 0) {
               isFavourite = favourites.docs.some(
-                (prop: IData) => prop._id === context.params.id
+                (prop: IData) => prop._id === id
               );
             } else {
               isFavourite = false;
@@ -262,12 +270,11 @@ export async function getStaticProps(context: any) {
       relatedProperties,
       ownerData,
     },
-    revalidate: 60
   };
 }
 
 const classes = {
-  content: 'flex flex-col max-w-5xl items-center mx-auto lg:pt-10 pt-[90px]',
+  content: 'flex flex-col flex-grow max-w-5xl items-center mx-auto lg:pt-10 pt-[90px]',
   relatedProperties:
     'flex flex-col md:flex-row gap-5 justify-center m-5 lg:my-5 lg:mx-0',
   mapContainer: 'w-full md:h-fit mx-auto mb-20 drop-shadow-xl',

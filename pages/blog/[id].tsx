@@ -44,60 +44,63 @@ const PostPage = ({
   }, [selectedPage])
 
   return (
-    <main>
-      <Header />
+    <main className="min-h-screen flex flex-col">
+      <Header userIsOwner={false} />
 
-      <div className="px-5">
-        <BlogShortcuts onPageSelect={(pageSelected: LoadingState) => setSelectedPage(pageSelected)} />
-      </div>
-      <div className="w-full px-5 md:px-10 py-2 text-quaternary">
-        <div className="flex md:flex-row flex-col w-full lg:w-1/2">
-          <input
-            className="border border-quaternary w-full rounded-md font-semibold text-lg h-10 my-2 pl-5 shadow-md"
-            type="text"
-            value={searchInput}
-            placeholder="Digite aqui o que você precisa..."
-            maxLength={500}
-            onChange={(e) => setSearchInput(e.target.value)}
-          />
-          <button
-            className="bg-primary rounded-full text-tertiary text-xl font-semibold py-2 px-5 my-2 mx-2 h-10 hover:bg-red-600 ease-in-out duration-300 shadow-md"
-            onClick={() => {
-              setIsSearch(false);
-              setIsSearch(true);
-            }}
-          >
-            Procurar
-          </button>
+      <div className="max-w-7xl mx-auto">
+        <div className="px-5">
+          <BlogShortcuts onPageSelect={(pageSelected: LoadingState) => setSelectedPage(pageSelected)} />
+        </div>
+        <div className="w-full px-5 md:px-10 py-2 text-quaternary">
+          <div className="flex md:flex-row flex-col w-full lg:w-1/2">
+            <input
+              className="border border-quaternary w-full rounded-md font-semibold text-lg h-10 my-2 pl-5 shadow-md"
+              type="text"
+              value={searchInput}
+              placeholder="Digite aqui o que você precisa..."
+              maxLength={500}
+              onChange={(e) => setSearchInput(e.target.value)}
+            />
+            <button
+              className="bg-primary rounded-full text-tertiary text-xl font-semibold py-2 px-5 my-2 mx-2 h-10 hover:bg-red-600 ease-in-out duration-300 shadow-md"
+              onClick={() => {
+                setIsSearch(false);
+                setIsSearch(true);
+              }}
+            >
+              Procurar
+            </button>
+          </div>
+
+          <hr className="h-[0.10rem] bg-quaternary w-full my-5" />
+
         </div>
 
-        <hr className="h-[0.10rem] bg-quaternary w-full my-5" />
-
+        <PostContainer
+          post={post ?
+            post :
+            {
+              id: 0,
+              title: '',
+              resume: '',
+              timeToRead: 0,
+              author: '',
+              tags: [],
+              timestamp: '',
+              img: '',
+              post: [{
+                subImg: '',
+                subTitle: '',
+                text: ''
+              }]
+            }
+          }
+          locations={locations}
+          propertyTypes={propertyTypes}
+          propertyInfo={propertyInfo}
+        />
       </div>
 
-      <PostContainer
-        post={post ?
-          post :
-          {
-            id: 0,
-            title: '',
-            resume: '',
-            timeToRead: 0,
-            author: '',
-            tags: [],
-            timestamp: '',
-            img: '',
-            post: [{
-              subImg: '',
-              subTitle: '',
-              text: ''
-            }]
-          }
-        }
-        locations={locations}
-        propertyTypes={propertyTypes}
-        propertyInfo={propertyInfo}
-      />
 
       <div className="md:mt-[20rem]">
         <Footer />

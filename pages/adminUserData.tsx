@@ -581,7 +581,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       'grid sm:grid-cols-1 grid-cols-1 md:grid-cols-3 xl:grid-cols-3 md:gap-6',
     h2: 'md:text-2xl text-lg leading-10 text-quaternary font-bold mb-5 lg:mb-5 mx-5',
     userData: 'my-5 lg:mx-10 md:mx-2 max-w-[1232px]',
-    content: 'flex flex-col mt-16 xl:ml-80 max-w-[1232px] justify-center md:mx-5',
+    content: 'flex flex-col mt-16 xl:ml-80 2xl:mx-auto max-w-[1232px] justify-center md:mx-5',
   };
 
   return (

@@ -138,13 +138,12 @@ export default function confirmActivationModal({
 
         <h1 className="text-xl font-bold mb-4 text-primary">{`Você tem certeza que quer ${isActive ? 'inativar' : 'reativar'
           } este anúncio?`}</h1>
-        <p className="font-bold text-xs text-quaternary mb-4">
+        <p className="font-bold text-sm text-quaternary mb-4">
           {isActive
             ? 'Se decidir reativá-lo no futuro, será necessário utilizar um crédito de anúncio do seu plano. 😉'
             : 'Tem certeza de que deseja reativar o anúncio? Lembre-se de que a reativação custa um crédito do seu plano. 😊'}
         </p>
         <button
-          // className="md:w-[75%] h-[50px] flex justify-center bg-primary p-2.5 rounded-[50px] font-normal text-xl text-tertiary leading-6 mx-auto mt-5 transition-colors duration-300 hover:bg-red-600 hover:text-white"
           className={`flex items-center flex-row justify-center w-[75%] md:w-1/2 h-14 text-tertiary rounded-full mx-auto font-bold text-lg md:text-xl ${loading ?
             'bg-red-300 transition-colors duration-300' :
             'bg-primary transition-colors duration-300 hover:bg-red-600 hover:text-white cursor-pointer'

@@ -70,8 +70,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
   }, [currentPage]);
 
   const classes = {
-    sideMenu: `${width < 1080 ? 'hidden' : 'fixed left-0 top-7 lg:flex xl:flex md:hidden'
-      } `,
+    sideMenu: `${width < 1080 ? 'hidden' : 'fixed left-0 top-7 lg:flex xl:flex md:hidden'}`,
   };
 
   return (
@@ -87,7 +86,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
             hasProperties={ownerProperties?.docs?.length > 0}
           />
         </div>
-        <div className={`flex flex-col items-center mt-24 ${width < 1080 ? 'justify-center w-full' : `${ownerProperties?.docs?.length <= 0 ? 'lg:ml-[43rem]' : 'lg:ml-[26rem]'}`}`}>
+        <div className={`flex flex-col items-center mt-24 ${width < 1080 ? 'justify-center w-full' : `${ownerProperties?.docs?.length <= 0 ? 'lg:ml-[43rem] xl:mx-auto' : 'lg:ml-[26rem] xl:mx-auto'}`}`}>
 
           <div className="mb-10 md:px-5 lg:px-0">
             <h1 className="font-extrabold text-xl md:text-3xl text-quaternary md:mb-5 md:mr-20. text-center">
@@ -110,6 +109,8 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
                   isActive,
                   highlighted,
                   views,
+                  adType,
+                  propertyType,
                 }: IData) => (
                   <AdminPropertyCard
                     key={_id}
@@ -123,6 +124,9 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
                     )}
                     isActiveProp={isActive}
                     highlighted={highlighted}
+                    adType={adType}
+                    propertyType={propertyType}
+                    address={address}
                   />
                 )
               )}
@@ -176,7 +180,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         };
       }
     } else {
-      console.log('erro - find-owner-by-user:', ownerIdResponse);
+      ownerData = {};
     }
   } catch (error) {
     console.error(error);
@@ -246,16 +250,26 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         permanent: false,
       },
     };
+  } else if (ownerProperties?.docs?.length > 0) {
+    return {
+      props: {
+        ownerProperties,
+        notifications,
+        messages,
+        ownerData,
+        plans
+      },
+    };
+  } else {
+    return {
+      props: {
+        ownerProperties,
+        notifications,
+        messages,
+        ownerData,
+        plans
+      },
+    };
   }
-
-  return {
-    props: {
-      ownerProperties,
-      notifications,
-      messages,
-      ownerData,
-      plans
-    },
-  };
 }
 

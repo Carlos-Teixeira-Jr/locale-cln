@@ -70,7 +70,7 @@ const RegisterStep35: NextPageWithLayout<IRegisterStep35> = ({ plans }) => {
         </div>
       ) : (
         <>
-          <Header />
+          <Header userIsOwner={false} />
           <div className={classes.body}>
             <div className="lg:mx-24">
               <div className={classes.stepLabel}>
