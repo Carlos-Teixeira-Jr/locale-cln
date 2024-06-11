@@ -114,14 +114,16 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
                   images,
                   highlighted,
                   description,
-                  metadata
+                  metadata,
+                  adType,
+                  propertyType
                 }: IData) => (
                   <div className="w-full md:w-60" key={_id}>
                     <PropertyCard
                       key={_id}
                       description={description}
                       images={images}
-                      location={address}
+                      location={address.streetName}
                       favorited={highlighted}
                       id={_id}
                       prices={prices}
@@ -129,6 +131,9 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
                       bedrooms={metadata.find((e) => e.type === 'bedroom')?.amount}
                       bathrooms={metadata.find((e) => e.type === 'bathroom')?.amount}
                       parking_spaces={metadata.find((e) => e.type === 'garage')?.amount}
+                      adType={adType}
+                      propertyType={propertyType}
+                      address={address}
                     />
                   </div>
                 )
