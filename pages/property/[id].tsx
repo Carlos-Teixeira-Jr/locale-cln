@@ -186,7 +186,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       }
     );
 
-
     if (propertyResponse.ok) {
       property = await propertyResponse.json();
       ownerId = property.owner;
