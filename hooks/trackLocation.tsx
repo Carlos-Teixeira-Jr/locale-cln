@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 
 const useTrackLocation = () => {
 
-  const [ locationErrorMessage, setLocationErrorMessage ] = useState("");
-  const [ location, setLocation ] = useState<any>(null);
-  const [ latitude, setLatitude ] = useState("");
-  const [ longitude, setLongitude ] = useState("");
+  const [locationErrorMessage, setLocationErrorMessage] = useState("");
+  const [location, setLocation] = useState<any>(null);
+  const [latitude, setLatitude] = useState("");
+  const [longitude, setLongitude] = useState("");
 
   const success = (position: any) => {
     const latitude = position.coords.latitude;
@@ -20,12 +20,12 @@ const useTrackLocation = () => {
   }
 
   useEffect(() => {
-    if(!navigator.geolocation){
+    if (!navigator.geolocation) {
       setLocationErrorMessage("Seu navegador não suporta a geolocalização")
       setLatitude('');
       setLongitude('');
       setLocation(null);
-    }else{
+    } else {
       navigator.geolocation.getCurrentPosition(success, error);
     }
     navigator.geolocation.getCurrentPosition((position) => {
@@ -39,22 +39,13 @@ const useTrackLocation = () => {
         maximumAge: 0
       }
     })
-  },[])
-
-  // const cachedLocation = useMemo(() => {
-  //   const cachedCoords = localStorage.getItem('location');
-  //   if (cachedCoords) {
-  //     return JSON.parse(cachedCoords);
-  //   }
-  //   return null;
-  // }, []);
+  }, [])
 
   return {
     location,
     locationErrorMessage,
     latitude,
     longitude,
-    //cachedLocation,
   }
 }
 
