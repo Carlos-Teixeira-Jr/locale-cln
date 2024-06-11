@@ -136,8 +136,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     lng: number;
   } | null>(storedData?.geolocation ? { lat: storedData?.geolocation[1], lng: storedData?.geolocation[0] } : null);
 
-  console.log("🚀 ~ coordinates:", coordinates)
-
   const [userDataForm, setUserDataForm] = useState<IUserDataComponent>({
     username: '',
     email: '',

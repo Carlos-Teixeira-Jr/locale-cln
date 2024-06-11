@@ -237,7 +237,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   ]);
 
   if (ownerProperties?.docs?.length === 0 && notifications?.length > 0) {
-    console.log("🚀 ~ getServerSideProps ~ ownerProperties?.docs?.length === 0 && notifications?.length > 0:", ownerProperties?.docs?.length === 0 && notifications?.length > 0)
     return {
       redirect: {
         destination: '/adminFavProperties?page=1',
@@ -245,7 +244,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       },
     };
   } else if (ownerProperties?.docs?.length === 0) {
-    console.log("🚀 ~ getServerSideProps ~ ownerProperties?.docs?.length === 0:", ownerProperties?.docs?.length === 0)
     return {
       redirect: {
         destination: '/adminUserData?page=1',
@@ -253,7 +251,16 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       },
     };
   } else if (ownerProperties?.docs?.length > 0) {
-    console.log("🚀 ~ getServerSideProps ~ ownerProperties?.docs?.length > 0:", ownerProperties?.docs?.length > 0)
+    return {
+      props: {
+        ownerProperties,
+        notifications,
+        messages,
+        ownerData,
+        plans
+      },
+    };
+  } else {
     return {
       props: {
         ownerProperties,

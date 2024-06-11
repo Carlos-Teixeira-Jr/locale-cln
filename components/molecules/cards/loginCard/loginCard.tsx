@@ -44,8 +44,6 @@ const LoginCard: React.FC = () => {
     password: password,
   });
 
-  console.log("🚀 ~ emailVerificationData:", emailVerificationData)
-
   // Atualiza emailVerificationData com o valor do campo de email
   useEffect(() => {
     const input = document.querySelector<HTMLInputElement>('input[type="email"]');

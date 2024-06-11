@@ -22,7 +22,7 @@ interface IAdminPropertyCard {
   image: string;
   price: number;
   location: string;
-  views: number;
+  views: string[];
   messages: IMessage[];
   isActiveProp: boolean;
   highlighted: boolean;
@@ -177,8 +177,8 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
               </h1>
               <div className={`flex flex-row space-x-2 items-center justify-center md:justify-start font-bold text-md md:text-lg text-quaternary`}>
                 <ViewIcon />
-                <span>{views}</span>
-                <h2>{views === 1 ? 'visualização' : 'visualizações'}</h2>
+                <span>{views.length}</span>
+                <h2>{views.length === 1 ? 'visualização' : 'visualizações'}</h2>
               </div>
               <div className={`flex flex-row space-x-2 items-center justify-center md:justify-start font-bold text-md md:text-lg text-quaternary`}>
                 <MessageIcon />

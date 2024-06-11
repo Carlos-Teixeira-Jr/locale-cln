@@ -1,3 +1,5 @@
+import { GetServerSidePropsContext } from 'next';
+import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import {
@@ -10,7 +12,6 @@ import {
   announcementType,
   metadataType,
 } from '../../common/interfaces/property/propertyData';
-import { fetchJson, handleResult } from '../../common/utils/fetchJson';
 import DynamicMap from '../../components/atoms/maps/dinamycMap';
 import StaticMap from '../../components/atoms/maps/map';
 import VideoPlayer from '../../components/atoms/videoPlayer/videoPlayer';
@@ -19,6 +20,7 @@ import ContactBox from '../../components/molecules/contactBox/ContactBox';
 import Gallery from '../../components/molecules/gallery/gallery';
 import PropertyInfoTop from '../../components/molecules/property/propertyInfoTop';
 import Footer from '../../components/organisms/footer/footer';
+import VisualizationsBox from '../../components/organisms/property-page/visualizationsBox';
 import PropertyInfo from '../../components/organisms/propertyInfo/PropertyInfo';
 import { NextPageWithLayout } from '../page';
 
@@ -80,12 +82,16 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
         </div>
 
         <div className="md:flex w-full justify-between mb-4">
-          <PropertyInfoTop propertyID={property} />
+          <div className='flex flex-col w-full'>
+            <PropertyInfoTop propertyID={property} />
+            <VisualizationsBox views={property.views} />
+          </div>
 
           <ContactBox property={property} ownerInfo={ownerData?.owner} />
         </div>
 
-        <div className="w-full h-fit mt-5">
+        <div className="w-full h-fit mt-5 md:mt-0">
+
           <PropertyInfo
             property={property}
             isFavourite={isFavourite}
@@ -156,24 +162,9 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
 
 export default PropertyPage;
 
-export async function getStaticPaths() {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
-
-  const promises = [fetchJson(`${baseUrl}/property/filter/?page=1&limit=100`)];
-  const result = await Promise.allSettled(promises);
-  const properties = handleResult(result[0])
-
-  const paths = properties.docs.map((property: IData) => ({
-    params: { id: `${property.adType}+${property.propertyType}+${property.address.city}+${property.address.neighborhood}+${property.address.streetName}+id=${property._id}` }
-  }));
-
-  return {
-    paths,
-    fallback: 'blocking',
-  };
-}
-
-export async function getStaticProps(context: any) {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const session = (await getSession(context)) as any;
+  const userId = session?.user.data._id || session?.user.id;
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
   let property;
   let isFavourite: boolean = false;
@@ -184,8 +175,16 @@ export async function getStaticProps(context: any) {
 
   try {
     const propertyResponse = await fetch(
-      `${baseUrl}/property/${id}?isEdit=false`
+      `${baseUrl}/property/findOne/${id}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId, isEdit: false }),
+      }
     );
+
 
     if (propertyResponse.ok) {
       property = await propertyResponse.json();
@@ -239,7 +238,7 @@ export async function getStaticProps(context: any) {
 
             if (favourites.docs.length > 0) {
               isFavourite = favourites.docs.some(
-                (prop: IData) => prop._id === context.params.id
+                (prop: IData) => prop._id === id
               );
             } else {
               isFavourite = false;
@@ -271,7 +270,6 @@ export async function getStaticProps(context: any) {
       relatedProperties,
       ownerData,
     },
-    revalidate: 60
   };
 }
 

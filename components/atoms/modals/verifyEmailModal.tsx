@@ -26,7 +26,6 @@ const VerifyEmailModal: React.FC<IVerifyEmailModal> = ({
 }) => {
   const [isMobile, setIsMobile] = useState(false);
   const [input, setInput] = useState('');
-  console.log("🚀 ~ input:", input)
   const [verificationCodeError, setVerificationCodeError] = useState('');
   const [showResendMessage, setShowResendMessage] = useState(true);
   const [loading, setLoading] = useState(false);

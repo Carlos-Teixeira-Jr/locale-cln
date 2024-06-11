@@ -112,7 +112,7 @@ const Header: React.FC<IHeader> = () => {
               <div
                 className='cursor-pointer'
                 onClick={() => {
-                  setOpen(true);
+                  setOpen(!open);
                 }}
               >
                 {!loading ? (
@@ -144,7 +144,7 @@ const Header: React.FC<IHeader> = () => {
             </div>
           ) : (
             <>
-              <div onClick={() => setOpen(true)}>
+              <Link href={'/login'}>
                 {!loading ? (
                   <button className="bg-primary justify-self-end cursor-pointer text-tertiary rounded-3xl font-normal md:text-xl w-20 md:w-[124px] md:h-[2rem] mr-2 shadow-md transition-colors duration-300 hover:bg-red-600 hover:text-white" onClick={() => setLoading(true)}>
                     Entrar
@@ -155,7 +155,7 @@ const Header: React.FC<IHeader> = () => {
                   </div>
                 )}
 
-              </div>
+              </Link>
               <div className='flex items-center' ref={ref as any} onClick={() => setOpen(!open)}>
                 <button className="visible md:hidden cursor-pointer decoration-transparent">
                   <MenuIcon />

@@ -26,7 +26,6 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [geocode, setGeocode] = useState<{ lat: number, lng: number }>();
-  console.log("🚀 ~ Register ~ geocode:", geocode)
 
   const [registration, setRegistration] = useState<IRegisterMainFeatures>({
     adType: 'comprar',

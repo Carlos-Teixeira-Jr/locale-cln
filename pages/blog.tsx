@@ -11,7 +11,6 @@ import Posts from "../data/blog/blogPosts.json";
 const BlogPage = () => {
 
   const [searchInput, setSearchInput] = useState('');
-  console.log("🚀 ~ BlogPage ~ searchInput:", searchInput)
   const [isSearch, setIsSearch] = useState(false);
   const posts = Posts.filter((post) => {
     return post.tags.some(tag => tag.includes(searchInput));

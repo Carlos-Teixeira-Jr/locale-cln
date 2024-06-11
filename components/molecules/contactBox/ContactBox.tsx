@@ -88,7 +88,7 @@ const ContactBox: React.FC<IContactBox> = ({ ownerInfo, property }: IContactBox)
 
   return (
     <>
-      <div className="lg:w-fit md:h-10 md:pt-0 flex flex-col md:flex-row md:grid items-center justify-items-center align-middle justify lg:ml-2 md:mx-5 mx-2 lg:m-0">
+      <div className="lg:w-fit md:pt-0 flex flex-col md:flex-row md:grid lg:flex lg:flex-col items-center justify-between align-middle lg:ml-2 md:mx-5 mx-2 lg:m-0">
         <div className="flex flex-row gap-2 w-full lg:w-72 justify-between items-center mt-5">
           {picture ? (
             <Image
@@ -118,7 +118,7 @@ const ContactBox: React.FC<IContactBox> = ({ ownerInfo, property }: IContactBox)
           {buttons.map((btn) => (
             <div
               onClick={() => btn.onClick()}
-              className={`md:w-full w-36 h-12 text-tertiary font-extrabold text-lg rounded-[10px] p-2.5 top-[861px] left-[999px] gap-y-1.5 md:grid flex drop-shadow-lg md:my-2 align-middle my-auto justify-center cursor-pointer transition-colors  duration-300 ${btn.key === 'contact' ? 'bg-secondary hover:bg-yellow-600' : 'bg-[#25D366] hover:bg-green-700'
+              className={`md:w-full w-36 h-12 text-tertiary font-extrabold text-lg rounded-[10px] p-2.5 top-[861px] left-[999px] gap-y-1.5 md:grid flex drop-shadow-lg align-middle  justify-center cursor-pointer transition-colors  duration-300 ${btn.key === 'contact' ? 'bg-secondary hover:bg-yellow-600' : 'bg-[#25D366] hover:bg-green-700'
                 }`}
               key={btn.key}
             >
