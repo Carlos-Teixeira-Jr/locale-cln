@@ -1,8 +1,10 @@
 import { NextPageContext } from 'next';
+import { getSession } from 'next-auth/react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import { ILocation } from '../common/interfaces/locationDropdown';
+import { IOwnerProperties } from '../common/interfaces/properties/propertiesList';
 import { IData } from '../common/interfaces/property/propertyData';
 import { ITagsData } from '../common/interfaces/tagsData';
 import { handleClickOutside } from '../common/utils/clickOutsideDropdownHandler';
@@ -33,17 +35,20 @@ export interface ISearch {
   propertyInfo: IPropertyInfo;
   locations: ILocation[];
   tagsData: ITagsData[];
+  ownerProperties: IOwnerProperties
 }
 
 const Search: NextPageWithLayout<ISearch> = ({
   propertyInfo,
   locations,
   tagsData,
+  ownerProperties
 }) => {
 
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const query = router.query as any;
+  const isOwner = ownerProperties?.docs.length > 0;
   const [currentPage, setCurrentPage] = useState(1);
   const isCodeSearch = query.code ? true : false;
   const { latitude, longitude, location: geolocation } = useTrackLocation();
@@ -149,7 +154,7 @@ const Search: NextPageWithLayout<ISearch> = ({
 
   return (
     <main className='flex flex-col min-h-screen'>
-      <Header userIsOwner={false} />
+      <Header userIsOwner={isOwner} />
       <div className={classes.root}>
         <div className={classes.bodyContainer}>
           <div className={classes.body}>
@@ -359,6 +364,11 @@ export async function getServerSideProps(context: NextPageContext) {
   const { query } = context;
   const filter = [];
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+  const session = (await getSession(context)) as any;
+  const userId = session?.user.data._id || session?.user.id;
+  const page = 1;
+  let ownerData;
+  let ownerProperties;
 
   if (query.adType) filter.push({ adType: query.adType });
   if (query.propertyType) {
@@ -459,11 +469,51 @@ export async function getServerSideProps(context: NextPageContext) {
       .catch(() => ({}));
   }
 
+  try {
+    const ownerIdResponse = await fetch(
+      `${baseUrl}/user/find-owner-by-user`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId }),
+      }
+    );
+
+    if (ownerIdResponse.ok) {
+      const response = await ownerIdResponse.json();
+      if (response?.owner?._id) {
+        ownerData = response;
+
+        ownerProperties = await fetch(`${baseUrl}/property/owner-properties`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ownerId: ownerData?.owner?._id,
+            page,
+          }),
+        })
+          .then((res) => res.json())
+          .catch(() => [])
+      } else {
+        console.log('Error:')
+      }
+    } else {
+      ownerData = {};
+    }
+  } catch (error) {
+    console.error(`Error:`, error)
+  }
+
   return {
     props: {
       propertyInfo,
       locations,
       tagsData,
+      ownerProperties
     },
   };
 }

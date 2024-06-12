@@ -47,10 +47,11 @@ const PostPage = ({
     <main className="min-h-screen flex flex-col">
       <Header userIsOwner={false} />
 
+      <div className="px-5">
+        <BlogShortcuts onPageSelect={(pageSelected: LoadingState) => setSelectedPage(pageSelected)} />
+      </div>
+
       <div className="max-w-7xl mx-auto">
-        <div className="px-5">
-          <BlogShortcuts onPageSelect={(pageSelected: LoadingState) => setSelectedPage(pageSelected)} />
-        </div>
         <div className="w-full px-5 md:px-10 py-2 text-quaternary">
           <div className="flex md:flex-row flex-col w-full lg:w-1/2">
             <input

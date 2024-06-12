@@ -1,4 +1,7 @@
+import { GetServerSidePropsContext } from "next";
+import { getSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import { IOwnerProperties } from "../common/interfaces/properties/propertiesList";
 import Pagination from "../components/atoms/pagination/pagination";
 import { Footer, Header } from "../components/organisms";
 import BlogBanner from "../components/organisms/blog/blogBanner";
@@ -8,10 +11,15 @@ import BlogUpdatesContainer from "../components/organisms/blog/blogUpdatesContai
 import PostCard from "../components/organisms/blog/postCards";
 import Posts from "../data/blog/blogPosts.json";
 
-const BlogPage = () => {
+interface IBlogPage {
+  ownerProperties: IOwnerProperties
+}
+
+const BlogPage = ({ ownerProperties }: IBlogPage) => {
 
   const [searchInput, setSearchInput] = useState('');
   const [isSearch, setIsSearch] = useState(false);
+  const isOwner = ownerProperties?.docs.length > 0;
   const posts = Posts.filter((post) => {
     return post.tags.some(tag => tag.includes(searchInput));
   });
@@ -54,7 +62,7 @@ const BlogPage = () => {
   return (
     <main className="min-h-screen flex flex-col">
 
-      <Header userIsOwner={false} />
+      <Header userIsOwner={isOwner} />
 
       <div className="max-w-7xl mx-auto flex flex-col flex-grow">
         <div className="px-5">
@@ -123,4 +131,58 @@ const BlogPage = () => {
   )
 }
 
-export default BlogPage
+export default BlogPage;
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const session = (await getSession(context)) as any;
+  const userId = session?.user.data._id || session?.user.id;
+  const page = 1;
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+  let ownerData;
+  let ownerProperties;
+
+  try {
+    const ownerIdResponse = await fetch(
+      `${baseUrl}/user/find-owner-by-user`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId }),
+      }
+    );
+
+    if (ownerIdResponse.ok) {
+      const response = await ownerIdResponse.json();
+      if (response?.owner?._id) {
+        ownerData = response;
+
+        ownerProperties = await fetch(`${baseUrl}/property/owner-properties`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ownerId: ownerData?.owner?._id,
+            page,
+          }),
+        })
+          .then((res) => res.json())
+          .catch(() => [])
+      } else {
+        console.log('Error:')
+      }
+    } else {
+      ownerData = {};
+    }
+  } catch (error) {
+    console.error(`Error:`, error)
+  }
+
+  return {
+    props: {
+      ownerProperties
+    },
+  };
+}
