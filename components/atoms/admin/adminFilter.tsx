@@ -1,15 +1,17 @@
 import axios from "axios";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ErrorToastNames, showErrorToast } from "../../../common/utils/toasts";
 import CheckIcon from "../icons/checkIcon";
 import Loading from "../loading";
 
 interface IAdminFilter {
-  ownerId: string
+  ownerId: string,
+  onSearchChange: (data: any) => void;
+  onCloseFilter: (isOpen: boolean) => void;
 }
 
-const AdminFilter = ({ ownerId }: IAdminFilter) => {
+const AdminFilter = ({ ownerId, onSearchChange, onCloseFilter }: IAdminFilter) => {
 
   const { query } = useRouter();
   const page = query.page;
@@ -22,6 +24,13 @@ const AdminFilter = ({ ownerId }: IAdminFilter) => {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
   const [filterIsOpen, setFilterIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    onCloseFilter(filterIsOpen);
+    if (!filterIsOpen) {
+      onSearchChange(null)
+    }
+  }, [filterIsOpen])
 
   const inputs = [
     {
@@ -49,9 +58,11 @@ const AdminFilter = ({ ownerId }: IAdminFilter) => {
     if (isNotEmpty) {
       if (filterData.adCode) {
         try {
+          setLoading(true);
           const { data } = await axios.get(`${baseUrl}/property/announcementCode/${filterData.adCode}`);
 
-          console.log("🚀 ~ handleSubmit ~ data:", data)
+          onSearchChange(data);
+          setLoading(false);
         } catch (error) {
           showErrorToast(ErrorToastNames.InvalidAnnouncementCode)
         }
@@ -60,10 +71,11 @@ const AdminFilter = ({ ownerId }: IAdminFilter) => {
           filter.push({ locationFilter: filterData.location });
           const encodedFilter = decodeURIComponent(JSON.stringify(filter));
           try {
+            setLoading(true);
             const { data } = await axios.get(`${baseUrl}/property/filter-by-owner/${ownerId}?page=${page}&limit=5&filter=${encodedFilter}&need_count=true`);
 
-            console.log("🚀 ~ handleSubmit ~ data:", data)
-
+            onSearchChange(data);
+            setLoading(false);
           } catch (error) {
             showErrorToast(ErrorToastNames.FilterError)
           }
@@ -94,7 +106,7 @@ const AdminFilter = ({ ownerId }: IAdminFilter) => {
           )}
         </div>
         <h3 className="text-xl mx-5 leading-10 text-quaternary font-semibold my-auto">
-          Abrir filtros de busca
+          {filterIsOpen ? 'Fechar filtros de busca' : 'Abrir filtros de busca'}
         </h3>
       </div>
       {filterIsOpen && (
@@ -120,7 +132,9 @@ const AdminFilter = ({ ownerId }: IAdminFilter) => {
             onClick={handleSubmit}
           >
             {loading ? (
-              <Loading />
+              <span className="flex justify-center my-auto">
+                <Loading />
+              </span>
             ) : (
               <p>Filtrar</p>
             )}

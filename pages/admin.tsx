@@ -44,10 +44,22 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
   const userName = session?.user?.data?.name;
   const plusPlan = plans.find((e) => e.name === 'Locale Plus');
   const ownerIsPlus = ownerData?.owner?.plan === plusPlan?._id ? true : false;
+  const [newData, setNewData] = useState(null)
+  const [docsToRender, setDocsToRender] = useState(ownerProperties);
+  const [filterIsOpen, setFilterIsOpen] = useState(true);
+  console.log("🚀 ~ filterIsOpen:", filterIsOpen)
 
   useEffect(() => {
     setIsOwner(ownerProperties?.docs?.length > 0 ? true : false);
   }, [ownerProperties]);
+
+  useEffect(() => {
+    if (newData && filterIsOpen) {
+      setDocsToRender(newData)
+    } else if (!filterIsOpen) {
+      setDocsToRender(ownerProperties)
+    }
+  }, [newData, filterIsOpen])
 
   useEffect(() => {
     if (router.query.page !== undefined && typeof query.page === 'string') {
@@ -93,17 +105,21 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
           <div className="mb-10 md:px-5 lg:px-0">
             <WelcomeAdmin userName={ownerData.user.username} />
 
-            <AdminFilter ownerId={ownerData?.owner ? ownerData?.owner?._id : ''} />
+            <AdminFilter
+              ownerId={ownerData?.owner ? ownerData?.owner?._id : ''}
+              onSearchChange={(data: any) => setNewData(data)}
+              onCloseFilter={(isOpen: boolean) => setFilterIsOpen(isOpen)}
+            />
 
-            {ownerProperties?.docs && (
+            {docsToRender?.docs && (
               <Pagination
-                totalPages={ownerProperties.totalPages}
+                totalPages={docsToRender.totalPages}
                 setCurrentPage={setCurrentPage}
                 currentPage={currentPage}
               />
             )}
             {isOwner &&
-              ownerProperties?.docs?.map(
+              docsToRender?.docs?.map(
                 ({
                   _id,
                   prices,
@@ -122,7 +138,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
                     price={prices.length > 0 ? prices[0]?.value : 0}
                     location={address.streetName}
                     views={views}
-                    messages={ownerProperties?.messages?.filter(
+                    messages={docsToRender?.messages?.filter(
                       (item: IMessage) => item.propertyId === _id
                     )}
                     isActiveProp={isActive}

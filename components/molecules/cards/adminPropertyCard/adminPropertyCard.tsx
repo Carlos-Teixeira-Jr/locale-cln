@@ -182,8 +182,8 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
               </div>
               <div className={`flex flex-row space-x-2 items-center justify-center md:justify-start font-bold text-md md:text-lg text-quaternary`}>
                 <MessageIcon />
-                <span>{messages.length}</span>
-                <h2>{messages.length === 1 ? 'mensagem' : 'mensagens'}</h2>
+                <span>{messages?.length}</span>
+                <h2>{messages?.length === 1 ? 'mensagem' : 'mensagens'}</h2>
               </div>
               <h3 className={`w-fit  mx-auto md:mx-0 font-bold text-sm my-auto justify-center md:justify-start text-quaternary`}>
                 {location}
