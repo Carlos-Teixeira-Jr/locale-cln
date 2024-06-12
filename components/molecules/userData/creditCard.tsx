@@ -301,7 +301,7 @@ const CreditCard = ({
   };
 
   return (
-    <div className="md:w-[90%] w-full">
+    <div className="md:w-[90%] w-full hidden">
       <h2 className="md:text-2xl text-lg leading-10 text-quaternary font-bold mb-5 md:mt-16 mt-5 px-5 w-full">
         Formas de Pagamento
       </h2>

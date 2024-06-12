@@ -9,6 +9,8 @@ import { IPlan } from '../common/interfaces/plans/plans';
 import { IOwnerProperties } from '../common/interfaces/properties/propertiesList';
 import { IData } from '../common/interfaces/property/propertyData';
 import { fetchJson } from '../common/utils/fetchJson';
+import AdminFilter from '../components/atoms/admin/adminFilter';
+import WelcomeAdmin from '../components/atoms/admin/welcomeAdmin';
 import Pagination from '../components/atoms/pagination/pagination';
 import { AdminPropertyCard } from '../components/molecules';
 import { INotification } from '../components/molecules/cards/notificationCard/notificationCard';
@@ -89,9 +91,10 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
         <div className={`flex flex-col items-center mt-24 ${width < 1080 ? 'justify-center w-full' : `${ownerProperties?.docs?.length <= 0 ? 'lg:ml-[43rem] xl:mx-auto' : 'lg:ml-[26rem] 2xl:mx-auto'}`}`}>
 
           <div className="mb-10 md:px-5 lg:px-0">
-            <h1 className="font-extrabold text-xl md:text-3xl text-quaternary md:mb-5 md:mr-20. text-center">
-              {userName! ? `Bem vindo ${userName ? userName : ownerData?.owner?.name}` : 'Bem vindo'}
-            </h1>
+            <WelcomeAdmin userName={ownerData.user.username} />
+
+            <AdminFilter ownerId={ownerData?.owner ? ownerData?.owner?._id : ''} />
+
             {ownerProperties?.docs && (
               <Pagination
                 totalPages={ownerProperties.totalPages}

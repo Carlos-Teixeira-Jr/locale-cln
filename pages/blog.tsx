@@ -15,7 +15,14 @@ interface IBlogPage {
   ownerProperties: IOwnerProperties
 }
 
-const BlogPage = ({ ownerProperties }: IBlogPage) => {
+const defaultOwnerProperties: IOwnerProperties = {
+  docs: [],
+  count: 0,
+  totalPages: 0,
+  messages: []
+};
+
+const BlogPage = ({ ownerProperties = defaultOwnerProperties }: IBlogPage) => {
 
   const [searchInput, setSearchInput] = useState('');
   const [isSearch, setIsSearch] = useState(false);
@@ -64,10 +71,11 @@ const BlogPage = ({ ownerProperties }: IBlogPage) => {
 
       <Header userIsOwner={isOwner} />
 
+      <div className="px-5">
+        <BlogShortcuts onPageSelect={(pageSelected: LoadingState) => setSelectedPage(pageSelected)} />
+      </div>
+
       <div className="max-w-7xl mx-auto flex flex-col flex-grow">
-        <div className="px-5">
-          <BlogShortcuts onPageSelect={(pageSelected: LoadingState) => setSelectedPage(pageSelected)} />
-        </div>
 
         {!isSearch ? (
           <div className="flex flex-col">
@@ -169,9 +177,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           }),
         })
           .then((res) => res.json())
-          .catch(() => [])
+          .catch(() => defaultOwnerProperties)
       } else {
-        console.log('Error:')
+        ownerProperties = defaultOwnerProperties;
       }
     } else {
       ownerData = {};
@@ -182,7 +190,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   return {
     props: {
-      ownerProperties
+      ownerProperties: ownerProperties ?? defaultOwnerProperties
     },
   };
 }

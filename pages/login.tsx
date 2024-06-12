@@ -10,7 +10,14 @@ interface ILoginPage {
   ownerProperties: IOwnerProperties
 }
 
-const LoginPage = ({ ownerProperties }: ILoginPage) => {
+const defaultOwnerProperties: IOwnerProperties = {
+  docs: [],
+  count: 0,
+  totalPages: 0,
+  messages: []
+};
+
+const LoginPage = ({ ownerProperties = defaultOwnerProperties }: ILoginPage) => {
 
   const isMobile = useIsMobile();
   const isOwner = ownerProperties?.docs.length > 0;
@@ -71,7 +78,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             }),
           })
             .then((res) => res.json())
-            .catch(() => [])
+            .catch(() => defaultOwnerProperties)
         } else {
           console.log('Error:')
         }
@@ -84,7 +91,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     return {
       props: {
-        ownerProperties,
+        ownerProperties: ownerProperties ?? defaultOwnerProperties
       },
     };
   }

@@ -30,7 +30,7 @@ import UserAddress from '../components/molecules/address/userAdress';
 import { PlansCardsHidden } from '../components/molecules/cards';
 import ChangePlanCheckbox from '../components/molecules/changePlanCheckBox/changePlanCheckBox';
 import Coupons from '../components/molecules/coupons/coupons';
-import CreditCard, {
+import {
   CreditCardForm,
 } from '../components/molecules/userData/creditCard';
 import DeleteAccount from '../components/molecules/userData/deleteAccount';
@@ -704,7 +704,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
               </button>
             </div>
 
-            <div className="lg:pt-20 pt-0.5 mx-4">
+            {/* <div className="lg:pt-20 pt-0.5 mx-4">
               <label className={classes.accordion}>
                 Dados do Cartão de Crédito
                 <span
@@ -755,7 +755,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                   />
                 )}
               </div>
-            </div>
+            </div> */}
 
             <div className="lg:pt-5 pt-0.5 mb-20 mx-4">
               <label className={classes.accordion}>

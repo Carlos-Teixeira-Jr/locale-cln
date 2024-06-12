@@ -395,7 +395,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
           </label>
           <div className="flex flex-row rounded-full border bg-tertiary border-quaternary h-8 mt-1 md:w-52 w-full">
             <button className={buyBtnClassName} onClick={handleBuy}>
-              Comprar
+              Vender
             </button>
             <button className={rentBtnClassName} onClick={handleRent}>
               Alugar

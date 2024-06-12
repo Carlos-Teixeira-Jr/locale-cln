@@ -26,7 +26,14 @@ interface IRegister {
   ownerProperties: IOwnerProperties
 }
 
-const Register = ({ ownerProperties }: IRegister) => {
+const defaultOwnerProperties: IOwnerProperties = {
+  docs: [],
+  count: 0,
+  totalPages: 0,
+  messages: []
+};
+
+const Register = ({ ownerProperties = defaultOwnerProperties }: IRegister) => {
   const router = useRouter();
   const { updateProgress, progress } = useProgress();
   const handleClose = () => setOpen(false);
@@ -372,9 +379,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           }),
         })
           .then((res) => res.json())
-          .catch(() => [])
+          .catch(() => defaultOwnerProperties)
       } else {
-        console.log('Error:')
+        ownerProperties = defaultOwnerProperties;
       }
     } else {
       ownerData = {};
@@ -385,7 +392,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   return {
     props: {
-      ownerProperties,
+      ownerProperties: ownerProperties ?? defaultOwnerProperties
     },
   };
 }

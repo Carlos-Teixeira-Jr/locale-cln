@@ -31,6 +31,13 @@ export interface IPropertyInfo {
   totalPages: number;
 }
 
+const defaultOwnerProperties: IOwnerProperties = {
+  docs: [],
+  count: 0,
+  totalPages: 0,
+  messages: []
+};
+
 export interface ISearch {
   propertyInfo: IPropertyInfo;
   locations: ILocation[];
@@ -42,7 +49,7 @@ const Search: NextPageWithLayout<ISearch> = ({
   propertyInfo,
   locations,
   tagsData,
-  ownerProperties
+  ownerProperties = defaultOwnerProperties
 }) => {
 
   const ref = useRef<HTMLDivElement>(null);
@@ -497,9 +504,9 @@ export async function getServerSideProps(context: NextPageContext) {
           }),
         })
           .then((res) => res.json())
-          .catch(() => [])
+          .catch(() => defaultOwnerProperties)
       } else {
-        console.log('Error:')
+        ownerProperties = defaultOwnerProperties;
       }
     } else {
       ownerData = {};
@@ -513,7 +520,7 @@ export async function getServerSideProps(context: NextPageContext) {
       propertyInfo,
       locations,
       tagsData,
-      ownerProperties
+      ownerProperties: ownerProperties ?? defaultOwnerProperties
     },
   };
 }

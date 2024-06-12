@@ -18,7 +18,14 @@ interface IRegisterStep2 {
   ownerProperties: IOwnerProperties
 }
 
-const RegisterStep2 = ({ ownerProperties }: IRegisterStep2) => {
+const defaultOwnerProperties: IOwnerProperties = {
+  docs: [],
+  count: 0,
+  totalPages: 0,
+  messages: []
+};
+
+const RegisterStep2 = ({ ownerProperties = defaultOwnerProperties }: IRegisterStep2) => {
   const isOwner = ownerProperties?.docs.length > 0;
   const imagesInputRef = useRef<HTMLElement>(null);
   const router = useRouter();
@@ -185,7 +192,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const page = 1;
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
   let ownerData;
-  let ownerProperties;
+  let ownerProperties = defaultOwnerProperties;
 
   try {
     const ownerIdResponse = await fetch(
@@ -215,9 +222,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           }),
         })
           .then((res) => res.json())
-          .catch(() => [])
+          .catch(() => defaultOwnerProperties)
       } else {
-        console.log('Error:')
+        ownerProperties = defaultOwnerProperties;
       }
     } else {
       ownerData = {};
@@ -228,7 +235,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   return {
     props: {
-      ownerProperties,
+      ownerProperties: ownerProperties ?? defaultOwnerProperties
     },
   };
 }

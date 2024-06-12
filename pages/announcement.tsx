@@ -14,7 +14,17 @@ interface IAnnouncementPage {
   plans: IPlan[]
 }
 
-const AnnouncementPage = ({ plans, ownerProperties }: IAnnouncementPage) => {
+const defaultOwnerProperties: IOwnerProperties = {
+  docs: [],
+  count: 0,
+  totalPages: 0,
+  messages: []
+};
+
+const AnnouncementPage = ({
+  plans,
+  ownerProperties = defaultOwnerProperties
+}: IAnnouncementPage) => {
 
   const reversedCards = [...plans].reverse();
   const isOwner = ownerProperties?.docs.length > 0;
@@ -80,7 +90,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const page = 1;
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
   let ownerData;
-  let ownerProperties;
+  let ownerProperties = defaultOwnerProperties;
 
   try {
     const ownerIdResponse = await fetch(
@@ -130,7 +140,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   return {
     props: {
-      ownerProperties,
+      ownerProperties: ownerProperties ?? defaultOwnerProperties,
       plans
     },
   };

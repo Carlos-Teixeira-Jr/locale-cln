@@ -28,11 +28,18 @@ export enum TransactionType {
   RENT = 'alugar',
 }
 
+const defaultOwnerProperties: IOwnerProperties = {
+  docs: [],
+  count: 0,
+  totalPages: 0,
+  messages: []
+};
+
 const Home: NextPageWithLayout<IHome> = ({
   propertyInfo,
   propertyTypes,
   locations,
-  ownerProperties
+  ownerProperties = defaultOwnerProperties
 }) => {
 
   const { latitude, longitude, location } = useTrackLocation();
@@ -214,7 +221,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const page = 1;
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
   let ownerData;
-  let ownerProperties;
+  let ownerProperties = defaultOwnerProperties;
 
   try {
     const ownerIdResponse = await fetch(
@@ -244,14 +251,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           }),
         })
           .then((res) => res.json())
-          .catch(() => [])
+          .catch(() => defaultOwnerProperties);
       } else {
-        return {
-          redirect: {
-            destination: '/adminUserData?page=1',
-            permanent: false,
-          },
-        };
+        ownerProperties = defaultOwnerProperties;
       }
     } else {
       ownerData = {};
@@ -281,7 +283,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       propertyInfo,
       propertyTypes,
       locations,
-      ownerProperties
+      ownerProperties: ownerProperties ?? defaultOwnerProperties
     },
   };
 }

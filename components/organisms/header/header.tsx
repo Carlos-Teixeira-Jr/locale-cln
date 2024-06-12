@@ -112,7 +112,7 @@ const Header = ({ userIsOwner }: IHeader) => {
           {session ? (
             <div className="flex gap-2">
               <div
-                className='cursor-pointer'
+                className='cursor-pointer w-8 h-8'
                 onClick={() => {
                   setOpen(!open);
                 }}
@@ -124,7 +124,7 @@ const Header = ({ userIsOwner }: IHeader) => {
                       alt={'Admin image'}
                       width={50}
                       height={50}
-                      className="border border-primary rounded-full w-8 h-8 md:w-8 md:h-8 object-cover"
+                      className="border border-primary rounded-full w-8 h-8 md:w-8 md:h-8 object-cover object-center"
                     />
                   ) : (
                     <UserIcon
