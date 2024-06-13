@@ -47,7 +47,6 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
   const [newData, setNewData] = useState(null)
   const [docsToRender, setDocsToRender] = useState(ownerProperties);
   const [filterIsOpen, setFilterIsOpen] = useState(true);
-  console.log("🚀 ~ filterIsOpen:", filterIsOpen)
 
   useEffect(() => {
     setIsOwner(ownerProperties?.docs?.length > 0 ? true : false);

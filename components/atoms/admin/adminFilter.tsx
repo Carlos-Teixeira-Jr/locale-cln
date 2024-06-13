@@ -87,10 +87,10 @@ const AdminFilter = ({ ownerId, onSearchChange, onCloseFilter }: IAdminFilter) =
   }
 
   return (
-    <section>
-      <div className={`flex justify-start px-5 my-5 md:my-0 md:mt-10'}`}>
+    <section className="bg-tertiary rounded-[5px] drop-shadow-lg p-3 w-full">
+      <div className={`flex justify-start md:my-0 md:mt-10'}`}>
         <div
-          className={`w-6 h-6 border z-0 bg-tertiary rounded-[5px] drop-shadow-lg cursor-pointer my-auto shrink-0 ${filterIsOpen ? 'border-secondary' : 'border-quaternary'
+          className={`w-6 h-6 border rounded-lg z-0 cursor-pointer my-auto shrink-0 ${filterIsOpen ? 'border-secondary' : 'border-quaternary'
             }`}
           onClick={() => {
             setFilterIsOpen(!filterIsOpen);
@@ -105,15 +105,15 @@ const AdminFilter = ({ ownerId, onSearchChange, onCloseFilter }: IAdminFilter) =
             />
           )}
         </div>
-        <h3 className="text-xl mx-5 leading-10 text-quaternary font-semibold my-auto">
+        <h3 className="md:text-xl text-lg mx-5 leading-10 text-quaternary font-semibold my-auto">
           {filterIsOpen ? 'Fechar filtros de busca' : 'Abrir filtros de busca'}
         </h3>
       </div>
       {filterIsOpen && (
-        <fieldset className="flex flex-col gap-2 text-quaternary text-lg bg-tertiary rounded-[30px] shadow-xl p-4">
+        <fieldset className="flex md:flex-row flex-col w-full gap-2 text-quaternary text-lg">
 
           {inputs.map((input) => (
-            <div className="flex flex-col" key={input.key}>
+            <div className="flex flex-col w-full" key={input.key}>
               <label htmlFor={input.htmlFor}>
                 {input.label}
               </label>
@@ -126,22 +126,23 @@ const AdminFilter = ({ ownerId, onSearchChange, onCloseFilter }: IAdminFilter) =
               />
             </div>
           ))}
-
-          <button
-            className="mt-4 p-2 h-10 w-1/2 mx-auto text-xl font-semibold text-tertiary bg-primary hover:text-white rounded-md hover:bg-red-600 transition-colors duration-300"
-            onClick={handleSubmit}
-          >
-            {loading ? (
-              <span className="flex justify-center my-auto">
-                <Loading />
-              </span>
-            ) : (
-              <p>Filtrar</p>
-            )}
-          </button>
         </fieldset>
       )}
 
+      {filterIsOpen && (
+        <button
+          className="mt-4 p-2 h-10 w-full mx-auto text-xl font-semibold text-tertiary bg-primary hover:text-white rounded-md hover:bg-red-600 transition-colors duration-300"
+          onClick={handleSubmit}
+        >
+          {loading ? (
+            <span className="flex justify-center my-auto">
+              <Loading />
+            </span>
+          ) : (
+            <p>Filtrar</p>
+          )}
+        </button>
+      )}
     </section>
   )
 }

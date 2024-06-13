@@ -131,8 +131,8 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
   ];
 
   return (
-    <div className="flex flex-col items-center mb-10 justify-between p-1">
-      <Link href={`/property/${params}`}>
+    <div className="flex flex-col items-center mb-10 justify-between p-1 w-full">
+      <Link href={`/property/${params}`} className='md:max-w-[737px] lg:max-w-none'>
         <div
           className={`flex flex-col md:flex-row h-fit md:h-64 w-full lg:w-[777px] shadow-lg p-2 ${isActive ? '' : 'opacity-100'
             } ${highlighted ? 'bg-gradient-to-tr from-secondary to-primary' : 'bg-tertiary'}`}
