@@ -173,7 +173,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   let ownerId;
   const params = context.params?.id as string;
   const id = params.split('id=')[1];
-  console.log("🚀 ~ getServerSideProps ~ id:", id)
 
   try {
     const propertyResponse = await fetch(

@@ -54,7 +54,7 @@ const Coupons = ({
     <div className={`flex flex-col md:mt-3 md:mb-10`}>
       <div className={`flex  ${isAdminPage ? '' : 'justify-start md:justify-center px-5 my-5 md:my-0 md:mt-10'}`}>
         <div
-          className={`w-10 h-10 border z-0 bg-tertiary rounded-[10px] drop-shadow-lg cursor-pointer my-auto shrink-0 ${useCoupon ? 'border-secondary' : 'border-quaternary'
+          className={`w-7 h-7 border z-0 bg-tertiary rounded-[10px] drop-shadow-lg cursor-pointer my-auto shrink-0 ${useCoupon ? 'border-secondary' : 'border-quaternary'
             }`}
           onClick={() => {
             setUseCoupon(!useCoupon);
@@ -63,8 +63,8 @@ const Coupons = ({
           {useCoupon && (
             <CheckIcon
               fill="#F5BF5D"
-              width="36"
-              className={`pl-1 pb-2 ${useCoupon ? ' border-secondary' : ''
+              width="32"
+              className={`pr-1 pb-5 ${useCoupon ? ' border-secondary' : ''
                 }`}
             />
           )}

@@ -15,7 +15,7 @@
   {
     "type": "Casa",
     "key": 2,
-    "subTypes": ["Casa de condomínio", "Casa de bairro", "Sobrado"]
+    "subTypes": ["Casa de condomínio", "Residência", "Sobrado"]
   },
   {
     "type": "Comercial",

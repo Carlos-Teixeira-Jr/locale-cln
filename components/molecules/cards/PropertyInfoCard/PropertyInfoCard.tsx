@@ -51,6 +51,8 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const isMobile = useIsMobile()
   const [currentIndex, setCurrentIndex] = useState(0);
+  const params = `${propertyInfo.adType}+${propertyInfo.propertyType}+${propertyInfo.address.city}+${propertyInfo.address.neighborhood}+${propertyInfo.address.streetName}+id=${propertyInfo._id}`
+
 
   const [expanded, setExpanded] = useState(false);
   const [isExpandable, setIsExpandable] = useState(false);
@@ -97,7 +99,7 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
 
   return (
     <>
-      <Link href={href}>
+      <Link href={`/property/${params}`}>
         <div
           className={`rounded-[33px] overflow-hidden drop-shadow-lg my-7 md:mx-9 mx-2 flex flex-col p-1 ${highlighted ? 'bg-gradient-to-tr from-secondary to-primary' : 'bg-tertiary'}`}
         >

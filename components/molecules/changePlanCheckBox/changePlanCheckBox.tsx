@@ -18,7 +18,7 @@ const ChangePlanCheckbox = ({ onChangePlanClick }: IChangePlanCheckbox) => {
       <div className={`flex flex-col md:mt-5 md:mb-10`}>
         <div className={`flex justify-start px-5 my-5 md:my-0`}>
           <div
-            className={`w-10 h-10 border bg-tertiary rounded-[10px] drop-shadow-lg cursor-pointer my-auto shrink-0 ${changePlan ? 'border-secondary' : 'border-quaternary'
+            className={`w-7 h-7 border bg-tertiary rounded-[10px] drop-shadow-lg cursor-pointer my-auto shrink-0 ${changePlan ? 'border-secondary' : 'border-quaternary'
               }`}
             onClick={() => {
               setChangePlan(!changePlan)
@@ -27,8 +27,8 @@ const ChangePlanCheckbox = ({ onChangePlanClick }: IChangePlanCheckbox) => {
             {changePlan && (
               <CheckIcon
                 fill="#F5BF5D"
-                width="36"
-                className={`pl-1 pb-2 ${changePlan ? ' border-secondary' : ''
+                width="32"
+                className={`pb-5 pr-1 ${changePlan ? ' border-secondary' : ''
                   }`}
               />
             )}

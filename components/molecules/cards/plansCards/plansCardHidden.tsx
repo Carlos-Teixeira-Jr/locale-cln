@@ -40,6 +40,7 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
   const [anchorId, setAnchorId] = useState(``);
   const anchorRef = useRef<HTMLDivElement>(null);
   const [ownerPlan, setOwnerPlan] = useState(userPlan);
+  const plusPlanCard = plans.find((card) => card.name === 'Locale Plus');
 
   useEffect(() => {
     if (selectedPlanCard !== '') {
@@ -59,7 +60,8 @@ const PlansCardsHidden: React.FC<IPlansCardHidden> = ({
   const dinamicClasses = {
     cardContainer: `card-${selectedPlanCard} md:mx-auto my-5 lg:my-0 rounded-t-[35px] rounded-b-[30px] border-[5px] h-fit ${selectedPlanCard === id ? 'border-secondary' : 'border-none'
       }`,
-    adminHeader: `${isAdminPage ? classes.cardAdminHeader : classes.cardHeader
+    cardHeader: `flex bg-primary px-1 rounded-t-[30px] md:w-60 md:h-[50px] ${plusPlanCard ? 'py-1' : 'py-2'}`,
+    adminHeader: `${isAdminPage ? classes.cardAdminHeader : `flex bg-primary px-1 rounded-t-[30px] md:w-60 md:h-[50px] ${plusPlanCard ? 'py-1' : 'py-2'}`
       }`,
     planTitle: `${isAdminPage ? classes.planAdminTitle : classes.planTitle}`,
     planType: `${isAdminPage ? classes.planAdminType : classes.planType}`,
@@ -226,12 +228,11 @@ const classes = {
     'md:flex md:flex-row justify-center md:mb-5 px-5 md:px-0 md:mx-auto.',
   cardAdminHeader:
     'flex bg-primary px-1 rounded-t-[30px] md:w-[230px] md:h-[66px]',
-  cardHeader: 'flex bg-primary px-1 rounded-t-[30px] md:w-60 md:h-fit py-2',
   planAdminTitle: 'font-bold text-[35px] text-tertiary mr-2',
-  planTitle: 'font-bold text-xl md:text-2xl text-tertiary mr-3',
+  planTitle: 'font-bold text-xl md:text-2xl text-tertiary mr-3 pb-1',
   planAdminType: 'font-bold text-[35px] text-secondary',
   planType: 'font-bold text-lg md:text-xl text-secondary',
-  localePlus: 'bg-tertiary rounded-full flex h-[33px] lg:mt-2',
+  localePlus: 'bg-tertiary rounded-full flex h-[33px]',
   contentTitle: 'text-3xl font-normal leading-[60px] py-3 text-center',
   divider:
     'w-48 text-center md:mr-8 mr-[45px] md:ml-16 ml-[50px] text-quaternary border border-quaternary',

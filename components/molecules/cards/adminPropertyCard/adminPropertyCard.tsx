@@ -59,7 +59,7 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
   const { data: session } = useSession() as any;
   const user = session?.user?.data._id;
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const params = `${adType}+${propertyType}+${address.city}+${address.neighborhood}+${address.streetName}+id=${_id}`
+  const params = `${adType}+${propertyType}+${address.city}+${address.neighborhood}+${address.streetName}`;
 
   const handleHighlight = async () => {
     try {
@@ -100,7 +100,7 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
     {
       key: 'edit',
       title: 'Editar',
-      link: '/property/modify/',
+      link: `property/modify/${params}&id=`,
       className:
         'bg-secondary w-full h-12 px-10 rounded-md font-bold text-tertiary text-xl transition-colors duration-300 hover:bg-yellow-500 hover:text-white',
     },
@@ -132,7 +132,7 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
 
   return (
     <div className="flex flex-col items-center mb-10 justify-between p-1 w-full">
-      <Link href={`/property/${params}`} className='md:max-w-[737px] lg:max-w-none'>
+      <Link href={`/property/${params}&id=${_id}`} className='md:max-w-[737px] lg:max-w-none'>
         <div
           className={`flex flex-col md:flex-row h-fit md:h-64 w-full lg:w-[777px] shadow-lg p-2 ${isActive ? '' : 'opacity-100'
             } ${highlighted ? 'bg-gradient-to-tr from-secondary to-primary' : 'bg-tertiary'}`}

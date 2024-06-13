@@ -626,7 +626,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
           <div className="md:flex my-5">
             <div
               className="flex flex-col md:w-96 lg:pr-6"
-              ref={mainFeaturesErrorScroll.description}
+              ref={mainFeaturesErrorScroll.propertyValue}
             >
               <label className="text-base font-normal text-quaternary leading-7">
                 {`${isBuy ? 'Valor do Imóvel' : 'Valor do Aluguel'}`}
@@ -712,7 +712,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
 
               <div className='flex flex-col'>
                 <div
-                  className={`lg:ml-5 w-[53px] h-12 shrink-0 border bg-tertiary rounded-[10px] mt-1 drop-shadow-lg cursor-pointer ${propertyFeaturesData.condominium
+                  className={`lg:ml-5 w-7 h-7 shrink-0 border bg-tertiary rounded-[10px] mt-1 drop-shadow-lg cursor-pointer ${propertyFeaturesData.condominium
                     ? 'border-secondary'
                     : 'border-quaternary'
                     }`}
@@ -726,8 +726,8 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                   {propertyFeaturesData.condominium && (
                     <CheckIcon
                       fill="#F5BF5D"
-                      width="42"
-                      className={`pl-1 mx-auto ${propertyFeaturesData.condominium
+                      width="32"
+                      className={`pb-5 pr-1 mx-auto ${propertyFeaturesData.condominium
                         ? ' border-secondary'
                         : ''
                         }`}
@@ -790,7 +790,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                 }
                 <div className='flex flex-col'>
                   <div
-                    className={`lg:ml-5 w-[53px] h-12 border bg-tertiary rounded-[10px] mt-1 drop-shadow-lg cursor-pointer shrink-0 ${propertyFeaturesData.iptu
+                    className={`lg:ml-5 w-7 h-7 border bg-tertiary rounded-[10px] mt-1 drop-shadow-lg cursor-pointer shrink-0 ${propertyFeaturesData.iptu
                       ? 'border-secondary'
                       : 'border-quaternary'
                       }`}
@@ -804,8 +804,8 @@ const MainFeatures: React.FC<IMainFeatures> = ({
                     {propertyFeaturesData.iptu && (
                       <CheckIcon
                         fill="#F5BF5D"
-                        width="42"
-                        className={`pl-1 mx-auto ${propertyFeaturesData.iptu ? ' border-secondary' : ''
+                        width="32"
+                        className={`pb-5 pr-1 mx-auto ${propertyFeaturesData.iptu ? ' border-secondary' : ''
                           }`}
                       />
                     )}
