@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { IMessagesByOwner } from "../common/interfaces/message/messages";
 import { IOwner } from "../common/interfaces/owner/owner";
 import { IPlan } from "../common/interfaces/plans/plans";
+import { IFavProperties } from "../common/interfaces/properties/favouriteProperties";
 import { IOwnerProperties } from "../common/interfaces/properties/propertiesList";
 import { fetchJson } from "../common/utils/fetchJson";
 import { ErrorToastNames, showErrorToast, showSuccessToast, SuccessToastNames } from "../common/utils/toasts";
@@ -23,6 +24,7 @@ interface ICreditsShop {
   ownerPlanPrice: number
   ownerPlan: IPlan;
   ownerProperties: IOwnerProperties
+  favouriteProperties: IFavProperties
 }
 
 const CreditsShop = ({
@@ -31,7 +33,8 @@ const CreditsShop = ({
   owner,
   ownerPlanPrice,
   ownerPlan,
-  ownerProperties
+  ownerProperties,
+  favouriteProperties
 }: ICreditsShop) => {
 
   const [width] = useDeviceSize();
@@ -138,6 +141,8 @@ const CreditsShop = ({
                 unreadMessages={unreadMessages}
                 isPlus={true}
                 hasProperties={ownerProperties?.docs?.length > 0 ? true : false}
+                favouriteProperties={favouriteProperties}
+                messages={messages?.docs}
               />
             </div>
 
@@ -250,7 +255,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     console.error(error);
   }
 
-  const [ownerProperties, notifications, messages, ownerPlan] = await Promise.all([
+  const [ownerProperties, notifications, messages, ownerPlan, favouriteProperties] = await Promise.all([
     fetch(`${baseUrl}/property/owner-properties`, {
       method: 'POST',
       headers: {
@@ -294,9 +299,22 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     })
       .then((res) => res.json())
       .catch(() => { }),
+    fetch(`${baseUrl}/user/favourite`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id: userId,
+        page: Number(page),
+      }),
+    })
+      .then((res) => res.json())
+      .catch(() => []),
     fetchJson(`${baseUrl}/notification/user/${userId}`),
     fetchJson(`${baseUrl}/message/find-all-by-ownerId`),
     fetchJson(`${paymentUrl}/payment/subscription/${ownerSubscription}`),
+    fetchJson(`${baseUrl}/user/favourite`),
   ]);
 
   ownerPlanPrice = ownerPlan?.value ? ownerPlan?.value : 0;
@@ -308,7 +326,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       messages,
       owner,
       ownerPlanPrice,
-      ownerPlan
+      ownerPlan,
+      favouriteProperties
     },
   };
 }

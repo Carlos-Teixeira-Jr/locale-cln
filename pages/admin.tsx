@@ -6,6 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { IMessage, IMessagesByOwner } from '../common/interfaces/message/messages';
 import { IOwnerData } from '../common/interfaces/owner/owner';
 import { IPlan } from '../common/interfaces/plans/plans';
+import { IFavProperties } from '../common/interfaces/properties/favouriteProperties';
 import { IOwnerProperties } from '../common/interfaces/properties/propertiesList';
 import { IData } from '../common/interfaces/property/propertyData';
 import { fetchJson } from '../common/utils/fetchJson';
@@ -23,7 +24,8 @@ interface AdminPageProps {
   notifications: INotification[];
   messages: IMessagesByOwner;
   ownerData: IOwnerData;
-  plans: IPlan[]
+  plans: IPlan[];
+  favouriteProperties: IFavProperties
 }
 
 const AdminPage: NextPageWithLayout<AdminPageProps> = ({
@@ -31,7 +33,8 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
   notifications,
   messages,
   ownerData,
-  plans
+  plans,
+  favouriteProperties
 }) => {
 
   const { data: session } = useSession() as any;
@@ -97,6 +100,8 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
             unreadMessages={unreadMessages}
             isPlus={ownerIsPlus}
             hasProperties={ownerProperties?.docs?.length > 0}
+            favouriteProperties={favouriteProperties}
+            messages={messages?.docs}
           />
         </div>
         <div className={`flex flex-col items-center mt-24 ${width < 1080 ? 'justify-center w-full' : `${ownerProperties?.docs?.length <= 0 ? 'lg:ml-[43rem] xl:mx-auto' : 'lg:ml-[26rem] 2xl:mx-auto'}`}`}>
@@ -204,7 +209,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     console.error(error);
   }
 
-  const [ownerProperties, notifications, messages, plans] = await Promise.all([
+  const [ownerProperties, notifications, messages, plans, favouriteProperties] = await Promise.all([
     fetch(`${baseUrl}/property/owner-properties`, {
       method: 'POST',
       headers: {
@@ -248,10 +253,23 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     })
       .then((res) => res.json())
       .catch(() => []),
+    fetch(`${baseUrl}/user/favourite`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id: userId,
+        page: Number(page),
+      }),
+    })
+      .then((res) => res.json())
+      .catch(() => []),
     fetchJson(`${baseUrl}/property/owner-properties`),
     fetchJson(`${baseUrl}/notification/user/${userId}`),
     fetchJson(`${baseUrl}/message/find-all-by-ownerId`),
     fetchJson(`${baseUrl}/plan`),
+    fetchJson(`${baseUrl}/user/favourite`),
   ]);
 
   if (ownerProperties?.docs?.length === 0 && notifications?.length > 0) {
@@ -275,7 +293,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         notifications,
         messages,
         ownerData,
-        plans
+        plans,
+        favouriteProperties
       },
     };
   } else {
@@ -285,7 +304,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         notifications,
         messages,
         ownerData,
-        plans
+        plans,
+        favouriteProperties
       },
     };
   }

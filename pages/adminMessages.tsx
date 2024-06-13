@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { IMessage } from '../common/interfaces/message/messages';
 import { IOwnerData } from '../common/interfaces/owner/owner';
 import { IPlan } from '../common/interfaces/plans/plans';
+import { IFavProperties } from '../common/interfaces/properties/favouriteProperties';
 import { IOwnerProperties } from '../common/interfaces/properties/propertiesList';
 import { IData } from '../common/interfaces/property/propertyData';
 import { fetchJson } from '../common/utils/fetchJson';
@@ -27,6 +28,7 @@ interface IAdminMessagesPage {
   notifications: [];
   plans: IPlan[];
   ownerData: IOwnerData;
+  favouriteProperties: IFavProperties
 }
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
@@ -36,7 +38,8 @@ const AdminMessages = ({
   messages,
   notifications,
   plans,
-  ownerData
+  ownerData,
+  favouriteProperties
 }: IAdminMessagesPage) => {
 
   const router = useRouter();
@@ -97,6 +100,7 @@ const AdminMessages = ({
               unreadMessages={unreadMessages}
               isPlus={ownerIsPlus}
               hasProperties={ownerProperties?.docs && ownerProperties?.docs?.length > 0 ? true : false}
+              favouriteProperties={favouriteProperties}
             />
           ) : (
             ''
@@ -196,7 +200,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     notifications,
     ownerProperties,
     messages,
-    plans
+    plans,
+    favouriteProperties
   ] = await Promise.all([
     fetch(
       `${baseUrl}/notification/user/${userId}`,
@@ -241,10 +246,23 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     })
       .then((res) => res.json())
       .catch(() => []),
+    fetch(`${baseUrl}/user/favourite`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id: userId,
+        page: Number(page),
+      }),
+    })
+      .then((res) => res.json())
+      .catch(() => []),
     fetchJson(`${baseUrl}/notification/${userId}`),
     fetchJson(`${baseUrl}/property/owner-properties`),
     fetchJson(`${baseUrl}/message/find-all-by-ownerId`),
     fetchJson(`${baseUrl}/plan`),
+    fetchJson(`${baseUrl}/user/favourite`),
   ]);
 
   return {
@@ -253,7 +271,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       messages,
       notifications,
       plans,
-      ownerData
+      ownerData,
+      favouriteProperties
     },
   };
 }

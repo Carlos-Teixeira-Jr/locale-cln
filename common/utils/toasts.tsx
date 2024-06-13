@@ -56,7 +56,8 @@ export enum ErrorToastNames {
   SamePlanError = 'samePlanError',
   FilterError = 'filterError',
   EmptyFilterFields = 'emptyFilterDields',
-  InvalidAnnouncementCode = 'invalidAnnouncementCode'
+  InvalidAnnouncementCode = 'invalidAnnouncementCode',
+  AlreadyInLoginPage = 'alreadyInLoginPage'
 }
 
 export enum InfoToastNames {
@@ -340,6 +341,12 @@ const errorToastMessages: Record<ErrorToastNames, ToastMessage> = {
   },
   [ErrorToastNames.InvalidAnnouncementCode]: {
     message: 'Nenhum anúncio encontrado com o código informado.',
+    options: {
+      autoClose: 5000,
+    },
+  },
+  [ErrorToastNames.AlreadyInLoginPage]: {
+    message: 'Insira seus dados para fazer login ou cadastre uma conta.',
     options: {
       autoClose: 5000,
     },

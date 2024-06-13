@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
+import { ErrorToastNames, showErrorToast } from '../../../common/utils/toasts';
 import { useIsMobile } from '../../../hooks/useIsMobile';
 import DropdownAdmin from '../../atoms/dropdowns/dropdownAdmin';
 import MenuIcon from '../../atoms/icons/menuIcon';
@@ -148,7 +149,16 @@ const Header = ({ userIsOwner }: IHeader) => {
             <>
               <Link href={'/login'}>
                 {!loading ? (
-                  <button className="bg-primary justify-self-end cursor-pointer text-tertiary rounded-3xl font-normal md:text-xl w-20 md:w-[124px] md:h-[2rem] mr-2 shadow-md transition-colors duration-300 hover:bg-red-600 hover:text-white" onClick={() => setLoading(true)}>
+                  <button
+                    className="bg-primary justify-self-end cursor-pointer text-tertiary rounded-3xl font-normal md:text-xl w-20 md:w-[124px] md:h-[2rem] mr-2 shadow-md transition-colors duration-300 hover:bg-red-600 hover:text-white"
+                    onClick={() => {
+                      if (router.pathname !== '/login') {
+                        setLoading(true);
+                      } else {
+                        showErrorToast(ErrorToastNames.AlreadyInLoginPage)
+                      }
+                    }}
+                  >
                     Entrar
                   </button>
                 ) : (
@@ -156,7 +166,6 @@ const Header = ({ userIsOwner }: IHeader) => {
                     <Loading fill='#F75D5F' className='h-[2rem] w-[2rem] text-gray-200 animate-spin dark:text-gray-600 fill-tertiary' />
                   </div>
                 )}
-
               </Link>
               <div className='flex items-center' ref={ref as any} onClick={() => setOpen(!open)}>
                 <button className="visible md:hidden cursor-pointer decoration-transparent">

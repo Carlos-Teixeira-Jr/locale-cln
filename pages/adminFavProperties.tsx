@@ -82,6 +82,8 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
               unreadMessages={unreadMessages}
               isPlus={ownerIsPlus}
               hasProperties={ownerProperties?.docs?.length > 0}
+              favouriteProperties={favouriteProperties}
+              messages={messages.docs}
             />
           ) : (
             ''
