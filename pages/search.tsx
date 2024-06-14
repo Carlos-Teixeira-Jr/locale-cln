@@ -7,6 +7,8 @@ import { ILocation } from '../common/interfaces/locationDropdown';
 import { IOwnerProperties } from '../common/interfaces/properties/propertiesList';
 import { IData } from '../common/interfaces/property/propertyData';
 import { ITagsData } from '../common/interfaces/tagsData';
+import { isCardVisualized } from '../common/utils/actions/isCardVisualized';
+import { saveVisualizedCards } from '../common/utils/actions/saveVisualizedCards';
 import { handleClickOutside } from '../common/utils/clickOutsideDropdownHandler';
 import updateGeolocationQueryParam from '../common/utils/search/updateGeolocationQueryParam';
 import updateLocationQueryParam from '../common/utils/search/updateLocationQueryParam';
@@ -82,6 +84,15 @@ const Search: NextPageWithLayout<ISearch> = ({
       setCurrentPage(parsedPage);
     }
   });
+
+  const handleCardClick = (id: string, params: string) => {
+    const alreadyClicked = isCardVisualized(id);
+    if (!alreadyClicked) {
+      saveVisualizedCards(id);
+    }
+    let newParams = params.replace(/\+increment=[^+]+/, `+increment=${alreadyClicked}`);
+    router.push(`/property/${newParams}`);
+  };
 
   useEffect(() => {
     const pageQueryParam =
@@ -303,6 +314,7 @@ const Search: NextPageWithLayout<ISearch> = ({
                             adType={adType}
                             propertyType={propertyType}
                             address={address}
+                            onCardClick={(id: string, params: string) => handleCardClick(id, params)}
                           />
                         </div>
                       )
@@ -339,6 +351,7 @@ const Search: NextPageWithLayout<ISearch> = ({
                         parking_spaces={metadata[2]?.amount}
                         highlighted={highlighted}
                         propertyInfo={propertyInfo?.docs[index]}
+                        onCardClick={(id: string, params: string) => handleCardClick(id, params)}
                       />
                     )
                   )}

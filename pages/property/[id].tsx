@@ -12,6 +12,8 @@ import {
   announcementType,
   metadataType,
 } from '../../common/interfaces/property/propertyData';
+import { isCardVisualized } from '../../common/utils/actions/isCardVisualized';
+import { saveVisualizedCards } from '../../common/utils/actions/saveVisualizedCards';
 import DynamicMap from '../../components/atoms/maps/dinamycMap';
 import StaticMap from '../../components/atoms/maps/map';
 import VideoPlayer from '../../components/atoms/videoPlayer/videoPlayer';
@@ -62,10 +64,36 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [mapIsActive, setMapIsActive] = useState(false);
   const dynamicRoute = useRouter().asPath;
+  const { push } = useRouter();
+  const [isAlreadyClicked, setIsAlreadyClicked] = useState<null | boolean>(null);
+  const [params, setParams] = useState('');
 
   useEffect(() => {
     setMapIsActive(false);
   }, [dynamicRoute]);
+
+  const handleCardClick = (id: string, params: string) => {
+    const alreadyClicked = isCardVisualized(id);
+    if (!alreadyClicked) {
+      saveVisualizedCards(id);
+    }
+    setIsAlreadyClicked(alreadyClicked);
+    setParams(params);
+  };
+
+  // insere a flag de incrementação de visualizações do imóvel na url;
+  useEffect(() => {
+    let newParams;
+    if (isAlreadyClicked !== null) {
+      const firstSubstring = params.split('increment=')[0];
+
+      const lastSubstring = params.split('increment=')[1];
+
+      newParams = firstSubstring + `increment=${!isAlreadyClicked}` + lastSubstring
+
+      push(`/property/${newParams}`)
+    }
+  }, [isAlreadyClicked, params]);
 
   const galeryModalCSS = `lg:mx-auto md:m-5 mb-0 lg:mb-36. md:mb-5 md:mt-0 lg:mt-5  ${isModalOpen ? 'z-50' : 'z-30'
     }`;
@@ -133,6 +161,7 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
                   }
                   id={prop._id}
                   highlighted={prop.highlighted}
+                  onCardClick={(id: string, params: string) => handleCardClick(id, params)}
                 />
               ))}
         </div>
@@ -173,6 +202,12 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   let ownerId;
   const params = context.params?.id as string;
   const id = params.split('id=')[1];
+  // Captura o valor de increment da url para incrementar as vidualizações;
+  const firsSubstring = params.split('increment=')[1];
+  const increment = JSON.parse(firsSubstring.split('+id')[0]);
+
+  const url = `${baseUrl}/property/filter/?page=1&limit=4`;
+  let relatedProperties;
 
   try {
     const propertyResponse = await fetch(
@@ -182,7 +217,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ userId, isEdit: false }),
+        body: JSON.stringify({ userId, isEdit: false, increment }),
       }
     );
 
@@ -254,8 +289,13 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     isFavourite = false;
   }
 
-  const url = `${baseUrl}/property/filter/?page=1&limit=4`;
-  const relatedProperties = await fetch(url).then((res) => res.json());
+  try {
+    const response = await fetch(url);
+    relatedProperties = await response.json();
+  } catch (error) {
+    console.error('Error fetching related properties:', error);
+    relatedProperties = [];
+  }
 
   return {
     props: {

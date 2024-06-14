@@ -1,5 +1,5 @@
 import { GetServerSidePropsContext } from 'next';
-import { getSession, useSession } from 'next-auth/react';
+import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
@@ -9,6 +9,8 @@ import { IPlan } from '../common/interfaces/plans/plans';
 import { IFavProperties } from '../common/interfaces/properties/favouriteProperties';
 import { IOwnerProperties } from '../common/interfaces/properties/propertiesList';
 import { IData } from '../common/interfaces/property/propertyData';
+import { isCardVisualized } from '../common/utils/actions/isCardVisualized';
+import { saveVisualizedCards } from '../common/utils/actions/saveVisualizedCards';
 import { fetchJson } from '../common/utils/fetchJson';
 import AdminFilter from '../components/atoms/admin/adminFilter';
 import WelcomeAdmin from '../components/atoms/admin/welcomeAdmin';
@@ -37,19 +39,18 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
   favouriteProperties
 }) => {
 
-  const { data: session } = useSession() as any;
   const [isOwner, setIsOwner] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState(1);
   const router = useRouter();
   const query = router.query as any;
   const [width] = useDeviceSize();
   const unreadMessages = messages?.docs?.length > 0 ? messages?.docs.filter((message) => !message.isRead) : [];
-  const userName = session?.user?.data?.name;
   const plusPlan = plans.find((e) => e.name === 'Locale Plus');
   const ownerIsPlus = ownerData?.owner?.plan === plusPlan?._id ? true : false;
   const [newData, setNewData] = useState(null)
   const [docsToRender, setDocsToRender] = useState(ownerProperties);
   const [filterIsOpen, setFilterIsOpen] = useState(true);
+  const { push } = useRouter();
 
   useEffect(() => {
     setIsOwner(ownerProperties?.docs?.length > 0 ? true : false);
@@ -84,6 +85,15 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
       router.push({ query: queryParams }, undefined, { scroll: false });
     }
   }, [currentPage]);
+
+  const handleCardClick = (id: string, params: string) => {
+    const alreadyClicked = isCardVisualized(id);
+    if (!alreadyClicked) {
+      saveVisualizedCards(id);
+    }
+    let newParams = params.replace(/\+increment=[^+]+/, `+increment=${alreadyClicked}`);
+    push(`/property/${newParams}`);
+  };
 
   const classes = {
     sideMenu: `${width < 1080 ? 'hidden' : 'fixed left-0 top-7 lg:flex xl:flex md:hidden'}`,
@@ -150,6 +160,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
                     adType={adType}
                     propertyType={propertyType}
                     address={address}
+                    onCardClick={(id: string, params: string) => handleCardClick(id, params)}
                   />
                 )
               )}

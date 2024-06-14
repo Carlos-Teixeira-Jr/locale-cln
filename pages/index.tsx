@@ -1,6 +1,7 @@
 import { GetServerSidePropsContext } from 'next';
 import { getSession } from 'next-auth/react';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { ILocation } from '../common/interfaces/locationDropdown';
 import { IOwnerProperties } from '../common/interfaces/properties/propertiesList';
@@ -9,6 +10,8 @@ import {
   IPropertyInfo,
 } from '../common/interfaces/property/propertyData';
 import { IPropertyTypes } from '../common/interfaces/property/propertyTypes';
+import { isCardVisualized } from '../common/utils/actions/isCardVisualized';
+import { saveVisualizedCards } from '../common/utils/actions/saveVisualizedCards';
 import { fetchJson, handleResult } from '../common/utils/fetchJson';
 import HomeFilter from '../components/atoms/filterSections/HomeFilter';
 import { AccessCard, PropertyCard } from '../components/molecules/cards';
@@ -49,6 +52,9 @@ const Home: NextPageWithLayout<IHome> = ({
   const [isBuy, setIsBuy] = useState(true);
   const [isRent, setIsRent] = useState(false);
   const isOwner = ownerProperties?.docs.length > 0;
+  const { push } = useRouter();
+  const [isAlreadyClicked, setIsAlreadyClicked] = useState<null | boolean>(null);
+  const [params, setParams] = useState('');
 
   const handleSetBuy = (value: boolean) => {
     setIsBuy(value);
@@ -84,6 +90,30 @@ const Home: NextPageWithLayout<IHome> = ({
     }
     fetchPropertiesByLocation();
   }, [latitude, longitude, location, propertiesByLocationError]);
+
+  const handleCardClick = (id: string, params: string) => {
+    const alreadyClicked = isCardVisualized(id);
+    console.log("🚀 ~ handleCardClick ~ alreadyClicked:", alreadyClicked)
+    if (!alreadyClicked) {
+      saveVisualizedCards(id);
+    }
+    setIsAlreadyClicked(alreadyClicked);
+    setParams(params);
+  };
+
+  // insere a flag de incrementação de visualizações do imóvel na url;
+  useEffect(() => {
+    let newParams;
+    if (isAlreadyClicked !== null) {
+      const firstSubstring = params.split('increment=')[0];
+
+      const lastSubstring = params.split('increment=')[1];
+
+      newParams = firstSubstring + `increment=${!isAlreadyClicked}` + lastSubstring
+
+      push(`/property/${newParams}`)
+    }
+  }, [isAlreadyClicked, params]);
 
   return (
     <>
@@ -166,6 +196,7 @@ const Home: NextPageWithLayout<IHome> = ({
                             adType={adType}
                             propertyType={propertyType}
                             address={address}
+                            onCardClick={(id: string, params: string) => handleCardClick(id, params)}
                           />
                         )
                       )
@@ -195,6 +226,7 @@ const Home: NextPageWithLayout<IHome> = ({
                             adType={adType}
                             propertyType={propertyType}
                             address={address}
+                            onCardClick={(id: string, params: string) => handleCardClick(id, params)}
                           />
                         )
                       )}
