@@ -51,6 +51,8 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
   const [docsToRender, setDocsToRender] = useState(ownerProperties);
   const [filterIsOpen, setFilterIsOpen] = useState(true);
   const { push } = useRouter();
+  const [isAlreadyClicked, setIsAlreadyClicked] = useState<null | boolean>(null);
+  const [params, setParams] = useState('');
 
   useEffect(() => {
     setIsOwner(ownerProperties?.docs?.length > 0 ? true : false);
@@ -91,9 +93,23 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
     if (!alreadyClicked) {
       saveVisualizedCards(id);
     }
-    let newParams = params.replace(/\+increment=[^+]+/, `+increment=${alreadyClicked}`);
-    push(`/property/${newParams}`);
+    setIsAlreadyClicked(alreadyClicked);
+    setParams(params);
   };
+
+  // insere a flag de incrementação de visualizações do imóvel na url;
+  useEffect(() => {
+    let newParams;
+    if (isAlreadyClicked !== null) {
+      const firstSubstring = params.split('increment=')[0];
+
+      const lastSubstring = params.split('increment=')[1];
+
+      newParams = firstSubstring + `increment=${!isAlreadyClicked}` + lastSubstring
+
+      push(`/property/${newParams}`)
+    }
+  }, [isAlreadyClicked, params]);
 
   const classes = {
     sideMenu: `${width < 1080 ? 'hidden' : 'fixed left-0 top-7 lg:flex xl:flex md:hidden'}`,

@@ -48,10 +48,15 @@ const AdminHeader: React.FC<IAdminHeader> = ({ isOwnerProp, ownerData, isPlus })
         <LocaleLogo />
       </Link>
       <div className="flex flex-row items-center lg:px-10">
-        <div className="flex items-center mr-2 md:mr-10">
-          {/* <Link href={''} className="font-medium text-base text-secondary">
-            Precisa de Ajuda?
-          </Link> */}
+        <div className="flex flex-col justify-start mr-2 md:mr-10 text-quaternary text-md font-normal">
+          <div className='flex gap-2'>
+            <h4>Créditos de anúncio disponíveis:</h4>
+            <p className='text-primary font-bold'>{ownerData?.owner ? ownerData?.owner?.adCredits : 0}</p>
+          </div>
+          <div className='flex gap-2'>
+            <h4>Créditos de destaque disponíveis:</h4>
+            <p className='text-primary font-bold'>{ownerData?.owner ? ownerData?.owner?.highlightCredits : 0}</p>
+          </div>
         </div>
         <Link href={'/admin?page=1'}>
           <div

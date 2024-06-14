@@ -22,7 +22,7 @@ interface IAdminPropertyCard {
   image: string;
   price: number;
   location: string;
-  views: string[];
+  views: number;
   messages: IMessage[];
   isActiveProp: boolean;
   highlighted: boolean;
@@ -30,7 +30,6 @@ interface IAdminPropertyCard {
   propertyType: string;
   address: IAddress;
   onCardClick: (id: string, params: string) => void
-
 }
 
 type btnTypes = {
@@ -62,7 +61,8 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
   const { data: session } = useSession() as any;
   const user = session?.user?.data._id;
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const params = `${adType}+${propertyType}+${address.city}+${address.neighborhood}+${address.streetName}`;
+  // const params = `${adType}+${propertyType}+${address.city}+${address.neighborhood}+${address.streetName}`;
+  const params = `${adType}+${propertyType}+${address.city}+${address.neighborhood}+${address.streetName}+increment=+id=${_id}`
   const [loading, setLoading] = useState(false);
 
   const handleClick = () => {
@@ -185,8 +185,8 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
             </h1>
             <div className={`flex flex-row space-x-2 items-center justify-center md:justify-start font-bold text-md md:text-lg text-quaternary`}>
               <ViewIcon />
-              <span>{views.length}</span>
-              <h2>{views.length === 1 ? 'visualização' : 'visualizações'}</h2>
+              <span>{views}</span>
+              <h2>{views === 1 ? 'visualização' : 'visualizações'}</h2>
             </div>
             <div className={`flex flex-row space-x-2 items-center justify-center md:justify-start font-bold text-md md:text-lg text-quaternary`}>
               <MessageIcon />

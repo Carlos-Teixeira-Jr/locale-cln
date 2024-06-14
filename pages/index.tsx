@@ -93,7 +93,6 @@ const Home: NextPageWithLayout<IHome> = ({
 
   const handleCardClick = (id: string, params: string) => {
     const alreadyClicked = isCardVisualized(id);
-    console.log("🚀 ~ handleCardClick ~ alreadyClicked:", alreadyClicked)
     if (!alreadyClicked) {
       saveVisualizedCards(id);
     }

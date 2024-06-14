@@ -164,7 +164,6 @@ const LoginCard: React.FC = () => {
           setLoading(true);
           const { data: responseData } = await axios.post(`${baseUrl}/user/find-by-email`, { email });
 
-          console.log("🚀 ~ handleSubmit ~ responseData:", responseData)
           if (responseData && !responseData.isEmailVerified && !verifyEmailModalIsOpen) {
             setVerifyEmailModalIsOpen(true);
             showErrorToast(ErrorToastNames.EmailNotVerified);
@@ -175,7 +174,6 @@ const LoginCard: React.FC = () => {
           console.error(error);
           if (axios.isAxiosError(error)) {
             if (error.response) {
-              console.log("🚀 ~ handleSubmit ~ error.response:", error.response)
               const data: any = await sendRequest(
                 `${baseUrl}/auth/register`,
                 'POST',
@@ -240,8 +238,6 @@ const LoginCard: React.FC = () => {
                   }
                 });
 
-                console.log("🚀 ~ handleSubmit ~ signInResponse:", signInResponse)
-
                 if (signInResponse === null) {
                   setLoading(false);
                   showErrorToast(ErrorToastNames.UserNotFound)
@@ -249,7 +245,6 @@ const LoginCard: React.FC = () => {
               } catch (error) {
                 toast.dismiss();
                 setLoading(false)
-                console.error(error);
                 showErrorToast(ErrorToastNames.ServerConnection);
               }
             } else {

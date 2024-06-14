@@ -52,7 +52,7 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const isMobile = useIsMobile()
   const [currentIndex, setCurrentIndex] = useState(0);
-  const params = `${propertyInfo.adType}+${propertyInfo.propertyType}+${propertyInfo.address.city}+${propertyInfo.address.neighborhood}+${propertyInfo.address.streetName}+id=${propertyInfo._id}`
+  const params = `${propertyInfo.adType}+${propertyInfo.propertyType}+${propertyInfo.address.city}+${propertyInfo.address.neighborhood}+${propertyInfo.address.streetName}+increment=+id=${propertyInfo._id}`
   const [loading, setLoading] = useState(false);
 
 
@@ -69,7 +69,7 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
 
   const handleClick = () => {
     setLoading(true);
-    onCardClick(propertyInfo?._id, params)
+    onCardClick(propertyInfo._id, params)
   }
 
   const prevImage = (event: MouseEvent) => {
@@ -236,7 +236,7 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
               </div>
 
               <button
-                className="bg-primary max-w-[114px] md:max-w-fit ml-auto md:w-fit h-full py-1 px-2 rounded-full transition-colors duration-300 hover:bg-red-600 hover:text-white text-tertiary leading-tight shadow-md"
+                className="bg-primary max-w-[114px] md:max-w-fit ml-auto md:w-fit h-full py-1 px-2 lg:px-6 lg:py-3 rounded-full transition-colors duration-300 hover:bg-red-600 hover:text-white text-tertiary leading-tight shadow-md"
                 onClick={handleMessageBtnClick}
               >
                 Enviar Mensagem

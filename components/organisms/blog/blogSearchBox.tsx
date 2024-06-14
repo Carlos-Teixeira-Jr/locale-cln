@@ -8,7 +8,7 @@ const BlogSearchBox = () => {
   const isMobile = useIsMobile()
 
   return (
-    <section className="flex lg:flex-row flex-col gap-10 w-full justify-center">
+    <section className="flex lg:flex-row flex-col gap-5 md:gap-10 w-full justify-center">
       <div className="bg-tertiary text-quaternary w-[90%] lg:w-[40%] lg:mx-auto m-auto p-10 space-y-5 my-5 flex flex-col justify-between shadow-lg">
         <h3 className="text-3xl font-bold">Sobre o Blog Locale Imóveis</h3>
         <p className="text-lg font-medium">O Blog Locale Imóveis é uma fonte de referência repleta de informações, orientações e recursos úteis para quem está interessado em alugar, comprar ou vender imóveis. Explore nossos conteúdos exclusivos e descubra tudo o que é necessário para entender o mercado imobiliário!</p>
@@ -19,10 +19,10 @@ const BlogSearchBox = () => {
 
         <div className="flex justify-center md:justify-between mt-7">
           <div className="flex flex-col gap-5 text-quaternary text-lg font-semibold">
-            <Link href={"/search?adType=aluguel"}>
+            <Link href={"/search?adType=alugar"}>
               <button className="md:p-5 p-4 bg-tertiary shadow-lg w-full">Imóveis para alugar</button>
             </Link>
-            <Link href={"/search?adType=compra"}>
+            <Link href={"/search?adType=comprar"}>
               <button className="md:p-5 whitespace-nowrap p-4 bg-tertiary shadow-lg">Imóveis para comprar</button>
             </Link>
           </div>

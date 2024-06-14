@@ -204,7 +204,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const id = params.split('id=')[1];
   // Captura o valor de increment da url para incrementar as vidualizações;
   const firsSubstring = params.split('increment=')[1];
-  const increment = JSON.parse(firsSubstring.split('+id')[0]);
+  const increment = JSON.parse(firsSubstring?.split('+id')[0]);
 
   const url = `${baseUrl}/property/filter/?page=1&limit=4`;
   let relatedProperties;

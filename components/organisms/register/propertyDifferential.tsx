@@ -28,7 +28,6 @@ const PropertyDifferentials = ({
   onCondominiumTagsUpdate,
   onVideoLinkUpdate,
 }: Props) => {
-  console.log("🚀 ~ property:", property)
 
   const [firstInputValue, setFirstInputValue] = useState('');
   const [secondInputValue, setSecondInputValue] = useState('');

@@ -3,14 +3,14 @@ import GraphicIcon from "../../atoms/icons/graphicIcon";
 
 
 export interface IVisualizationsBox {
-  views: string[]
+  views: number
 }
 
 const VisualizationsBox = ({ views }: IVisualizationsBox) => {
 
   const [visualizationsMetric, setVisualizationMetrics] = useState('')
 
-  const visualizations = views.length;
+  const visualizations = views;
 
   const viewsStatus = visualizationsMetric === 'low' ? 'Pouco visualizado' : visualizationsMetric === 'medium' ? 'Média visualizações' : visualizationsMetric === 'high' ? 'Muito visualizado' : ''
 

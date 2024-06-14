@@ -73,6 +73,8 @@ const Search: NextPageWithLayout<ISearch> = ({
   const [list, setList] = useState(true);
   const queryParsed = query.location ? JSON.parse(query.location) : [];
   const [location, setLocation] = useState<any>(queryParsed);
+  const [isAlreadyClicked, setIsAlreadyClicked] = useState<null | boolean>(null);
+  const [params, setParams] = useState('');
 
   useEffect(() => {
     updateLocationQueryParam(location, query, router);
@@ -90,9 +92,20 @@ const Search: NextPageWithLayout<ISearch> = ({
     if (!alreadyClicked) {
       saveVisualizedCards(id);
     }
-    let newParams = params.replace(/\+increment=[^+]+/, `+increment=${alreadyClicked}`);
-    router.push(`/property/${newParams}`);
+    setIsAlreadyClicked(alreadyClicked);
+    setParams(params);
   };
+
+  // insere a flag de incrementação de visualizações do imóvel na url;
+  useEffect(() => {
+    let newParams;
+    if (isAlreadyClicked !== null) {
+      const firstSubstring = params.split('increment=')[0];
+      const lastSubstring = params.split('increment=')[1];
+      newParams = firstSubstring + `increment=${!isAlreadyClicked}` + lastSubstring
+      router.push(`/property/${newParams}`)
+    }
+  }, [isAlreadyClicked, params]);
 
   useEffect(() => {
     const pageQueryParam =

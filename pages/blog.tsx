@@ -40,6 +40,8 @@ const BlogPage = ({ ownerProperties = defaultOwnerProperties }: IBlogPage) => {
     advertise: false
   });
 
+  console.log("🚀 ~ BlogPage ~ selectedPage:", selectedPage)
+
   useEffect(() => {
     if (selectedPage.home) {
       setSearchInput('');
@@ -51,12 +53,15 @@ const BlogPage = ({ ownerProperties = defaultOwnerProperties }: IBlogPage) => {
     }
     if (selectedPage.rent) {
       setSearchInput('aluguel');
+      setIsSearch(true);
     }
     if (selectedPage.buy) {
       setSearchInput('comprar');
+      setIsSearch(true);
     }
     if (selectedPage.advertise) {
       setSearchInput('anunciar');
+      setIsSearch(true);
     }
   }, [selectedPage])
 
