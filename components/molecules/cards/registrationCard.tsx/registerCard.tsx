@@ -104,7 +104,7 @@ const RegisterCard: React.FC = () => {
   };
 
   return (
-    <div className="md:w-fit md:h-fit md:rounded-[30px] bg-tertiary drop-shadow-xl grid grid-flow-rows justify-items-center">
+    <div className="md:w-fit md:h-fit md:rounded-[30px] pt-2 bg-tertiary drop-shadow-xl grid grid-flow-rows justify-items-center">
       <div className="md:mt-2">
         <Image
           src={'/images/Logo_Locale_HD.png'}
@@ -118,7 +118,7 @@ const RegisterCard: React.FC = () => {
           E-mail
         </label>
         <input
-          className={`lg:w-[360px] md:w-full w-[291px] h-fit md:h-12 rounded-[10px] border-[1px] border-quaternary drop-shadow-xl bg-tertiary text-quaternary md:p-2 text-xl font-semibold ${emailError === '' ? '' : 'border-[2px] border-red-500'
+          className={`lg:w-[360px] md:w-full w-[291px] h-10 md:h-12 rounded-[10px] border-[1px] border-quaternary drop-shadow-xl bg-tertiary text-quaternary md:p-2 text-xl font-semibold ${emailError === '' ? '' : 'border-[2px] border-red-500'
             }`}
           type="email"
           value={email}
@@ -131,18 +131,16 @@ const RegisterCard: React.FC = () => {
           <span className="text-sm text-red-500">{emailError}</span>
         )}
       </div>
-      <div>
-        <button
-          className={`flex items-center flex-row justify-around md:w-fit lg:w-56 h-14 text-tertiary rounded-full m-5 font-bold text-lg md:text-xl ${loading ?
-            'bg-red-300 transition-colors duration-300' :
-            'bg-primary transition-colors duration-300 hover:bg-red-600 hover:text-white cursor-pointer'
-            }`}
-          onClick={handleContinueBtn}
-        >
-          <span className={`${loading ? 'ml-5' : ''}`}>Continuar</span>
-          {loading && <Loading />}
-        </button>
-      </div>
+      <button
+        className={`flex items-center flex-row justify-around w-2/3 lg:w-56 h-14 text-tertiary rounded-full m-5 font-bold text-lg md:text-xl ${loading ?
+          'bg-red-300 transition-colors duration-300' :
+          'bg-primary transition-colors duration-300 hover:bg-red-600 hover:text-white cursor-pointer'
+          }`}
+        onClick={handleContinueBtn}
+      >
+        <span className={`${loading ? 'ml-5' : ''}`}>Continuar</span>
+        {loading && <Loading />}
+      </button>
       <div className="flex">
         <div>
           <SocialAuthButton

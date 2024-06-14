@@ -6,7 +6,6 @@ import { useEffect, useRef, useState } from 'react';
 import { ErrorToastNames, showErrorToast } from '../../../common/utils/toasts';
 import { useIsMobile } from '../../../hooks/useIsMobile';
 import DropdownAdmin from '../../atoms/dropdowns/dropdownAdmin';
-import MenuIcon from '../../atoms/icons/menuIcon';
 import UserIcon from '../../atoms/icons/userIcon';
 import Loading from '../../atoms/loading';
 import LocaleLogo from '../../atoms/logos/locale';
@@ -136,7 +135,11 @@ const Header = ({ userIsOwner }: IHeader) => {
                 ) : null}
               </div>
 
-              {loading && <Loading fill='#F75D5F' className='h-[2rem] w-[2rem] p-1 text-gray-200 animate-spin dark:text-gray-600 fill-tertiary' />}
+              {loading && (
+                <div className='flex justify-center mr-3'>
+                  <Loading fill='#F75D5F' className='h-[2rem] w-[2rem] p-1 text-gray-200 animate-spin dark:text-gray-600 fill-tertiary' />
+                </div>
+              )}
 
               <button
                 className="my-auto cursor-pointer mx-2 text-primary font-semibold text-md"
@@ -150,7 +153,7 @@ const Header = ({ userIsOwner }: IHeader) => {
               <Link href={'/login'}>
                 {!loading ? (
                   <button
-                    className="bg-primary justify-self-end cursor-pointer text-tertiary rounded-3xl font-normal md:text-xl w-20 md:w-[124px] md:h-[2rem] mr-2 shadow-md transition-colors duration-300 hover:bg-red-600 hover:text-white"
+                    className="bg-primary justify-self-end cursor-pointer text-tertiary rounded-3xl font-normal md:text-xl w-20 md:w-[124px] md:h-[2rem] mr-3 shadow-md transition-colors duration-300 hover:bg-red-600 hover:text-white"
                     onClick={() => {
                       if (router.pathname !== '/login') {
                         setLoading(true);
@@ -162,16 +165,16 @@ const Header = ({ userIsOwner }: IHeader) => {
                     Entrar
                   </button>
                 ) : (
-                  <div className='w-20'>
+                  <div className='w-20 flex justify-center mr-3'>
                     <Loading fill='#F75D5F' className='h-[2rem] w-[2rem] text-gray-200 animate-spin dark:text-gray-600 fill-tertiary' />
                   </div>
                 )}
               </Link>
-              <div className='flex items-center' ref={ref as any} onClick={() => setOpen(!open)}>
+              {/* <div className='flex items-center' ref={ref as any} onClick={() => setOpen(!open)}>
                 <button className="visible md:hidden cursor-pointer decoration-transparent">
                   <MenuIcon />
                 </button>
-              </div>
+              </div> */}
             </>
           )}
         </div>
