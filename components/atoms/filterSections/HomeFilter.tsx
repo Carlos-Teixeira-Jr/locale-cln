@@ -132,7 +132,7 @@ const HomeFilter: React.FC<IHomeFilter> = ({
         {...homeFilterProps}
       >
         <div className="relative">
-          <h1 className="font-bold md:text-lg lg:text-xl text-xl lg:pb-4 mb-5 md:mb-0 text-center">
+          <h1 className="font-bold md:text-lg lg:text-xl text-xl lg:pb-4 mb-4 md:mb-0 text-center">
             Encontre o lar dos seus sonhos sem sair de casa
           </h1>
 

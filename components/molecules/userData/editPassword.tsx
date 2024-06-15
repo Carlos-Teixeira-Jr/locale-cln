@@ -106,7 +106,7 @@ const EditPassword = ({
     <div>
       <div className="flex md:justify-start mb-5 md:mb-0 md:mt-10">
         <div
-          className={`w-10 h-10 border bg-tertiary rounded-[10px] drop-shadow-lg cursor-pointer shrink-0 ${editPasswordIsOn ? 'border-secondary' : 'border-quaternary'
+          className={`w-7 h-7 border bg-tertiary rounded-[10px] drop-shadow-lg cursor-pointer shrink-0 ${editPasswordIsOn ? 'border-secondary' : 'border-quaternary'
             }`}
           onClick={() => {
             setEditPasswordIsOn(!editPasswordIsOn);
@@ -119,8 +119,8 @@ const EditPassword = ({
           {editPasswordIsOn && (
             <CheckIcon
               fill="#F5BF5D"
-              width="36"
-              className={`pl-1 pb-2 ${editPasswordIsOn ? ' border-secondary' : ''
+              width="32"
+              className={`pb-5 pr-1 ${editPasswordIsOn ? ' border-secondary' : ''
                 }`}
             />
           )}

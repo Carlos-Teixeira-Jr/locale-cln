@@ -10,6 +10,7 @@ import { toast } from 'react-toastify';
 import { IMessagesByOwner } from '../common/interfaces/message/messages';
 import { CreditCardType, IOwner, IOwnerData } from '../common/interfaces/owner/owner';
 import { IPlan } from '../common/interfaces/plans/plans';
+import { IFavProperties } from '../common/interfaces/properties/favouriteProperties';
 import {
   IAddress,
   IPropertyInfo,
@@ -30,7 +31,7 @@ import UserAddress from '../components/molecules/address/userAdress';
 import { PlansCardsHidden } from '../components/molecules/cards';
 import ChangePlanCheckbox from '../components/molecules/changePlanCheckBox/changePlanCheckBox';
 import Coupons from '../components/molecules/coupons/coupons';
-import CreditCard, {
+import {
   CreditCardForm,
 } from '../components/molecules/userData/creditCard';
 import DeleteAccount from '../components/molecules/userData/deleteAccount';
@@ -51,7 +52,8 @@ interface IAdminUserDataPageProps {
   properties: IPropertyInfo;
   ownerData: IOwnerData;
   notifications: [];
-  messages: IMessagesByOwner
+  messages: IMessagesByOwner;
+  favouriteProperties: IFavProperties
 }
 
 type AddressErrors = {
@@ -82,7 +84,8 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   plans,
   properties,
   ownerData,
-  messages
+  messages,
+  favouriteProperties
 }) => {
 
   const plansRef = useRef<HTMLDivElement>(null);
@@ -599,6 +602,8 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
               unreadMessages={unreadMessages}
               isPlus={ownerIsPlus}
               hasProperties={hasProperties}
+              favouriteProperties={favouriteProperties}
+              messages={messages.docs}
             />
           </div>
         )}
@@ -704,7 +709,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
               </button>
             </div>
 
-            <div className="lg:pt-20 pt-0.5 mx-4">
+            {/* <div className="lg:pt-20 pt-0.5 mx-4">
               <label className={classes.accordion}>
                 Dados do Cartão de Crédito
                 <span
@@ -755,7 +760,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                   />
                 )}
               </div>
-            </div>
+            </div> */}
 
             <div className="lg:pt-5 pt-0.5 mb-20 mx-4">
               <label className={classes.accordion}>
@@ -828,7 +833,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     console.error(error);
   }
 
-  const [notifications, userData, ownerData, plans, properties, messages] =
+  const [notifications, userData, ownerData, plans, properties, messages, favouriteProperties] =
     await Promise.all([
       fetch(`${baseUrl}/notification/user/${userId}`, {
         method: 'GET',
@@ -877,12 +882,25 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       })
         .then((res) => res.json())
         .catch(() => []),
+      fetch(`${baseUrl}/user/favourite`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: userId,
+          page: Number(page),
+        }),
+      })
+        .then((res) => res.json())
+        .catch(() => []),
       fetchJson(`${baseUrl}/notification/user/${userId}`),
       fetchJson(`${baseUrl}/user/${userId}`),
       fetchJson(`${baseUrl}/user/find-owner-by-user`),
       fetchJson(`${baseUrl}/plan`),
       fetchJson(`${baseUrl}/property/owner-properties`),
       fetchJson(`${baseUrl}/message/find-all-by-ownerId`),
+      fetchJson(`${baseUrl}/user/favourite`),
     ]);
 
   return {
@@ -892,7 +910,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       plans,
       properties,
       ownerData,
-      messages
+      messages,
+      favouriteProperties
     },
   };
 }

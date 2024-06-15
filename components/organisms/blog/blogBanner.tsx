@@ -23,7 +23,7 @@ const BlogBanner = ({
   }, [searchInput]);
 
   return (
-    <section className="bg-cover bg-center p-8 md:p-36 my-5 md:my-10 bg-[url('/images/header-image.png')] shadow-md">
+    <section className="bg-cover bg-center p-8 md:p-36 my-5 md:my-6 bg-[url('/images/header-image.png')] shadow-md">
       <div className="bg-tertiary p-5 rounded-[30px] text-center text-quaternary w-full lg:w-fit mx-auto lg:px-36 space-y-2">
         <h1 className="font-bold text-xl md:text-3xl">Tudo sobre comprar, alugar ou vender um imóvel!</h1>
         <h2 className="font-semibold">Confira dicas, ferramentas, guias e outros conteúdos criados para tirar todas as suas dúvidas</h2>
@@ -38,7 +38,7 @@ const BlogBanner = ({
             onChange={(e) => setSearchInput(e.target.value)}
           />
           <button
-            className="bg-primary rounded-full text-tertiary text-xl font-semibold py-2 px-5 lg:absolute mt-5 lg:my-0 rigth-3 mx-2 top-1/2 transform -translate-y-1/2 hover:bg-red-600 ease-in-out duration-300 shadow-md"
+            className="bg-primary rounded-full text-tertiary text-xl font-semibold py-2 px-10 lg:absolute mt-5 lg:my-0 rigth-3 mx-2 top-1/2 transform -translate-y-1/2 hover:bg-red-600 ease-in-out duration-300 shadow-md"
             onClick={() => onSearchBtnClick(!searchBtnIsClicked)}
           >
             Procurar

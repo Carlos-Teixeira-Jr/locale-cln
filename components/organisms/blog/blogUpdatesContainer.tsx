@@ -50,7 +50,7 @@ const BlogUpdatesContainer = ({
           </Link>
 
           <Link href={`/blog/${posts[0].id}`}>
-            <button className="bg-primary rounded-full w-fit text-tertiary text-xl font-semibold py-2 px-5 my-2 md:my-0 md:mx-2 hover:bg-red-600 ease-in-out duration-300 shadow-md block mx-auto">Ver Publicação</button>
+            <button className="bg-primary rounded-full w-fit text-tertiary text-xl font-semibold py-2 px-10 my-2 md:my-0 md:mx-2 hover:bg-red-600 ease-in-out duration-300 shadow-md block mx-auto">Ver Publicação</button>
           </Link>
 
         </div>

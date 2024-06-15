@@ -11,6 +11,7 @@ const Footer = () => {
   const [notebook, setNotebook] = useState(false);
   const [desktop, setDesktop] = useState(false);
   const [table, setTablet] = useState(false);
+  const currentYear = new Date().getFullYear();
 
   useEffect(() => {
     if (height > 900) {
@@ -151,7 +152,7 @@ const Footer = () => {
       </div>
 
       <div className="text-gray-700 text-center p-4 bg-secondary">
-        © 2023 Locale Imóveis
+        © {currentYear} Locale Imóveis
       </div>
     </footer>
   );

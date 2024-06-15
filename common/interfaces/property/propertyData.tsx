@@ -106,7 +106,7 @@ export interface IData {
   plan: planType;
   highlighted: boolean;
   acceptFunding: boolean;
-  views: string[];
+  views: number;
 }
 
 export type Data = {

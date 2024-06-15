@@ -35,7 +35,7 @@ const PropertyDifferentials = ({
   const [updatedYouTubeLink, setUpdatedYouTubeLink] = useState<string>(property?.youtubeLink ? property.youtubeLink : '');
 
   const [updatedTags, setUpdatedTags] = useState<string[]>(() => {
-    if (property && property.tags.length > 0) {
+    if (property && property.tags?.length > 0) {
       return property.tags;
     } else if (storedData && storedData?.tags?.length > 0) {
       return storedData.tags

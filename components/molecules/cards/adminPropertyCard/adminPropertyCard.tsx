@@ -22,13 +22,14 @@ interface IAdminPropertyCard {
   image: string;
   price: number;
   location: string;
-  views: string[];
+  views: number;
   messages: IMessage[];
   isActiveProp: boolean;
   highlighted: boolean;
   adType: string;
   propertyType: string;
-  address: IAddress
+  address: IAddress;
+  onCardClick: (id: string, params: string) => void
 }
 
 type btnTypes = {
@@ -50,7 +51,8 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
   highlighted,
   adType,
   propertyType,
-  address
+  address,
+  onCardClick
 }: IAdminPropertyCard) => {
 
   const priceString = price.toString();
@@ -59,7 +61,14 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
   const { data: session } = useSession() as any;
   const user = session?.user?.data._id;
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const params = `${adType}+${propertyType}+${address.city}+${address.neighborhood}+${address.streetName}+id=${_id}`
+  // const params = `${adType}+${propertyType}+${address.city}+${address.neighborhood}+${address.streetName}`;
+  const params = `${adType}+${propertyType}+${address.city}+${address.neighborhood}+${address.streetName}+increment=+id=${_id}`
+  const [loading, setLoading] = useState(false);
+
+  const handleClick = () => {
+    setLoading(true);
+    onCardClick(_id, params)
+  }
 
   const handleHighlight = async () => {
     try {
@@ -100,7 +109,7 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
     {
       key: 'edit',
       title: 'Editar',
-      link: '/property/modify/',
+      link: `property/modify/${params}&id=`,
       className:
         'bg-secondary w-full h-12 px-10 rounded-md font-bold text-tertiary text-xl transition-colors duration-300 hover:bg-yellow-500 hover:text-white',
     },
@@ -131,101 +140,99 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
   ];
 
   return (
-    <div className="flex flex-col items-center mb-10 justify-between p-1">
-      <Link href={`/property/${params}`}>
-        <div
-          className={`flex flex-col md:flex-row h-fit md:h-64 w-full lg:w-[777px] shadow-lg p-2 ${isActive ? '' : 'opacity-100'
-            } ${highlighted ? 'bg-gradient-to-tr from-secondary to-primary' : 'bg-tertiary'}`}
-        >
-          <div className='flex flex-col md:flex-row w-full h-full bg-tertiary'>
-            <Image
-              src={image}
-              alt={'Admin property image'}
-              className={`md:max-w-xs md:min-w-[250px] ${!isActive ? 'opacity-30' : ''
-                } object-cover`}
-              width={350}
-              height={265}
-            />
-            {highlighted && (
-              <div
-                className={`absolute mt-2 opacity-70 hover:opacity-100 hover:scale-110 transition-opacity duration-200 ease-in-out ml-2 ${!isActive ? 'opacity-30' : ''
-                  }`}
-              >
-                <StarIcon
-                  width="35"
-                  height="35"
-                  className={!isActive ? 'opacity-50' : ''}
-                  fill='#F75D5F'
-                />
-              </div>
-            )}
+    <div onClick={handleClick} className="flex flex-col items-center mb-10 justify-between p-1 w-full cursor-pointer">
+      <div
+        className={`flex flex-col md:flex-row h-fit md:h-64 w-full lg:w-[777px] shadow-lg p-2 ${isActive ? '' : 'opacity-100'
+          } ${highlighted ? 'bg-gradient-to-tr from-secondary to-primary' : 'bg-tertiary'}`}
+      >
+        <div className='flex flex-col md:flex-row w-full h-full bg-tertiary'>
+          <Image
+            src={image}
+            alt={'Admin property image'}
+            className={`md:max-w-xs md:min-w-[250px] ${!isActive ? 'opacity-30' : ''
+              } object-cover`}
+            width={350}
+            height={265}
+          />
+          {highlighted && (
             <div
-              className={`flex flex-col justify-between gap-2 md:gap-5 md:justify-start md:mt-6 md:px-5 w-full ${!isActive ? 'opacity-30' : ''
+              className={`absolute mt-2 opacity-70 hover:opacity-100 hover:scale-110 transition-opacity duration-200 ease-in-out ml-2 ${!isActive ? 'opacity-30' : ''
                 }`}
-              style={{ overflow: 'hidden' }}
             >
-              <h1
-                className="font-bold text-3xl text-black text-center md:text-start"
-                style={{
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                {' '}
-                {formattedPrice}
-              </h1>
-              <div className={`flex flex-row space-x-2 items-center justify-center md:justify-start font-bold text-md md:text-lg text-quaternary`}>
-                <ViewIcon />
-                <span>{views.length}</span>
-                <h2>{views.length === 1 ? 'visualização' : 'visualizações'}</h2>
-              </div>
-              <div className={`flex flex-row space-x-2 items-center justify-center md:justify-start font-bold text-md md:text-lg text-quaternary`}>
-                <MessageIcon />
-                <span>{messages.length}</span>
-                <h2>{messages.length === 1 ? 'mensagem' : 'mensagens'}</h2>
-              </div>
-              <h3 className={`w-fit  mx-auto md:mx-0 font-bold text-sm my-auto justify-center md:justify-start text-quaternary`}>
-                {location}
-              </h3>
+              <StarIcon
+                width="35"
+                height="35"
+                className={!isActive ? 'opacity-50' : ''}
+                fill='#F75D5F'
+              />
             </div>
+          )}
+          <div
+            className={`flex flex-col justify-between gap-2 md:gap-5 md:justify-start md:mt-6 md:px-5 w-full ${!isActive ? 'opacity-30' : ''
+              }`}
+            style={{ overflow: 'hidden' }}
+          >
+            <h1
+              className="font-bold text-3xl text-black text-center md:text-start"
+              style={{
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {' '}
+              {formattedPrice}
+            </h1>
+            <div className={`flex flex-row space-x-2 items-center justify-center md:justify-start font-bold text-md md:text-lg text-quaternary`}>
+              <ViewIcon />
+              <span>{views}</span>
+              <h2>{views === 1 ? 'visualização' : 'visualizações'}</h2>
+            </div>
+            <div className={`flex flex-row space-x-2 items-center justify-center md:justify-start font-bold text-md md:text-lg text-quaternary`}>
+              <MessageIcon />
+              <span>{messages?.length}</span>
+              <h2>{messages?.length === 1 ? 'mensagem' : 'mensagens'}</h2>
+            </div>
+            <h3 className={`w-fit  mx-auto md:mx-0 font-bold text-sm my-auto justify-center md:justify-start text-quaternary`}>
+              {location}
+            </h3>
+          </div>
 
-            <div className="flex flex-col gap-1 justify-center px-2 mt-4 md:mt-0 pr-2 w-full md:w-fit">
-              {buttons.map((btn: btnTypes) =>
-                btn.key !== 'highlight' ? (
-                  <Link
+          <div className="flex flex-col gap-1 justify-center px-2 mt-4 md:mt-0 pr-2 w-full md:w-fit">
+            {buttons.map((btn: btnTypes) =>
+              btn.key !== 'highlight' ? (
+                <Link
+                  key={btn.key}
+                  href={btn.key !== 'deactivate' ? btn.link + `${_id}` : '#'}
+                >
+                  <button
                     key={btn.key}
-                    href={btn.key !== 'deactivate' ? btn.link + `${_id}` : '#'}
+                    className={`${btn.key !== 'deactivate' && !isActive
+                      ? `${btn.className} opacity-30`
+                      : `${btn.className}`
+                      }`}
+                    onClick={btn.onClick}
                   >
-                    <button
-                      key={btn.key}
-                      className={`${btn.key !== 'deactivate' && !isActive
-                        ? `${btn.className} opacity-30`
-                        : `${btn.className}`
-                        }`}
-                      onClick={btn.onClick}
-                    >
-                      {btn.key === 'deactivate' && !isActive
-                        ? 'Ativar'
-                        : btn.title}
-                    </button>
-                  </Link>
-                ) : (
-                  <Link key={btn.key} href={btn.link}>
-                    <button
-                      key={btn.key}
-                      className={!highlighted ? btn.className : 'hidden'}
-                      onClick={btn.onClick}
-                    >
-                      {btn.title}
-                    </button>
-                  </Link>
-                )
-              )}
-            </div>
+                    {btn.key === 'deactivate' && !isActive
+                      ? 'Ativar'
+                      : btn.title}
+                  </button>
+                </Link>
+              ) : (
+                <Link key={btn.key} href={btn.link}>
+                  <button
+                    key={btn.key}
+                    className={!highlighted ? btn.className : 'hidden'}
+                    onClick={btn.onClick}
+                  >
+                    {btn.title}
+                  </button>
+                </Link>
+              )
+            )}
           </div>
         </div>
-      </Link>
+      </div>
 
       <ConfirmActivationModal
         isOpen={modalIsOpen}

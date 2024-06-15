@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { ReactNode, useEffect, useState } from 'react';
 import { IMessage } from '../../../common/interfaces/message/messages';
+import { IFavProperties } from '../../../common/interfaces/properties/favouriteProperties';
 import BellIcon from '../../atoms/icons/bellIcon';
 import CartIcon from '../../atoms/icons/cartIcon';
 import HeartIcon from '../../atoms/icons/heartIcon';
@@ -26,7 +27,9 @@ type SideMenuProps = {
   isMobileProp?: boolean;
   unreadMessages?: IMessage[];
   isPlus: boolean;
-  hasProperties: boolean
+  hasProperties: boolean;
+  favouriteProperties: IFavProperties;
+  messages: IMessage[]
 };
 
 const SideMenu: React.FC<SideMenuProps> = ({
@@ -34,7 +37,9 @@ const SideMenu: React.FC<SideMenuProps> = ({
   notifications,
   unreadMessages,
   isPlus,
-  hasProperties
+  hasProperties,
+  favouriteProperties,
+  messages
 }) => {
 
   const router = useRouter();
@@ -201,12 +206,15 @@ const SideMenu: React.FC<SideMenuProps> = ({
             (
               isPlus &&
               option.cases.includes('plus')
-              // (isOwner || option.cases.includes('owner'))
             );
           if (shouldRender) {
             return (
               <div
                 key={option.key}
+                className={`
+                  ${option.key === 'myFavourites' && favouriteProperties?.docs?.length === 0 ? 'hidden' : ''} 
+                  ${option.key === 'myMessages' && messages.length === 0 ? 'hidden' : ''} 
+                  ${option.key === 'myNotifications' && notifications?.length === 0 ? 'hidden' : ''}`}
                 onClick={() => {
                   router.push({
                     pathname: option.link,

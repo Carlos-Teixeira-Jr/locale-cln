@@ -53,7 +53,11 @@ export enum ErrorToastNames {
   OwnerImageUpload = 'ownerImageUpload',
   EmailNotVerified = 'emailNotVerified',
   InvalidRegisterData = 'invalidRegisterData',
-  SamePlanError = 'samePlanError'
+  SamePlanError = 'samePlanError',
+  FilterError = 'filterError',
+  EmptyFilterFields = 'emptyFilterDields',
+  InvalidAnnouncementCode = 'invalidAnnouncementCode',
+  AlreadyInLoginPage = 'alreadyInLoginPage'
 }
 
 export enum InfoToastNames {
@@ -302,25 +306,49 @@ const errorToastMessages: Record<ErrorToastNames, ToastMessage> = {
   [ErrorToastNames.SamePlanError]: {
     message: 'Você selecionou o mesmo plano que já foi contratado e ainda possui créditos. Por favor, selecione outro plano.',
     options: {
-      autoClose: 7000,
+      autoClose: 5000,
     },
   },
   [ErrorToastNames.PasswordRecovery]: {
     message: 'Não foi possível enviar a recuperação de senha. Por favor, tente novamente mais tarde.',
     options: {
-      autoClose: 7000,
+      autoClose: 5000,
     },
   },
   [ErrorToastNames.UpdateFavourites]: {
     message: 'Não foi possível atualizar seus favoritos. Por favor, tente novamente mais tarde.',
     options: {
-      autoClose: 7000,
+      autoClose: 5000,
     },
   },
   [ErrorToastNames.InvalidLoginData]: {
     message: 'Email ou senha inválidos.',
     options: {
-      autoClose: 7000,
+      autoClose: 5000,
+    },
+  },
+  [ErrorToastNames.FilterError]: {
+    message: 'Houve um problema ao filtrar seus anúncios. Por favor tente novamente mais tarde.',
+    options: {
+      autoClose: 5000,
+    },
+  },
+  [ErrorToastNames.EmptyFilterFields]: {
+    message: 'Preencha um dos campos do filtro.',
+    options: {
+      autoClose: 5000,
+    },
+  },
+  [ErrorToastNames.InvalidAnnouncementCode]: {
+    message: 'Nenhum anúncio encontrado com o código informado.',
+    options: {
+      autoClose: 5000,
+    },
+  },
+  [ErrorToastNames.AlreadyInLoginPage]: {
+    message: 'Insira seus dados para fazer login ou cadastre uma conta.',
+    options: {
+      autoClose: 5000,
     },
   },
 };

@@ -3,8 +3,10 @@ import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
+import { IMessagesByOwner } from '../../../common/interfaces/message/messages';
 import { IOwner } from '../../../common/interfaces/owner/owner';
 import { IPlan } from '../../../common/interfaces/plans/plans';
+import { IFavProperties } from '../../../common/interfaces/properties/favouriteProperties';
 import {
   IEditPropertyData,
   IEditPropertyMainFeatures,
@@ -39,14 +41,18 @@ interface IEditAnnouncement {
   property: IData;
   ownerData: IOwner;
   plans: IPlan[];
-  notifications: INotification[]
+  notifications: INotification[];
+  messages: IMessagesByOwner;
+  favouriteProperties: IFavProperties
 }
 
 const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
   property,
   ownerData,
   plans,
-  notifications
+  notifications,
+  messages,
+  favouriteProperties
 }) => {
   const [rotate1, setRotate1] = useState(false);
   const [rotate2, setRotate2] = useState(false);
@@ -56,6 +62,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
   const plusPlan = plans.find((e) => e.name === 'Locale Plus');
   const ownerIsPlus = ownerData?.plan === plusPlan?._id ? true : false;
   const [loading, setLoading] = useState(false);
+  const isFavourite = favouriteProperties?.docs?.some((e) => e._id === property._id)
 
   const isEdit = router.pathname == '/property/modify/[id]';
 
@@ -436,6 +443,8 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
             isOwnerProp={property !== undefined && true}
             notifications={notifications} isPlus={ownerIsPlus}
             hasProperties={true}
+            favouriteProperties={favouriteProperties}
+            messages={messages?.docs}
           />
         </div>
         <div className={classes.content}>
@@ -612,7 +621,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
                 <div className={classes.accordionContainer} id="accordion-4">
                   <div className="accordion__body mx-2" id="painel4">
                     <PropertyDifferentials
-                      shouldRenderCondDiv={property.condominiumTags.length > 0}
+                      shouldRenderCondDiv={property.condominiumTags?.length > 0}
                       property={property}
                       isEdit={isEdit}
                       onTagsUpdate={(updatedTags: string[]) =>
@@ -650,71 +659,98 @@ export default EditAnnouncement;
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = (await getSession(context)) as any;
-  const userId =
-    session?.user.data._id !== undefined
-      ? session?.user.data._id
-      : session?.user.id;
-  const propertyId = context.query.id;
+  const userId = session?.user.data._id || session?.user.id;
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+  let property;
+  let favouriteProperties: boolean = false;
+  let ownerData;
   let ownerId;
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    };
-  }
+  const params = context.params?.id as string;
+  const id = params.split('id=')[1];
 
   try {
-    const ownerIdResponse = await fetch(
-      `${baseUrl}/user/find-owner-by-user`,
+    const propertyResponse = await fetch(
+      `${baseUrl}/property/findOne/${id}`,
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ userId }),
+        body: JSON.stringify({ userId, isEdit: false }),
       }
     );
-    if (ownerIdResponse.ok) {
-      const ownerData = await ownerIdResponse.json();
-      ownerId = ownerData?.owner?._id;
+
+    if (propertyResponse.ok) {
+      property = await propertyResponse.json();
+      ownerId = property.owner;
     } else {
       return {
         redirect: {
-          destination: '/adminFavProperties?page=1',
+          destination: '/',
           permanent: false,
         },
       };
     }
   } catch (error) {
-    console.error(error);
+    console.log(error);
   }
 
-  const [notifications, property, ownerData, plans, messages] = await Promise.all([
-    fetch(`${baseUrl}/notification/user/${userId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((res) => res.json())
-      .catch(() => []),
-    fetch(`${baseUrl}/property/${propertyId}?isEdit=true`)
-      .then((res) => res.json())
-      .catch(() => { }),
-    fetch(`${baseUrl}/user/find-owner-by-user`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ userId }),
-    })
-      .then((res) => res.json())
-      .catch(() => { }),
-    fetch(`${baseUrl}/plan`)
+  if (property?.ownerInfo) {
+    try {
+      const fetchUser = await fetch(`${baseUrl}/user/find-user-by-owner/${ownerId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (fetchUser.ok) {
+        ownerData = await fetchUser.json();
+
+        const userId = ownerData.user._id
+
+        try {
+          const fetchFavourites = await fetch(`${baseUrl}/user/favourite`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              id: userId,
+              page: 1,
+            }),
+          });
+
+          if (fetchFavourites.ok) {
+            const favourites = await fetchFavourites.json();
+
+          } else {
+            console.error('Não foi possível buscar os imoveis favoritos')
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        ownerData = null;
+        console.error('Não foi possível achar o usuário.');
+      }
+    } catch (error) {
+      console.error('Não foi possível achar o usuário.');
+    }
+  } else {
+    console.error('não foi possível buscar os dados do anunciante.')
+  }
+
+  const [notifications, messages, plans] = await Promise.all([
+    fetch(
+      `${baseUrl}/notification/${userId}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
       .then((res) => res.json())
       .catch(() => []),
     fetch(`${baseUrl}/message/find-all-by-ownerId`, {
@@ -723,26 +759,136 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        ownerId,
+        ownerId: ownerData?.owner?._id,
         page: 1,
       }),
     })
       .then((res) => res.json())
       .catch(() => []),
+    fetch(`${baseUrl}/plan`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => res.json())
+      .catch(() => []),
     fetchJson(`${baseUrl}/notification/user/${userId}`),
-    fetchJson(`${baseUrl}/property/${propertyId}?isEdit=true`),
-    fetchJson(`${baseUrl}/user/find-owner-by-user`),
-    fetchJson(`${baseUrl}/plan`),
     fetchJson(`${baseUrl}/message/find-all-by-ownerId`),
+    fetchJson(`${baseUrl}/plan`),
   ]);
+
+  const url = `${baseUrl}/property/filter/?page=1&limit=4`;
+  const relatedProperties = await fetch(url).then((res) => res.json());
 
   return {
     props: {
-      notifications,
       property,
+      favouriteProperties,
+      relatedProperties,
       ownerData,
       plans,
+      notifications,
       messages
     },
   };
 }
+
+// export async function getServerSideProps(context: GetServerSidePropsContext) {
+//   const session = (await getSession(context)) as any;
+//   const userId =
+//     session?.user.data._id !== undefined
+//       ? session?.user.data._id
+//       : session?.user.id;
+//   const propertyId = context.query.id;
+//   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+//   let ownerId;
+
+//   if (!session) {
+//     return {
+//       redirect: {
+//         destination: '/login',
+//         permanent: false,
+//       },
+//     };
+//   }
+
+//   try {
+//     const ownerIdResponse = await fetch(
+//       `${baseUrl}/user/find-owner-by-user`,
+//       {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify({ userId }),
+//       }
+//     );
+//     if (ownerIdResponse.ok) {
+//       const ownerData = await ownerIdResponse.json();
+//       ownerId = ownerData?.owner?._id;
+//     } else {
+//       return {
+//         redirect: {
+//           destination: '/adminFavProperties?page=1',
+//           permanent: false,
+//         },
+//       };
+//     }
+//   } catch (error) {
+//     console.error(error);
+//   }
+
+//   const [notifications, property, ownerData, plans, messages] = await Promise.all([
+//     fetch(`${baseUrl}/notification/user/${userId}`, {
+//       method: 'GET',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//     })
+//       .then((res) => res.json())
+//       .catch(() => []),
+//     fetch(`${baseUrl}/property/${propertyId}?isEdit=true`)
+//       .then((res) => res.json())
+//       .catch(() => { }),
+//     fetch(`${baseUrl}/user/find-owner-by-user`, {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//       body: JSON.stringify({ userId }),
+//     })
+//       .then((res) => res.json())
+//       .catch(() => { }),
+//     fetch(`${baseUrl}/plan`)
+//       .then((res) => res.json())
+//       .catch(() => []),
+//     fetch(`${baseUrl}/message/find-all-by-ownerId`, {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//       body: JSON.stringify({
+//         ownerId,
+//         page: 1,
+//       }),
+//     })
+//       .then((res) => res.json())
+//       .catch(() => []),
+//     fetchJson(`${baseUrl}/notification/user/${userId}`),
+//     fetchJson(`${baseUrl}/property/${propertyId}?isEdit=true`),
+//     fetchJson(`${baseUrl}/user/find-owner-by-user`),
+//     fetchJson(`${baseUrl}/plan`),
+//     fetchJson(`${baseUrl}/message/find-all-by-ownerId`),
+//   ]);
+
+//   return {
+//     props: {
+//       notifications,
+//       property,
+//       ownerData,
+//       plans,
+//       messages
+//     },
+//   };
+// }

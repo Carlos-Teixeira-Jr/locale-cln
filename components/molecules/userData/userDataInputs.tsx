@@ -68,7 +68,9 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
   const [formData, setFormData] = useState<IUserDataComponent>({
     username: ownerData?.user?.username
       ? ownerData?.user?.username
-      : '',
+      : ownerData?.owner?.name
+        ? ownerData?.owner?.name
+        : '',
     email: ownerData
       ? ownerData?.user?.email
       : '',
@@ -305,7 +307,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
           <div className="my-5 w-full" ref={inputs[0].ref}>
             <h3 className={classes.title}>{inputs[0].label}</h3>
             <input
-              className={`border w-full p-5 h-12 border-quaternary rounded-[10px] bg-tertiary font-bold  text-sm md:text-base text-quaternary leading-7 drop-shadow-xl`}
+              className={`border w-full max-w-[59.5rem] p-5 h-12 border-quaternary rounded-[10px] bg-tertiary font-bold  text-sm md:text-base text-quaternary leading-7 drop-shadow-xl`}
               onChange={inputs[0].onChange}
               value={inputs[0].value}
               required

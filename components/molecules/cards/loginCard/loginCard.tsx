@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -151,7 +152,6 @@ const LoginCard: React.FC = () => {
       }
     }
 
-
     if (isRegister) {
       if (
         email &&
@@ -162,32 +162,48 @@ const LoginCard: React.FC = () => {
       ) {
         try {
           setLoading(true);
-          const data = await sendRequest(
-            `${baseUrl}/auth/register`,
-            'POST',
-            {
-              email,
-              password,
-              passwordConfirmation,
-            }
-          );
+          const { data: responseData } = await axios.post(`${baseUrl}/user/find-by-email`, { email });
 
-          if (data) {
-            const { email, emailVerificationCode, isEmailVerified } = data;
-            setEmailVerificationData({
-              email,
-              isEmailVerified,
-              emailVerificationCode,
-              password,
-            });
+          if (responseData && !responseData.isEmailVerified && !verifyEmailModalIsOpen) {
             setVerifyEmailModalIsOpen(true);
-          } else {
-            showErrorToast(ErrorToastNames.EmailAlreadyInUse)
-            setLoading(false)
+            showErrorToast(ErrorToastNames.EmailNotVerified);
+            return
           }
-        } catch (error) {
+
+        } catch (error: unknown) {
           console.error(error);
-          setLoading(false)
+          if (axios.isAxiosError(error)) {
+            if (error.response) {
+              const data: any = await sendRequest(
+                `${baseUrl}/auth/register`,
+                'POST',
+                {
+                  email,
+                  password,
+                  passwordConfirmation,
+                }
+              );
+
+              if (data) {
+                if (!data.isEmailVerified) {
+                  setVerifyEmailModalIsOpen(true)
+                }
+                const { email, emailVerificationCode, isEmailVerified } = data;
+                setEmailVerificationData({
+                  email,
+                  isEmailVerified,
+                  emailVerificationCode,
+                  password,
+                });
+                setVerifyEmailModalIsOpen(true);
+              } else {
+                showErrorToast(ErrorToastNames.EmailAlreadyInUse)
+                setLoading(false)
+              }
+            }
+          } else {
+            showErrorToast(ErrorToastNames.ServerConnection)
+          }
         }
       } else {
         showErrorToast(ErrorToastNames.InvalidRegisterData)
@@ -229,7 +245,6 @@ const LoginCard: React.FC = () => {
               } catch (error) {
                 toast.dismiss();
                 setLoading(false)
-                console.error(error);
                 showErrorToast(ErrorToastNames.ServerConnection);
               }
             } else {
@@ -238,7 +253,8 @@ const LoginCard: React.FC = () => {
               setLoading(false);
             }
           } else {
-            setLoading(false)
+            showErrorToast(ErrorToastNames.UserNotFound)
+            setLoading(false);
           }
         } catch (error) {
           toast.dismiss();
@@ -267,14 +283,6 @@ const LoginCard: React.FC = () => {
         <label className="md:text-xl text-lg font-bold text-quaternary drop-shadow-md md:w-fit mt-auto mb-1">
           E-mail
         </label>
-        {/* <input
-          className={`w-full h-fit md:h-12 rounded-[10px] border-[1px] border-quaternary drop-shadow-xl bg-tertiary text-quaternary p-2 md:text-xl font-semibold ${emailError === '' ? '' : 'border-[2px] border-red-500'
-            }`}
-          type="email"
-          value={email}
-          maxLength={80}
-          onChange={(e) => setEmail(e.target.value)}
-        /> */}
         <input
           type="email"
           value={email}

@@ -640,7 +640,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
       ) : (
         <>
           <div className={classes.body}>
-            <Header userIsOwner={false} />
+            <Header userIsOwner={docs?.length > 0} />
             <div className="justify-center">
               <div className={classes.stepLabel}>
                 <LinearStepper activeStep={2} />

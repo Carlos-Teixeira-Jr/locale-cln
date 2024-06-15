@@ -48,7 +48,9 @@ const RegisterStep35: NextPageWithLayout<IRegisterStep35> = ({ plans }) => {
   const handleSubmit = () => {
     setLoading(true);
     updateProgress(5);
-    store.clearAll();
+    store.remove('propertyData');
+    store.remove('plans');
+    store.remove('creditCard');
     localStorage.setItem('locale.cookiesPolicy', 'true');
     if (!urlEmail) {
       router.push('/registerStep4');

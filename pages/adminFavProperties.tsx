@@ -10,6 +10,8 @@ import {
   IData,
   IPropertyInfo,
 } from '../common/interfaces/property/propertyData';
+import { isCardVisualized } from '../common/utils/actions/isCardVisualized';
+import { saveVisualizedCards } from '../common/utils/actions/saveVisualizedCards';
 import { fetchJson } from '../common/utils/fetchJson';
 import SentimentIcon from '../components/atoms/icons/sentimentIcon';
 import Pagination from '../components/atoms/pagination/pagination';
@@ -46,7 +48,9 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
   const unreadMessages = messages?.docs?.length > 0 ? messages?.docs.filter((message) => !message.isRead) : [];
   const plusPlan = plans.find((e) => e.name === 'Locale Plus');
   const ownerIsPlus = ownerData?.owner?.plan === plusPlan?._id ? true : false;
-
+  const [isAlreadyClicked, setIsAlreadyClicked] = useState<null | boolean>(null);
+  const [params, setParams] = useState('');
+  const { push } = useRouter();
 
   useEffect(() => {
     if (router.query.page !== undefined && typeof query.page === 'string') {
@@ -70,6 +74,29 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
     }
   }, [currentPage]);
 
+  const handleCardClick = (id: string, params: string) => {
+    const alreadyClicked = isCardVisualized(id);
+    if (!alreadyClicked) {
+      saveVisualizedCards(id);
+    }
+    setIsAlreadyClicked(alreadyClicked);
+    setParams(params);
+  };
+
+  // insere a flag de incrementação de visualizações do imóvel na url;
+  useEffect(() => {
+    let newParams;
+    if (isAlreadyClicked !== null) {
+      const firstSubstring = params.split('increment=')[0];
+
+      const lastSubstring = params.split('increment=')[1];
+
+      newParams = firstSubstring + `increment=${!isAlreadyClicked}` + lastSubstring
+
+      push(`/property/${newParams}`)
+    }
+  }, [isAlreadyClicked, params]);
+
   return (
     <div className='my-5'>
       <AdminHeader isOwnerProp={isOwner} isPlus={ownerIsPlus} ownerData={ownerData} />
@@ -82,6 +109,8 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
               unreadMessages={unreadMessages}
               isPlus={ownerIsPlus}
               hasProperties={ownerProperties?.docs?.length > 0}
+              favouriteProperties={favouriteProperties}
+              messages={messages.docs}
             />
           ) : (
             ''
@@ -134,6 +163,7 @@ const AdminFavProperties: NextPageWithLayout<IAdminFavProperties> = ({
                       adType={adType}
                       propertyType={propertyType}
                       address={address}
+                      onCardClick={(id: string, params: string) => handleCardClick(id, params)}
                     />
                   </div>
                 )

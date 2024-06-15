@@ -1,11 +1,17 @@
+import { GetServerSidePropsContext } from 'next';
+import { getSession } from 'next-auth/react';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { ILocation } from '../common/interfaces/locationDropdown';
+import { IOwnerProperties } from '../common/interfaces/properties/propertiesList';
 import {
   IData,
   IPropertyInfo,
 } from '../common/interfaces/property/propertyData';
 import { IPropertyTypes } from '../common/interfaces/property/propertyTypes';
+import { isCardVisualized } from '../common/utils/actions/isCardVisualized';
+import { saveVisualizedCards } from '../common/utils/actions/saveVisualizedCards';
 import { fetchJson, handleResult } from '../common/utils/fetchJson';
 import HomeFilter from '../components/atoms/filterSections/HomeFilter';
 import { AccessCard, PropertyCard } from '../components/molecules/cards';
@@ -17,6 +23,7 @@ export interface IHome {
   propertyInfo: IPropertyInfo;
   propertyTypes: IPropertyTypes[];
   locations: ILocation[];
+  ownerProperties: IOwnerProperties
 }
 
 export enum TransactionType {
@@ -24,17 +31,30 @@ export enum TransactionType {
   RENT = 'alugar',
 }
 
+const defaultOwnerProperties: IOwnerProperties = {
+  docs: [],
+  count: 0,
+  totalPages: 0,
+  messages: []
+};
+
 const Home: NextPageWithLayout<IHome> = ({
   propertyInfo,
   propertyTypes,
   locations,
+  ownerProperties = defaultOwnerProperties
 }) => {
+
   const { latitude, longitude, location } = useTrackLocation();
   const [propertiesByLocation, setPropertiesByLocation] = useState<any>([]);
   const [propertiesByLocationError, setPropertiesByLocationError] =
     useState(null);
   const [isBuy, setIsBuy] = useState(true);
   const [isRent, setIsRent] = useState(false);
+  const isOwner = ownerProperties?.docs.length > 0;
+  const { push } = useRouter();
+  const [isAlreadyClicked, setIsAlreadyClicked] = useState<null | boolean>(null);
+  const [params, setParams] = useState('');
 
   const handleSetBuy = (value: boolean) => {
     setIsBuy(value);
@@ -71,13 +91,36 @@ const Home: NextPageWithLayout<IHome> = ({
     fetchPropertiesByLocation();
   }, [latitude, longitude, location, propertiesByLocationError]);
 
+  const handleCardClick = (id: string, params: string) => {
+    const alreadyClicked = isCardVisualized(id);
+    if (!alreadyClicked) {
+      saveVisualizedCards(id);
+    }
+    setIsAlreadyClicked(alreadyClicked);
+    setParams(params);
+  };
+
+  // insere a flag de incrementação de visualizações do imóvel na url;
+  useEffect(() => {
+    let newParams;
+    if (isAlreadyClicked !== null) {
+      const firstSubstring = params.split('increment=')[0];
+
+      const lastSubstring = params.split('increment=')[1];
+
+      newParams = firstSubstring + `increment=${!isAlreadyClicked}` + lastSubstring
+
+      push(`/property/${newParams}`)
+    }
+  }, [isAlreadyClicked, params]);
+
   return (
     <>
       <div className='min-h-screen flex flex-col'>
 
         <div className='flex flex-col flex-grow'>
           <div className="fixed z-10 top-0 w-full">
-            <Header userIsOwner={false} />
+            <Header userIsOwner={isOwner} />
           </div>
 
           <div className="z-0">
@@ -152,6 +195,7 @@ const Home: NextPageWithLayout<IHome> = ({
                             adType={adType}
                             propertyType={propertyType}
                             address={address}
+                            onCardClick={(id: string, params: string) => handleCardClick(id, params)}
                           />
                         )
                       )
@@ -181,6 +225,7 @@ const Home: NextPageWithLayout<IHome> = ({
                             adType={adType}
                             propertyType={propertyType}
                             address={address}
+                            onCardClick={(id: string, params: string) => handleCardClick(id, params)}
                           />
                         )
                       )}
@@ -201,8 +246,52 @@ const Home: NextPageWithLayout<IHome> = ({
 
 export default Home;
 
-export async function getStaticProps() {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const session = (await getSession(context)) as any;
+  const userId = session?.user.data._id || session?.user.id;
+  const page = 1;
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+  let ownerData;
+  let ownerProperties = defaultOwnerProperties;
+
+  try {
+    const ownerIdResponse = await fetch(
+      `${baseUrl}/user/find-owner-by-user`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId }),
+      }
+    );
+
+    if (ownerIdResponse.ok) {
+      const response = await ownerIdResponse.json();
+      if (response?.owner?._id) {
+        ownerData = response;
+
+        ownerProperties = await fetch(`${baseUrl}/property/owner-properties`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ownerId: ownerData?.owner?._id,
+            page,
+          }),
+        })
+          .then((res) => res.json())
+          .catch(() => defaultOwnerProperties);
+      } else {
+        ownerProperties = defaultOwnerProperties;
+      }
+    } else {
+      ownerData = {};
+    }
+  } catch (error) {
+    console.error(`Error:`, error)
+  }
 
   const promises = [
     fetchJson(`${baseUrl}/property/filter/?page=1&limit=4`),
@@ -222,11 +311,11 @@ export async function getStaticProps() {
 
   return {
     props: {
-      propertyInfo: propertyInfo,
-      propertyTypes: propertyTypes,
-      locations: locations,
+      propertyInfo,
+      propertyTypes,
+      locations,
+      ownerProperties: ownerProperties ?? defaultOwnerProperties
     },
-    revalidate: propertyInfo?.docs?.length > 0 ? 60 : 1,
   };
 }
 
