@@ -41,6 +41,7 @@ const AdminHeader: React.FC<IAdminHeader> = ({ isOwnerProp, ownerData, isPlus })
     }
   }
 
+
   // Atualiza a foto do usuário caso ela seja alterada na tela de edição de dados do usuário
   useEffect(() => {
     if (ownerData?.user?.picture) {
