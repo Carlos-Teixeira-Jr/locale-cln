@@ -56,13 +56,15 @@ type BodyReq = {
   creditCardData?: CreditCardForm;
   picture?: string;
   deactivateProperties: string[];
-  coupon?: string
+  coupon?: string;
+  creditsLeft: number | null
 };
 
 // To-do: verificar se a página está exigindo os dados do cartão mesmo quando o usuário ainda tem créditos no plano;
 // To-do: Se não for feita uma nova compra não deve mostrar o valor no box do final da página;
 
 const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerData, docs }) => {
+  console.log("🚀 ~ ownerData:", ownerData)
 
   const router = useRouter();
   const { progress, updateProgress } = useProgress();
@@ -92,11 +94,13 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
   const [isChangePlan, setIsChangePlan] = useState(false);
   const [confirmAdsToDeactivate, setConfirmAdsToDeactivate] = useState(false);
   const [docsToDeactivate, setDocsToDeactivate] = useState<string[]>([])
+  console.log("🚀 ~ docsToDeactivate:", docsToDeactivate)
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
   const [coupon, setCoupon] = useState('');
   const [useCoupon, setUseCoupon] = useState(false);
   const [couponError, setCouponError] = useState('');
   const couponInputRef = useRef<HTMLElement>(null);
+  const [creditsLeft, setCreditsLeft] = useState(ownerData?.owner?.adCredits ? ownerData?.owner?.adCredits - 1 : null);
 
   // Atualiza o selectedPlanData
   useEffect(() => {
@@ -250,7 +254,9 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
       selectedPlanData !== undefined &&
       selectedPlan !== ownerPlan._id &&
       selectedPlanData.price < ownerPlan.price &&
-      docs.some((doc) => doc.isActive === true)
+      docs.some((doc) => doc.isActive === true) ||
+      selectedPlanData?.commonAd &&
+      selectedPlanData?.commonAd - docs.filter((doc) => doc.isActive === true).length > selectedPlanData.commonAd
     ) {
       setPropsToDeactivateIsOpen(true);
       return;
@@ -471,7 +477,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
             isPlanFree: selectedPlanData?.name === 'Free' ? true : false,
             phone: userDataForm.phone,
             cellPhone: userDataForm.cellPhone !== '' ? `${userDataForm.cellPhone}` : '123',
-            deactivateProperties: docsToDeactivate
+            deactivateProperties: docsToDeactivate,
+            creditsLeft
           };
 
           if (!isPlanFree) {
@@ -484,6 +491,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
               coupon
             }
           }
+
+          console.log("🚀 ~ handleSubmit ~ body:", body)
 
           const response = await fetch(`${baseUrl}/property`, {
             method: 'POST',
@@ -801,6 +810,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
               onSubmit={(isConfirmed: boolean) => handleSubmit(isConfirmed)}
               docsToDeactivate={(docs: string[]) => setDocsToDeactivate(docs)}
               selectedPlan={selectedPlanData}
+              onChangeCreditsLeft={(creditsLeft: number) => setCreditsLeft(creditsLeft)}
             />
           </div >
 

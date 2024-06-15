@@ -12,7 +12,8 @@ export interface ISelectAdsToDeactivateModal {
   setConfirmAdsToDeactivate: (isConfirmed: boolean) => void,
   onSubmit: (confirmChange: boolean) => void,
   docsToDeactivate: (docs: string[]) => void,
-  selectedPlan: IPlan | undefined
+  selectedPlan: IPlan | undefined,
+  onChangeCreditsLeft: (creditsLeft: number) => void,
 }
 
 const SelectAdsToDeactivateModal = ({
@@ -22,7 +23,8 @@ const SelectAdsToDeactivateModal = ({
   setConfirmAdsToDeactivate,
   onSubmit,
   docsToDeactivate,
-  selectedPlan
+  selectedPlan,
+  onChangeCreditsLeft
 }: ISelectAdsToDeactivateModal) => {
 
   const isMobile = useIsMobile();
@@ -39,19 +41,27 @@ const SelectAdsToDeactivateModal = ({
 
   useEffect(() => {
     // Update unselectedCards based on docs and selectedCards
-    const newUnselectedCards = docs?.reduce<string[]>((acc, doc) => {
-      if (!selectedCards.includes(doc._id)) {
-        return [...acc, doc._id];
-      }
-      return acc;
-    }, []);
+    if (isOpen) {
+      const newUnselectedCards = docs?.reduce<string[]>((acc, doc) => {
+        if (!selectedCards.includes(doc._id)) {
+          return [...acc, doc._id];
+        }
+        return acc;
+      }, []);
 
-    setUnselectedCards(newUnselectedCards);
+      setUnselectedCards(newUnselectedCards);
+    }
   }, [docs, selectedCards]);
 
   useEffect(() => {
-    docsToDeactivate(unselectedCards);
+    if (isOpen) {
+      docsToDeactivate(unselectedCards);
+    }
   }, [unselectedCards]);
+
+  useEffect(() => {
+    onChangeCreditsLeft(credits)
+  }, [credits])
 
   const handleSelectedCards = (card: string) => {
     if (selectedCards.includes(card)) {
