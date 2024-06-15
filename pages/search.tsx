@@ -96,7 +96,7 @@ const Search: NextPageWithLayout<ISearch> = ({
     setParams(params);
   };
 
-  // insere a flag de incrementação de visualizações do imóvel na url;
+  // Insere a flag de incrementação de visualizações do imóvel na url;
   useEffect(() => {
     let newParams;
     if (isAlreadyClicked !== null) {

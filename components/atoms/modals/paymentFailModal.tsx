@@ -64,7 +64,7 @@ const PaymentFailModal: React.FC<IPaymentFailModal> = ({
             Falha no Pagamento
           </h1>
           <p className="font-bold text-xl leading-6 text-quaternary">
-            {errorMessage}
+            Houve um problema com o pagamento, por favor tente novamente mais tarde.
           </p>
         </div>
         <div className="w-[66px] h-[66px] rounded-full bg-red-500 shrink-0 flex justify-center my-auto ml-10">

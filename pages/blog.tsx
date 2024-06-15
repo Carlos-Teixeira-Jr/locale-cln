@@ -40,7 +40,6 @@ const BlogPage = ({ ownerProperties = defaultOwnerProperties }: IBlogPage) => {
     advertise: false
   });
 
-  console.log("🚀 ~ BlogPage ~ selectedPage:", selectedPage)
 
   useEffect(() => {
     if (selectedPage.home) {
