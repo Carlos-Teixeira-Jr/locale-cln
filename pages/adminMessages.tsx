@@ -101,6 +101,7 @@ const AdminMessages = ({
               isPlus={ownerIsPlus}
               hasProperties={ownerProperties?.docs && ownerProperties?.docs?.length > 0 ? true : false}
               favouriteProperties={favouriteProperties}
+              messages={messages?.docs}
             />
           ) : (
             ''
