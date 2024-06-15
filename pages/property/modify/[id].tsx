@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import { IMessagesByOwner } from '../../../common/interfaces/message/messages';
 import { IOwner } from '../../../common/interfaces/owner/owner';
 import { IPlan } from '../../../common/interfaces/plans/plans';
+import { IFavProperties } from '../../../common/interfaces/properties/favouriteProperties';
 import {
   IEditPropertyData,
   IEditPropertyMainFeatures,
@@ -41,14 +42,17 @@ interface IEditAnnouncement {
   ownerData: IOwner;
   plans: IPlan[];
   notifications: INotification[];
-  messages: IMessagesByOwner
+  messages: IMessagesByOwner;
+  favouriteProperties: IFavProperties
 }
 
 const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
   property,
   ownerData,
   plans,
-  notifications
+  notifications,
+  messages,
+  favouriteProperties
 }) => {
   const [rotate1, setRotate1] = useState(false);
   const [rotate2, setRotate2] = useState(false);
@@ -58,6 +62,7 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
   const plusPlan = plans.find((e) => e.name === 'Locale Plus');
   const ownerIsPlus = ownerData?.plan === plusPlan?._id ? true : false;
   const [loading, setLoading] = useState(false);
+  const isFavourite = favouriteProperties?.docs?.some((e) => e._id === property._id)
 
   const isEdit = router.pathname == '/property/modify/[id]';
 
@@ -438,6 +443,8 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
             isOwnerProp={property !== undefined && true}
             notifications={notifications} isPlus={ownerIsPlus}
             hasProperties={true}
+            favouriteProperties={favouriteProperties}
+            messages={messages?.docs}
           />
         </div>
         <div className={classes.content}>
@@ -655,7 +662,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const userId = session?.user.data._id || session?.user.id;
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
   let property;
-  let isFavourite: boolean = false;
+  let favouriteProperties: boolean = false;
   let ownerData;
   let ownerId;
   const params = context.params?.id as string;
@@ -717,15 +724,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           if (fetchFavourites.ok) {
             const favourites = await fetchFavourites.json();
 
-            if (favourites.docs.length > 0) {
-              isFavourite = favourites.docs.some(
-                (prop: IData) => prop._id === id
-              );
-            } else {
-              isFavourite = false;
-            }
           } else {
-            isFavourite = false;
+            console.error('Não foi possível buscar os imoveis favoritos')
           }
         } catch (error) {
           console.log(error);
@@ -738,7 +738,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       console.error('Não foi possível achar o usuário.');
     }
   } else {
-    isFavourite = false;
+    console.error('não foi possível buscar os dados do anunciante.')
   }
 
   const [notifications, messages, plans] = await Promise.all([
@@ -784,7 +784,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   return {
     props: {
       property,
-      isFavourite,
+      favouriteProperties,
       relatedProperties,
       ownerData,
       plans,
