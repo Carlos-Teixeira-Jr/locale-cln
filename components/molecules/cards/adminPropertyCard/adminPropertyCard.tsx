@@ -54,7 +54,6 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
   address,
   onCardClick
 }: IAdminPropertyCard) => {
-  console.log("🚀 ~ views:", views)
 
   const priceString = price.toString();
   const formattedPrice = monetaryFormat(priceString);

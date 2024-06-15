@@ -64,7 +64,6 @@ type BodyReq = {
 // To-do: Se não for feita uma nova compra não deve mostrar o valor no box do final da página;
 
 const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerData, docs }) => {
-  console.log("🚀 ~ ownerData:", ownerData)
 
   const router = useRouter();
   const { progress, updateProgress } = useProgress();
@@ -253,10 +252,10 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
       ownerPlan !== undefined &&
       selectedPlanData !== undefined &&
       selectedPlan !== ownerPlan._id &&
-      selectedPlanData.price < ownerPlan.price &&
+      // selectedPlanData.price < ownerPlan.price &&
       docs.some((doc) => doc.isActive === true) ||
       selectedPlanData?.commonAd &&
-      selectedPlanData?.commonAd - docs.filter((doc) => doc.isActive === true).length > selectedPlanData.commonAd
+      selectedPlanData?.commonAd - docs?.filter((doc) => doc.isActive === true).length > selectedPlanData.commonAd
     ) {
       setPropsToDeactivateIsOpen(true);
       return;
@@ -491,8 +490,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
               coupon
             }
           }
-
-          console.log("🚀 ~ handleSubmit ~ body:", body)
 
           const response = await fetch(`${baseUrl}/property`, {
             method: 'POST',

@@ -29,7 +29,8 @@ const SelectAdsToDeactivateModal = ({
 
   const isMobile = useIsMobile();
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
-  const [unselectedCards, setUnselectedCards] = useState<string[]>([])
+  const [unselectedCards, setUnselectedCards] = useState<string[]>(docs?.filter(doc => doc.isActive).map((e) => e._id))
+  console.log("🚀 ~ unselectedCards:", unselectedCards)
   const [credits, setCredits] = useState<number>(0);
   const [confirm, setConfirm] = useState(false)
 
@@ -42,7 +43,7 @@ const SelectAdsToDeactivateModal = ({
   useEffect(() => {
     // Update unselectedCards based on docs and selectedCards
     if (isOpen) {
-      const newUnselectedCards = docs?.reduce<string[]>((acc, doc) => {
+      const newUnselectedCards = docs?.filter(doc => doc.isActive).reduce<string[]>((acc, doc) => {
         if (!selectedCards.includes(doc._id)) {
           return [...acc, doc._id];
         }
@@ -131,7 +132,7 @@ const SelectAdsToDeactivateModal = ({
       <div className="flex gap-2 md:gap-3 lg:gap-4 flex-wrap justify-between md:justify-start">
         {docs?.length > 0 &&
           docs
-            .filter((doc) => doc.isActive === true) // Filtrar apenas os documentos ativos
+            .filter((doc) => doc.isActive === true)
             .map((doc) => (
               <MiniPropertyCards
                 key={doc?._id}

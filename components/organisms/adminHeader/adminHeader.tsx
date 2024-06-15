@@ -25,6 +25,15 @@ const AdminHeader: React.FC<IAdminHeader> = ({ isOwnerProp, ownerData, isPlus })
     ? session?.user?.user?.data?.picture
     : session?.user?.data?.picture
   );
+  const ownerPlan = () => {
+    if (isOwnerProp && !isPlus && ownerData?.owner && ownerData?.owner?.adCredits > 1) {
+      return 'Básico'
+    } else if (isPlus) {
+      return 'Locale PLUS'
+    } else {
+      return 'Grátis'
+    }
+  }
 
   // Atualiza a foto do usuário caso ela seja alterada na tela de edição de dados do usuário
   useEffect(() => {
@@ -48,7 +57,7 @@ const AdminHeader: React.FC<IAdminHeader> = ({ isOwnerProp, ownerData, isPlus })
         <LocaleLogo />
       </Link>
       <div className="flex flex-row items-center lg:px-10">
-        <div className="flex flex-col justify-start mr-2 md:mr-10 text-quaternary text-md font-normal">
+        <div className="flex flex-col justify-start mr-2 md:mr-10 text-quaternary text-sm font-normal">
           <div className='flex gap-2'>
             <h4>Créditos de anúncio disponíveis:</h4>
             <p className='text-primary font-bold'>{ownerData?.owner ? ownerData?.owner?.adCredits : 0}</p>
@@ -57,6 +66,12 @@ const AdminHeader: React.FC<IAdminHeader> = ({ isOwnerProp, ownerData, isPlus })
             <h4>Créditos de destaque disponíveis:</h4>
             <p className='text-primary font-bold'>{ownerData?.owner ? ownerData?.owner?.highlightCredits : 0}</p>
           </div>
+          {ownerData?.owner && (
+            <div className='flex gap-2'>
+              <h4>Plano atual:</h4>
+              <p className='text-primary font-bold'>{ownerPlan()}</p>
+            </div>
+          )}
         </div>
         <Link href={'/admin?page=1'}>
           <div
