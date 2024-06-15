@@ -170,11 +170,6 @@ const Header = ({ userIsOwner }: IHeader) => {
                   </div>
                 )}
               </Link>
-              {/* <div className='flex items-center' ref={ref as any} onClick={() => setOpen(!open)}>
-                <button className="visible md:hidden cursor-pointer decoration-transparent">
-                  <MenuIcon />
-                </button>
-              </div> */}
             </>
           )}
         </div>
