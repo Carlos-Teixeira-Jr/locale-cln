@@ -26,7 +26,13 @@ const AdminHeader: React.FC<IAdminHeader> = ({ isOwnerProp, ownerData, isPlus })
     : session?.user?.data?.picture
   );
   const ownerPlan = () => {
-    if (isOwnerProp && !isPlus && ownerData?.owner && ownerData?.owner?.adCredits > 1) {
+    if (
+      isOwnerProp &&
+      !isPlus &&
+      ownerData?.owner &&
+      ownerData?.owner?.adCredits > 1 ||
+      ownerData?.owner?.plan === '645a469d388b9fbde84b6e88'
+    ) {
       return 'Básico'
     } else if (isPlus) {
       return 'Locale PLUS'
@@ -34,6 +40,7 @@ const AdminHeader: React.FC<IAdminHeader> = ({ isOwnerProp, ownerData, isPlus })
       return 'Grátis'
     }
   }
+
 
   // Atualiza a foto do usuário caso ela seja alterada na tela de edição de dados do usuário
   useEffect(() => {
