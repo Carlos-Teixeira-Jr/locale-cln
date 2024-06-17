@@ -30,7 +30,6 @@ const SelectAdsToDeactivateModal = ({
   const isMobile = useIsMobile();
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
   const [unselectedCards, setUnselectedCards] = useState<string[]>(docs?.filter(doc => doc.isActive).map((e) => e._id))
-  console.log("🚀 ~ unselectedCards:", unselectedCards)
   const [credits, setCredits] = useState<number>(0);
   const [confirm, setConfirm] = useState(false)
 
@@ -58,7 +57,7 @@ const SelectAdsToDeactivateModal = ({
     if (isOpen) {
       docsToDeactivate(unselectedCards);
     }
-  }, [unselectedCards]);
+  }, [unselectedCards, isOpen]);
 
   useEffect(() => {
     onChangeCreditsLeft(credits)
