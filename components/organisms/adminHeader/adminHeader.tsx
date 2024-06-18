@@ -59,27 +59,29 @@ const AdminHeader: React.FC<IAdminHeader> = ({ isOwnerProp, ownerData, isPlus })
     <div className="flex flex-row fixed top-0 w-full z-50 justify-between bg-tertiary h-16 drop-shadow-md">
       <Link
         href="/"
-        className="relative flex items-center cursor-pointer my-auto ml-4"
+        className="relative flex items-center cursor-pointer my-auto md:ml-4"
       >
         <LocaleLogo />
       </Link>
       <div className="flex flex-row items-center lg:px-10">
-        <div className="flex flex-col justify-start mr-2 md:mr-10 text-quaternary text-sm font-normal">
-          <div className='flex gap-2'>
-            <h4>Créditos de anúncio disponíveis:</h4>
-            <p className='text-primary font-bold'>{ownerData?.owner ? ownerData?.owner?.adCredits : 0}</p>
-          </div>
-          <div className='flex gap-2'>
-            <h4>Créditos de destaque disponíveis:</h4>
-            <p className='text-primary font-bold'>{ownerData?.owner ? ownerData?.owner?.highlightCredits : 0}</p>
-          </div>
-          {ownerData?.owner && (
+        {!isMobile && (
+          <div className="flex flex-col justify-start mr-2 md:mr-10 text-quaternary text-sm font-normal">
             <div className='flex gap-2'>
-              <h4>Plano atual:</h4>
-              <p className='text-primary font-bold'>{ownerPlan()}</p>
+              <h4>Créditos de anúncio disponíveis:</h4>
+              <p className='text-primary font-bold'>{ownerData?.owner ? ownerData?.owner?.adCredits : 0}</p>
             </div>
-          )}
-        </div>
+            <div className='flex gap-2'>
+              <h4>Créditos de destaque disponíveis:</h4>
+              <p className='text-primary font-bold'>{ownerData?.owner ? ownerData?.owner?.highlightCredits : 0}</p>
+            </div>
+            {ownerData?.owner && (
+              <div className='flex gap-2'>
+                <h4>Plano atual:</h4>
+                <p className='text-primary font-bold'>{ownerPlan()}</p>
+              </div>
+            )}
+          </div>
+        )}
         <Link href={'/admin?page=1'}>
           <div
             className="flex items-center justify-center max-w-[50px] max-h-[50px] cursor-pointer shrink-0"

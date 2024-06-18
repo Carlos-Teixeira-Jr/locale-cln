@@ -87,7 +87,7 @@ const AdminFilter = ({ ownerId, onSearchChange, onCloseFilter }: IAdminFilter) =
   }
 
   return (
-    <section className="bg-tertiary rounded-[5px] drop-shadow-lg p-3 w-full">
+    <section className="bg-tertiary rounded-[5px] drop-shadow-lg p-1 md:p-3 w-full">
       <div className={`flex justify-start md:my-0 md:mt-10'}`}>
         <div
           className={`w-6 h-6 border rounded-lg z-0 cursor-pointer my-auto shrink-0 ${filterIsOpen ? 'border-secondary' : 'border-quaternary'
