@@ -130,7 +130,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
             messages={messages?.docs}
           />
         </div>
-        <div className={`flex flex-col items-center mt-24 ${width < 1080 ? 'justify-center w-full' : `${ownerProperties?.docs?.length <= 0 ? 'lg:ml-[43rem] xl:mx-auto' : 'lg:ml-[26rem] 2xl:mx-auto'}`}`}>
+        <div className={`flex flex-col items-center mt-20 md:mt-24 ${width < 1080 ? 'justify-center w-full' : `${ownerProperties?.docs?.length <= 0 ? 'lg:ml-[43rem] xl:mx-auto' : 'lg:ml-[26rem] 2xl:mx-auto'}`}`}>
 
           <div className="mb-10 md:px-5 lg:px-0">
             <WelcomeAdmin userName={ownerData.user.username} />

@@ -108,7 +108,7 @@ const PaymentBoard: React.FC<IPaymentBoard> = ({
               </a>
             </p>
             {errors && (
-              <span className="text-red-500 mt-2 ml-5">
+              <span className="text-red-500 mt-2 lg:mt-0 ml-5">
                 {errors}
               </span>
             )}
