@@ -26,13 +26,7 @@ const AdminHeader: React.FC<IAdminHeader> = ({ isOwnerProp, ownerData, isPlus })
     : session?.user?.data?.picture
   );
   const ownerPlan = () => {
-    if (
-      isOwnerProp &&
-      !isPlus &&
-      ownerData?.owner &&
-      ownerData?.owner?.adCredits > 1 ||
-      ownerData?.owner?.plan === '645a469d388b9fbde84b6e88'
-    ) {
+    if (ownerData?.owner?.plan === '645a469d388b9fbde84b6e88') {
       return 'Básico'
     } else if (isPlus) {
       return 'Locale PLUS'
