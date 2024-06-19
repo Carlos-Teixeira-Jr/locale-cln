@@ -61,7 +61,6 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
   const { data: session } = useSession() as any;
   const user = session?.user?.data._id;
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  // const params = `${adType}+${propertyType}+${address.city}+${address.neighborhood}+${address.streetName}`;
   const params = `${adType}+${propertyType}+${address.city}+${address.neighborhood}+${address.streetName}+increment=+id=${_id}`
   const [loading, setLoading] = useState(false);
 
@@ -70,7 +69,8 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
     onCardClick(_id, params)
   }
 
-  const handleHighlight = async () => {
+  const handleHighlight = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
     try {
       toast.loading('Destacando...');
       const response = await fetch(
@@ -118,7 +118,8 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
       title: 'Inativar',
       link: '',
       className: `bg-quaternary w-full h-12 px-10 rounded-md font-bold text-tertiary text-xl shadow-sm transition-colors duration-300 hover:bg-gray-600 hover:text-white`,
-      onClick: () => {
+      onClick: (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.stopPropagation();
         setModalIsOpen(true);
       },
     },
@@ -149,7 +150,7 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
           <Image
             src={image}
             alt={'Admin property image'}
-            className={`md:max-w-xs md:min-w-[250px] ${!isActive ? 'opacity-30' : ''
+            className={`md:max-w-xs md:min-w-[250px] max-h-96 ${!isActive ? 'opacity-30' : ''
               } object-cover`}
             width={350}
             height={265}
@@ -211,7 +212,10 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
                       ? `${btn.className} opacity-30`
                       : `${btn.className}`
                       }`}
-                    onClick={btn.onClick}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      btn.onClick && btn.onClick(e);
+                    }}
                   >
                     {btn.key === 'deactivate' && !isActive
                       ? 'Ativar'
@@ -223,7 +227,10 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
                   <button
                     key={btn.key}
                     className={!highlighted ? btn.className : 'hidden'}
-                    onClick={btn.onClick}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      btn.onClick && btn.onClick(e);
+                    }}
                   >
                     {btn.title}
                   </button>

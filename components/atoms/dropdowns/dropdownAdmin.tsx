@@ -1,6 +1,8 @@
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
+import Loading from '../loading';
 
 interface IDropdownAdmin {
   isOwnerProp: boolean;
@@ -11,8 +13,13 @@ export default function DropdownAdmin({ isOwnerProp, isPlus }: IDropdownAdmin) {
 
   const isOwner = isOwnerProp;
   const { pathname } = useRouter();
+  const [loadingOption, setLoadingOption] = useState<string | null>(null);
   const optionsClassname =
-    'translate-x-[1px] w-[150px] h-fit hover:bg-quaternary hover:text-tertiary py-3 ';
+    'translate-x-[1px] w-[150px] h-fit hover:bg-quaternary hover:text-tertiary py-3 flex justify-center';
+
+  const handleClick = (key: string) => {
+    setLoadingOption(key);
+  };
 
   const option = [
     {
@@ -76,13 +83,18 @@ export default function DropdownAdmin({ isOwnerProp, isPlus }: IDropdownAdmin) {
               <Link
                 key={option.key}
                 href={option.ref}
+                onClick={() => handleClick(option.key)}
                 className={
                   idx === 0
                     ? option.className + ' rounded-t-xl'
                     : option.className
                 }
               >
-                {option.title}
+                {loadingOption === option.key ? (
+                  <Loading fill='#F75D5F' />
+                ) : (
+                  option.title
+                )}
               </Link>
             )
           } else if (isOwner && !isPlus) {
@@ -90,13 +102,18 @@ export default function DropdownAdmin({ isOwnerProp, isPlus }: IDropdownAdmin) {
               <Link
                 key={option.key}
                 href={option.ref}
+                onClick={() => handleClick(option.key)}
                 className={
                   idx === 0
                     ? option.className + ' rounded-t-xl'
                     : option.className
                 }
               >
-                {option.title}
+                {loadingOption === option.key ? (
+                  <Loading fill='#F75D5F' />
+                ) : (
+                  option.title
+                )}
               </Link>
             )
           } else if (isOwner && isPlus) {
@@ -104,13 +121,18 @@ export default function DropdownAdmin({ isOwnerProp, isPlus }: IDropdownAdmin) {
               <Link
                 key={option.key}
                 href={option.ref}
+                onClick={() => handleClick(option.key)}
                 className={
                   idx === 0
                     ? option.className + ' rounded-t-xl'
                     : option.className
                 }
               >
-                {option.title}
+                {loadingOption === option.key ? (
+                  <Loading fill='#F75D5F' />
+                ) : (
+                  option.title
+                )}
               </Link>
             )
           } else if (!isOwner && isPlus) {
@@ -118,13 +140,18 @@ export default function DropdownAdmin({ isOwnerProp, isPlus }: IDropdownAdmin) {
               <Link
                 key={option.key}
                 href={option.ref}
+                onClick={() => handleClick(option.key)}
                 className={
                   idx === 0
                     ? option.className + ' rounded-t-xl'
                     : option.className
                 }
               >
-                {option.title}
+                {loadingOption === option.key ? (
+                  <Loading fill='#F75D5F' />
+                ) : (
+                  option.title
+                )}
               </Link>
             )
           }
