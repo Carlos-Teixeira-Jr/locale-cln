@@ -93,7 +93,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
   const [isChangePlan, setIsChangePlan] = useState(false);
   const [confirmAdsToDeactivate, setConfirmAdsToDeactivate] = useState(false);
   const [docsToDeactivate, setDocsToDeactivate] = useState<string[]>([])
-  console.log("🚀 ~ docsToDeactivate:", docsToDeactivate)
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
   const [coupon, setCoupon] = useState('');
   const [useCoupon, setUseCoupon] = useState(false);

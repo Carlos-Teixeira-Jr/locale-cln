@@ -164,7 +164,6 @@ const LoginCard: React.FC = () => {
           setLoading(true);
           const { data: responseData } = await axios.post(`${baseUrl}/user/find-by-email`, { email });
 
-          console.log("🚀 ~ handleSubmit ~ responseData:", responseData)
           if (responseData && !responseData.isEmailVerified && !verifyEmailModalIsOpen) {
             setVerifyEmailModalIsOpen(true);
             showErrorToast(ErrorToastNames.EmailNotVerified);
