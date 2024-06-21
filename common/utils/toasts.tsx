@@ -214,7 +214,7 @@ const errorToastMessages: Record<ErrorToastNames, ToastMessage> = {
     },
   },
   [ErrorToastNames.EmailAlreadyInUse]: {
-    message: 'O e-mail já está sendo usado por outra conta. Por favor faça login em sua conta usando seu e-mail.',
+    message: "O e-mail informado já está associado a outra conta. Por favor, faça login com seu e-mail para acessar sua conta.",
     options: {
       autoClose: 7000,
     },

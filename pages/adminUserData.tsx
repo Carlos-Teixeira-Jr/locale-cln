@@ -1,5 +1,4 @@
-/* eslint-disable @next/next/no-img-element */
-/* eslint-disable react/jsx-no-undef */
+
 import { GetServerSidePropsContext } from 'next';
 import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
@@ -28,8 +27,6 @@ import {
 import ArrowDownIcon from '../components/atoms/icons/arrowDownIcon';
 import Loading from '../components/atoms/loading';
 import UserAddress from '../components/molecules/address/userAdress';
-import { PlansCardsHidden } from '../components/molecules/cards';
-import ChangePlanCheckbox from '../components/molecules/changePlanCheckBox/changePlanCheckBox';
 import Coupons from '../components/molecules/coupons/coupons';
 import {
   CreditCardForm,
@@ -582,8 +579,8 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       'flex flex-row items-center justify-between max-w-[1232px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 text-lg text-quaternary rounded-xl font-bold transition bg-opacity-90 hover:bg-gray-300',
     plans:
       'grid sm:grid-cols-1 grid-cols-1 md:grid-cols-3 xl:grid-cols-3 md:gap-6',
-    h2: 'md:text-2xl text-lg leading-10 text-quaternary font-bold mb-5 lg:mb-5 mx-5',
-    userData: 'my-5 lg:mx-10 md:mx-2 max-w-[1232px]',
+    h2: 'md:text-2xl text-lg leading-10 text-quaternary font-bold mb-5 lg:mb-5 lg:mt-10 mx-5',
+    userData: 'my-5 lg:mx-10 md:mx-2 max-w-[736px]',
     content: 'flex flex-col mt-16 xl:ml-80 2xl:mx-auto max-w-[1232px] justify-center md:mx-5',
   };
 
@@ -642,7 +639,8 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
 
               </div>
 
-              <div>
+              {/* TO-DO: Descomentar após estágio de parcerias */}
+              {/* <div>
                 <ChangePlanCheckbox onChangePlanClick={(isChecked: boolean) => setIsChangePlan(isChecked)} />
               </div>
               {isChangePlan && (
@@ -685,7 +683,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                     <span ref={isMobile ? plansRef : null} className='text-sm w-[90%] text-red-500 font-normal text-center px-2 md:px-auto'>{planError}</span>
                   )}
                 </>
-              )}
+              )} */}
 
               <h2 className={classes.h2}>Dados de Cobrança</h2>
 
@@ -709,6 +707,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
               </button>
             </div>
 
+            {/* TO-DO: Descomentar após parcerias */}
             {/* <div className="lg:pt-20 pt-0.5 mx-4">
               <label className={classes.accordion}>
                 Dados do Cartão de Crédito
@@ -771,7 +770,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                 >
                   <ArrowDownIcon
                     width="13"
-                    className={`cursor-pointer ${deleteAccountIsOpen ? '' : 'rotate-180'
+                    className={`cursor-pointer ${deleteAccountIsOpen ? 'transform rotate-180 transition-transform duration-300 ease-in-out' : 'transform rotate-360 transition-transform duration-300 ease-in-out'
                       }`}
                   />
                 </span>

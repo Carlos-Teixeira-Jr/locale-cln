@@ -1,5 +1,4 @@
 import { signOut } from 'next-auth/react';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import Loading from '../loading';
@@ -12,13 +11,17 @@ interface IDropdownAdmin {
 export default function DropdownAdmin({ isOwnerProp, isPlus }: IDropdownAdmin) {
 
   const isOwner = isOwnerProp;
-  const { pathname } = useRouter();
+  const { pathname, push } = useRouter();
   const [loadingOption, setLoadingOption] = useState<string | null>(null);
   const optionsClassname =
     'translate-x-[1px] w-[150px] h-fit hover:bg-quaternary hover:text-tertiary py-3 flex justify-center';
 
-  const handleClick = (key: string) => {
-    setLoadingOption(key);
+  const handleClick = (key: string, ref: string) => {
+    const baseRef = ref.split('?')[0];
+    if (baseRef !== pathname) {
+      setLoadingOption(key);
+      push(ref)
+    }
   };
 
   const option = [
@@ -32,7 +35,7 @@ export default function DropdownAdmin({ isOwnerProp, isPlus }: IDropdownAdmin) {
     {
       key: 'myData',
       title: 'Meus Dados',
-      ref: '/adminUserData',
+      ref: '/adminUserData?page=1',
       className: optionsClassname,
       ownerOption: true,
     },
@@ -78,81 +81,78 @@ export default function DropdownAdmin({ isOwnerProp, isPlus }: IDropdownAdmin) {
       <div className="flex flex-col text-center font-medium text-md text-quaternary leading-5">
 
         {option.map((option, idx) => {
+          const baseRef = option.ref.split('?')[0];
           if (!isOwner && !isPlus) {
             return option.key !== 'creditShop' && option.key !== 'myMessages' && option.key !== 'myAnnouncements' && (
-              <Link
+              <div
                 key={option.key}
-                href={option.ref}
-                onClick={() => handleClick(option.key)}
+                onClick={() => handleClick(option.key, option.ref)}
                 className={
                   idx === 0
-                    ? option.className + ' rounded-t-xl'
-                    : option.className
+                    ? option.className + ' rounded-t-xl' + `${loadingOption === option.key ? 'py-0' : ''}`
+                    : option.className + `${loadingOption === option.key ? 'py-0' : ''}`
                 }
               >
-                {loadingOption === option.key ? (
+                {loadingOption === option.key && baseRef !== pathname ? (
                   <Loading fill='#F75D5F' />
                 ) : (
                   option.title
                 )}
-              </Link>
+              </div>
             )
           } else if (isOwner && !isPlus) {
             return option.key !== 'creditShop' && (
-              <Link
+              <div
                 key={option.key}
-                href={option.ref}
-                onClick={() => handleClick(option.key)}
+                onClick={() => handleClick(option.key, option.ref)}
                 className={
                   idx === 0
-                    ? option.className + ' rounded-t-xl'
-                    : option.className
+                    ? option.className + ' rounded-t-xl' + `${loadingOption === option.key ? 'py-0' : ''}`
+                    : option.className + `${loadingOption === option.key ? 'py-0' : ''}`
                 }
               >
-                {loadingOption === option.key ? (
+                {loadingOption === option.key && baseRef !== pathname ? (
                   <Loading fill='#F75D5F' />
                 ) : (
                   option.title
                 )}
-              </Link>
+              </div>
             )
           } else if (isOwner && isPlus) {
             return (
-              <Link
+              <div
                 key={option.key}
-                href={option.ref}
-                onClick={() => handleClick(option.key)}
+                onClick={() => handleClick(option.key, option.ref)}
                 className={
                   idx === 0
-                    ? option.className + ' rounded-t-xl'
-                    : option.className
+                    ? option.className + ' rounded-t-xl' + `${loadingOption === option.key ? 'py-0' : ''}`
+                    : option.className + `${loadingOption === option.key ? 'py-0' : ''}`
                 }
               >
-                {loadingOption === option.key ? (
+                {loadingOption === option.key && baseRef !== pathname ? (
                   <Loading fill='#F75D5F' />
                 ) : (
                   option.title
                 )}
-              </Link>
+              </div>
             )
           } else if (!isOwner && isPlus) {
             return option.key !== 'myMessages' && option.key !== 'myAnnouncements' && (
-              <Link
+              <div
                 key={option.key}
-                href={option.ref}
-                onClick={() => handleClick(option.key)}
+                onClick={() => handleClick(option.key, option.ref)}
                 className={
                   idx === 0
-                    ? option.className + ' rounded-t-xl'
-                    : option.className
+                    ? option.className + ' rounded-t-xl' + `${loadingOption === option.key ? 'py-0' : ''}`
+                    : option.className + `${loadingOption === option.key ? 'py-0' : ''}`
                 }
               >
-                {loadingOption === option.key ? (
+                {loadingOption === option.key && baseRef !== pathname ? (
                   <Loading fill='#F75D5F' />
                 ) : (
                   option.title
                 )}
-              </Link>
+              </div>
             )
           }
         })}

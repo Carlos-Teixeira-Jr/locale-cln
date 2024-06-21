@@ -164,12 +164,14 @@ const LoginCard: React.FC = () => {
           setLoading(true);
           const { data: responseData } = await axios.post(`${baseUrl}/user/find-by-email`, { email });
 
+          console.log("🚀 ~ handleSubmit ~ responseData:", responseData)
           if (responseData && !responseData.isEmailVerified && !verifyEmailModalIsOpen) {
             setVerifyEmailModalIsOpen(true);
             showErrorToast(ErrorToastNames.EmailNotVerified);
             return
+          } else if (responseData && responseData.isEmailVerified) {
+            showErrorToast(ErrorToastNames.EmailAlreadyInUse)
           }
-
         } catch (error: unknown) {
           console.error(error);
           if (axios.isAxiosError(error)) {
