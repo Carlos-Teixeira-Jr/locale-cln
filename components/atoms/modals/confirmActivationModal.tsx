@@ -140,7 +140,7 @@ export default function confirmActivationModal({
           } este anúncio?`}</h1>
         <p className="font-bold text-sm text-quaternary mb-4">
           {isActive
-            ? 'Se decidir reativá-lo no futuro, será necessário utilizar um crédito de anúncio do seu plano. 😉'
+            ? 'Ao desativar este anúncio, ele não será mais visível nas buscas, e o crédito correspondente será devolvido para uso futuro. Caso decida reativá-lo, um novo crédito será debitado. 😉'
             : 'Tem certeza de que deseja reativar o anúncio? Lembre-se de que a reativação custa um crédito do seu plano. 😊'}
         </p>
         <button

@@ -131,7 +131,7 @@ const MainFeatures: React.FC<IMainFeatures> = ({
           ? 'comercial'
           : 'residencial',
       propertyType: isEdit ? editarPropertyType! : 'casa',
-      propertySubtype: isEdit ? editarPropertySubtype! : 'padrao',
+      propertySubtype: isEdit ? editarPropertySubtype! : 'residencia',
       description: isEdit ? editarDescription! : '',
       size: {
         width: isEdit && editarSize ? editarSize?.width : 0,

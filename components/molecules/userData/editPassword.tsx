@@ -125,7 +125,7 @@ const EditPassword = ({
             />
           )}
         </div>
-        <h1 className="md:text-2xl text-xl mx-5 leading-10 text-quaternary font-bold md:mb-10">
+        <h1 className="md:text-2xl text-xl mx-5 leading-10 text-quaternary font-bold md:mb-3">
           Alterar Senha
         </h1>
       </div>

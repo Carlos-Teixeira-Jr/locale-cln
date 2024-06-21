@@ -102,11 +102,8 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
     let newParams;
     if (isAlreadyClicked !== null) {
       const firstSubstring = params.split('increment=')[0];
-
       const lastSubstring = params.split('increment=')[1];
-
       newParams = firstSubstring + `increment=${!isAlreadyClicked}` + lastSubstring
-
       push(`/property/${newParams}`)
     }
   }, [isAlreadyClicked, params]);

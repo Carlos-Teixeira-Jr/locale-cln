@@ -168,8 +168,9 @@ const LoginCard: React.FC = () => {
             setVerifyEmailModalIsOpen(true);
             showErrorToast(ErrorToastNames.EmailNotVerified);
             return
+          } else if (responseData && responseData.isEmailVerified) {
+            showErrorToast(ErrorToastNames.EmailAlreadyInUse)
           }
-
         } catch (error: unknown) {
           console.error(error);
           if (axios.isAxiosError(error)) {
