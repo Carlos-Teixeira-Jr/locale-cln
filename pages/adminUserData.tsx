@@ -548,7 +548,10 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
           } else {
             setLoading(false);
             toast.dismiss();
-            showErrorToast(ErrorToastNames.UserDataUpdate);
+            const errorData = await response.json();
+            const errorMessage = errorData.message;
+            const formattedErrorMsg = errorMessage.split('BadRequestException:')[1];
+            toast.error(`${formattedErrorMsg}`)
           }
         } catch (error) {
           setLoading(false);
