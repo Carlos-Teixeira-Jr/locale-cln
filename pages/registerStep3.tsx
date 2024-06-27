@@ -26,8 +26,6 @@ import SelectAdsToDeactivateModal from '../components/atoms/modals/selectAdsToDe
 import LinearStepper from '../components/atoms/stepper/stepper';
 import Address from '../components/molecules/address/address';
 import ChangeAddressCheckbox from '../components/molecules/address/changeAddressCheckbox';
-import OwnerPlanBoard from '../components/molecules/boards/owwnerPlanBoard';
-import PlansCardsHidden from '../components/molecules/cards/plansCards/plansCardHidden';
 import Coupons from '../components/molecules/coupons/coupons';
 import PaymentBoard from '../components/molecules/payment/paymentBoard';
 import CreditCard, {
@@ -651,7 +649,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
                 <LinearStepper activeStep={2} />
               </div>
 
-              <div className='flex flex-col'>
+              {/* <div className='flex flex-col'>
                 <div ref={plansRef} className={`md:flex md:w-fit mx-auto md:px-8 justify-center gap-10 ${planError !== "" ? 'border-2 rounded-xl pt-7 border-red-500 transition-opacity ease-in-out opacity-100' : ''}`}>
                   {ownerData?.owner?.adCredits! === 0 || isChangePlan || !ownerData.owner ? (
                     reversedCards.map(
@@ -697,7 +695,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
                 {planError !== "" && (
                   <span className='text-sm text-red-500 font-normal text-center'>{planError}</span>
                 )}
-              </div>
+              </div> */}
 
               <Coupons
                 onUseCouponSwitchChange={(isUseCoupon: boolean) => setUseCoupon(isUseCoupon)}
