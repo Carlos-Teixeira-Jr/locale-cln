@@ -14,7 +14,7 @@ export default function DropdownAdmin({ isOwnerProp, isPlus }: IDropdownAdmin) {
   const { pathname, push } = useRouter();
   const [loadingOption, setLoadingOption] = useState<string | null>(null);
   const optionsClassname =
-    'translate-x-[1px] w-[150px] h-fit hover:bg-quaternary hover:text-tertiary py-3 flex justify-center';
+    'translate-x-[1px] w-[150px] h-fit hover:bg-quaternary hover:text-tertiary py-3 flex justify-center mx-auto';
 
   const handleClick = (key: string, ref: string) => {
     const baseRef = ref.split('?')[0];
