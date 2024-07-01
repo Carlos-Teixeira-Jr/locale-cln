@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 import { GetServerSidePropsContext } from 'next';
 import { getSession } from 'next-auth/react';
 import Image from 'next/image';
