@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 import { GetServerSidePropsContext } from 'next';
 import { getSession } from 'next-auth/react';
 import Image from 'next/image';
@@ -24,6 +25,7 @@ interface IMessagePage {
   plans: IPlan[]
   favouriteProperties: IFavProperties
 }
+
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
 
