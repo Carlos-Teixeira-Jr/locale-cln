@@ -57,20 +57,16 @@ const CreditCard = ({
   const router = useRouter();
 
   const [focus, setFocus] = useState<Focused | undefined>();
-  // const actualCreditCardNumber = creditCardInfo
-  //   ? `---- ---- ---- ${creditCardInfo?.creditCardNumber}`
-  //   : '';
+  const actualCreditCardNumber = creditCardInfo
+    ? `---- ---- ---- ${creditCardInfo?.creditCardNumber}`
+    : '';
 
   const [creditCardFormData, setCreditCardFormData] = useState<CreditCardForm>({
-    // cardName: '',
-    cardName: 'Teste Locale',
-    // cardNumber: creditCardInfo ? actualCreditCardNumber : '',
-    cardNumber: '5343 5087 6915 0373',
-    // ccv: '',
-    ccv: '776',
-    // expiry: '',
-    expiry: '0525',
-    cpfCnpj: '314.715.150-60'
+    cardName: '',
+    cardNumber: creditCardInfo ? actualCreditCardNumber : '',
+    ccv: '',
+    expiry: '',
+    cpfCnpj: ''
   });
 
   const userId = userInfo?._id !== undefined ? userInfo?._id : ownerData?.user?._id;
@@ -173,8 +169,7 @@ const CreditCard = ({
       name: 'cardNumber',
       type: 'string',
       label: 'Número do Cartão',
-      // value: creditCardFormData.cardNumber,
-      value: '5343 5087 6915 0373'
+      value: creditCardFormData.cardNumber,
     },
     {
       key: 'cardName',
@@ -182,8 +177,7 @@ const CreditCard = ({
       name: 'cardName',
       type: 'text',
       label: 'Nome no Cartão',
-      // value: creditCardFormData.cardName,
-      value: 'Teste Locale'
+      value: creditCardFormData.cardName,
     },
     {
       key: 'expiry',
@@ -199,7 +193,8 @@ const CreditCard = ({
       name: 'ccv',
       type: 'text',
       label: 'CCV',
-      value: '776',
+      // value: '776',
+      value: creditCardFormData.ccv,
     },
     {
       key: 'cpfCnpj',
@@ -207,8 +202,7 @@ const CreditCard = ({
       name: 'cpfCnpj',
       type: 'text',
       label: 'CPF/CNPJ',
-      // value: creditCardFormData.cpfCnpj,
-      value: '314.715.150-60'
+      value: creditCardFormData.cpfCnpj,
     },
   ];
 
@@ -241,7 +235,7 @@ const CreditCard = ({
       newErrors.cardNumber = invalidCardNumberError;
     if (!creditCardFormData.expiry) newErrors.expiry = emptyFieldError;
     if (!creditCardFormData.ccv) newErrors.ccv = emptyFieldError;
-    //if (!creditCardFormData.cpfCnpj) newErrors.cpfCnpj = emptyFieldError;
+    if (!creditCardFormData.cpfCnpj) newErrors.cpfCnpj = emptyFieldError;
 
     setErrors(newErrors);
 
@@ -261,13 +255,10 @@ const CreditCard = ({
         const body = {
           ...creditCardFormData,
           email: userInfo?.email,
-          // phone: userInfo?.cellPhone,
-          phone: '(53) 99177-4545',
+          phone: userInfo?.cellPhone,
           plan: selectedPlan,
-          //: userAddress?.zipCode,
-          zipCode: '96215-180',
-          // streetNumber: userAddress?.streetNumber,
-          streetNumber: '123',
+          zipCode: userAddress?.zipCode,
+          streetNumber: userAddress?.streetNumber,
           owner: ownerData?.owner,
           customerId,
           userId
@@ -301,7 +292,7 @@ const CreditCard = ({
   };
 
   return (
-    <div className="md:w-[90%] w-full hidden">
+    <div className="md:w-[90%] w-full">
       <h2 className="md:text-2xl text-lg leading-10 text-quaternary font-bold mb-5 md:mt-16 mt-5 px-5 w-full">
         Formas de Pagamento
       </h2>
@@ -313,8 +304,7 @@ const CreditCard = ({
             expiry={creditCardFormData.expiry}
             focused={focus}
             name={creditCardFormData.cardName}
-            // number={creditCardFormData.cardNumber}
-            number={'5343 5087 6915 0373'}
+            number={creditCardFormData.cardNumber}
           />
         </div>
 
@@ -329,7 +319,7 @@ const CreditCard = ({
                 type={input.type}
                 name={input.name}
                 placeholder={input.label}
-                //onChange={(e) => handleInputChange(e, input.name)}
+                onChange={(e) => handleInputChange(e, input.name)}
                 onFocus={(e) => setFocus(e.target.name as Focused)}
                 maxLength={input.key === 'expiry' ? 5 : undefined}
                 value={
@@ -361,10 +351,10 @@ const CreditCard = ({
       {isEdit && (
         <div className="flex my-10 justify-center md:justify-end">
           <button
-            className="bg-primary w-fit h-13 item text-quinary rounded-[10px] py-3 px-10 lg:ml-8 gap-3 text-lg font-extrabold transition-colors duration-300 hover:bg-red-600 hover:text-white"
+            className="bg-primary md:w-[250px] w-fit h-12 item text-quinary rounded-[10px] px-10 lg:ml-8 gap-3 text-sm font-extrabold transition-colors duration-300 hover:bg-red-600 hover:text-white"
             onClick={handleSubmit}
           >
-            Atualizar
+            Atualizar apenas os dados do cartão
           </button>
         </div>
       )}

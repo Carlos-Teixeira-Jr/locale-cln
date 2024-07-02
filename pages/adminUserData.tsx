@@ -26,9 +26,11 @@ import {
 } from '../common/utils/toasts';
 import ArrowDownIcon from '../components/atoms/icons/arrowDownIcon';
 import Loading from '../components/atoms/loading';
+import { PlansCardsHidden } from '../components/molecules';
 import UserAddress from '../components/molecules/address/userAdress';
+import ChangePlanCheckbox from '../components/molecules/changePlanCheckBox/changePlanCheckBox';
 import Coupons from '../components/molecules/coupons/coupons';
-import {
+import CreditCard, {
   CreditCardForm,
 } from '../components/molecules/userData/creditCard';
 import DeleteAccount from '../components/molecules/userData/deleteAccount';
@@ -108,6 +110,8 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const [coupon, setCoupon] = useState('');
   const hasProperties = properties?.docs?.length > 0 ? true : false;
   const [isChangePlan, setIsChangePlan] = useState(false);
+  const [isFreePlan, setIsFreePlan] = useState(true);
+  const [showPlansCards, setShowPlansCards] = useState(false);
 
   // Mostrar os dados do cartão na tela;
   const creditCardInfo = ownerData?.owner?.paymentData?.creditCardInfo
@@ -120,25 +124,30 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
 
   // Dados do cartão de crédito usado nesse update;
   const [creditCard, setCreditCard] = useState<CreditCardForm>({
-    // cardName: '',
-    // cardNumber: '',
-    // ccv: '',
-    // expiry: '',
-    // cpfCnpj: '314.715.150-60'
-    cardName: 'Teste Locale',
-    cardNumber: '5343 5087 6915 0373',
-    ccv: '776',
-    expiry: '0525',
-    cpfCnpj: '314.715.150-60'
+    cardName: '',
+    cardNumber: '',
+    ccv: '',
+    expiry: '',
+    cpfCnpj: ''
   })
 
   const planObj = plans.find((plan) => plan._id === selectedPlan);
 
+  // renderização condicional do componente CreditCard;
+  useEffect(() => {
+    if (!planObj || planObj?.price === 0) {
+      setIsFreePlan(true)
+    } else if (planObj.price > 0) {
+      setIsFreePlan(false);
+      setCreditCardIsOpen(true);
+    }
+  }, [isChangePlan, planObj])
+
   const [formData, setFormData] = useState<IUserDataComponent>({
     username: '',
     email: '',
-    cpf: '314.715.150-60',
-    cellPhone: '(53) 99177-4545',
+    cpf: '',
+    cellPhone: '',
     phone: '',
     picture: {
       id: '1',
@@ -182,12 +191,10 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const couponInputRef = useRef<HTMLElement>(null);
 
   const [address, setAddress] = useState<IAddress>({
-    // zipCode: userData ? userData.address?.zipCode : '',
-    zipCode: '96215-180',
+    zipCode: userData ? userData.address?.zipCode : '',
     city: userData ? userData.address?.city : '',
     streetName: userData ? userData.address?.streetName : '',
-    // streetNumber: userData ? userData.address?.streetNumber : '',
-    streetNumber: '123',
+    streetNumber: userData ? userData.address?.streetNumber : '',
     complement: userData ? userData.address?.complement : '',
     neighborhood: userData ? userData.address?.neighborhood : '',
     uf: userData ? userData.address?.uf : '',
@@ -331,16 +338,15 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       if (passwordFormData.passwordConfirmattion.length < 6)
         newPasswordErrors.passwordConfirmattion = invalidPasswordLenght;
     }
-    // To-do: descomentar verificação de erro do cartão na versão final;
-    // if (
-    //   selectedPlan !== '' &&
-    //   selectedPlan !== ownerData?.owner?.plan
-    //   && planObj?.name !== 'Free'
-    //   && Object.values(creditCard).some((value) => value === '')
-    //   && !useCoupon
-    // ) {
-    //   newCreditCardError = emptyCreditCardError;
-    // }
+    if (
+      selectedPlan !== '' &&
+      selectedPlan !== ownerData?.owner?.plan
+      && planObj?.name !== 'Free'
+      && Object.values(creditCard).some((value) => value === '')
+      && !useCoupon
+    ) {
+      newCreditCardError = emptyCreditCardError;
+    }
     if (
       selectedPlan !== '' &&
       selectedPlan !== null &&
@@ -361,8 +367,8 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     // Insere a mensagem de erro nos inputs vazios do form de credit card;
     Object.keys(creditCard).forEach((e) => {
       if (creditCardErrors[e] !== '') {
-        // setCreditCardErrors({ ...creditCardErrors, [e]: newCreditCardError });
-        // setCreditCardIsOpen(true);
+        setCreditCardErrors({ ...creditCardErrors, [e]: newCreditCardError });
+        setCreditCardIsOpen(true);
       }
     })
 
@@ -407,8 +413,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
           address,
           username: formData.username,
           email: formData.email,
-          // cpf: formData.cpf,
-          cpf: '314.715.150-60',
+          cpf: formData.cpf,
           phone: formData.phone,
           cellPhone: formData.cellPhone
         };
@@ -417,8 +422,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
           _id: ownerData?.owner ? ownerData.owner._id : '',
           ownername: formData.username,
           phone: formData.phone,
-          // cellPhone: formData.cellPhone,
-          cellPhone: '(53) 99177-4545',
+          cellPhone: formData.cellPhone,
           userId: userData._id,
           email: formData.email ? formData.email : '',
           adCredits: ownerData.owner?.adCredits ? ownerData.owner?.adCredits : 0,
@@ -434,35 +438,30 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
         };
 
         let body: EditUserBody;
+        let isChangePlanVerification = selectedPlan !== ownerData.owner?.plan;
 
         if (isEditPassword) {
           body = {
             user: userFormData,
             owner: ownerFormData,
             password: editPasswordFormData,
-            isChangePlan
+            isChangePlan: isChangePlanVerification
           };
         } else {
           body = {
             user: userFormData,
             owner: ownerFormData,
-            isChangePlan
+            isChangePlan: isChangePlanVerification
           };
         }
 
         if (selectedPlanData?.name !== 'Free') {
           body.creditCard = {
-            // cardName: creditCard.cardName,
-            // cardNumber: creditCard.cardNumber,
-            // expiry: creditCard.expiry,
-            // ccv: creditCard.ccv,
-            // cpfCnpj: creditCard.cpfCnpj
-            // cardName: '',
-            cardName: 'Teste Locale',
-            cardNumber: '5343 5087 6915 0373',
-            ccv: '776',
-            expiry: '0525',
-            cpfCnpj: '314.715.150-60'
+            cardName: creditCard.cardName,
+            cardNumber: creditCard.cardNumber,
+            expiry: creditCard.expiry,
+            ccv: creditCard.ccv,
+            cpfCnpj: creditCard.cpfCnpj
           }
         }
 
@@ -563,7 +562,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
         showErrorToast(ErrorToastNames.EmptyFields);
       }
     } else {
-      //showErrorToast(ErrorToastNames.EmptyCreditCardInfo);
+      showErrorToast(ErrorToastNames.EmptyCreditCardInfo);
     }
   };
 
@@ -642,11 +641,22 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
 
               </div>
 
-              {/* TO-DO: Descomentar após estágio de parcerias */}
-              {/* <div>
-                <ChangePlanCheckbox onChangePlanClick={(isChecked: boolean) => setIsChangePlan(isChecked)} />
+              <div>
+                <ChangePlanCheckbox
+                  onChangePlanClick={(isChecked: boolean) => {
+                    if (isChecked) {
+                      if (isOwner && selectedPlan) {
+                        setIsChangePlan(isChecked);
+                      }
+                      setShowPlansCards(true);
+                    } else {
+                      setShowPlansCards(false);
+                    }
+                  }}
+                />
               </div>
-              {isChangePlan && (
+
+              {showPlansCards && (
                 <>
                   <div ref={isMobile ? plansRef : null} className={`grid sm:grid-cols-1 grid-cols-1 md:grid-cols-3 xl:grid-cols-3 md:gap-6 ${planError !== "" ? 'border-2 rounded-xl md:pt-7 md:px-7 border-red-500 transition-opacity ease-in-out opacity-100' : ''}`}>
                     {reversedCards.map(
@@ -686,7 +696,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                     <span ref={isMobile ? plansRef : null} className='text-sm w-[90%] text-red-500 font-normal text-center px-2 md:px-auto'>{planError}</span>
                   )}
                 </>
-              )} */}
+              )}
 
               <h2 className={classes.h2}>Dados de Cobrança</h2>
 
@@ -710,59 +720,61 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
               </button>
             </div>
 
-            {/* TO-DO: Descomentar após parcerias */}
-            {/* <div className="lg:pt-20 pt-0.5 mx-4">
-              <label className={classes.accordion}>
-                Dados do Cartão de Crédito
-                <span
-                  className={`transition-transform transform`}
-                  onClick={() => setCreditCardIsOpen(!creditCardIsOpen)}
-                >
-                  <ArrowDownIcon
-                    width="13"
-                    className={`cursor-pointer ${creditCardIsOpen ? '' : 'rotate-180'
-                      }`}
-                  />
-                </span>
-              </label>
+            {/* {isChangePlan && !isFreePlan && ( */}
+            {!isFreePlan && showPlansCards && ownerData?.owner?.plan !== selectedPlan && (
+              <div className="lg:pt-20 pt-0.5 mx-4">
+                <label className={classes.accordion}>
+                  Dados do Cartão de Crédito
+                  <span
+                    className={`transition-transform transform`}
+                    onClick={() => setCreditCardIsOpen(!creditCardIsOpen)}
+                  >
+                    <ArrowDownIcon
+                      width="13"
+                      className={`cursor-pointer ${creditCardIsOpen ? '' : 'rotate-180'
+                        }`}
+                    />
+                  </span>
+                </label>
 
-              <div className="bg-grey-lighter">
-                {creditCardIsOpen && (
-                  <CreditCard
-                    isEdit={true}
-                    error={creditCardErrors}
-                    creditCardInputRefs={creditCardInputRefs}
-                    creditCardInfo={creditCardInfo}
-                    userInfo={formData}
-                    customerId={ownerData?.owner?.paymentData?.customerId}
-                    selectedPlan={planObj}
-                    userAddress={address}
-                    ownerData={ownerData}
-                    handleEmptyAddressError={(error: string) => {
-                      // const updatedErrors: AddressErrors = {
-                      //   zipCode: '',
-                      //   city: '',
-                      //   streetName: '',
-                      //   streetNumber: '',
-                      //   uf: ''
-                      // };
-                      // for (const key in addressErrors) {
-                      //   if (Object.prototype.hasOwnProperty.call(addressErrors, key)) {
-                      //     if (addressErrors[key] === '') {
-                      //       updatedErrors[key] = error;
-                      //     } else {
-                      //       updatedErrors[key] = addressErrors[key];
-                      //     }
-                      //   }
-                      // }
-                      // Atualiza o estado com o objeto de erros atualizado
-                      //setAddressErrors(updatedErrors);
-                    }}
-                    onCreditCardUpdate={(creditCard: CreditCardType) => setCreditCard(creditCard)}
-                  />
-                )}
+                <div className="bg-grey-lighter">
+                  {creditCardIsOpen && !isFreePlan && showPlansCards && (
+                    <CreditCard
+                      isEdit={true}
+                      error={creditCardErrors}
+                      creditCardInputRefs={creditCardInputRefs}
+                      creditCardInfo={creditCardInfo}
+                      userInfo={formData}
+                      customerId={ownerData?.owner?.paymentData?.customerId}
+                      selectedPlan={planObj}
+                      userAddress={address}
+                      ownerData={ownerData}
+                      onCreditCardUpdate={(creditCard: CreditCardType) => setCreditCard(creditCard)}
+                      handleEmptyAddressError={(error: string) => {
+                        const updatedErrors: AddressErrors = {
+                          zipCode: '',
+                          city: '',
+                          streetName: '',
+                          streetNumber: '',
+                          uf: ''
+                        };
+                        for (const key in addressErrors) {
+                          if (Object.prototype.hasOwnProperty.call(addressErrors, key)) {
+                            if (addressErrors[key] === '') {
+                              updatedErrors[key] = error;
+                            } else {
+                              updatedErrors[key] = addressErrors[key];
+                            }
+                          }
+                        }
+                        // Atualiza o estado com o objeto de erros atualizado
+                        setAddressErrors(updatedErrors);
+                      }}
+                    />
+                  )}
+                </div>
               </div>
-            </div> */}
+            )}
 
             <div className="lg:pt-5 pt-0.5 mb-20 mx-4">
               <label className={classes.accordion}>
