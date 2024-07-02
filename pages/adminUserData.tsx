@@ -121,6 +121,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       creditCardNumber: '',
       creditCardToken: ''
     };
+  console.log("🚀 ~ creditCardInfo:", creditCardInfo)
 
   // Dados do cartão de crédito usado nesse update;
   const [creditCard, setCreditCard] = useState<CreditCardForm>({
@@ -651,6 +652,12 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                       setShowPlansCards(true);
                     } else {
                       setShowPlansCards(false);
+                      if (ownerData?.owner?.plan) {
+                        setSelectedPlan(ownerData?.owner?.plan)
+                      } else {
+                        const freePlan = plans && plans.length > 0 ? plans.find((e) => e.price === 0)?._id : '';
+                        setSelectedPlan(freePlan || '');
+                      }
                     }
                   }}
                 />

@@ -57,17 +57,32 @@ const CreditCard = ({
   const router = useRouter();
 
   const [focus, setFocus] = useState<Focused | undefined>();
-  const actualCreditCardNumber = creditCardInfo
-    ? `---- ---- ---- ${creditCardInfo?.creditCardNumber}`
-    : '';
+  // const actualCreditCardNumber = creditCardInfo
+  //   ? `---- ---- ---- ${creditCardInfo?.creditCardNumber}`
+  //   : '';
 
   const [creditCardFormData, setCreditCardFormData] = useState<CreditCardForm>({
     cardName: '',
-    cardNumber: creditCardInfo ? actualCreditCardNumber : '',
+    cardNumber: '',
     ccv: '',
     expiry: '',
     cpfCnpj: ''
   });
+
+  useEffect(() => {
+    const updateCardNumber = () => {
+      if (creditCardInfo?.creditCardBrand === 'MASTERCARD') {
+        setCreditCardFormData({ ...creditCardFormData, cardNumber: `55** **** **** ${creditCardInfo?.creditCardNumber}` });
+      } else if (creditCardInfo?.creditCardBrand === 'VISA') {
+        setCreditCardFormData({ ...creditCardFormData, cardNumber: `4*** **** **** ${creditCardInfo?.creditCardNumber}` });
+      } else {
+        setCreditCardFormData({ ...creditCardFormData, cardNumber: '**** **** **** ****' });
+      }
+    };
+
+    updateCardNumber();
+  }, [creditCardInfo]);
+
 
   const userId = userInfo?._id !== undefined ? userInfo?._id : ownerData?.user?._id;
 
