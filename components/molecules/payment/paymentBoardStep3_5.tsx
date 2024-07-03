@@ -30,9 +30,11 @@ const PaymentBoard_Step3_5 = ({
   plans,
   ownerData
 }: IPaymentBoard_Step3_5) => {
+  console.log("🚀 ~ ownerData:", ownerData);
 
-  const cardFlag = storedData ? storedData.paymentData.cardBrand : '';
-  const couponWasUsed = storedData?.paymentData?.couponUsed ? true : false
+  const cardFlag = ownerData?.owner?.paymentData?.creditCardInfo?.creditCardBrand;
+  console.log("🚀 ~ cardFlag:", cardFlag)
+  const couponWasUsed = storedData?.paymentData?.couponUsed ? true : false;
 
   const plan = plans && ownerData?.owner
     ? plans.find((plan) => plan._id === ownerData?.owner?.plan)
