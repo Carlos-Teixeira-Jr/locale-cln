@@ -14,6 +14,7 @@ export interface ISelectAdsToDeactivateModal {
   docsToDeactivate: (docs: string[]) => void,
   selectedPlan: IPlan | undefined,
   onChangeCreditsLeft: (creditsLeft: number) => void,
+  ownerCredits: number
 }
 
 const SelectAdsToDeactivateModal = ({
@@ -24,7 +25,8 @@ const SelectAdsToDeactivateModal = ({
   onSubmit,
   docsToDeactivate,
   selectedPlan,
-  onChangeCreditsLeft
+  onChangeCreditsLeft,
+  ownerCredits
 }: ISelectAdsToDeactivateModal) => {
 
   const isMobile = useIsMobile();
@@ -35,7 +37,7 @@ const SelectAdsToDeactivateModal = ({
 
   useEffect(() => {
     if (selectedPlan) {
-      setCredits(selectedPlan?.commonAd - 1);
+      setCredits((selectedPlan?.commonAd - 1) + ownerCredits);
     }
   }, [selectedPlan]);
 

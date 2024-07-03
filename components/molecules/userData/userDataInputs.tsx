@@ -123,7 +123,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
   const inputs: Input[] = [
     {
       key: 'username',
-      label: 'Nome Completo',
+      label: isEdit ? 'Nome Completo' : 'Nome do Anunciante',
       value: formData.username,
       maxLenght: 50,
       ref: userDataErrorScroll.username,

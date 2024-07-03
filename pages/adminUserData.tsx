@@ -345,6 +345,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       && planObj?.name !== 'Free'
       && Object.values(creditCard).some((value) => value === '')
       && !useCoupon
+      && !ownerData?.owner?.paymentData?.creditCardInfo?.creditCardToken
     ) {
       newCreditCardError = emptyCreditCardError;
     }

@@ -24,8 +24,10 @@ import ChangePlanModal from '../components/atoms/modals/changePlanModal';
 import PaymentFailModal from '../components/atoms/modals/paymentFailModal';
 import SelectAdsToDeactivateModal from '../components/atoms/modals/selectAdsToDeactivateModal';
 import LinearStepper from '../components/atoms/stepper/stepper';
+import { PlansCardsHidden } from '../components/molecules';
 import Address from '../components/molecules/address/address';
 import ChangeAddressCheckbox from '../components/molecules/address/changeAddressCheckbox';
+import OwnerPlanBoard from '../components/molecules/boards/owwnerPlanBoard';
 import Coupons from '../components/molecules/coupons/coupons';
 import PaymentBoard from '../components/molecules/payment/paymentBoard';
 import CreditCard, {
@@ -649,7 +651,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
                 <LinearStepper activeStep={2} />
               </div>
 
-              {/* <div className='flex flex-col'>
+              <div className='flex flex-col'>
                 <div ref={plansRef} className={`md:flex md:w-fit mx-auto md:px-8 justify-center gap-10 ${planError !== "" ? 'border-2 rounded-xl pt-7 border-red-500 transition-opacity ease-in-out opacity-100' : ''}`}>
                   {ownerData?.owner?.adCredits! === 0 || isChangePlan || !ownerData.owner ? (
                     reversedCards.map(
@@ -695,7 +697,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
                 {planError !== "" && (
                   <span className='text-sm text-red-500 font-normal text-center'>{planError}</span>
                 )}
-              </div> */}
+              </div>
 
               <Coupons
                 onUseCouponSwitchChange={(isUseCoupon: boolean) => setUseCoupon(isUseCoupon)}
@@ -736,10 +738,10 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
                   />
                 )}
 
-                {selectedPlan !== '' &&
+                {selectedPlan !== '' && isChangePlan &&
                   (() => {
                     const planData = plans.find((plan) => plan._id === selectedPlan);
-                    if (planData && planData.name !== 'Free') {
+                    if (planData && planData.name !== 'Free' && ownerPlan?.price === 0) {
                       return (
                         <CreditCard
                           isEdit={false}
@@ -800,6 +802,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
               isOpen={propsToDeactivateIsOpen}
               setModalIsOpen={(isOpen: boolean) => setPropsToDeactivateIsOpen(isOpen)}
               docs={docs}
+              ownerCredits={ownerData?.owner ? ownerData.owner.adCredits : 0}
               setConfirmAdsToDeactivate={(isConfirmed: boolean) => setConfirmAdsToDeactivate(isConfirmed)}
               onSubmit={(isConfirmed: boolean) => handleSubmit(isConfirmed)}
               docsToDeactivate={(docs: string[]) => setDocsToDeactivate(docs)}
