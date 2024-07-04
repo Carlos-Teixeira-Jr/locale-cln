@@ -13,7 +13,6 @@ export interface ISelectAdsToDeactivateModal {
   onSubmit: (confirmChange: boolean) => void,
   docsToDeactivate: (docs: string[]) => void,
   selectedPlan: IPlan | undefined,
-  onChangeCreditsLeft: (creditsLeft: number) => void,
   ownerCredits: number
 }
 
@@ -25,7 +24,6 @@ const SelectAdsToDeactivateModal = ({
   onSubmit,
   docsToDeactivate,
   selectedPlan,
-  onChangeCreditsLeft,
   ownerCredits
 }: ISelectAdsToDeactivateModal) => {
 
@@ -60,10 +58,6 @@ const SelectAdsToDeactivateModal = ({
       docsToDeactivate(unselectedCards);
     }
   }, [unselectedCards, isOpen]);
-
-  useEffect(() => {
-    onChangeCreditsLeft(credits)
-  }, [credits])
 
   const handleSelectedCards = (card: string) => {
     if (selectedCards.includes(card)) {

@@ -57,7 +57,6 @@ type BodyReq = {
   picture?: string;
   deactivateProperties: string[];
   coupon?: string;
-  creditsLeft: number | null
 };
 
 // To-do: verificar se a página está exigindo os dados do cartão mesmo quando o usuário ainda tem créditos no plano;
@@ -77,7 +76,9 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
   const [loading, setLoading] = useState(false);
   const freePlan = plans?.find((plan) => plan.price === 0);
   const ownerPlan = plans?.find((plan) => plan._id === ownerData?.owner?.plan)
+  console.log("🚀 ~ ownerPlan:", ownerPlan)
   const [selectedPlan, setSelectedPlan] = useState(chosenPlan !== '' ? chosenPlan : ownerPlan?._id);
+  console.log("🚀 ~ selectedPlan:", selectedPlan)
   const [selectedPlanData, setSelectedPlanData] = useState(plans?.find((plan) => plan._id === selectedPlan));
   const reversedCards = [...plans].reverse();
   const [isAdminPage, setIsAdminPage] = useState(false);
@@ -91,6 +92,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
   const [propsToDeactivateIsOpen, setPropsToDeactivateIsOpen] = useState(false);
   const [changePlanMessage, setChangePlanMessage] = useState('');
   const [isChangePlan, setIsChangePlan] = useState(false);
+  console.log("🚀 ~ isChangePlan:", isChangePlan)
   const [confirmAdsToDeactivate, setConfirmAdsToDeactivate] = useState(false);
   const [docsToDeactivate, setDocsToDeactivate] = useState<string[]>([])
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
@@ -98,7 +100,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
   const [useCoupon, setUseCoupon] = useState(false);
   const [couponError, setCouponError] = useState('');
   const couponInputRef = useRef<HTMLElement>(null);
-  const [creditsLeft, setCreditsLeft] = useState(ownerData?.owner?.adCredits ? ownerData?.owner?.adCredits - 1 : null);
 
   // Atualiza o selectedPlanData
   useEffect(() => {
@@ -476,7 +477,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
             phone: userDataForm.phone,
             cellPhone: userDataForm.cellPhone !== '' ? `${userDataForm.cellPhone}` : '123',
             deactivateProperties: docsToDeactivate,
-            creditsLeft
           };
 
           if (!isPlanFree) {
@@ -669,6 +669,9 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
                               setIsFreePlan(true);
                             } else {
                               setIsFreePlan(false);
+                              if (ownerData?.owner?.plan !== planData?._id) {
+                                setIsChangePlan(true);
+                              }
                             }
                           }}
                           isAdminPage={isAdminPage}
@@ -741,7 +744,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
                 {selectedPlan !== '' && isChangePlan &&
                   (() => {
                     const planData = plans.find((plan) => plan._id === selectedPlan);
-                    if (planData && planData.name !== 'Free' && ownerPlan?.price === 0) {
+                    if ((planData && planData.name !== 'Free' && ownerPlan?.price === 0) || (planData && planData.name !== 'Free' && !ownerPlan)) {
                       return (
                         <CreditCard
                           isEdit={false}
@@ -807,7 +810,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
               onSubmit={(isConfirmed: boolean) => handleSubmit(isConfirmed)}
               docsToDeactivate={(docs: string[]) => setDocsToDeactivate(docs)}
               selectedPlan={selectedPlanData}
-              onChangeCreditsLeft={(creditsLeft: number) => setCreditsLeft(creditsLeft)}
             />
           </div >
 

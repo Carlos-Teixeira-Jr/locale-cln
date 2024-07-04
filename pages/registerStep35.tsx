@@ -27,7 +27,6 @@ const RegisterStep35: NextPageWithLayout<IRegisterStep35> = ({ plans }) => {
   const query = router.query;
   const urlEmail = query.email as string;
   const storedData = store.get('propertyData');
-  console.log("🚀 ~ storedData:", storedData)
   const [couponWasUsed, setCouponWasUsed] = useState(false);
 
   useEffect(() => {
