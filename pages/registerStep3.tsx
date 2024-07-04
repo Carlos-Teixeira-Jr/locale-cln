@@ -365,7 +365,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     const combinedErrors = {
       ...newAddressErrors,
       ...newUserDataErrors,
-      //...newCreditCardErrors,
+      ...newCreditCardErrors,
       newPlanError,
       newCouponError
     };
@@ -373,8 +373,10 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     const hasErrors = Object.values(combinedErrors).some(
       (error) => error !== ''
     );
+    console.log("🚀 ~ handleSubmit ~ hasErrors:", hasErrors)
 
     const hasPaymentError = newPaymentError !== '' ? true : false;
+    console.log("🚀 ~ handleSubmit ~ hasPaymentError:", hasPaymentError)
     const planWasChanged = newChangePlanError !== '' && !confirmChange ? true : false;
 
 
