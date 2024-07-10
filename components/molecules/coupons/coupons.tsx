@@ -82,7 +82,7 @@ const Coupons = ({
           style={couponError ? { border: '1px solid red' } : {}}
           maxLength={15}
           placeholder="Insira seu código de desconto..."
-          className={`border p-5 h-12 mb-5 border-quaternary rounded-[10px] bg-tertiary font-bold text-lg text-quaternary leading-7 drop-shadow-xl ${isAdminPage ? 'md:w-1/2' : 'md:mx-auto mx-5 md:w-1/3'}`}
+          className={`border p-5 h-12 mb-5 mt-2 border-quaternary rounded-[10px] bg-tertiary font-bold text-lg text-quaternary leading-7 drop-shadow-xl ${isAdminPage ? 'md:w-1/2' : 'md:mx-auto mx-5 md:w-1/3'}`}
           onChange={(e) => setCoupon(e.target.value)}
         />
       )}
