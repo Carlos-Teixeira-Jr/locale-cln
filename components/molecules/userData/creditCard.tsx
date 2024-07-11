@@ -150,56 +150,6 @@ const CreditCard = ({
     scrollToError('cpfCnpj');
   }, [errors, creditCardErrorScroll, creditCardInputRefs]);
 
-  // const handleInputChange = (
-  //   e: ChangeEvent<HTMLInputElement>,
-  //   fieldName: keyof CreditCardForm
-  // ) => {
-  //   const value = e.target.value;
-  //   if (fieldName === 'cardName') {
-  //     const maskedValue = value.replace(/\d/g, '');
-  //     setCreditCardFormData({
-  //       ...creditCardFormData,
-  //       [fieldName]: maskedValue.toUpperCase(),
-  //     });
-  //   } else if (fieldName === 'cardNumber') {
-  //     const maskedValue = applyNumericMask(value, '9999999999999999');
-  //     console.log("🚀 ~ maskedValue:", maskedValue)
-  //     setCreditCardFormData({
-  //       ...creditCardFormData,
-  //       [fieldName]: maskedValue,
-  //     });
-  //   } else if (fieldName === 'ccv') {
-  //     const maskedValue = value.replace(/\s/g, '').toUpperCase().slice(0, 4);
-  //     setCreditCardFormData({
-  //       ...creditCardFormData,
-  //       [fieldName]: maskedValue,
-  //     });
-  //   } else if (fieldName === 'cpfCnpj') {
-  //     const input = e.target;
-  //     const value = input.value;
-  //     const maskedValue = applyNumericMask(value, '999.999.999-99');
-  //     const selectionStart = input.selectionStart || 0;
-  //     const selectionEnd = input.selectionEnd || 0;
-  //     const previousValue = input.value;
-  //     // Verifica se o cursor está no final da string ou se um caractere foi removido
-  //     if (
-  //       selectionStart === previousValue.length ||
-  //       previousValue.length > maskedValue.length
-  //     ) {
-  //       input.value = maskedValue;
-  //     } else {
-  //       // Caso contrário, restaura o valor anterior e move o cursor para a posição correta
-  //       input.value = previousValue;
-  //       input.setSelectionRange(selectionStart, selectionEnd);
-  //     }
-  //     setCreditCardFormData({
-  //       ...creditCardFormData,
-  //       [fieldName]: maskedValue,
-  //     });
-  //   } else {
-  //     setCreditCardFormData({ ...creditCardFormData, [fieldName]: value });
-  //   }
-  // };
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement>,
     fieldName: keyof CreditCardForm

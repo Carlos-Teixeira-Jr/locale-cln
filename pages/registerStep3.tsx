@@ -76,9 +76,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
   const [loading, setLoading] = useState(false);
   const freePlan = plans?.find((plan) => plan.price === 0);
   const ownerPlan = plans?.find((plan) => plan._id === ownerData?.owner?.plan)
-  console.log("🚀 ~ ownerPlan:", ownerPlan)
   const [selectedPlan, setSelectedPlan] = useState(chosenPlan !== '' ? chosenPlan : ownerPlan?._id);
-  console.log("🚀 ~ selectedPlan:", selectedPlan)
   const [selectedPlanData, setSelectedPlanData] = useState(plans?.find((plan) => plan._id === selectedPlan));
   const reversedCards = [...plans].reverse();
   const [isAdminPage, setIsAdminPage] = useState(false);
@@ -92,7 +90,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
   const [propsToDeactivateIsOpen, setPropsToDeactivateIsOpen] = useState(false);
   const [changePlanMessage, setChangePlanMessage] = useState('');
   const [isChangePlan, setIsChangePlan] = useState(false);
-  console.log("🚀 ~ isChangePlan:", isChangePlan)
   const [confirmAdsToDeactivate, setConfirmAdsToDeactivate] = useState(false);
   const [docsToDeactivate, setDocsToDeactivate] = useState<string[]>([])
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
@@ -373,10 +370,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     const hasErrors = Object.values(combinedErrors).some(
       (error) => error !== ''
     );
-    console.log("🚀 ~ handleSubmit ~ hasErrors:", hasErrors)
 
     const hasPaymentError = newPaymentError !== '' ? true : false;
-    console.log("🚀 ~ handleSubmit ~ hasPaymentError:", hasPaymentError)
     const planWasChanged = newChangePlanError !== '' && !confirmChange ? true : false;
 
 
