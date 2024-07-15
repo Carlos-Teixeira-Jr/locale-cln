@@ -29,7 +29,7 @@ const VisualizationsBox = ({ views }: IVisualizationsBox) => {
     >
       <GraphicIcon fill={visualizationsMetric === 'low' ? "green" : visualizationsMetric === 'medium' ? "#F5BF5D" : "#F75D5F"} width="2.4rem" height="2.4rem" />
       <h3 className="text-xl font-bold">{viewsStatus}</h3>
-      <p className="text-lg font-normal">Já foram {visualizations} acessos.</p>
+      <p className="text-lg font-normal">{visualizations === 1 ? 'Já houve 1 acesso' : `Já foram ${visualizations} acessos.`}</p>
     </section>
   )
 }

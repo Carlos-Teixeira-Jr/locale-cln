@@ -13,7 +13,8 @@ export interface ISelectAdsToDeactivateModal {
   onSubmit: (confirmChange: boolean) => void,
   docsToDeactivate: (docs: string[]) => void,
   selectedPlan: IPlan | undefined,
-  ownerCredits: number
+  ownerCredits: number,
+  ownerPrevPlan: IPlan | undefined
 }
 
 const SelectAdsToDeactivateModal = ({
@@ -24,7 +25,8 @@ const SelectAdsToDeactivateModal = ({
   onSubmit,
   docsToDeactivate,
   selectedPlan,
-  ownerCredits
+  ownerCredits,
+  ownerPrevPlan
 }: ISelectAdsToDeactivateModal) => {
 
   const isMobile = useIsMobile();
@@ -34,8 +36,8 @@ const SelectAdsToDeactivateModal = ({
   const [confirm, setConfirm] = useState(false)
 
   useEffect(() => {
-    if (selectedPlan) {
-      setCredits((selectedPlan?.commonAd - 1) + ownerCredits);
+    if (selectedPlan && ownerPrevPlan) {
+      setCredits((selectedPlan?.commonAd - 1) + (ownerPrevPlan.commonAd));
     }
   }, [selectedPlan]);
 

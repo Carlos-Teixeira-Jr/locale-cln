@@ -30,7 +30,6 @@ const PaymentBoard_Step3_5 = ({
   plans,
   ownerData
 }: IPaymentBoard_Step3_5) => {
-  console.log("🚀 ~ ownerData:", ownerData);
 
   const cardFlag = ownerData?.owner?.paymentData?.creditCardInfo?.creditCardBrand;
   const couponWasUsed = storedData?.paymentData?.couponUsed ? true : false;

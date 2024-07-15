@@ -406,12 +406,11 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
             : { id: '1', src: defaultProfileImage },
           phone: userDataForm.phone,
           wwpNumber: userDataForm.wwpNumber ? userDataForm.wwpNumber : '',
-          // zipCode: addressData.zipCode,
-          zipCode: '96215180',
+          zipCode: addressData.zipCode,
           city: addressData.city,
           uf: addressData.uf,
           streetName: addressData.streetName,
-          streetNumber: '123',
+          streetNumber: addressData.streetName ? addressData.streetName : '123',
           geolocation: coordinates
             ? [coordinates?.lng, coordinates?.lat]
             : [-52.1872864, -32.1013804],
@@ -424,7 +423,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
           _id: userId ? userId : '',
           username: userDataForm.username,
           email: userDataForm.email,
-          address: isSameAddress ? { ...storedData.address, streetNumber: '123' } : { ...addressData, streetNumber: '123' },
+          address: isSameAddress ? { ...storedData.address, streetNumber: storedData.address.streetNumber ? storedData.address.streetNumber : '123' } : { ...addressData, streetNumber: addressData.streetNumber ? addressData.streetNumber : '123' },
           cpf: userDataForm.cpf.replace(/\D/g, ''),
           picture: userDataForm.picture
             ? userDataForm.picture
@@ -472,7 +471,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
             plan: propertyDataStep3.plan,
             isPlanFree: selectedPlanData?.name === 'Free' ? true : false,
             phone: userDataForm.phone,
-            cellPhone: userDataForm.cellPhone !== '' ? `${userDataForm.cellPhone}` : '123',
+            cellPhone: userDataForm.cellPhone !== '' ? `${userDataForm.cellPhone}` : '',
             deactivateProperties: docsToDeactivate,
           };
 
@@ -807,6 +806,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
               onSubmit={(isConfirmed: boolean) => handleSubmit(isConfirmed)}
               docsToDeactivate={(docs: string[]) => setDocsToDeactivate(docs)}
               selectedPlan={selectedPlanData}
+              ownerPrevPlan={ownerPlan}
             />
           </div >
 

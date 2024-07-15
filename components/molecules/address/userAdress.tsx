@@ -40,12 +40,10 @@ const UserAddress = ({
   const [shouldExecuteEffect, setShouldExecuteEffect] = useState(false);
 
   const [addressData, setAddressData] = useState<IAddress>({
-    // zipCode: isEdit ? address?.zipCode! : '',
-    zipCode: '96215-180',
+    zipCode: isEdit ? address?.zipCode! : '',
     city: isEdit ? address?.city! : '',
     streetName: isEdit ? address?.streetName! : '',
-    // streetNumber: isEdit ? address?.streetNumber! : '',
-    streetNumber: '123',
+    streetNumber: isEdit ? address?.streetNumber! : '',
     complement: address?.complement ? address?.complement : '',
     neighborhood: isEdit ? address?.neighborhood! : '',
     uf: isEdit ? address?.uf! : '',
@@ -322,7 +320,7 @@ const UserAddress = ({
                 addressErrors.streetNumber ? { border: '1px solid red' } : {}
               }
               maxLength={10}
-            //onChange={handleNumberChange}
+              onChange={handleNumberChange}
             />
             {addressErrors.streetNumber && (
               <span className={classes.error}>

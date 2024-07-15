@@ -1,6 +1,6 @@
 export interface ILocation {
   _id?: string,
-  name: any,
+  name: string,
   category: string
 }
 

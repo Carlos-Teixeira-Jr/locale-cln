@@ -96,7 +96,6 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const [selectedPlan, setSelectedPlan] = useState(
     ownerData?.owner ? ownerData?.owner?.plan : ''
   );
-  console.log("🚀 ~ selectedPlan:", selectedPlan)
 
   const selectedPlanData = plans.find((plan) => plan._id === selectedPlan);
   const [creditCardIsOpen, setCreditCardIsOpen] = useState(false);
