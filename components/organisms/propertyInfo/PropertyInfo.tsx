@@ -45,7 +45,7 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
   const isOwnProperty = owner?.owner?.userId === userId ? true : false;
   const [tooltipIsVisible, setTooltipIsVisible] = useState(false);
   const [favPropTooltipIsVisible, setFavPropTooltipIsVisible] = useState(false);
-  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [calculatorModalIsOpen, setCalculatorModalIsOpen] = useState(false);
   const [favourited, setFavourited] = useState(isFavourite);
   const [haveTags, setHaveTags] = useState<boolean>(false);
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
@@ -100,7 +100,7 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
 
   const handleCalculatorBtnClick = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    setModalIsOpen(true);
+    setCalculatorModalIsOpen(true);
   };
 
   const handleFavouriteBtnClick = async (
@@ -250,14 +250,14 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
             Compartilhar
           </button>
 
-          {property.acceptFunding && (
-            <button
-              className="lg:w-80 md:w-full md:h-16 h-12 bg-primary p-2.5 rounded-[10px] text-tertiary text-lg font-extrabold mb-6 md:flex md:items-center md:justify-center"
-              onClick={handleCalculatorBtnClick}
-            >
-              Simular Financiamento
-            </button>
-          )}
+          {/* {property.acceptFunding && ( */}
+          <button
+            className="lg:w-[320px] mx-auto w-40 h-12 md:h-[67px] md:w-full bg-primary p-2.5 rounded-[10px] text-tertiary text-lg font-extrabold mb-6 transition-colors hover:bg-red-600 duration-300"
+            onClick={handleCalculatorBtnClick}
+          >
+            Simular Financiamento
+          </button>
+          {/* )} */}
 
           {!userIsLogged && (
             <FavouritePropertyTooltip
@@ -286,10 +286,10 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
 
         </div>
 
-        {modalIsOpen && (
+        {calculatorModalIsOpen && (
           <CalculatorModal
-            isOpen={modalIsOpen}
-            setModalIsOpen={setModalIsOpen}
+            isOpen={calculatorModalIsOpen}
+            setModalIsOpen={setCalculatorModalIsOpen}
             props={`R$ ${property.prices[0].value}`}
           />
         )}
