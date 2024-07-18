@@ -111,6 +111,31 @@ export const authOptions = {
     async session({ session, token }: any) {
       session.user = { ...session.user, ...token.user };
 
+      const userId = token.user.data._id
+
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/user/${userId}`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        )
+
+        if (response.ok) {
+          const responseData = await response.json();
+          const newPicture = responseData.picture;
+
+          let prevData = token.user.data;
+          prevData.picture = newPicture
+
+          session.user = { ...session.user, ...prevData };
+        }
+      } catch (error) {
+        console.error(error)
+      }
+
       return session;
     },
   },

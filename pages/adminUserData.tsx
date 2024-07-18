@@ -1,6 +1,6 @@
 
 import { GetServerSidePropsContext } from 'next';
-import { getSession } from 'next-auth/react';
+import { getSession, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import 'react-credit-cards/es/styles-compiled.css';
@@ -113,6 +113,9 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const [isChangePlan, setIsChangePlan] = useState(false);
   const [isFreePlan, setIsFreePlan] = useState(true);
   const [showPlansCards, setShowPlansCards] = useState(false);
+
+  const { data: session, status, update } = useSession() as any
+  console.log("🚀 ~ session:", session)
 
   // Mostrar os dados do cartão na tela;
   const creditCardInfo = ownerData?.owner?.paymentData?.creditCardInfo
@@ -519,6 +522,16 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
             );
 
             if (imagesResponse.ok) {
+              const data = await imagesResponse.json();
+
+              // Atualiza a sessão do usuário usando o método `update`
+              update({
+                user: {
+                  ...session.user,
+                  data: { ...data, picture: data.updatedUser.picture ?? session.user.data.picture }
+                }
+              });
+
               clearIndexDB();
             } else {
               clearIndexDB();

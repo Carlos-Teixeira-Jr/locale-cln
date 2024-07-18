@@ -213,7 +213,7 @@ const SideMenu: React.FC<SideMenuProps> = ({
                 key={option.key}
                 className={`
                   ${option.key === 'myFavourites' && favouriteProperties?.docs?.length === 0 ? 'hidden' : ''} 
-                  ${option.key === 'myMessages' && messages.length === 0 ? 'hidden' : ''} 
+                  ${option.key === 'myMessages' && messages?.length === 0 ? 'hidden' : ''} 
                   ${option.key === 'myNotifications' && notifications?.length === 0 ? 'hidden' : ''}`}
                 onClick={() => {
                   router.push({
