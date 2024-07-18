@@ -24,8 +24,8 @@ const BlogBanner = ({
 
   return (
     <section className="bg-cover bg-center p-8 md:p-36 my-5 md:my-6 bg-[url('/images/header-image.png')] shadow-md">
-      <div className="bg-tertiary p-5 rounded-[30px] text-center text-quaternary w-full lg:w-fit mx-auto lg:px-36 space-y-2">
-        <h1 className="font-bold text-xl md:text-3xl">Tudo sobre comprar, alugar ou vender um imóvel!</h1>
+      <div className="bg-tertiary p-5 rounded-[30px] text-center text-quaternary w-full lg:w-fit mx-auto lg:px-44 space-y-2">
+        <h1 className="font-bold text-xl md:text-2xl">Tudo sobre comprar, alugar ou vender um imóvel!</h1>
         <h2 className="font-semibold">Confira dicas, ferramentas, guias e outros conteúdos criados para tirar todas as suas dúvidas</h2>
 
         <div className="relative w-full">
