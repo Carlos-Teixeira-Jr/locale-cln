@@ -115,7 +115,6 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const [showPlansCards, setShowPlansCards] = useState(false);
 
   const { data: session, status, update } = useSession() as any
-  console.log("🚀 ~ session:", session)
 
   // Mostrar os dados do cartão na tela;
   const creditCardInfo = ownerData?.owner?.paymentData?.creditCardInfo
