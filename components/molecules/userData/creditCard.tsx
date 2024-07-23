@@ -57,21 +57,55 @@ const CreditCard = ({
   const router = useRouter();
 
   const [focus, setFocus] = useState<Focused | undefined>();
-  // const actualCreditCardNumber = creditCardInfo
-  //   ? `---- ---- ---- ${creditCardInfo?.creditCardNumber}`
-  //   : '';
 
   const [creditCardFormData, setCreditCardFormData] = useState<CreditCardForm>({
-    // cardName: '',
-    cardName: 'Teste Locale',
-    // cardNumber: creditCardInfo ? actualCreditCardNumber : '',
-    cardNumber: '5343 5087 6915 0373',
-    // ccv: '',
-    ccv: '776',
-    // expiry: '',
-    expiry: '0525',
-    cpfCnpj: '314.715.150-60'
+    cardName: '',
+    cardNumber: '',
+    ccv: '',
+    expiry: '',
+    cpfCnpj: ''
   });
+
+  // useEffect(() => {
+  //   const updateCardNumber = () => {
+  //     if (creditCardInfo?.creditCardBrand === 'MASTERCARD') {
+  //       setCreditCardFormData({ ...creditCardFormData, cardNumber: `55-- ---- ---- ${creditCardInfo?.creditCardNumber}` });
+  //     } else if (creditCardInfo?.creditCardBrand === 'VISA') {
+  //       setCreditCardFormData({ ...creditCardFormData, cardNumber: `4--- ---- ---- ${creditCardInfo?.creditCardNumber}` });
+  //     } else {
+  //       setCreditCardFormData({ ...creditCardFormData, cardNumber: '---- ---- ---- ----' });
+  //     }
+  //   };
+
+  //   updateCardNumber();
+  // }, [creditCardInfo]);
+  const [initialRender, setInitialRender] = useState(true);
+
+  useEffect(() => {
+    if (creditCardInfo && initialRender) {
+      const updateCardNumber = () => {
+        if (creditCardInfo.creditCardBrand === 'MASTERCARD') {
+          setCreditCardFormData(prevState => ({
+            ...prevState,
+            cardNumber: `55-- ---- ---- ${creditCardInfo.creditCardNumber}`
+          }));
+        } else if (creditCardInfo.creditCardBrand === 'VISA') {
+          setCreditCardFormData(prevState => ({
+            ...prevState,
+            cardNumber: `4--- ---- ---- ${creditCardInfo.creditCardNumber}`
+          }));
+        } else {
+          setCreditCardFormData(prevState => ({
+            ...prevState,
+            cardNumber: '---- ---- ---- ----'
+          }));
+        }
+      };
+      updateCardNumber();
+      setInitialRender(false);
+    }
+  }, [creditCardInfo, initialRender]);
+
 
   const userId = userInfo?._id !== undefined ? userInfo?._id : ownerData?.user?._id;
 
@@ -87,13 +121,13 @@ const CreditCard = ({
 
   useEffect(() => {
     if (handleEmptyAddressError) handleEmptyAddressError(emptyAddressError)
-  }, [emptyAddressError]);
+  }, [emptyAddressError, handleEmptyAddressError]);
 
   // Envia os dados do usuário para o componente pai;
 
   useEffect(() => {
     if (onCreditCardUpdate) onCreditCardUpdate(creditCardFormData);
-  }, [creditCardFormData]);
+  }, [creditCardFormData, onCreditCardUpdate]);
 
   useEffect(() => {
     setErrors(error);
@@ -114,56 +148,29 @@ const CreditCard = ({
     scrollToError('expiry');
     scrollToError('ccv');
     scrollToError('cpfCnpj');
-  }, [errors]);
+  }, [errors, creditCardErrorScroll, creditCardInputRefs]);
 
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement>,
     fieldName: keyof CreditCardForm
   ) => {
     const value = e.target.value;
+    let maskedValue = value;
+
     if (fieldName === 'cardName') {
-      const maskedValue = value.replace(/\d/g, '');
-      setCreditCardFormData({
-        ...creditCardFormData,
-        [fieldName]: maskedValue.toUpperCase(),
-      });
+      maskedValue = value.replace(/\d/g, '').toUpperCase();
     } else if (fieldName === 'cardNumber') {
-      const maskedValue = applyNumericMask(value, '9999999999999999');
-      setCreditCardFormData({
-        ...creditCardFormData,
-        [fieldName]: maskedValue,
-      });
+      maskedValue = applyNumericMask(value, '9999999999999999');
     } else if (fieldName === 'ccv') {
-      const maskedValue = value.replace(/\s/g, '').toUpperCase().slice(0, 4);
-      setCreditCardFormData({
-        ...creditCardFormData,
-        [fieldName]: maskedValue,
-      });
+      maskedValue = value.replace(/\s/g, '').toUpperCase().slice(0, 4);
     } else if (fieldName === 'cpfCnpj') {
-      const input = e.target;
-      const value = input.value;
-      const maskedValue = applyNumericMask(value, '999.999.999-99');
-      const selectionStart = input.selectionStart || 0;
-      const selectionEnd = input.selectionEnd || 0;
-      const previousValue = input.value;
-      // Verifica se o cursor está no final da string ou se um caractere foi removido
-      if (
-        selectionStart === previousValue.length ||
-        previousValue.length > maskedValue.length
-      ) {
-        input.value = maskedValue;
-      } else {
-        // Caso contrário, restaura o valor anterior e move o cursor para a posição correta
-        input.value = previousValue;
-        input.setSelectionRange(selectionStart, selectionEnd);
-      }
-      setCreditCardFormData({
-        ...creditCardFormData,
-        [fieldName]: maskedValue,
-      });
-    } else {
-      setCreditCardFormData({ ...creditCardFormData, [fieldName]: value });
+      maskedValue = applyNumericMask(value, '999.999.999-99');
     }
+
+    setCreditCardFormData(prevState => ({
+      ...prevState,
+      [fieldName]: maskedValue,
+    }));
   };
 
   const inputs = [
@@ -173,8 +180,7 @@ const CreditCard = ({
       name: 'cardNumber',
       type: 'string',
       label: 'Número do Cartão',
-      // value: creditCardFormData.cardNumber,
-      value: '5343 5087 6915 0373'
+      value: creditCardFormData.cardNumber,
     },
     {
       key: 'cardName',
@@ -182,8 +188,7 @@ const CreditCard = ({
       name: 'cardName',
       type: 'text',
       label: 'Nome no Cartão',
-      // value: creditCardFormData.cardName,
-      value: 'Teste Locale'
+      value: creditCardFormData.cardName,
     },
     {
       key: 'expiry',
@@ -199,7 +204,8 @@ const CreditCard = ({
       name: 'ccv',
       type: 'text',
       label: 'CCV',
-      value: '776',
+      // value: '776',
+      value: creditCardFormData.ccv,
     },
     {
       key: 'cpfCnpj',
@@ -207,8 +213,7 @@ const CreditCard = ({
       name: 'cpfCnpj',
       type: 'text',
       label: 'CPF/CNPJ',
-      // value: creditCardFormData.cpfCnpj,
-      value: '314.715.150-60'
+      value: creditCardFormData.cpfCnpj,
     },
   ];
 
@@ -241,7 +246,7 @@ const CreditCard = ({
       newErrors.cardNumber = invalidCardNumberError;
     if (!creditCardFormData.expiry) newErrors.expiry = emptyFieldError;
     if (!creditCardFormData.ccv) newErrors.ccv = emptyFieldError;
-    //if (!creditCardFormData.cpfCnpj) newErrors.cpfCnpj = emptyFieldError;
+    if (!creditCardFormData.cpfCnpj) newErrors.cpfCnpj = emptyFieldError;
 
     setErrors(newErrors);
 
@@ -261,13 +266,10 @@ const CreditCard = ({
         const body = {
           ...creditCardFormData,
           email: userInfo?.email,
-          // phone: userInfo?.cellPhone,
-          phone: '(53) 99177-4545',
+          phone: userInfo?.cellPhone,
           plan: selectedPlan,
-          //: userAddress?.zipCode,
-          zipCode: '96215-180',
-          // streetNumber: userAddress?.streetNumber,
-          streetNumber: '123',
+          zipCode: userAddress?.zipCode,
+          streetNumber: userAddress?.streetNumber,
           owner: ownerData?.owner,
           customerId,
           userId
@@ -301,7 +303,7 @@ const CreditCard = ({
   };
 
   return (
-    <div className="md:w-[90%] w-full hidden">
+    <div className="md:w-[90%] w-full">
       <h2 className="md:text-2xl text-lg leading-10 text-quaternary font-bold mb-5 md:mt-16 mt-5 px-5 w-full">
         Formas de Pagamento
       </h2>
@@ -313,8 +315,7 @@ const CreditCard = ({
             expiry={creditCardFormData.expiry}
             focused={focus}
             name={creditCardFormData.cardName}
-            // number={creditCardFormData.cardNumber}
-            number={'5343 5087 6915 0373'}
+            number={creditCardFormData.cardNumber}
           />
         </div>
 
@@ -329,7 +330,7 @@ const CreditCard = ({
                 type={input.type}
                 name={input.name}
                 placeholder={input.label}
-                //onChange={(e) => handleInputChange(e, input.name)}
+                onChange={(e) => handleInputChange(e, input.name)}
                 onFocus={(e) => setFocus(e.target.name as Focused)}
                 maxLength={input.key === 'expiry' ? 5 : undefined}
                 value={
@@ -361,10 +362,10 @@ const CreditCard = ({
       {isEdit && (
         <div className="flex my-10 justify-center md:justify-end">
           <button
-            className="bg-primary w-fit h-13 item text-quinary rounded-[10px] py-3 px-10 lg:ml-8 gap-3 text-lg font-extrabold transition-colors duration-300 hover:bg-red-600 hover:text-white"
+            className="bg-primary md:w-[250px] w-fit h-12 item text-quinary rounded-[10px] px-10 lg:ml-8 gap-3 text-sm font-extrabold transition-colors duration-300 hover:bg-red-600 hover:text-white"
             onClick={handleSubmit}
           >
-            Atualizar
+            Atualizar apenas os dados do cartão
           </button>
         </div>
       )}

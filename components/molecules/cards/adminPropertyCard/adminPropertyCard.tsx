@@ -1,6 +1,7 @@
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import { IMessage } from '../../../../common/interfaces/message/messages';
@@ -63,6 +64,7 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const params = `${adType}+${propertyType}+${address.city}+${address.neighborhood}+${address.streetName}+increment=+id=${_id}`
   const [loading, setLoading] = useState(false);
+  const { push } = useRouter()
 
   const handleClick = () => {
     setLoading(true);
@@ -90,7 +92,7 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
       if (response.ok) {
         toast.dismiss();
         showSuccessToast(SuccessToastNames.HighlightProperty);
-        window.location.reload();
+        push('/admin');
       } else {
         toast.dismiss();
         if (response.status === 400) {

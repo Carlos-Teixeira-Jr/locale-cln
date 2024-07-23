@@ -67,10 +67,10 @@ const EditAnnouncement: NextPageWithLayout<IEditAnnouncement> = ({
   const isEdit = router.pathname == '/property/modify/[id]';
 
   const [address, setAddress] = useState<IAddress>({
-    zipCode: '96215-180',
+    zipCode: '',
     city: '',
     streetName: '',
-    streetNumber: '123',
+    streetNumber: '',
     complement: '',
     neighborhood: '',
     uf: '',

@@ -24,6 +24,11 @@ export const authOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_SECRET as string,
+      authorization: {
+        params: {
+          redirect_uri: 'https://hml.localeimoveis.com/api/auth/callback/google',
+        },
+      },
     }),
     FacebookProvider({
       clientId: process.env.FACEBOOK_CLIENT_ID as string,
@@ -33,7 +38,7 @@ export const authOptions = {
       name: 'login',
       credentials: {},
       // @ts-ignore
-      async authorize(credentials: MyCredentials) {
+      async autqorize(credentials: MyCredentials) {
         const { email, password } = credentials;
 
         const response = await fetch(
@@ -111,8 +116,34 @@ export const authOptions = {
     async session({ session, token }: any) {
       session.user = { ...session.user, ...token.user };
 
+      const userId = token.user.data._id
+
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/user/${userId}`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        )
+
+        if (response.ok) {
+          const responseData = await response.json();
+          const newPicture = responseData.picture;
+
+          let prevData = token.user.data;
+          prevData.picture = newPicture
+
+          session.user = { ...session.user, ...prevData };
+        }
+      } catch (error) {
+        console.error(error)
+      }
+
       return session;
     },
+    debug: true,
   },
   secret: process.env.NEXTAUTH_SECRET as string,
 };
