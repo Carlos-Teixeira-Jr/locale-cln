@@ -152,19 +152,19 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
 
 export default PropertyPage;
 
-export async function getStaticPaths() {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
-  const propertiesResponse = await fetch(`${baseUrl}/property/filter/?page=1&limit=100`);
-  const properties = await propertiesResponse.json();
-  const paths = properties.docs.map((property: IData) => ({
-    params: { id: property._id },
-  }));
+// export async function getStaticPaths() {
+//   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+//   const propertiesResponse = await fetch(`${baseUrl}/property/filter/?page=1&limit=100`);
+//   const properties = await propertiesResponse.json();
+//   const paths = properties.docs.map((property: IData) => ({
+//     params: { id: property._id },
+//   }));
 
-  return {
-    paths,
-    fallback: 'blocking',
-  };
-}
+//   return {
+//     paths,
+//     fallback: 'blocking',
+//   };
+// }
 
 export async function getServerSideProps(context: any) {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
