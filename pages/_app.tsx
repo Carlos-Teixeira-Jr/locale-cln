@@ -97,7 +97,7 @@ export default function App({
 
         <ProgressProvider>
           <ToastWrapper autoCloseTime={5000} />
-          <Component {...pageProps} />
+          {/* <Component {...pageProps} /> */}
           {/* <UnderDevelopmentPage /> */}
           <MenuProvider>
             <Component {...pageProps} />
