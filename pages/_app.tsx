@@ -101,7 +101,7 @@ export default function App({
           <MenuProvider>
             {/* <Component {...pageProps} /> */}
             <UnderDevelopmentPage />
-            <Component {...pageProps} />
+            {/* <Component {...pageProps} /> */}
           </MenuProvider>
         </ProgressProvider>
       </SessionProvider>
