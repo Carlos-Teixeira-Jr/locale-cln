@@ -10,9 +10,9 @@ import { checkAndClearLocalStorage } from '../common/utils/clearStoredData';
 import { verifyCookiesPolicy } from '../common/utils/verifyCookiesPolicy';
 import CookiesModal from '../components/atoms/modals/cookiesModal';
 import ToastWrapper from '../components/atoms/toast/toastWrapper';
-import { MenuProvider } from '../context/headerMenuContext';
 import { ProgressProvider } from '../context/registerProgress';
 import '../styles/globals.css';
+import UnderDevelopmentPage from './underDevelopment';
 
 export default function App({
   Component,
@@ -97,11 +97,11 @@ export default function App({
 
         <ProgressProvider>
           <ToastWrapper autoCloseTime={5000} />
-          {/* <Component {...pageProps} /> */}
-          {/* <UnderDevelopmentPage /> */}
-          <MenuProvider>
+          <Component {...pageProps} />
+          <UnderDevelopmentPage />
+          {/* <MenuProvider>
             <Component {...pageProps} />
-          </MenuProvider>
+          </MenuProvider> */}
         </ProgressProvider>
       </SessionProvider>
 
