@@ -29,8 +29,8 @@ const OwnerPlanBoard = ({
       <h3 className="mt-2">Você ainda têm:</h3>
 
       <div className="gap-1 flex flex-col text-md text-quaternary">
-        <span>{`${owner?.adCredits} x ${owner?.adCredits === 1 ? 'Crédito' : 'Créditos'} de anúncio`}</span>
-        <span>{`${owner?.highlightCredits} x ${owner?.highlightCredits === 1 ? 'Crédito' : 'Créditos'} de destaque`}</span>
+        <span>{`${owner?.adCredits} x ${owner?.adCredits === 1 ? 'Crédito de anúncio disponível' : 'Créditos de anúncio disponíveis'}`}</span>
+        <span>{`${owner?.highlightCredits} x ${owner?.highlightCredits === 1 ? 'Crédito de destaque disponível' : 'Créditos de destaque disponíveis'}`}</span>
       </div>
 
       <div className="mt-5">

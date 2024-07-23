@@ -1,9 +1,9 @@
 import Image from 'next/image';
+import { ReactElement } from 'react';
 import ClockIcon from '../../atoms/icons/clockIcon';
 import HouseIcon from '../../atoms/icons/houseIcon';
 import ShieldIcon from '../../atoms/icons/shieldIcon';
 import SnapFingersIcon from '../../atoms/icons/snapFingersIcon';
-import { ReactElement } from 'react';
 
 export interface IAdvantages {
   key: number,
@@ -29,13 +29,13 @@ const AdvantagesArea: React.FC = () => {
     },
     {
       key: 3,
-      icon: <ClockIcon width="90" height="90" fill="#F75D5F" className="mt-1"/>,
+      icon: <ClockIcon width="90" height="90" fill="#F75D5F" className="mt-1" />,
       title: "Atualizações Frequentes",
       description: "Nosso site é atualizado frequentemente com novas propriedades, então você sempre encontrará algo novo para explorar."
     },
     {
       key: 4,
-      icon: <ShieldIcon width="90" height="90" fill="#F75D5F" className="mt-2"/>,
+      icon: <ShieldIcon width="90" height="90" fill="#F75D5F" className="mt-2" />,
       title: "Segurança",
       description: "Nosso site é seguro e confiável. Verificamos a autenticidade de cada anúncio de propriedade para garantir que você esteja recebendo informações precisas e confiáveis."
     }
@@ -45,11 +45,11 @@ const AdvantagesArea: React.FC = () => {
     <div className="max-w-[1232px] justify-self-center">
       <div className="flex justify-center mx-[50px]">
         <div className="md:absolute md:mr-[500px]">
-          <Image 
-            src={'/images/marker.png'} 
-            alt={'locale logo brand'} 
-            width={122} 
-            height={147} 
+          <Image
+            src={'/images/marker.png'}
+            alt={'locale logo brand'}
+            width={122}
+            height={147}
           />
         </div>
         <div className="md:pl-[130px]">
@@ -70,16 +70,15 @@ const AdvantagesArea: React.FC = () => {
       </div>
 
       {advantages.map((adv) => (
-        <div 
+        <div
           key={adv.key}
-          className={`bg-secondary md:rounded-full rounded-3xl md:w-full lg:w-[810px] md:h-fit md:grid flex flex-col md:grid-cols-5 md:gap-[100px] lg:gap-[200px] md:my-[40px] my-[30px] drop-shadow-xl py-[30px] md:py-0 ${
-            adv.key % 2 === 0 ?
+          className={`bg-secondary md:rounded-full rounded-3xl md:w-full lg:w-[810px] md:h-fit md:grid flex flex-col md:grid-cols-5 md:gap-[100px] lg:gap-[200px] md:my-[40px] my-[30px] drop-shadow-xl py-[30px] md:py-0 ${adv.key % 2 === 0 ?
             'lg:float-left lg:ml-[50px]' :
             'lg:float-right lg:mr-[50px]'
-          }`}
+            }`}
         >
           <div className="w-[125px] h-[125px] flex bg-tertiary rounded-full md:m-10 m-auto shadow-tertiary shadow-[-5px_15px_100px_-5px_rgba(0,0,0,0.3)] border-[5px] border-secondary col-span-1">
-            <div className="ml-4 mt-2">
+            <div className="ml-3 mt-2">
               {adv.icon}
             </div>
           </div>
@@ -87,13 +86,13 @@ const AdvantagesArea: React.FC = () => {
             <p className="font-bold text-2xl my-5 mx-5 md:mx-0 text-quaternary text-center md:text-left">
               {adv.title}
             </p>
-            <p className="font-semibold text-quaternary text-lg m-5 p-2 md:m-0 text-center md:text-left">
+            <p className="font-semibold text-quaternary text-lg m-5 md:p-2 md:m-0 text-center md:text-left">
               {adv.description}
             </p>
           </div>
         </div>
       ))}
-      
+
     </div>
   );
 };

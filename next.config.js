@@ -15,6 +15,7 @@ const nextConfig = {
       'platform-lookaside.fbsbx.com',
       'static.vecteezy.com',
       'pt.wikipedia.org',
+      'conteudos.quintoandar.com.br',
     ],
   },
 };

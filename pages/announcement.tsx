@@ -1,68 +1,135 @@
+import { GetServerSidePropsContext } from 'next';
+import { getSession } from 'next-auth/react';
+import { IPlan } from '../common/interfaces/plans/plans';
+import { IOwnerProperties } from '../common/interfaces/properties/propertiesList';
 import { fetchJson } from '../common/utils/fetchJson';
 import AdvantagesArea from '../components/molecules/advantagesArea/advantagesArea';
 import PlansCards from '../components/molecules/cards/plansCards/plansCards';
 import RegisterCard from '../components/molecules/cards/registrationCard.tsx/registerCard';
 import Footer from '../components/organisms/footer/footer';
 import Header from '../components/organisms/header/header';
-import { NextPageWithLayout } from './page';
 
-const AnnouncementPage: NextPageWithLayout = ({ plans }: any) => {
+interface IAnnouncementPage {
+  ownerProperties: IOwnerProperties,
+  plans: IPlan[]
+}
+
+const defaultOwnerProperties: IOwnerProperties = {
+  docs: [],
+  count: 0,
+  totalPages: 0,
+  messages: []
+};
+
+const AnnouncementPage = ({
+  plans,
+  ownerProperties = defaultOwnerProperties
+}: IAnnouncementPage) => {
+
   const reversedCards = [...plans].reverse();
+  const isOwner = ownerProperties?.docs.length > 0;
 
   return (
-    <>
-      <div className="fixed z-10 top-0 md:w-full">
-        <Header />
-      </div>
+    <main className='flex flex-col min-h-screen'>
+      <div className='flex flex-col flex-grow'>
+        <div className="fixed z-10 top-0 md:w-full">
+          <Header userIsOwner={isOwner} />
+        </div>
 
-      <div className={classes.container}>
-        <div className="2xl:max-w-[1536px] 2xl:mx-auto">
-          <div className={classes.registerCard}>
-            <RegisterCard />
+        <div className={classes.container}>
+          <div className="2xl:max-w-[1536px] 2xl:mx-auto">
+            <div className={classes.registerCard}>
+              <RegisterCard />
+            </div>
+
+            <div className={classes.title}>
+              <p className={classes.p}>
+                A Melhor Solução para Anúnciar seu Imóvel
+              </p>
+            </div>
           </div>
+        </div>
 
-          <div className={classes.title}>
-            <p className={classes.p}>
-              A Melhor Solução para Anúnciar seu Imóvel
-            </p>
+        <div className="grid grid-flow-row mx-2 md:mb-10">
+          <AdvantagesArea />
+
+          <h1 className={classes.h1}>
+            Não perca mais tempo procurando por imóveis em outros lugares. Visite
+            nosso site hoje mesmo e encontre a propriedade dos seus sonhos!
+          </h1>
+
+          <div id='plans' className={classes.plans}>
+            {reversedCards.map(
+              ({ _id, name, price, highlightAd, commonAd, smartAd }: any) => (
+                <PlansCards
+                  key={_id}
+                  name={name}
+                  price={price}
+                  commonAd={commonAd}
+                  highlightAd={highlightAd}
+                  smartAd={smartAd}
+                  _id={_id}
+                />
+              )
+            )}
           </div>
         </div>
       </div>
 
-      <div className="grid grid-flow-row mx-2 md:mb-10">
-        <AdvantagesArea />
-
-        <h1 className={classes.h1}>
-          Não perca mais tempo procurando por imóveis em outros lugares. Visite
-          nosso site hoje mesmo e encontre a propriedade dos seus sonhos!
-        </h1>
-
-        <div id='plans' className={classes.plans}>
-          {reversedCards.map(
-            ({ _id, name, price, highlightAd, commonAd, smartAd }: any) => (
-              <PlansCards
-                key={_id}
-                name={name}
-                price={price}
-                commonAd={commonAd}
-                highlightAd={highlightAd}
-                smartAd={smartAd}
-                _id={_id}
-              />
-            )
-          )}
-        </div>
-      </div>
 
       <Footer />
-    </>
+    </main>
   );
 };
 
 export default AnnouncementPage;
 
-export async function getStaticProps() {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const session = (await getSession(context)) as any;
+  const userId = session?.user.data._id || session?.user.id;
+  const page = 1;
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+  let ownerData;
+  let ownerProperties = defaultOwnerProperties;
+
+  try {
+    const ownerIdResponse = await fetch(
+      `${baseUrl}/user/find-owner-by-user`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId }),
+      }
+    );
+
+    if (ownerIdResponse.ok) {
+      const response = await ownerIdResponse.json();
+      if (response?.owner?._id) {
+        ownerData = response;
+
+        ownerProperties = await fetch(`${baseUrl}/property/owner-properties`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ownerId: ownerData?.owner?._id,
+            page,
+          }),
+        })
+          .then((res) => res.json())
+          .catch(() => [])
+      } else {
+        console.log('Error:')
+      }
+    } else {
+      ownerData = {};
+    }
+  } catch (error) {
+    console.error(`Error:`, error)
+  }
 
   const [plans] = await Promise.all([
     fetch(`${baseUrl}/plan`)
@@ -73,9 +140,9 @@ export async function getStaticProps() {
 
   return {
     props: {
-      plans,
+      ownerProperties: ownerProperties ?? defaultOwnerProperties,
+      plans
     },
-    revalidate: 60,
   };
 }
 

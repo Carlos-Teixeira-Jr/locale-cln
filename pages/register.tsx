@@ -1,9 +1,12 @@
+import { GetServerSidePropsContext } from 'next';
+import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { MouseEvent, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
+import { IOwnerProperties } from '../common/interfaces/properties/propertiesList';
 import {
   IAddress,
-  PricesType,
+  PricesType
 } from '../common/interfaces/property/propertyData';
 import {
   IRegisterMainFeatures,
@@ -19,12 +22,25 @@ import MainFeatures from '../components/organisms/mainFeatures/mainFeatures';
 import { useProgress } from '../context/registerProgress';
 var store = require('store')
 
-const Register = () => {
+interface IRegister {
+  ownerProperties: IOwnerProperties
+}
+
+const defaultOwnerProperties: IOwnerProperties = {
+  docs: [],
+  count: 0,
+  totalPages: 0,
+  messages: []
+};
+
+const Register = ({ ownerProperties = defaultOwnerProperties }: IRegister) => {
   const router = useRouter();
   const { updateProgress, progress } = useProgress();
   const handleClose = () => setOpen(false);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const [geocode, setGeocode] = useState<{ lat: number, lng: number }>();
+  const isOwner = ownerProperties?.docs.length > 0;
 
   const [registration, setRegistration] = useState<IRegisterMainFeatures>({
     adType: 'comprar',
@@ -170,6 +186,7 @@ const Register = () => {
         propertyType: registration.propertyType,
         propertySubtype: registration.propertySubtype,
         address: address,
+        geolocation: { type: 'Point', coordinates: [geocode?.lng ? geocode?.lng : -52.1872864, geocode?.lat ? geocode?.lat : -32.1013804] },
         description: registration.description,
         metadata: registration.metadata,
         size: {
@@ -249,7 +266,7 @@ const Register = () => {
       ) : (
         <>
           <div>
-            <Header />
+            <Header userIsOwner={isOwner} />
           </div>
           <AreaCalculatorModal
             open={open}
@@ -300,6 +317,7 @@ const Register = () => {
               }
               errors={addressErrors}
               addressInputRefs={addressInputRefs}
+              onGetGeocode={(geocode: any) => { if (geocode !== undefined) setGeocode(geocode) }}
             />
 
             <div className={classes.buttonContainer}>
@@ -324,3 +342,57 @@ const Register = () => {
 };
 
 export default Register;
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const session = (await getSession(context)) as any;
+  const userId = session?.user.data._id || session?.user.id;
+  const page = 1;
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+  let ownerData;
+  let ownerProperties;
+
+  try {
+    const ownerIdResponse = await fetch(
+      `${baseUrl}/user/find-owner-by-user`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId }),
+      }
+    );
+
+    if (ownerIdResponse.ok) {
+      const response = await ownerIdResponse.json();
+      if (response?.owner?._id) {
+        ownerData = response;
+
+        ownerProperties = await fetch(`${baseUrl}/property/owner-properties`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ownerId: ownerData?.owner?._id,
+            page,
+          }),
+        })
+          .then((res) => res.json())
+          .catch(() => defaultOwnerProperties)
+      } else {
+        ownerProperties = defaultOwnerProperties;
+      }
+    } else {
+      ownerData = {};
+    }
+  } catch (error) {
+    console.error(`Error:`, error)
+  }
+
+  return {
+    props: {
+      ownerProperties: ownerProperties ?? defaultOwnerProperties
+    },
+  };
+}

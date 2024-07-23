@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -44,9 +45,30 @@ const LoginCard: React.FC = () => {
     password: password,
   });
 
+  // Atualiza emailVerificationData com o valor do campo de email
   useEffect(() => {
-    setLoading(false)
-  }, [loading]);
+    const input = document.querySelector<HTMLInputElement>('input[type="email"]');
+    if (input) {
+      const handleAutocomplete = () => {
+        if (input.value !== email) {
+          setEmail(input.value);
+          setEmailVerificationData((prevData) => ({
+            ...prevData,
+            email: input.value,
+          }));
+        }
+      };
+      input.addEventListener('change', handleAutocomplete);
+      handleAutocomplete();
+      return () => {
+        input.removeEventListener('change', handleAutocomplete);
+      };
+    }
+  }, [email]);
+
+  // useEffect(() => {
+  //   setLoading(false)
+  // }, [loading]);
 
   useEffect(() => {
     setEmailVerificationData({ ...emailVerificationData, email: email });
@@ -130,7 +152,6 @@ const LoginCard: React.FC = () => {
       }
     }
 
-
     if (isRegister) {
       if (
         email &&
@@ -141,32 +162,49 @@ const LoginCard: React.FC = () => {
       ) {
         try {
           setLoading(true);
-          const data = await sendRequest(
-            `${baseUrl}/auth/register`,
-            'POST',
-            {
-              email,
-              password,
-              passwordConfirmation,
-            }
-          );
+          const { data: responseData } = await axios.post(`${baseUrl}/user/find-by-email`, { email });
 
-          if (data) {
-            const { email, emailVerificationCode, isEmailVerified } = data;
-            setEmailVerificationData({
-              email,
-              isEmailVerified,
-              emailVerificationCode,
-              password,
-            });
+          if (responseData && !responseData.isEmailVerified && !verifyEmailModalIsOpen) {
             setVerifyEmailModalIsOpen(true);
-          } else {
+            showErrorToast(ErrorToastNames.EmailNotVerified);
+            return
+          } else if (responseData && responseData.isEmailVerified) {
             showErrorToast(ErrorToastNames.EmailAlreadyInUse)
-            setLoading(false)
           }
-        } catch (error) {
+        } catch (error: unknown) {
           console.error(error);
-          setLoading(false)
+          if (axios.isAxiosError(error)) {
+            if (error.response) {
+              const data: any = await sendRequest(
+                `${baseUrl}/auth/register`,
+                'POST',
+                {
+                  email,
+                  password,
+                  passwordConfirmation,
+                }
+              );
+
+              if (data) {
+                if (!data.isEmailVerified) {
+                  setVerifyEmailModalIsOpen(true)
+                }
+                const { email, emailVerificationCode, isEmailVerified } = data;
+                setEmailVerificationData({
+                  email,
+                  isEmailVerified,
+                  emailVerificationCode,
+                  password,
+                });
+                setVerifyEmailModalIsOpen(true);
+              } else {
+                showErrorToast(ErrorToastNames.EmailAlreadyInUse)
+                setLoading(false)
+              }
+            }
+          } else {
+            showErrorToast(ErrorToastNames.ServerConnection)
+          }
         }
       } else {
         showErrorToast(ErrorToastNames.InvalidRegisterData)
@@ -193,7 +231,7 @@ const LoginCard: React.FC = () => {
                 }).then(({ ok }: any) => {
                   if (ok) {
                     toast.dismiss();
-                    router.push('/');
+                    router.push('/admin?page=1');
                   } else {
                     toast.dismiss();
                     showErrorToast(ErrorToastNames.UserNotFound);
@@ -208,7 +246,6 @@ const LoginCard: React.FC = () => {
               } catch (error) {
                 toast.dismiss();
                 setLoading(false)
-                console.error(error);
                 showErrorToast(ErrorToastNames.ServerConnection);
               }
             } else {
@@ -217,7 +254,8 @@ const LoginCard: React.FC = () => {
               setLoading(false);
             }
           } else {
-            setLoading(false)
+            showErrorToast(ErrorToastNames.UserNotFound)
+            setLoading(false);
           }
         } catch (error) {
           toast.dismiss();
@@ -247,12 +285,17 @@ const LoginCard: React.FC = () => {
           E-mail
         </label>
         <input
-          className={`w-full h-fit md:h-12 rounded-[10px] border-[1px] border-quaternary drop-shadow-xl bg-tertiary text-quaternary p-2 md:text-xl font-semibold ${emailError === '' ? '' : 'border-[2px] border-red-500'
-            }`}
           type="email"
           value={email}
-          maxLength={80}
-          onChange={(e) => setEmail(e.target.value)}
+          className={`w-full h-fit md:h-12 rounded-[10px] border-[1px] border-quaternary drop-shadow-xl bg-tertiary text-quaternary p-2 md:text-xl font-semibold ${emailError === '' ? '' : 'border-[2px] border-red-500'
+            }`}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            setEmailVerificationData((prevData) => ({
+              ...prevData,
+              email: e.target.value,
+            }));
+          }}
         />
 
         {emailError !== '' && (
@@ -407,12 +450,6 @@ const LoginCard: React.FC = () => {
             onClick={() => signIn('google')}
           />
         </div>
-        {/* <div>
-          <SocialAuthButton 
-            provider={'facebook'} 
-            onClick={() => signIn('facebook')}
-          />
-        </div> */}
       </div>
 
       <a

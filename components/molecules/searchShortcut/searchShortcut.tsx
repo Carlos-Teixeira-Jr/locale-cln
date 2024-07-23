@@ -6,11 +6,12 @@ import FurnitureIcon from '../../atoms/icons/furnitureIcon';
 import ParkingIcon from '../../atoms/icons/parkingIcon';
 import PetsIcon from '../../atoms/icons/petsIcon';
 import PoolIcon from '../../atoms/icons/poolIcon';
+import SearchIcon from '../../atoms/icons/searchIcon';
 import Loading from '../../atoms/loading';
 import { toggleSelection } from './toggleSelection';
 
 type LoadingState = {
-  [key: string]: boolean; // Index signature para acessar propriedades dinâmicas como boolean
+  [key: string]: boolean;
 };
 
 export interface ISearchShortcut {
@@ -97,8 +98,8 @@ const SearchShortcut: React.FC<ISearchShortcut> = ({
           className={`flex lg:hidden flex-row items-center max-w-[153px] h-[44px] border border-quaternary rounded-[30px] p-3 lg:hover:bg-quaternary cursor-pointer ${isOpen ? 'bg-quaternary' : 'bg-tertiary'
             }`}
         >
-          <div className="border rounded-[30px] bg-tertiary text-quaternary px-2 font-bold">
-            1
+          <div className=" rounded-[30px] bg-tertiary text-quaternary px-2 font-bold">
+            <SearchIcon width='24' height='24' />
           </div>
           <h3
             className={`font-bold text-lg leading-5 mx-4 ${isOpen ? 'text-tertiary' : 'text-quaternary'

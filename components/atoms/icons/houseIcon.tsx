@@ -1,9 +1,8 @@
-import * as React from "react";
 
-const HouseIcon = ({ width = "48", height= "48", fill="currentColor"}) => (
-    
-  <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width={width} height={height} fill={fill} viewBox="0 0 120.000000 120.000000" preserveAspectRatio="xMidYMid meet">
-  
+const HouseIcon = ({ width = "48", height = "48", fill = "currentColor", className = "" }) => (
+
+  <svg version="1.0" xmlns="http://www.w3.org/2000/svg" className={className} width={width} height={height} fill={fill} viewBox="0 0 120.000000 120.000000" preserveAspectRatio="xMidYMid meet">
+
     <g transform="translate(0.000000,120.000000) scale(0.100000,-0.100000)" fill={fill} stroke="none">
       <path d="M645 1082 c-22 -21 -110 -102 -195 -181 -85 -78 -159 -154 -165 -168
         -8 -21 -6 -28 15 -45 15 -12 32 -17 47 -13 22 5 23 4 23 -67 l0 -73 -48 -16
@@ -30,7 +29,7 @@ const HouseIcon = ({ width = "48", height= "48", fill="currentColor"}) => (
         -148 -75 -102 -47 -167 -71 -247 -89 -61 -13 -119 -24 -131 -23 -12 0 -104 24
         -206 53 l-185 52 -3 106 c-3 122 -7 115 98 149 88 29 116 25 198 -26z"
       />
-      <path d="M655 607 c-4 -10 -5 -21 -1 -24 10 -10 18 4 13 24 -4 17 -4 17 -12 0z"/>
+      <path d="M655 607 c-4 -10 -5 -21 -1 -24 10 -10 18 4 13 24 -4 17 -4 17 -12 0z" />
     </g>
   </svg>
 );

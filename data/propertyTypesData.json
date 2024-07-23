@@ -3,33 +3,33 @@
     "type": "apartamento",
     "key": 1,
     "subTypes": [
-      "Apartamento",
-      "Cobertura",
+      "apartamento",
+      "cobertura",
       "flat",
-      "Térreo",
-      "Kitnet/Conjugado",
-      "Loft",
-      "Estúdio"
+      "térreo",
+      "kitnet/Conjugado",
+      "loft",
+      "estúdio"
     ]
   },
   {
     "type": "Casa",
     "key": 2,
-    "subTypes": ["Casa de condomínio", "Casa de bairro", "Sobrado"]
+    "subTypes": ["casa de condomínio", "residência", "sobrado"]
   },
   {
-    "type": "Comercial",
+    "type": "comercial",
     "key": 3,
-    "subTypes": ["Prédio", "Sala"]
+    "subTypes": ["prédio", "sala"]
   },
   {
-    "type": "Fazenda/Sítio/Chácara",
+    "type": "fazenda/sítio/chácara",
     "key": 4,
-    "subTypes": ["Terreno grande", "Terreno pequeno"]
+    "subTypes": ["terreno grande", "terreno pequeno"]
   },
   {
-    "type": "Lote/Terreno",
+    "type": "lote/terreno",
     "key": 5,
-    "subTypes": ["Terreno grande", "Terreno pequeno"]
+    "subTypes": ["terreno grande", "terreno pequeno"]
   }
 ]

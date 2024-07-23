@@ -494,7 +494,7 @@ const RegisterFormStep3: React.FC<IProps> = ({ selectedPlanCard }) => {
         {/** ADICIONAR IMAGEM DE PERFIL */}
         <div className="flex flex-col justify-center items-center">
           <h1 className="text-xl font-normal text-quaternary leading-7">
-            Adicionar foto de perfil (Opcional)
+            Adicionar foto de anunciante (Opcional)
           </h1>
           <div className="flex items-center">
             {formData.picture && (

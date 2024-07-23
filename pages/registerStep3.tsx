@@ -24,10 +24,10 @@ import ChangePlanModal from '../components/atoms/modals/changePlanModal';
 import PaymentFailModal from '../components/atoms/modals/paymentFailModal';
 import SelectAdsToDeactivateModal from '../components/atoms/modals/selectAdsToDeactivateModal';
 import LinearStepper from '../components/atoms/stepper/stepper';
+import { PlansCardsHidden } from '../components/molecules';
 import Address from '../components/molecules/address/address';
 import ChangeAddressCheckbox from '../components/molecules/address/changeAddressCheckbox';
 import OwnerPlanBoard from '../components/molecules/boards/owwnerPlanBoard';
-import PlansCardsHidden from '../components/molecules/cards/plansCards/plansCardHidden';
 import Coupons from '../components/molecules/coupons/coupons';
 import PaymentBoard from '../components/molecules/payment/paymentBoard';
 import CreditCard, {
@@ -56,7 +56,7 @@ type BodyReq = {
   creditCardData?: CreditCardForm;
   picture?: string;
   deactivateProperties: string[];
-  coupon?: string
+  coupon?: string;
 };
 
 // To-do: verificar se a página está exigindo os dados do cartão mesmo quando o usuário ainda tem créditos no plano;
@@ -78,7 +78,6 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
   const ownerPlan = plans?.find((plan) => plan._id === ownerData?.owner?.plan)
   const [selectedPlan, setSelectedPlan] = useState(chosenPlan !== '' ? chosenPlan : ownerPlan?._id);
   const [selectedPlanData, setSelectedPlanData] = useState(plans?.find((plan) => plan._id === selectedPlan));
-  console.log("🚀 ~ selectedPlanData:", selectedPlanData)
   const reversedCards = [...plans].reverse();
   const [isAdminPage, setIsAdminPage] = useState(false);
   const [isSameAddress, setIsSameAddress] = useState(false);
@@ -135,7 +134,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
   const [coordinates, setCoordinates] = useState<{
     lat: number;
     lng: number;
-  } | null>(null);
+  } | null>(storedData?.geolocation ? { lat: storedData?.geolocation[1], lng: storedData?.geolocation[0] } : null);
 
   const [userDataForm, setUserDataForm] = useState<IUserDataComponent>({
     username: '',
@@ -250,8 +249,10 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
       ownerPlan !== undefined &&
       selectedPlanData !== undefined &&
       selectedPlan !== ownerPlan._id &&
-      selectedPlanData.price < ownerPlan.price &&
-      docs.some((doc) => doc.isActive === true)
+      // selectedPlanData.price < ownerPlan.price &&
+      docs.some((doc) => doc.isActive === true) ||
+      selectedPlanData?.commonAd &&
+      selectedPlanData?.commonAd - docs?.filter((doc) => doc.isActive === true).length > selectedPlanData.commonAd
     ) {
       setPropsToDeactivateIsOpen(true);
       return;
@@ -361,7 +362,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
     const combinedErrors = {
       ...newAddressErrors,
       ...newUserDataErrors,
-      //...newCreditCardErrors,
+      ...newCreditCardErrors,
       newPlanError,
       newCouponError
     };
@@ -405,12 +406,11 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
             : { id: '1', src: defaultProfileImage },
           phone: userDataForm.phone,
           wwpNumber: userDataForm.wwpNumber ? userDataForm.wwpNumber : '',
-          // zipCode: addressData.zipCode,
-          zipCode: '96215180',
+          zipCode: addressData.zipCode,
           city: addressData.city,
           uf: addressData.uf,
           streetName: addressData.streetName,
-          streetNumber: '123',
+          streetNumber: addressData.streetName ? addressData.streetName : '123',
           geolocation: coordinates
             ? [coordinates?.lng, coordinates?.lat]
             : [-52.1872864, -32.1013804],
@@ -423,7 +423,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
           _id: userId ? userId : '',
           username: userDataForm.username,
           email: userDataForm.email,
-          address: isSameAddress ? { ...storedData.address, streetNumber: '123' } : { ...addressData, streetNumber: '123' },
+          address: isSameAddress ? { ...storedData.address, streetNumber: storedData.address.streetNumber ? storedData.address.streetNumber : '123' } : { ...addressData, streetNumber: addressData.streetNumber ? addressData.streetNumber : '123' },
           cpf: userDataForm.cpf.replace(/\D/g, ''),
           picture: userDataForm.picture
             ? userDataForm.picture
@@ -471,8 +471,8 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
             plan: propertyDataStep3.plan,
             isPlanFree: selectedPlanData?.name === 'Free' ? true : false,
             phone: userDataForm.phone,
-            cellPhone: userDataForm.cellPhone !== '' ? `${userDataForm.cellPhone}` : '123',
-            deactivateProperties: docsToDeactivate
+            cellPhone: userDataForm.cellPhone !== '' ? `${userDataForm.cellPhone}` : '',
+            deactivateProperties: docsToDeactivate,
           };
 
           if (!isPlanFree) {
@@ -641,7 +641,7 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
       ) : (
         <>
           <div className={classes.body}>
-            <Header />
+            <Header userIsOwner={docs?.length > 0} />
             <div className="justify-center">
               <div className={classes.stepLabel}>
                 <LinearStepper activeStep={2} />
@@ -665,6 +665,9 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
                               setIsFreePlan(true);
                             } else {
                               setIsFreePlan(false);
+                              if (ownerData?.owner?.plan !== planData?._id) {
+                                setIsChangePlan(true);
+                              }
                             }
                           }}
                           isAdminPage={isAdminPage}
@@ -734,10 +737,10 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
                   />
                 )}
 
-                {selectedPlan !== '' &&
+                {selectedPlan !== '' && isChangePlan &&
                   (() => {
                     const planData = plans.find((plan) => plan._id === selectedPlan);
-                    if (planData && planData.name !== 'Free') {
+                    if ((planData && planData.name !== 'Free' && ownerPlan?.price === 0) || (planData && planData.name !== 'Free' && !ownerPlan)) {
                       return (
                         <CreditCard
                           isEdit={false}
@@ -798,10 +801,12 @@ const RegisterStep3: NextPageWithLayout<IRegisterStep3Props> = ({ plans, ownerDa
               isOpen={propsToDeactivateIsOpen}
               setModalIsOpen={(isOpen: boolean) => setPropsToDeactivateIsOpen(isOpen)}
               docs={docs}
+              ownerCredits={ownerData?.owner ? ownerData.owner.adCredits : 0}
               setConfirmAdsToDeactivate={(isConfirmed: boolean) => setConfirmAdsToDeactivate(isConfirmed)}
               onSubmit={(isConfirmed: boolean) => handleSubmit(isConfirmed)}
               docsToDeactivate={(docs: string[]) => setDocsToDeactivate(docs)}
               selectedPlan={selectedPlanData}
+              ownerPrevPlan={ownerPlan}
             />
           </div >
 

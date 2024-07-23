@@ -8,11 +8,13 @@ const UserTerms: NextPageWithLayout = () => {
           <div className="flex flex-col items-center mb-10 mt-2">
             <h1 className="font-bold mb-5">Termos de Uso</h1>
             <p className="text-center">
-              Termos de uso Os seguintes termos podem ser mudados sem aviso
-              prévio.
+              Termos de uso.
+            </p>
+            <p className="text-center text-xl italic">
+              Os seguintes termos podem ser mudados sem aviso prévio.
             </p>
             <p>
-              Última atualização <b>21/02/2023</b>
+              Última atualização <b>17/07/2024</b>
             </p>
           </div>
 

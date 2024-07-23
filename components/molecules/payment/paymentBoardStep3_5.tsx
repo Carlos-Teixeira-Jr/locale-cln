@@ -31,8 +31,8 @@ const PaymentBoard_Step3_5 = ({
   ownerData
 }: IPaymentBoard_Step3_5) => {
 
-  const cardFlag = storedData ? storedData.paymentData.cardBrand : '';
-  const couponWasUsed = storedData?.paymentData?.couponUsed ? true : false
+  const cardFlag = ownerData?.owner?.paymentData?.creditCardInfo?.creditCardBrand;
+  const couponWasUsed = storedData?.paymentData?.couponUsed ? true : false;
 
   const plan = plans && ownerData?.owner
     ? plans.find((plan) => plan._id === ownerData?.owner?.plan)
@@ -56,9 +56,9 @@ const PaymentBoard_Step3_5 = ({
             <h2 className={classes.paymentLabel}>VALOR</h2>
           </div>
           <div className="flex flex-col items-end">
-            {cardFlag === '' ? (
+            {cardFlag === '' || !cardFlag ? (
               <h2 className="text-quaternary text-lg md:text-2xl font-medium">
-                Cartão de crédito
+                Grátis
               </h2>
             ) : (
               <div className="flex flex-row items-center justify-between">

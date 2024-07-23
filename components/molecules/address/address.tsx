@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { IAddress } from '../../../common/interfaces/property/propertyData';
+import { geocodeAddress } from '../../../common/utils/geocodeAddress';
 var store = require('store')
 
 
@@ -25,6 +26,7 @@ export interface IAddressComponent {
   onAddressUpdate?: (updatedAddress: IAddress) => void;
   errors?: AddressErrorsTypes;
   addressInputRefs?: any;
+  onGetGeocode?: (geocode: any) => void;
 }
 
 const Address: React.FC<IAddressComponent> = ({
@@ -33,6 +35,7 @@ const Address: React.FC<IAddressComponent> = ({
   onAddressUpdate,
   errors,
   addressInputRefs,
+  onGetGeocode
 }: IAddressComponent) => {
 
   const addressInputsErrorScroll = {
@@ -52,6 +55,17 @@ const Address: React.FC<IAddressComponent> = ({
     uf: isEdit ? address?.uf! : '',
   });
 
+  useEffect(() => {
+    if (addressData.zipCode && onGetGeocode !== undefined) {
+      const fetchGeocode = async () => {
+        const geocode = await geocodeAddress(addressData);
+        onGetGeocode(geocode);
+      }
+      fetchGeocode();
+    } else if (onGetGeocode !== undefined) {
+      onGetGeocode({ lat: -32.1013804, lng: -52.1872864 })
+    }
+  }, [addressData]);
 
   const [addressErrors, setAddressErrors] = useState({
     zipCode: '',
@@ -110,6 +124,7 @@ const Address: React.FC<IAddressComponent> = ({
 
   useEffect(() => {
     onAddressUpdate!(addressData);
+
   }, [addressData]);
 
   const handleZipCodeBlur = () => {

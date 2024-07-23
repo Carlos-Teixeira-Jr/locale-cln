@@ -12,7 +12,9 @@ export interface ISelectAdsToDeactivateModal {
   setConfirmAdsToDeactivate: (isConfirmed: boolean) => void,
   onSubmit: (confirmChange: boolean) => void,
   docsToDeactivate: (docs: string[]) => void,
-  selectedPlan: IPlan | undefined
+  selectedPlan: IPlan | undefined,
+  ownerCredits: number,
+  ownerPrevPlan: IPlan | undefined
 }
 
 const SelectAdsToDeactivateModal = ({
@@ -22,36 +24,42 @@ const SelectAdsToDeactivateModal = ({
   setConfirmAdsToDeactivate,
   onSubmit,
   docsToDeactivate,
-  selectedPlan
+  selectedPlan,
+  ownerCredits,
+  ownerPrevPlan
 }: ISelectAdsToDeactivateModal) => {
 
   const isMobile = useIsMobile();
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
-  const [unselectedCards, setUnselectedCards] = useState<string[]>([])
+  const [unselectedCards, setUnselectedCards] = useState<string[]>(docs?.filter(doc => doc.isActive).map((e) => e._id))
   const [credits, setCredits] = useState<number>(0);
   const [confirm, setConfirm] = useState(false)
 
   useEffect(() => {
-    if (selectedPlan) {
-      setCredits(selectedPlan?.commonAd - 1);
+    if (selectedPlan && ownerPrevPlan) {
+      setCredits((selectedPlan?.commonAd - 1) + (ownerPrevPlan.commonAd));
     }
   }, [selectedPlan]);
 
   useEffect(() => {
     // Update unselectedCards based on docs and selectedCards
-    const newUnselectedCards = docs?.reduce<string[]>((acc, doc) => {
-      if (!selectedCards.includes(doc._id)) {
-        return [...acc, doc._id];
-      }
-      return acc;
-    }, []);
+    if (isOpen) {
+      const newUnselectedCards = docs?.filter(doc => doc.isActive).reduce<string[]>((acc, doc) => {
+        if (!selectedCards.includes(doc._id)) {
+          return [...acc, doc._id];
+        }
+        return acc;
+      }, []);
 
-    setUnselectedCards(newUnselectedCards);
+      setUnselectedCards(newUnselectedCards);
+    }
   }, [docs, selectedCards]);
 
   useEffect(() => {
-    docsToDeactivate(unselectedCards);
-  }, [unselectedCards]);
+    if (isOpen) {
+      docsToDeactivate(unselectedCards);
+    }
+  }, [unselectedCards, isOpen]);
 
   const handleSelectedCards = (card: string) => {
     if (selectedCards.includes(card)) {
@@ -121,7 +129,7 @@ const SelectAdsToDeactivateModal = ({
       <div className="flex gap-2 md:gap-3 lg:gap-4 flex-wrap justify-between md:justify-start">
         {docs?.length > 0 &&
           docs
-            .filter((doc) => doc.isActive === true) // Filtrar apenas os documentos ativos
+            .filter((doc) => doc.isActive === true)
             .map((doc) => (
               <MiniPropertyCards
                 key={doc?._id}

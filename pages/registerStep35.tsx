@@ -48,7 +48,9 @@ const RegisterStep35: NextPageWithLayout<IRegisterStep35> = ({ plans }) => {
   const handleSubmit = () => {
     setLoading(true);
     updateProgress(5);
-    store.clearAll();
+    store.remove('propertyData');
+    store.remove('plans');
+    store.remove('creditCard');
     localStorage.setItem('locale.cookiesPolicy', 'true');
     if (!urlEmail) {
       router.push('/registerStep4');
@@ -70,7 +72,7 @@ const RegisterStep35: NextPageWithLayout<IRegisterStep35> = ({ plans }) => {
         </div>
       ) : (
         <>
-          <Header />
+          <Header userIsOwner={false} />
           <div className={classes.body}>
             <div className="lg:mx-24">
               <div className={classes.stepLabel}>

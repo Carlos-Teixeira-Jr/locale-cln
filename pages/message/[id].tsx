@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 import { GetServerSidePropsContext } from 'next';
 import { getSession } from 'next-auth/react';
 import Image from 'next/image';
@@ -6,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { IMessage, IMessagesByProperty } from '../../common/interfaces/message/messages';
 import { IOwner } from '../../common/interfaces/owner/owner';
 import { IPlan } from '../../common/interfaces/plans/plans';
+import { IFavProperties } from '../../common/interfaces/properties/favouriteProperties';
 import { IOwnerProperties } from '../../common/interfaces/properties/propertiesList';
 import usePageQueryParam from '../../common/utils/actions/getQueryParamPage';
 import { fetchJson } from '../../common/utils/fetchJson';
@@ -21,11 +23,20 @@ interface IMessagePage {
   notifications: INotification[];
   ownerData: IOwner;
   plans: IPlan[]
+  favouriteProperties: IFavProperties
 }
+
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
 
-const MessagePage = ({ ownerProperties, message, notifications, ownerData, plans }: IMessagePage) => {
+const MessagePage = ({
+  ownerProperties,
+  message,
+  notifications,
+  ownerData,
+  plans,
+  favouriteProperties
+}: IMessagePage) => {
   const router = useRouter();
   const query = router.query as any;
   const [isOwner, setIsOwner] = useState<boolean>(ownerProperties?.docs?.length > 0 ? true : false);
@@ -113,6 +124,8 @@ const MessagePage = ({ ownerProperties, message, notifications, ownerData, plans
             unreadMessages={unreadMessages}
             isPlus={isPlus}
             hasProperties={ownerProperties?.docs && ownerProperties?.docs?.length > 0}
+            favouriteProperties={favouriteProperties}
+            messages={message?.messages?.docs}
           />
         </div>
         <div className={classes.contentContainer}>
@@ -209,7 +222,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     console.error(error);
   }
 
-  const [ownerProperties, message, notifications, plans] = await Promise.all([
+  const [ownerProperties, message, notifications, plans, favouriteProperties] = await Promise.all([
     fetch(`${baseUrl}/property/owner-properties`, {
       method: 'POST',
       headers: {
@@ -245,10 +258,23 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     fetch(`${baseUrl}/plan`)
       .then((res) => res.json())
       .catch(() => []),
+    fetch(`${baseUrl}/user/favourite`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id: userId,
+        page: Number(page),
+      }),
+    })
+      .then((res) => res.json())
+      .catch(() => []),
     fetchJson(`${baseUrl}/property/owner-properties`),
     fetchJson(`${baseUrl}/message/find-by-propertyId`),
     fetchJson(`${baseUrl}/notification/${ownerId}`),
     fetchJson(`${baseUrl}/plan`),
+    fetchJson(`${baseUrl}/user/favourite`),
   ]);
 
   return {
@@ -257,7 +283,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       message,
       notifications,
       ownerData,
-      plans
+      plans,
+      favouriteProperties
     },
   };
 }

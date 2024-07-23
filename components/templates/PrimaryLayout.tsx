@@ -17,7 +17,7 @@ const PrimaryLayout: React.FC<IPrimaryLayout> = ({
         <title>NextJs Fullstack App Template</title>
       </Head>
       <div {...divProps} className={`min-h-screen flex flex-col ${justify}`}>
-        <Header />
+        <Header userIsOwner={false} />
         <main className="px-5">{children}</main>
         <div />
         <Footer />

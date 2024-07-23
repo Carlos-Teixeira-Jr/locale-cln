@@ -121,12 +121,12 @@ const DeleteAccountModal = ({
         <Image
           src={'/images/Logo_Locale_HD.png'}
           alt={'Locale imóveis logomarca'}
-          width={300}
-          height={150}
+          width={250}
+          height={250}
           className="mx-auto"
         />
 
-        <p className="font-bold text-xs text-quaternary">
+        <p className="font-bold text-sm text-quaternary">
           Só para avisar: ao excluir sua conta, você não terá mais acesso aos seus anúncios e favoritos. 🙃 Tem certeza de que quer continuar?
         </p>
 

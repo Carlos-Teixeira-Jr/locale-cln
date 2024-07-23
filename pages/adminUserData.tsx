@@ -1,7 +1,6 @@
-/* eslint-disable @next/next/no-img-element */
-/* eslint-disable react/jsx-no-undef */
+
 import { GetServerSidePropsContext } from 'next';
-import { getSession } from 'next-auth/react';
+import { getSession, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import 'react-credit-cards/es/styles-compiled.css';
@@ -10,6 +9,7 @@ import { toast } from 'react-toastify';
 import { IMessagesByOwner } from '../common/interfaces/message/messages';
 import { CreditCardType, IOwner, IOwnerData } from '../common/interfaces/owner/owner';
 import { IPlan } from '../common/interfaces/plans/plans';
+import { IFavProperties } from '../common/interfaces/properties/favouriteProperties';
 import {
   IAddress,
   IPropertyInfo,
@@ -26,8 +26,8 @@ import {
 } from '../common/utils/toasts';
 import ArrowDownIcon from '../components/atoms/icons/arrowDownIcon';
 import Loading from '../components/atoms/loading';
+import { PlansCardsHidden } from '../components/molecules';
 import UserAddress from '../components/molecules/address/userAdress';
-import { PlansCardsHidden } from '../components/molecules/cards';
 import ChangePlanCheckbox from '../components/molecules/changePlanCheckBox/changePlanCheckBox';
 import Coupons from '../components/molecules/coupons/coupons';
 import CreditCard, {
@@ -51,7 +51,8 @@ interface IAdminUserDataPageProps {
   properties: IPropertyInfo;
   ownerData: IOwnerData;
   notifications: [];
-  messages: IMessagesByOwner
+  messages: IMessagesByOwner;
+  favouriteProperties: IFavProperties
 }
 
 type AddressErrors = {
@@ -82,7 +83,8 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   plans,
   properties,
   ownerData,
-  messages
+  messages,
+  favouriteProperties
 }) => {
 
   const plansRef = useRef<HTMLDivElement>(null);
@@ -94,6 +96,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const [selectedPlan, setSelectedPlan] = useState(
     ownerData?.owner ? ownerData?.owner?.plan : ''
   );
+
   const selectedPlanData = plans.find((plan) => plan._id === selectedPlan);
   const [creditCardIsOpen, setCreditCardIsOpen] = useState(false);
   const [deleteAccountIsOpen, setDeleteAccountIsOpen] = useState(false);
@@ -108,6 +111,10 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const [coupon, setCoupon] = useState('');
   const hasProperties = properties?.docs?.length > 0 ? true : false;
   const [isChangePlan, setIsChangePlan] = useState(false);
+  const [isFreePlan, setIsFreePlan] = useState(true);
+  const [showPlansCards, setShowPlansCards] = useState(false);
+
+  const { data: session, status, update } = useSession() as any
 
   // Mostrar os dados do cartão na tela;
   const creditCardInfo = ownerData?.owner?.paymentData?.creditCardInfo
@@ -120,25 +127,30 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
 
   // Dados do cartão de crédito usado nesse update;
   const [creditCard, setCreditCard] = useState<CreditCardForm>({
-    // cardName: '',
-    // cardNumber: '',
-    // ccv: '',
-    // expiry: '',
-    // cpfCnpj: '314.715.150-60'
-    cardName: 'Teste Locale',
-    cardNumber: '5343 5087 6915 0373',
-    ccv: '776',
-    expiry: '0525',
-    cpfCnpj: '314.715.150-60'
+    cardName: '',
+    cardNumber: '',
+    ccv: '',
+    expiry: '',
+    cpfCnpj: ''
   })
 
   const planObj = plans.find((plan) => plan._id === selectedPlan);
 
+  // renderização condicional do componente CreditCard;
+  useEffect(() => {
+    if (!planObj || planObj?.price === 0) {
+      setIsFreePlan(true)
+    } else if (planObj.price > 0) {
+      setIsFreePlan(false);
+      setCreditCardIsOpen(true);
+    }
+  }, [isChangePlan, planObj])
+
   const [formData, setFormData] = useState<IUserDataComponent>({
     username: '',
     email: '',
-    cpf: '314.715.150-60',
-    cellPhone: '(53) 99177-4545',
+    cpf: '',
+    cellPhone: '',
     phone: '',
     picture: {
       id: '1',
@@ -182,12 +194,10 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
   const couponInputRef = useRef<HTMLElement>(null);
 
   const [address, setAddress] = useState<IAddress>({
-    // zipCode: userData ? userData.address?.zipCode : '',
-    zipCode: '96215-180',
+    zipCode: userData ? userData.address?.zipCode : '',
     city: userData ? userData.address?.city : '',
     streetName: userData ? userData.address?.streetName : '',
-    // streetNumber: userData ? userData.address?.streetNumber : '',
-    streetNumber: '123',
+    streetNumber: userData ? userData.address?.streetNumber : '',
     complement: userData ? userData.address?.complement : '',
     neighborhood: userData ? userData.address?.neighborhood : '',
     uf: userData ? userData.address?.uf : '',
@@ -331,16 +341,16 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       if (passwordFormData.passwordConfirmattion.length < 6)
         newPasswordErrors.passwordConfirmattion = invalidPasswordLenght;
     }
-    // To-do: descomentar verificação de erro do cartão na versão final;
-    // if (
-    //   selectedPlan !== '' &&
-    //   selectedPlan !== ownerData?.owner?.plan
-    //   && planObj?.name !== 'Free'
-    //   && Object.values(creditCard).some((value) => value === '')
-    //   && !useCoupon
-    // ) {
-    //   newCreditCardError = emptyCreditCardError;
-    // }
+    if (
+      selectedPlan !== '' &&
+      selectedPlan !== ownerData?.owner?.plan
+      && planObj?.name !== 'Free'
+      && Object.values(creditCard).some((value) => value === '')
+      && !useCoupon
+      && !ownerData?.owner?.paymentData?.creditCardInfo?.creditCardToken
+    ) {
+      newCreditCardError = emptyCreditCardError;
+    }
     if (
       selectedPlan !== '' &&
       selectedPlan !== null &&
@@ -361,8 +371,8 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
     // Insere a mensagem de erro nos inputs vazios do form de credit card;
     Object.keys(creditCard).forEach((e) => {
       if (creditCardErrors[e] !== '') {
-        // setCreditCardErrors({ ...creditCardErrors, [e]: newCreditCardError });
-        // setCreditCardIsOpen(true);
+        setCreditCardErrors({ ...creditCardErrors, [e]: newCreditCardError });
+        setCreditCardIsOpen(true);
       }
     })
 
@@ -407,8 +417,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
           address,
           username: formData.username,
           email: formData.email,
-          // cpf: formData.cpf,
-          cpf: '314.715.150-60',
+          cpf: formData.cpf,
           phone: formData.phone,
           cellPhone: formData.cellPhone
         };
@@ -417,8 +426,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
           _id: ownerData?.owner ? ownerData.owner._id : '',
           ownername: formData.username,
           phone: formData.phone,
-          // cellPhone: formData.cellPhone,
-          cellPhone: '(53) 99177-4545',
+          cellPhone: formData.cellPhone,
           userId: userData._id,
           email: formData.email ? formData.email : '',
           adCredits: ownerData.owner?.adCredits ? ownerData.owner?.adCredits : 0,
@@ -434,35 +442,30 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
         };
 
         let body: EditUserBody;
+        let isChangePlanVerification = selectedPlan !== ownerData.owner?.plan;
 
         if (isEditPassword) {
           body = {
             user: userFormData,
             owner: ownerFormData,
             password: editPasswordFormData,
-            isChangePlan
+            isChangePlan: isChangePlanVerification
           };
         } else {
           body = {
             user: userFormData,
             owner: ownerFormData,
-            isChangePlan
+            isChangePlan: isChangePlanVerification
           };
         }
 
         if (selectedPlanData?.name !== 'Free') {
           body.creditCard = {
-            // cardName: creditCard.cardName,
-            // cardNumber: creditCard.cardNumber,
-            // expiry: creditCard.expiry,
-            // ccv: creditCard.ccv,
-            // cpfCnpj: creditCard.cpfCnpj
-            // cardName: '',
-            cardName: 'Teste Locale',
-            cardNumber: '5343 5087 6915 0373',
-            ccv: '776',
-            expiry: '0525',
-            cpfCnpj: '314.715.150-60'
+            cardName: creditCard.cardName,
+            cardNumber: creditCard.cardNumber,
+            expiry: creditCard.expiry,
+            ccv: creditCard.ccv,
+            cpfCnpj: creditCard.cpfCnpj
           }
         }
 
@@ -518,6 +521,16 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
             );
 
             if (imagesResponse.ok) {
+              const data = await imagesResponse.json();
+
+              // Atualiza a sessão do usuário usando o método `update`
+              update({
+                user: {
+                  ...session.user,
+                  data: { ...data, picture: data.updatedUser.picture ?? session.user.data.picture }
+                }
+              });
+
               clearIndexDB();
             } else {
               clearIndexDB();
@@ -548,7 +561,10 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
           } else {
             setLoading(false);
             toast.dismiss();
-            showErrorToast(ErrorToastNames.UserDataUpdate);
+            const errorData = await response.json();
+            const errorMessage = errorData.message;
+            const formattedErrorMsg = errorMessage.split('BadRequestException:')[1];
+            toast.error(`${formattedErrorMsg}`)
           }
         } catch (error) {
           setLoading(false);
@@ -560,7 +576,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
         showErrorToast(ErrorToastNames.EmptyFields);
       }
     } else {
-      //showErrorToast(ErrorToastNames.EmptyCreditCardInfo);
+      showErrorToast(ErrorToastNames.EmptyCreditCardInfo);
     }
   };
 
@@ -579,9 +595,9 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
       'flex flex-row items-center justify-between max-w-[1232px] h-12 bg-tertiary border-2 border-quaternary mt-10 px-8 text-lg text-quaternary rounded-xl font-bold transition bg-opacity-90 hover:bg-gray-300',
     plans:
       'grid sm:grid-cols-1 grid-cols-1 md:grid-cols-3 xl:grid-cols-3 md:gap-6',
-    h2: 'md:text-2xl text-lg leading-10 text-quaternary font-bold mb-5 lg:mb-5 mx-5',
-    userData: 'my-5 lg:mx-10 md:mx-2 max-w-[1232px]',
-    content: 'flex flex-col mt-16 xl:ml-80 max-w-[1232px] justify-center md:mx-5',
+    h2: 'md:text-2xl text-lg leading-10 text-quaternary font-bold mb-5 lg:mb-5 lg:mt-10 mx-5',
+    userData: 'my-5 lg:mx-10 md:mx-2 max-w-[736px]',
+    content: 'flex flex-col mt-16 xl:ml-80 2xl:mx-auto max-w-[1232px] justify-center md:mx-5',
   };
 
   return (
@@ -599,6 +615,8 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
               unreadMessages={unreadMessages}
               isPlus={ownerIsPlus}
               hasProperties={hasProperties}
+              favouriteProperties={favouriteProperties}
+              messages={messages.docs}
             />
           </div>
         )}
@@ -638,9 +656,27 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
               </div>
 
               <div>
-                <ChangePlanCheckbox onChangePlanClick={(isChecked: boolean) => setIsChangePlan(isChecked)} />
+                <ChangePlanCheckbox
+                  onChangePlanClick={(isChecked: boolean) => {
+                    if (isChecked) {
+                      if (isOwner && selectedPlan) {
+                        setIsChangePlan(isChecked);
+                      }
+                      setShowPlansCards(true);
+                    } else {
+                      setShowPlansCards(false);
+                      if (ownerData?.owner?.plan) {
+                        setSelectedPlan(ownerData?.owner?.plan)
+                      } else {
+                        // const freePlan = plans && plans.length > 0 ? plans.find((e) => e.price === 0)?._id : '';
+                        setSelectedPlan('');
+                      }
+                    }
+                  }}
+                />
               </div>
-              {isChangePlan && (
+
+              {showPlansCards && (
                 <>
                   <div ref={isMobile ? plansRef : null} className={`grid sm:grid-cols-1 grid-cols-1 md:grid-cols-3 xl:grid-cols-3 md:gap-6 ${planError !== "" ? 'border-2 rounded-xl md:pt-7 md:px-7 border-red-500 transition-opacity ease-in-out opacity-100' : ''}`}>
                     {reversedCards.map(
@@ -704,58 +740,61 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
               </button>
             </div>
 
-            <div className="lg:pt-20 pt-0.5 mx-4">
-              <label className={classes.accordion}>
-                Dados do Cartão de Crédito
-                <span
-                  className={`transition-transform transform`}
-                  onClick={() => setCreditCardIsOpen(!creditCardIsOpen)}
-                >
-                  <ArrowDownIcon
-                    width="13"
-                    className={`cursor-pointer ${creditCardIsOpen ? '' : 'rotate-180'
-                      }`}
-                  />
-                </span>
-              </label>
+            {/* {isChangePlan && !isFreePlan && ( */}
+            {!isFreePlan && showPlansCards && ownerData?.owner?.plan !== selectedPlan && (
+              <div className="lg:pt-20 pt-0.5 mx-4">
+                <label className={classes.accordion}>
+                  Dados do Cartão de Crédito
+                  <span
+                    className={`transition-transform transform`}
+                    onClick={() => setCreditCardIsOpen(!creditCardIsOpen)}
+                  >
+                    <ArrowDownIcon
+                      width="13"
+                      className={`cursor-pointer ${creditCardIsOpen ? '' : 'rotate-180'
+                        }`}
+                    />
+                  </span>
+                </label>
 
-              <div className="bg-grey-lighter">
-                {creditCardIsOpen && (
-                  <CreditCard
-                    isEdit={true}
-                    error={creditCardErrors}
-                    creditCardInputRefs={creditCardInputRefs}
-                    creditCardInfo={creditCardInfo}
-                    userInfo={formData}
-                    customerId={ownerData?.owner?.paymentData?.customerId}
-                    selectedPlan={planObj}
-                    userAddress={address}
-                    ownerData={ownerData}
-                    handleEmptyAddressError={(error: string) => {
-                      // const updatedErrors: AddressErrors = {
-                      //   zipCode: '',
-                      //   city: '',
-                      //   streetName: '',
-                      //   streetNumber: '',
-                      //   uf: ''
-                      // };
-                      // for (const key in addressErrors) {
-                      //   if (Object.prototype.hasOwnProperty.call(addressErrors, key)) {
-                      //     if (addressErrors[key] === '') {
-                      //       updatedErrors[key] = error;
-                      //     } else {
-                      //       updatedErrors[key] = addressErrors[key];
-                      //     }
-                      //   }
-                      // }
-                      // Atualiza o estado com o objeto de erros atualizado
-                      //setAddressErrors(updatedErrors);
-                    }}
-                    onCreditCardUpdate={(creditCard: CreditCardType) => setCreditCard(creditCard)}
-                  />
-                )}
+                <div className="bg-grey-lighter">
+                  {creditCardIsOpen && !isFreePlan && showPlansCards && (
+                    <CreditCard
+                      isEdit={true}
+                      error={creditCardErrors}
+                      creditCardInputRefs={creditCardInputRefs}
+                      creditCardInfo={creditCardInfo}
+                      userInfo={formData}
+                      customerId={ownerData?.owner?.paymentData?.customerId}
+                      selectedPlan={planObj}
+                      userAddress={address}
+                      ownerData={ownerData}
+                      onCreditCardUpdate={(creditCard: CreditCardType) => setCreditCard(creditCard)}
+                      handleEmptyAddressError={(error: string) => {
+                        const updatedErrors: AddressErrors = {
+                          zipCode: '',
+                          city: '',
+                          streetName: '',
+                          streetNumber: '',
+                          uf: ''
+                        };
+                        for (const key in addressErrors) {
+                          if (Object.prototype.hasOwnProperty.call(addressErrors, key)) {
+                            if (addressErrors[key] === '') {
+                              updatedErrors[key] = error;
+                            } else {
+                              updatedErrors[key] = addressErrors[key];
+                            }
+                          }
+                        }
+                        // Atualiza o estado com o objeto de erros atualizado
+                        setAddressErrors(updatedErrors);
+                      }}
+                    />
+                  )}
+                </div>
               </div>
-            </div>
+            )}
 
             <div className="lg:pt-5 pt-0.5 mb-20 mx-4">
               <label className={classes.accordion}>
@@ -766,7 +805,7 @@ const AdminUserDataPage: NextPageWithLayout<IAdminUserDataPageProps> = ({
                 >
                   <ArrowDownIcon
                     width="13"
-                    className={`cursor-pointer ${deleteAccountIsOpen ? '' : 'rotate-180'
+                    className={`cursor-pointer ${deleteAccountIsOpen ? 'transform rotate-180 transition-transform duration-300 ease-in-out' : 'transform rotate-360 transition-transform duration-300 ease-in-out'
                       }`}
                   />
                 </span>
@@ -828,7 +867,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     console.error(error);
   }
 
-  const [notifications, userData, ownerData, plans, properties, messages] =
+  const [notifications, userData, ownerData, plans, properties, messages, favouriteProperties] =
     await Promise.all([
       fetch(`${baseUrl}/notification/user/${userId}`, {
         method: 'GET',
@@ -877,12 +916,25 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       })
         .then((res) => res.json())
         .catch(() => []),
+      fetch(`${baseUrl}/user/favourite`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: userId,
+          page: Number(page),
+        }),
+      })
+        .then((res) => res.json())
+        .catch(() => []),
       fetchJson(`${baseUrl}/notification/user/${userId}`),
       fetchJson(`${baseUrl}/user/${userId}`),
       fetchJson(`${baseUrl}/user/find-owner-by-user`),
       fetchJson(`${baseUrl}/plan`),
       fetchJson(`${baseUrl}/property/owner-properties`),
       fetchJson(`${baseUrl}/message/find-all-by-ownerId`),
+      fetchJson(`${baseUrl}/user/favourite`),
     ]);
 
   return {
@@ -892,7 +944,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       plans,
       properties,
       ownerData,
-      messages
+      messages,
+      favouriteProperties
     },
   };
 }

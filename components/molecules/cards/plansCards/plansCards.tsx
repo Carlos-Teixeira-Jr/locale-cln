@@ -37,7 +37,7 @@ const PlansCards: React.FC<IPlansCard> = ({
       <Link href={'/register'}>
         <div className="md:mx-5 my-5 md:my-0">
           <div className="flex bg-primary rounded-t-[30px] md:w-80 md:h-[65px]">
-            <div className="flex items-center m-auto">
+            <div className="flex m-auto">
               <h2 className="font-bold text-[40px] text-tertiary mr-3">
                 Plano
               </h2>
