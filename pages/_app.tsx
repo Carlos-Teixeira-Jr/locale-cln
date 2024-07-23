@@ -12,7 +12,6 @@ import CookiesModal from '../components/atoms/modals/cookiesModal';
 import ToastWrapper from '../components/atoms/toast/toastWrapper';
 import { ProgressProvider } from '../context/registerProgress';
 import '../styles/globals.css';
-import UnderDevelopmentPage from './underDevelopment';
 
 export default function App({
   Component,
@@ -97,8 +96,8 @@ export default function App({
 
         <ProgressProvider>
           <ToastWrapper autoCloseTime={5000} />
-          {/* <Component {...pageProps} /> */}
-          <UnderDevelopmentPage />
+          <Component {...pageProps} />
+          {/* <UnderDevelopmentPage /> */}
         </ProgressProvider>
       </SessionProvider>
 
