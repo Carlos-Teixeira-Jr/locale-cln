@@ -166,7 +166,7 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps(context: any) {
+export async function getServerSideProps(context: any) {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
   let property;
   let isFavourite: boolean = false;
@@ -262,7 +262,7 @@ export async function getStaticProps(context: any) {
       relatedProperties,
       ownerData,
     },
-    revalidate: 60
+    // revalidate: 60
   };
 }
 

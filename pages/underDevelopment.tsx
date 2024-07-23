@@ -21,7 +21,7 @@ const UnderDevelopmentPage = () => {
       </div>
 
       <div className="flex justify-between gap-8 md:gap-5">
-        <Link href={"https://facebook.com//profile.php?id=61559753950029"} legacyBehavior>
+        <Link href={"https://facebook.com/profile.php?id=61559753950029"} legacyBehavior>
           <a target="_blank">
             <FacebookIcon fill="#F75D5F" className="w-11 h-11 transform hover:scale-110 transition-transform duration-300" />
           </a>
