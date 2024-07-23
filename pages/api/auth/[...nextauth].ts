@@ -24,6 +24,11 @@ export const authOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_SECRET as string,
+      authorization: {
+        params: {
+          redirect_uri: 'https://hml.localeimoveis.com/api/auth/callback/google',
+        },
+      },
     }),
     FacebookProvider({
       clientId: process.env.FACEBOOK_CLIENT_ID as string,
@@ -33,7 +38,7 @@ export const authOptions = {
       name: 'login',
       credentials: {},
       // @ts-ignore
-      async authorize(credentials: MyCredentials) {
+      async autqorize(credentials: MyCredentials) {
         const { email, password } = credentials;
 
         const response = await fetch(
@@ -138,6 +143,7 @@ export const authOptions = {
 
       return session;
     },
+    debug: true,
   },
   secret: process.env.NEXTAUTH_SECRET as string,
 };
