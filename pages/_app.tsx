@@ -13,7 +13,6 @@ import ToastWrapper from '../components/atoms/toast/toastWrapper';
 import { MenuProvider } from '../context/headerMenuContext';
 import { ProgressProvider } from '../context/registerProgress';
 import '../styles/globals.css';
-import UnderDevelopmentPage from './underDevelopment';
 
 export default function App({
   Component,
@@ -100,8 +99,8 @@ export default function App({
           <ToastWrapper autoCloseTime={5000} />
           <MenuProvider>
             {/* <Component {...pageProps} /> */}
-            <UnderDevelopmentPage />
-            {/* <Component {...pageProps} /> */}
+            {/* <UnderDevelopmentPage /> */}
+            <Component {...pageProps} />
           </MenuProvider>
         </ProgressProvider>
       </SessionProvider>
