@@ -304,6 +304,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       relatedProperties,
       ownerData,
     },
+    // revalidate: 60
   };
 }
 
