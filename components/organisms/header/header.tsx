@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import { ErrorToastNames, showErrorToast } from '../../../common/utils/toasts';
+import { useMenu } from '../../../context/headerMenuContext';
 import { useIsMobile } from '../../../hooks/useIsMobile';
 import DropdownAdmin from '../../atoms/dropdowns/dropdownAdmin';
 import UserIcon from '../../atoms/icons/userIcon';
@@ -15,6 +16,8 @@ export interface IHeader {
 }
 
 const Header = ({ userIsOwner }: IHeader) => {
+
+  const { menuItems } = useMenu();
 
   const { data: session } = useSession() as any;
   const router = useRouter();
