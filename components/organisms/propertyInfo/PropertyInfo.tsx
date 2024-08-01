@@ -253,14 +253,14 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
             Compartilhar
           </button>
 
-          {/* {property.acceptFunding && ( */}
-          <button
-            className="lg:w-[320px] mx-auto w-40 h-fit md:h-[67px] md:w-full bg-primary p-2.5 rounded-[10px] text-tertiary text-lg font-extrabold mb-6 transition-colors hover:bg-red-600 duration-300"
-            onClick={handleCalculatorBtnClick}
-          >
-            Simular Financiamento
-          </button>
-          {/* )} */}
+          {property.adType === 'comprar' && (
+            <button
+              className="lg:w-[320px] mx-auto w-40 h-fit md:h-[67px] md:w-full bg-primary p-2.5 rounded-[10px] text-tertiary text-lg font-extrabold mb-6 transition-colors hover:bg-red-600 duration-300"
+              onClick={handleCalculatorBtnClick}
+            >
+              Simular Financiamento
+            </button>
+          )}
 
           {!userIsLogged && (
             <FavouritePropertyTooltip
