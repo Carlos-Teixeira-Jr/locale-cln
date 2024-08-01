@@ -17,7 +17,6 @@ export interface IHeader {
 const Header = ({ userIsOwner }: IHeader) => {
 
   const { data: session } = useSession() as any;
-  console.log("🚀 ~ Header ~ session:", session)
   const router = useRouter();
   const [isBuy, setIsBuy] = useState(false);
   const [isRent, setIsRent] = useState(false);

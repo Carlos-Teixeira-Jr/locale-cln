@@ -62,6 +62,8 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
 }: IPropertyPage) => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [calculatorIsOpen, setCalculatorIsOpen] = useState(false);
+  console.log("🚀 ~ calculatorIsOpen:", calculatorIsOpen)
   const [mapIsActive, setMapIsActive] = useState(false);
   const dynamicRoute = useRouter().asPath;
   const { push } = useRouter();
@@ -95,7 +97,7 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
     }
   }, [isAlreadyClicked, params]);
 
-  const galeryModalCSS = `lg:mx-auto md:m-5 mb-0 lg:mb-36. md:mb-5 md:mt-0 lg:mt-5  ${isModalOpen ? 'z-50' : 'z-30'
+  const galeryModalCSS = `lg:mx-auto md:m-5 mb-0 lg:mb-36. md:mb-5 md:mt-0 lg:mt-5  ${isModalOpen ? 'z-50' : calculatorIsOpen ? '' : 'z-30'
     }`;
 
   return (
@@ -105,7 +107,7 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
           <Gallery
             propertyID={property}
             ownerData={ownerData}
-            isModalOpen={isModalOpen}
+            isModalOpen={isModalOpen || calculatorIsOpen}
             onGalleryModalOpen={(isOpen: boolean) => setIsModalOpen(isOpen)}
           />
         </div>
@@ -125,6 +127,7 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
             property={property}
             isFavourite={isFavourite}
             owner={ownerData}
+            handleCalculatorIsOpen={(calculatorIsOpen: boolean) => setCalculatorIsOpen(calculatorIsOpen)}
           />
         </div>
 

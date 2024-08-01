@@ -1,6 +1,7 @@
 import React, { ChangeEvent, useState } from 'react';
 import Modal from 'react-modal';
 import { v4 as uuidv4 } from 'uuid';
+import { useIsMobile } from '../../../hooks/useIsMobile';
 import MoneyMask from '../masks/currencyMask';
 import MaskedInput from '../masks/maskedInput';
 
@@ -28,6 +29,7 @@ const CalculatorModal: React.FC<ICalculatorModal> = ({
   const [financedValue, setFinancedValue] = useState(0);
   const [showFirstParcel, setShowFirstParcel] = useState<number | string>(0);
   const [showLastParcel, setShowLastParcel] = useState<number | string>(0);
+  const isMobile = useIsMobile();
 
   const handleEntryValue = (event: ChangeEvent<HTMLInputElement>) => {
     const inputValue = event.target.value;
@@ -118,7 +120,7 @@ const CalculatorModal: React.FC<ICalculatorModal> = ({
           marginRight: '-50%',
           transform: 'translate(-50%, -50%)',
           height: 'auto',
-          width: 'auto',
+          width: isMobile ? '90%' : 'auto',
           margin: '0 auto 0 auto',
           boxShadow: '0px 4px 4px 0px rgba(0, 0, 0, 0.25)',
           zIndex: 999999999
@@ -131,7 +133,7 @@ const CalculatorModal: React.FC<ICalculatorModal> = ({
           (SAC)
         </h1>
         <div className='my-3'>
-          <div className='flex gap-2'>
+          <div className='flex gap-2 flex-col md:flex-row'>
             <div className='flex flex-col'>
               <p className="font-bold text-xl leading-7 text-quaternary mb-2">
                 Valor do imóvel
@@ -142,7 +144,7 @@ const CalculatorModal: React.FC<ICalculatorModal> = ({
                 value={`${priceValue}`}
                 onChange={handlePriceChange}
                 className={
-                  'border-quaternary bg-tertiary drop-shadow-lg rounded-[10px] text-quaternary text-2xl leading-7 md:w-[315px] h-[38px] border-[1px] mb-5 font-bold text-right px-2'
+                  'border-quaternary bg-tertiary drop-shadow-lg rounded-[10px] text-quaternary text-2xl leading-7 w-full md:w-[315px] h-[38px] border-[1px] mb-5 font-bold text-right px-2'
                 }
                 spanClassName="prefix-span absolute left-0 w-7 pt-1 pl-2 z-10 text-quaternary text-2xl leading-7 font-bold"
               />
@@ -164,13 +166,13 @@ const CalculatorModal: React.FC<ICalculatorModal> = ({
               />
             </div>
           </div>
-          <div className='flex'>
+          <div className='flex flex-col md:flex-row gap-3'>
             <div className='flex flex-col'>
               <p className="font-bold text-xl leading-7 text-quaternary mb-2">
                 Parcelar (meses)
               </p>
               <select
-                className="border-quaternary bg-tertiary drop-shadow-lg rounded-[10px] text-quaternary text-2xl leading-7 w-[315px] h-[38px] border-[1px] font-bold text-right px-2"
+                className="border-quaternary bg-tertiary drop-shadow-lg rounded-[10px] text-quaternary text-2xl leading-7 w-full md:w-[315px] h-[38px] border-[1px] font-bold text-right px-2"
                 onChange={handleParcelNumber}
               >
                 <option className="font-bold" value="240">
@@ -187,7 +189,7 @@ const CalculatorModal: React.FC<ICalculatorModal> = ({
                 Juros anual
               </p>
               <input
-                className="border-quaternary bg-tertiary drop-shadow-lg rounded-[10px] text-quaternary text-2xl leading-7 md:w-[315px] h-[38px] border-[1px] font-bold text-right px-2"
+                className="border-quaternary bg-tertiary drop-shadow-lg rounded-[10px] text-quaternary text-2xl leading-7 w-full md:w-[315px] h-[38px] border-[1px] font-bold text-right px-2"
                 value={`${feePercentage}%`}
                 onChange={handleFeePercentage}
               />
@@ -212,7 +214,7 @@ const CalculatorModal: React.FC<ICalculatorModal> = ({
           </div>
           <div className="grid grid-cols-3 border-quaternary border-l-2">
             <div className="border-r-2 border-quaternary">
-              <div className=" border-quaternary font-bold text-quaternary text-xl text-center">
+              <div className=" border-quaternary font-bold text-quaternary text-lg md:text-xl text-center">
                 Valor financiado
               </div>
               <div className="border-quaternary border-y-2">
@@ -220,26 +222,26 @@ const CalculatorModal: React.FC<ICalculatorModal> = ({
                   <MoneyMask
                     value={financedValue}
                     className={
-                      'w-[150px] bg-transparent flex mx-auto text-center'
+                      'w-full md:w-[150px] bg-transparent flex mx-auto text-center'
                     }
                   />
                 </p>
               </div>
             </div>
             <div className="border-r-2 border-quaternary">
-              <div className="font-bold text-quaternary text-xl text-center">
+              <div className="font-bold text-quaternary text-lg md:text-xl text-center">
                 Primeira parcela
               </div>
               <div className="border-quaternary border-y-2">
-                <p className="h-fit font-bold text-quaternary text-xl text-center">{`R$ ${showFirstParcel}`}</p>
+                <p className="h-fit font-bold text-quaternary text-lg md:text-xl text-center">{`R$ ${showFirstParcel}`}</p>
               </div>
             </div>
             <div>
-              <div className="border-r-2 border-quaternary text-quaternary text-xl font-bold text-center">
+              <div className="border-r-2 border-quaternary text-quaternary text-lg md:text-xl font-bold text-center">
                 Última parcela
               </div>
               <div className="border-quaternary border-y-2 border-r-2 rounded-br-[30px]">
-                <p className="h-fit font-bold text-quaternary text-xl text-center ">{`R$ ${showLastParcel}`}</p>
+                <p className="h-fit font-bold text-quaternary text-lg md:text-xl text-center ">{`R$ ${showLastParcel}`}</p>
               </div>
             </div>
           </div>

@@ -28,13 +28,15 @@ export interface ITooltip {
 export interface IPropertyInfo {
   property: IData;
   isFavourite: boolean;
-  owner: IOwnerData
+  owner: IOwnerData;
+  handleCalculatorIsOpen: (calculatorIsOpen: boolean) => void
 }
 
 const PropertyInfo: React.FC<IPropertyInfo> = ({
   property,
   isFavourite,
-  owner
+  owner,
+  handleCalculatorIsOpen
 }) => {
 
   const session = useSession() as any;
@@ -101,6 +103,7 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
   const handleCalculatorBtnClick = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     setCalculatorModalIsOpen(true);
+    handleCalculatorIsOpen(true)
   };
 
   const handleFavouriteBtnClick = async (
@@ -244,7 +247,7 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
           />
           <button
             id="tooltip"
-            className="lg:w-[320px] mx-auto w-40 h-12 md:h-[67px] md:w-full bg-primary p-2.5 rounded-[10px] text-tertiary text-lg font-extrabold mb-6 transition-colors hover:bg-red-600 duration-300"
+            className="lg:w-[320px] mx-auto w-40 md:h-[67px] md:w-full bg-primary p-2.5 rounded-[10px] text-tertiary text-lg font-extrabold mb-6 transition-colors hover:bg-red-600 duration-300"
             onClick={handleCopy}
           >
             Compartilhar
@@ -252,7 +255,7 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
 
           {/* {property.acceptFunding && ( */}
           <button
-            className="lg:w-[320px] mx-auto w-40 h-12 md:h-[67px] md:w-full bg-primary p-2.5 rounded-[10px] text-tertiary text-lg font-extrabold mb-6 transition-colors hover:bg-red-600 duration-300"
+            className="lg:w-[320px] mx-auto w-40 h-fit md:h-[67px] md:w-full bg-primary p-2.5 rounded-[10px] text-tertiary text-lg font-extrabold mb-6 transition-colors hover:bg-red-600 duration-300"
             onClick={handleCalculatorBtnClick}
           >
             Simular Financiamento
