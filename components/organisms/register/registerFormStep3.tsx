@@ -788,7 +788,7 @@ const RegisterFormStep3: React.FC<IProps> = ({ selectedPlanCard }) => {
                 )}
               </div>
             </div>
-            <div className="lg:flex mt-10 mb-10">
+            <div className="lg:flex">
               <div className="flex flex-col md:mr-5 md:w-full">
                 <label className="text-[24px] font-normal text-quaternary leading-7">
                   Complemento
