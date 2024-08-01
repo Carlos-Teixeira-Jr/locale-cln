@@ -93,7 +93,7 @@ const MessagePage = ({
 
   const handleDelete = async (_id: string) => {
     try {
-      location.reload();
+      // location.reload();
       await fetch(
         `${baseUrl}/message`,
         {
@@ -107,6 +107,7 @@ const MessagePage = ({
         }
       ).then((response) => response.json());
       setMessagesDocs(message?.messages?.docs);
+      router.push('/admin?page=1')
     } catch (error) {
       console.log(error);
     }
