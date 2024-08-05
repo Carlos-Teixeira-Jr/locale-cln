@@ -41,16 +41,20 @@ const SideMenu: React.FC<SideMenuProps> = ({
   favouriteProperties,
   messages
 }) => {
+  console.log("🚀 ~ unreadMessages:", unreadMessages)
 
   const router = useRouter();
   const [activeButton, setActiveButton] = useState('');
   const [notReadNots, setNotReadNots] = useState<INotification[]>([]);
+  const [notReadMessages, setNotReadMessages] = useState<IMessage[]>([]);
+  console.log("🚀 ~ notReadMessages:", notReadMessages)
   const isOwner = isOwnerProp;
   const [loadingIconId, setLoadingIconId] = useState('');
   const [loading, setLoading] = useState(false);
 
   const classNames = {
-    notesIcon: 'before:content-[attr(data-nots)] before:text-xs before:bg-tertiary before:font-medium before:text-primary before:border-secondary before:rounded-full before:border before:flex before:items-center before:justify-center before:min-w-[1.4em] before:min-h-[0.4em]'
+    notesIcon: 'before:content-[attr(data-nots)] before:text-xs before:bg-tertiary before:font-medium before:text-primary before:border-secondary before:rounded-full before:border before:flex before:items-center before:justify-center before:min-w-[1.4em] before:min-h-[0.4em]',
+    messagesIcon: 'before:content-[attr(data-messages)] before:text-xs before:bg-tertiary before:font-medium before:text-primary before:border-secondary before:rounded-full before:border before:flex before:items-center before:justify-center before:min-w-[1.4em] before:min-h-[0.4em]'
   }
 
   useEffect(() => {
@@ -80,6 +84,15 @@ const SideMenu: React.FC<SideMenuProps> = ({
       setNotReadNots(notReadNotifications);
     }
   }, [notifications, setNotReadNots]);
+
+  useEffect(() => {
+    if (Array.isArray(messages)) {
+      const notReadMessages = messages?.filter(
+        (item: any) => !item.isRead
+      );
+      setNotReadMessages(notReadMessages);
+    }
+  }, [messages, setNotReadMessages]);
 
   const options: Options[] = [
     {
@@ -142,9 +155,9 @@ const SideMenu: React.FC<SideMenuProps> = ({
           />
           <div className="absolute top-100 mt-4 ml-[0.4rem] left-10">
             <div
-              data-nots={unreadMessages?.length! > 0 ? unreadMessages?.length : 0}
+              data-messages={unreadMessages && unreadMessages?.length > 0 ? unreadMessages?.length : 0}
               id={'messages-value'}
-              className={classNames.notesIcon}
+              className={classNames.messagesIcon}
             ></div>
           </div>
         </div>
