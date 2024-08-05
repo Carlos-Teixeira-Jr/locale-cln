@@ -1,33 +1,43 @@
+import { GetServerSidePropsContext } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { IBlogPost } from "../../common/interfaces/blog/blogPost";
 import { ILocation } from "../../common/interfaces/locationDropdown";
+import { IOwnerProperties } from "../../common/interfaces/properties/propertiesList";
 import {
-  IPropertyInfo,
+  IPropertyInfo
 } from '../../common/interfaces/property/propertyData';
 import { IPropertyTypes } from "../../common/interfaces/property/propertyTypes";
 import { fetchJson, handleResult } from "../../common/utils/fetchJson";
 import { Footer, Header } from "../../components/organisms";
 import BlogShortcuts, { LoadingState } from "../../components/organisms/blog/blogShortcuts";
 import PostContainer from "../../components/organisms/blog/post";
-import Post from "../../data/blog/blogPosts.json";
 
 export interface IPostPage {
   propertyInfo: IPropertyInfo;
   propertyTypes: IPropertyTypes[];
   locations: ILocation[];
+  post: IBlogPost
 }
+
+const defaultOwnerProperties: IOwnerProperties = {
+  docs: [],
+  count: 0,
+  totalPages: 0,
+  messages: []
+};
 
 const PostPage = ({
   propertyInfo,
   propertyTypes,
   locations,
+  post
 }: IPostPage) => {
 
   const { query, push } = useRouter();
 
   const [isSearch, setIsSearch] = useState(false);
   const [searchInput, setSearchInput] = useState('');
-  const post = Post.find((post) => post.id.toString() === query.id)
 
   const [selectedPage, setSelectedPage] = useState<LoadingState>({
     home: false,
@@ -78,24 +88,7 @@ const PostPage = ({
         </div>
 
         <PostContainer
-          post={post ?
-            post :
-            {
-              id: 0,
-              title: '',
-              resume: '',
-              timeToRead: 0,
-              author: '',
-              tags: [],
-              timestamp: '',
-              img: '',
-              post: [{
-                subImg: '',
-                subTitle: '',
-                text: ''
-              }]
-            }
-          }
+          post={post}
           locations={locations}
           propertyTypes={propertyTypes}
           propertyInfo={propertyInfo}
@@ -113,22 +106,17 @@ const PostPage = ({
 
 export default PostPage;
 
-export async function getStaticPaths() {
-  const postIds = Post.map(post => ({ params: { id: post.id.toString() } }));
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  console.log("🚀 ~ getServerSideProps ~ context:", context.params)
 
-  return {
-    paths: postIds,
-    fallback: false
-  };
-}
-
-export async function getStaticProps() {
+  const postId = context.params ? context.params.id : '';
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
 
   const promises = [
     fetchJson(`${baseUrl}/property/filter/?page=1&limit=4`),
     fetchJson(`${baseUrl}/property-type`),
     fetchJson(`${baseUrl}/location`),
+    fetchJson(`${baseUrl}/blog/${postId}`),
   ];
 
   const results = await Promise.allSettled(promises);
@@ -136,16 +124,19 @@ export async function getStaticProps() {
   const propertyInfoResult = results[0];
   const propertyTypesResult = results[1];
   const locationsResult = results[2];
+  const postResult = results[3];
 
   const propertyInfo = handleResult(propertyInfoResult);
   const propertyTypes = handleResult(propertyTypesResult);
   const locations = handleResult(locationsResult);
+  const post = handleResult(postResult);
 
   return {
     props: {
-      propertyInfo: propertyInfo,
-      propertyTypes: propertyTypes,
-      locations: locations,
+      propertyInfo,
+      propertyTypes,
+      locations,
+      post
     },
   };
 }

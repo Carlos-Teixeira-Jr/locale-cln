@@ -1,15 +1,15 @@
 import Image from "next/image"
 import Link from "next/link"
-import { BlogPosts } from "./blogUpdatesContainer"
+import { IBlogPost } from "../../../common/interfaces/blog/blogPost"
 
 export interface IPostCard {
-  post: BlogPosts
+  post: IBlogPost
 }
 
 const PostCard = ({ post }: IPostCard) => {
   return (
     <section className="rounded-[30px]">
-      <Link href={`/blog/${post.id}`} className=" lg:h-[340px]">
+      <Link href={`/blog/${post._id}`} className=" lg:h-[340px]">
         <Image
           src={post.img}
           alt={"Imagem do card da notícia"}
