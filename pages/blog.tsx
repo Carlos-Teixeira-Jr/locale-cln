@@ -1,7 +1,9 @@
 import { GetServerSidePropsContext } from "next";
 import { getSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import { IBlogPost } from "../common/interfaces/blog/blogPost";
 import { IOwnerProperties } from "../common/interfaces/properties/propertiesList";
+import { fetchJson } from "../common/utils/fetchJson";
 import Pagination from "../components/atoms/pagination/pagination";
 import { Footer, Header } from "../components/organisms";
 import BlogBanner from "../components/organisms/blog/blogBanner";
@@ -9,10 +11,10 @@ import BlogSearchBox from "../components/organisms/blog/blogSearchBox";
 import BlogShortcuts, { LoadingState } from "../components/organisms/blog/blogShortcuts";
 import BlogUpdatesContainer from "../components/organisms/blog/blogUpdatesContainer";
 import PostCard from "../components/organisms/blog/postCards";
-import Posts from "../data/blog/blogPosts.json";
 
 interface IBlogPage {
-  ownerProperties: IOwnerProperties
+  ownerProperties: IOwnerProperties,
+  posts: IBlogPost[]
 }
 
 const defaultOwnerProperties: IOwnerProperties = {
@@ -22,15 +24,15 @@ const defaultOwnerProperties: IOwnerProperties = {
   messages: []
 };
 
-const BlogPage = ({ ownerProperties = defaultOwnerProperties }: IBlogPage) => {
+const BlogPage = ({ ownerProperties = defaultOwnerProperties, posts }: IBlogPage) => {
 
   const [searchInput, setSearchInput] = useState('');
   const [isSearch, setIsSearch] = useState(false);
   const isOwner = ownerProperties?.docs.length > 0;
-  const posts = Posts.filter((post) => {
+  const postsTags = posts.filter((post) => {
     return post.tags.some(tag => tag.includes(searchInput));
   });
-  const totalPages = Posts.length / 6 >= 1 ? Posts.length / 6 : 1;
+  const totalPages = posts.length / 6 >= 1 ? posts.length / 6 : 1;
   const currentPage = 1;
   const [selectedPage, setSelectedPage] = useState<LoadingState>({
     home: true,
@@ -89,7 +91,7 @@ const BlogPage = ({ ownerProperties = defaultOwnerProperties }: IBlogPage) => {
               onSearchBtnClick={(isClicked: boolean) => setIsSearch(isClicked)}
             />
 
-            <BlogUpdatesContainer posts={Posts} />
+            <BlogUpdatesContainer posts={posts} />
           </div>
         ) : (
           <div className="flex flex-col w-full px-5 md:px-10 py-5 text-quaternary space-y-5">
@@ -118,7 +120,7 @@ const BlogPage = ({ ownerProperties = defaultOwnerProperties }: IBlogPage) => {
 
             <div className="flex md:flex-row flex-col flex-wrap gap-10 md:gap-5 lg:gap-10">
               {posts.map((post) => (
-                <div key={post.id} className="md:w-[31%]">
+                <div key={post._id} className="md:w-[31%]">
                   <PostCard post={post} />
                 </div>
               ))}
@@ -192,9 +194,22 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     console.error(`Error:`, error)
   }
 
+  const [posts] = await Promise.all([
+    fetch(`${baseUrl}/blog`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => res.json())
+      .catch(() => []),
+    fetchJson(`${baseUrl}/blog`),
+  ])
+
   return {
     props: {
-      ownerProperties: ownerProperties ?? defaultOwnerProperties
+      ownerProperties: ownerProperties ?? defaultOwnerProperties,
+      posts
     },
   };
 }

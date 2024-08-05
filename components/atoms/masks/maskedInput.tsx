@@ -34,7 +34,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 const currencySpanClassName =
-  'prefix-span absolute top-6 left-0 w-7 pt-1 pl-2 z-10 text-quaternary text-2xl leading-7 font-bold';
+  'prefix-span absolute top-6 left-3 w-7 pt-1 pl-2 z-10 text-quaternary text-2xl leading-7 font-bold';
 
 const MaskedInput: React.FC<InputProps> = ({
   mask,
