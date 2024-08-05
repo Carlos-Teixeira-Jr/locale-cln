@@ -1,14 +1,14 @@
 import Image from "next/image"
 import { useEffect, useState } from "react"
+import { IBlogPost } from "../../../common/interfaces/blog/blogPost"
 import { ILocation } from "../../../common/interfaces/locationDropdown"
 import { IPropertyInfo } from "../../../common/interfaces/property/propertyData"
 import { IPropertyTypes } from "../../../common/interfaces/property/propertyTypes"
 import HomeFilter from "../../atoms/filterSections/HomeFilter"
 import ClockIcon from "../../atoms/icons/clockIcon"
-import { BlogPosts } from "./blogUpdatesContainer"
 
 export interface IPostContainer {
-  post: BlogPosts,
+  post: IBlogPost,
   locations: ILocation[],
   propertyTypes: IPropertyTypes[],
   propertyInfo: IPropertyInfo
@@ -48,17 +48,17 @@ const PostContainer = ({
 
   return (
     <section className="md:px-32 p-5 text-quaternary space-y-5">
-      <h1 className="text-3xl md:text-4xl font-bold">{post.title}</h1>
-      <h2 className="text-xl font-normal">{post.resume}</h2>
+      <h1 className="text-3xl md:text-4xl font-bold">{post?.title}</h1>
+      <h2 className="text-xl font-normal">{post?.resume}</h2>
 
       <div className="flex">
         <ClockIcon width="25" />
-        <p>Tempo estimado de leitura: {post.timeToRead} minutos</p>
+        <p>Tempo estimado de leitura: {post?.timeToRead} minutos</p>
       </div>
 
-      <p>Por {post.author} em 04/06/24 às 20:59</p>
+      <p>Por {post?.author} em 04/06/24 às 20:59</p>
 
-      <Image src={post.img} alt={"Imagem da notícia"} width={1000} height={1000} className="w-full lg:max-h-[27rem]" />
+      <Image src={post?.img} alt={"Imagem da notícia"} width={1000} height={1000} className="w-full lg:max-h-[27rem]" />
 
       <div className="flex lg:flex-row flex-col">
         <div className={`lg:top-[5rem] lg:left-50 mx-auto md:block ${filterFixed ? 'lg:fixed' : ''}`}>
@@ -73,7 +73,7 @@ const PostContainer = ({
         </div>
 
         <div className="flex flex-col gap-5 lg:w-[47%] ml-auto pl-5">
-          {post.post.map((e) => (
+          {post?.post?.map((e: any) => (
             <>
               {e.subImg !== '' && (
                 <Image src={e.subImg} alt={"Imagem da notícia"} width={1000} height={1000} className="w-full" />
