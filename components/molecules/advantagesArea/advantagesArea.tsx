@@ -61,8 +61,8 @@ const AdvantagesArea: React.FC = () => {
           />
         </div>
       </div>
-      <div className="flex justify-center">
-        <p className="md:w-[600px] lg:w-[900px] md:text-xl lg:text-2xl text-base font-bold text-quaternary text-center">
+      <div className="flex justify-center px-[15rem]">
+        <p className="md:w-[600px] lg:w-full md:text-xl lg:text-xl text-base font-bold text-quaternary text-center">
           Nosso site é a melhor escolha para quem está procurando comprar ou
           alugar imóveis. Aqui estão alguns motivos pelos quais você deve usar o
           nosso site:

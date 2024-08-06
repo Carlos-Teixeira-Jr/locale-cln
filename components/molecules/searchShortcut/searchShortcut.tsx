@@ -92,7 +92,7 @@ const SearchShortcut: React.FC<ISearchShortcut> = ({
 
   return (
     <>
-      <div className="overflow-x-scroll overflow-y-hidden scroll-smooth md:overflow-hidden lg:overflow-hidden xl:overflow-hidden flex flex-row items-center justify-between max-w-full md:max-w-[750px] lg:max-w-[900px] lg:w-full h-[70px] bg-tertiary shadow-md mt-2 md:mt-8 lg:mt-12 mx-auto md:mx-2 lg:ml-8 lg:mx-[35px] rounded-[30px] px-2 gap-5">
+      <div className="overflow-x-scroll overflow-y-hidden scroll-smooth md:overflow-hidden lg:overflow-hidden xl:overflow-hidden flex flex-row items-center justify-between max-w-full md:max-w-[750px] lg:max-w-[900px] lg:w-full h-[70px] bg-tertiary shadow-md mt-2 md:mt-8 lg:mt-2 mx-auto md:mx-2 lg:ml-8 lg:mx-[35px] rounded-[30px] px-2 gap-5">
         <div
           onClick={() => onMobileFilterIsOpenChange(true)}
           className={`flex lg:hidden flex-row items-center max-w-[153px] h-[44px] border border-quaternary rounded-[30px] p-3 lg:hover:bg-quaternary cursor-pointer ${isOpen ? 'bg-quaternary' : 'bg-tertiary'

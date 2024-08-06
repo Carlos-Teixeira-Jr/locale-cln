@@ -973,52 +973,54 @@ const FilterList: React.FC<IFilterListProps> = ({
       <div className="border border-b-quaternary -mt-2 mb-5" />
 
       <div>
-        <div>
-          <h3 className="font-normal text-base text-quaternary leading-[19px] mb-3">
-            Outros filtros
-          </h3>
+        {showTags.length > 0 && (
+          <div>
+            <h3 className="font-normal text-base text-quaternary leading-[19px] mb-3">
+              Outros filtros
+            </h3>
 
-          {showTags.map((chunk, index) => (
-            <div key={index} style={{ display: index <= currentIndex ? 'block' : 'none' }}>
-              {chunk.map(({ name, amount }) => (
-                <div className="flex flex-row items-center mb-2" key={name}>
-                  <div
-                    id={name}
-                    className={`w-5 h-5 border border-quaternary rounded-[3px] bg-tertiary ${query.tags?.toLowerCase().split(',').map((tag: string) => tag.trim()).includes(name.toLowerCase())
-                      ? 'border-yellow-500'
-                      : ''
-                      }`}
-                    onClick={() => toggleSelection(name.toLowerCase())}
-                  >
-                    {query.tags?.toLowerCase().split(',').map((tag: string) => tag.trim()).includes(name.toLowerCase()) && (
-                      <CheckIcon
-                        width="20"
-                        height="20"
-                        fill="#F5BF5D"
-                        viewBox="40 126 960 960"
-                      />
-                    )}
+            {showTags.map((chunk, index) => (
+              <div key={index} style={{ display: index <= currentIndex ? 'block' : 'none' }}>
+                {chunk.map(({ name, amount }) => (
+                  <div className="flex flex-row items-center mb-2" key={name}>
+                    <div
+                      id={name}
+                      className={`w-5 h-5 border border-quaternary rounded-[3px] bg-tertiary ${query.tags?.toLowerCase().split(',').map((tag: string) => tag.trim()).includes(name.toLowerCase())
+                        ? 'border-yellow-500'
+                        : ''
+                        }`}
+                      onClick={() => toggleSelection(name.toLowerCase())}
+                    >
+                      {query.tags?.toLowerCase().split(',').map((tag: string) => tag.trim()).includes(name.toLowerCase()) && (
+                        <CheckIcon
+                          width="20"
+                          height="20"
+                          fill="#F5BF5D"
+                          viewBox="40 126 960 960"
+                        />
+                      )}
+                    </div>
+                    <h3 className="font-normal text-sm text-quaternary leading-[19px] ml-3">
+                      {name} ({amount})
+                    </h3>
                   </div>
-                  <h3 className="font-normal text-sm text-quaternary leading-[19px] ml-3">
-                    {name} ({amount})
-                  </h3>
-                </div>
-              ))}
-            </div>
-          ))}
-          {showMore && currentIndex < showTags.length - 1 && (
-            <button onClick={handleShowMore} className={classNames.tagsBtn}>
-              Ver Mais
-            </button>
-          )}
-          {!showMore && (
-            <button onClick={handleShowLess} className={classNames.tagsBtn}>
-              Ver Menos
-            </button>
-          )}
+                ))}
+              </div>
+            ))}
+            {showMore && currentIndex < showTags.length - 1 && (
+              <button onClick={handleShowMore} className={classNames.tagsBtn}>
+                Ver Mais
+              </button>
+            )}
+            {!showMore && (
+              <button onClick={handleShowLess} className={classNames.tagsBtn}>
+                Ver Menos
+              </button>
+            )}
 
-          <div className="border border-b-quaternary my-6" />
-        </div>
+            <div className="border border-b-quaternary my-6" />
+          </div>
+        )}
 
         <div className="md:w-1/2 lg:w-full">
           <h3 className="font-normal text-base text-quaternary leading-[19px] mb-3">

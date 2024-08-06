@@ -41,13 +41,11 @@ const SideMenu: React.FC<SideMenuProps> = ({
   favouriteProperties,
   messages
 }) => {
-  console.log("🚀 ~ unreadMessages:", unreadMessages)
 
   const router = useRouter();
   const [activeButton, setActiveButton] = useState('');
   const [notReadNots, setNotReadNots] = useState<INotification[]>([]);
   const [notReadMessages, setNotReadMessages] = useState<IMessage[]>([]);
-  console.log("🚀 ~ notReadMessages:", notReadMessages)
   const isOwner = isOwnerProp;
   const [loadingIconId, setLoadingIconId] = useState('');
   const [loading, setLoading] = useState(false);

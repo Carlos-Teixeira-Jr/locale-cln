@@ -26,6 +26,7 @@ const Header = ({ userIsOwner }: IHeader) => {
   const [open, setOpen] = useState(false);
   const ref = useRef();
   const [loading, setLoading] = useState(false);
+  const [logoLoading, setLogoLoading] = useState(false);
   const isMobile = useIsMobile();
 
   const headerOptions = [
@@ -87,12 +88,17 @@ const Header = ({ userIsOwner }: IHeader) => {
       >
         <Link
           href="/"
-          className="relative flex items-center cursor-pointer my-auto"
+          className="relative flex items-center cursor-pointer my-auto w-[8rem] justify-center"
+          onClick={() => setLogoLoading(true)}
         >
-          <LocaleLogo width={isMobile ? '100' : '136'} />
+          {logoLoading ? (
+            <Loading fill='#F75D5F' className='h-[2rem] w-[2rem] p-1 mx-auto text-gray-200 animate-spin dark:text-gray-600 fill-tertiary' />
+          ) : (
+            <LocaleLogo width={isMobile ? '100' : '136'} />
+          )}
         </Link>
 
-        <div className="text-center flex md:text-start w-full md:flex md:flex-row md:items-center justify-center gap-10 md:gap-20 md:space-x-2 text-md font-bold text-quaternary text-sm md:pr-5 md:mr-auto">
+        <div className="text-center flex md:text-start w-full md:flex md:flex-row md:items-center justify-center gap-5 md:gap-20 md:space-x-2 text-md font-bold text-quaternary text-sm md:pr-5 md:mr-auto">
           {headerOptions
             .filter(opt => !isMobile || opt.mobile.includes('mobile'))
             .map((opt) => (
