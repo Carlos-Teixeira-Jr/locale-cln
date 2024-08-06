@@ -108,7 +108,6 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
     <>
       <div
         className={`rounded-[33px] overflow-hidden drop-shadow-lg my-7 md:mx-9 mx-2 flex flex-col p-1 cursor-pointer ${highlighted ? 'bg-gradient-to-tr from-secondary to-primary' : 'bg-tertiary'}`}
-        onClick={handleClick}
       >
         <div className='w-full h-full bg-tertiary md:grid md:grid-cols-3 rounded-[30px]'>
           <div className="group relative md:h-full">
@@ -162,7 +161,10 @@ const PropertyInfoCard: React.FC<IPropertyInfoCard> = ({
             </div>
           </div>
 
-          <div className="md:flex justify-between md:flex-col md:gap-4 md:col-span-2 md:ml-11 my-auto mx-[17px] md:mx-4">
+          <div
+            className="md:flex justify-between md:flex-col md:gap-4 md:col-span-2 md:ml-11 my-auto mx-[17px] md:mx-4"
+            onClick={handleClick}
+          >
             <div
               className={`${prices?.length > 10 ? 'md:w-full lg:w-full' : 'md:w-[240px]'
                 } text-3xl md:w-[240px] h-[44px] top-[17px] left-[336px] font-bold text-[#000000]`}

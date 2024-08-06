@@ -38,6 +38,7 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
   owner,
   handleCalculatorIsOpen
 }) => {
+  console.log("🚀 ~ property:", property)
 
   const session = useSession() as any;
   const status = session.status;
@@ -51,6 +52,7 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
   const [favourited, setFavourited] = useState(isFavourite);
   const [haveTags, setHaveTags] = useState<boolean>(false);
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;
+  const [metadataHasValues, setMetadataHasValues] = useState(false);
 
   useEffect(() => {
     if (userId) {
@@ -90,14 +92,6 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
         err
       );
     }
-  };
-
-  const hideTooltip = () => {
-    setTooltipIsVisible(false);
-  };
-
-  const hideFavTooltip = () => {
-    setFavPropTooltipIsVisible(false);
   };
 
   const handleCalculatorBtnClick = (event: MouseEvent<HTMLButtonElement>) => {
@@ -153,6 +147,9 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
     const value = property.metadata?.find(
       (metadata: IMetadata) => metadata.type === type
     )?.amount;
+    if (value && value > 0) {
+      setMetadataHasValues(true);
+    }
     return value;
   };
 
@@ -171,21 +168,25 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
 
   return (
     <>
-      <div className="flex flex-col md:flex-row justify-between py-1 md:py-5 px-4 lg:w-full bg-tertiary drop-shadow-lg mt-5">
+      <div className="flex flex-col md:flex-row justify-between py-1 md:py-5 px-4 lg:w-full bg-tertiary drop-shadow-lg md:mt-5">
         <div className="flex flex-col">
           <h1 className="font-extrabold text-quaternary md:text-2xl text-lg">
             Características do imóvel
           </h1>
-          <h3 className="font-extrabold text-quaternary text-lg pt-6 pb-2">
-            Dependências
-          </h3>
-          <div className="flex flex-row items-center justify-start gap-1 text-left">
-            <div className={classes.infoContainer}>
-              {getMetadataValue('bedroom')! > 0 && (<h3>{' • ' + getMetadataValue('bedroom') + `${getMetadataValue('bedroom')! > 1 ? ' quartos' : ' quarto'}`}</h3>)}
-              {getMetadataValue('bathroom')! > 0 && (<h3>{' • ' + getMetadataValue('bathroom') + `${getMetadataValue('bathroom')! > 1 ? ' banheiros' : ' banheiro'}`}</h3>)}
-              {getMetadataValue('garage')! > 0 && (<h3>{' • ' + getMetadataValue('garage') + `${getMetadataValue('garage')! > 1 ? ' vagas de garagem' : ' caga de garagem'}`}</h3>)}
-            </div>
-          </div>
+          {metadataHasValues && (
+            <>
+              <h3 className="font-extrabold text-quaternary text-lg pt-6 pb-2">
+                Dependências
+              </h3><div className="flex flex-row items-center justify-start gap-1 text-left">
+                <div className={classes.infoContainer}>
+                  {getMetadataValue('bedroom')! > 0 && (<h3>{' • ' + getMetadataValue('bedroom') + `${getMetadataValue('bedroom')! > 1 ? ' quartos' : ' quarto'}`}</h3>)}
+                  {getMetadataValue('bathroom')! > 0 && (<h3>{' • ' + getMetadataValue('bathroom') + `${getMetadataValue('bathroom')! > 1 ? ' banheiros' : ' banheiro'}`}</h3>)}
+                  {getMetadataValue('garage')! > 0 && (<h3>{' • ' + getMetadataValue('garage') + `${getMetadataValue('garage')! > 1 ? ' vagas de garagem' : ' caga de garagem'}`}</h3>)}
+                </div>
+              </div>
+            </>
+          )}
+
           {haveTags && (
             <h3 className="font-extrabold text-quaternary text-2xl pt-6 pb-2">
               Outras características
@@ -241,13 +242,13 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
             <p className="font-normal text-md text-quaternary text-justify pr-5">{property.announcementCode}</p>
           </div>
         </div>
-        <div className="flex md:flex-col mt-10 md:w-[40%] lg:mx-2 justify-items-center gap-5 md:gap-0">
+        <div className="flex flex-col my-5 lg:mt-0 md:w-[40%] lg:mx-2 justify-items-center gap-5 md:gap-0 lg:gap-5">
           <LinkCopiedTooltip
             anchorId={'tooltip'}
           />
           <button
             id="tooltip"
-            className="lg:w-[320px] mx-auto w-40 md:h-[67px] md:w-full bg-primary p-2.5 rounded-[10px] text-tertiary text-lg font-extrabold mb-6 transition-colors hover:bg-red-600 duration-300"
+            className="lg:w-[320px] mx-auto md:h-[67px] w-full bg-primary p-2.5 rounded-[10px] text-tertiary text-lg font-extrabold  transition-colors hover:bg-red-600 duration-300"
             onClick={handleCopy}
           >
             Compartilhar
@@ -255,7 +256,7 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
 
           {property.adType === 'comprar' && (
             <button
-              className="lg:w-[320px] mx-auto w-40 h-fit md:h-[67px] md:w-full bg-primary p-2.5 rounded-[10px] text-tertiary text-lg font-extrabold mb-6 transition-colors hover:bg-red-600 duration-300"
+              className="lg:w-[320px] mx-auto h-fit md:h-[67px] w-full bg-primary p-2.5 rounded-[10px] text-tertiary text-lg font-extrabold  transition-colors hover:bg-red-600 duration-300"
               onClick={handleCalculatorBtnClick}
             >
               Simular Financiamento
@@ -271,7 +272,7 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
           {!isOwnProperty && (
             <button
               id="fav-property-tooltip"
-              className={`lg:w-80 w-40 mx-auto md:w-full h-12 md:h-16 bg-primary p-2.5 rounded-[10px] text-tertiary text-lg font-extrabold flex justify-center transition-colors items-center mb-5 ${userIsLogged ? 'opacity opacity-100 cursor-pointer hover:bg-red-600 duration-300' : 'opacity-50'
+              className={`lg:w-80 mx-auto w-full h-12 md:h-16 bg-primary p-2.5 rounded-[10px] text-tertiary text-lg font-extrabold flex justify-center transition-colors items-center lg:mb-0 ${userIsLogged ? 'opacity opacity-100 cursor-pointer hover:bg-red-600 duration-300' : 'opacity-50'
                 }`}
               onClick={handleFavouriteBtnClick}
             >

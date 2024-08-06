@@ -174,7 +174,7 @@ const Search: NextPageWithLayout<ISearch> = ({
       }`,
     grid: `w-[47px] h-[44px] border border-[#6B7280] rounded-[10px] ${grid && 'border-[#F5BF5D] shadow-inner'
       }`,
-    propertyNotFound: 'flex flex-col mx-auto justify-center my-5',
+    propertyNotFound: 'flex flex-col mx-auto justify-center',
     orderBy:
       'flex flex-row items-center justify-around cursor-pointer md:my-auto bg-tertiary sm:max-w-[188px] md:w-[180px] h-[44px] font-bold text-sm md:text-md text-quaternary leading-5 shadow-lg p-[10px] border border-quaternary rounded-[30px] mt-7 md:mr-4 ml-2',
     h2: 'text-quaternary text-sm md:text-base lg:text-lg leading-5 font-bold md:ml-4 text-justify px-5',
@@ -255,15 +255,15 @@ const Search: NextPageWithLayout<ISearch> = ({
                 )}
 
               {propertyInfo?.docs?.length === 0 && (
-                <div className="flex flex-col my-5 mx-8">
+                <div className="flex flex-col my-5 md:mx-8">
                   <h2 className={classes.h2}>
                     Oops! Não encontramos nenhum resultado para essa busca.
                   </h2>
                   <div className={classes.propertyNotFound}>
                     <Image
                       src={'/images/property-not-found.png'}
-                      width={300}
-                      height={300}
+                      width={250}
+                      height={250}
                       alt={'Property not found'}
                     />
                   </div>

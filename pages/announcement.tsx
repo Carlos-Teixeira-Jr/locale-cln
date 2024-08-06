@@ -152,7 +152,7 @@ const classes = {
   registerCard: 'float-right md:mr-[50px] md:pt-[25px]',
   title: 'md:pt-[75px] md:ml-[100px] lg:ml-[200px]',
   p: 'md:bg-tertiary md:rounded-full md:w-[225px] lg:w-[325px] md:h-[225px] lg:h-[325px] font-extrabold md:text-3xl lg:text-4xl text-2xl text-quaternary text-center md:pt-[40px] lg:pt-[75px] md:px-2 md:border-[5px] md:border-secondary md:shadow-tertiary md:shadow-[-5px_15px_100px_-5px_rgba(0,0,0,0.3)]',
-  h1: 'font-bold md:text-2xl lg:text-4xl text-2xl md:leading-tight md:w-4/5 m-auto text-primary drop-shadow-2xl text-center md:mb-10',
+  h1: 'font-bold text-2xl md:leading-tight md:w-4/5 m-auto text-primary drop-shadow-2xl text-center md:mb-10',
   plans:
     'grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 justify-center max-w-[1232px] items-center mx-auto',
 };
