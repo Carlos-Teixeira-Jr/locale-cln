@@ -24,9 +24,9 @@ const Footer = () => {
   }, [height]);
 
   const footerPositionCSS = `bg-tertiary bottom-0 w-full ${desktop
-    ? 'mt-44'
+    ? 'mt-5'
     : mobile
-      ? 'mt-36'
+      ? 'mt-5'
       : notebook
         ? 'mt-36'
         : 'mt-36'

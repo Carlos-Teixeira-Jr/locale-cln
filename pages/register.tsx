@@ -247,7 +247,7 @@ const Register = ({ ownerProperties = defaultOwnerProperties }: IRegister) => {
 
   const classes = {
     stepLabel:
-      'md:mt-[130px] mt-[120px] md:mb-10 lg:mb-2 w-full mx-auto lg:mx-24 xl:mx-auto',
+      'md:mt-[130px] lg:mt-[105px] mt-[120px] md:mb-10 lg:mb-2 w-full mx-auto lg:mx-24 xl:mx-auto',
     buttonContainer:
       'flex md:justify-end justify-center lg:justify-end xl:justify-end px-5 max-w-[1215px]',
     button:

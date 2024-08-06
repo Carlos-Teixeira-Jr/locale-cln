@@ -132,7 +132,7 @@ const CalculatorModal: React.FC<ICalculatorModal> = ({
           Simulação de Financiamento <br />
           (SAC)
         </h1>
-        <div className='my-3'>
+        <div className='my-1'>
           <div className='flex gap-2 flex-col md:flex-row'>
             <div className='flex flex-col'>
               <p className="font-bold text-xl leading-7 text-quaternary mb-2">
@@ -144,7 +144,7 @@ const CalculatorModal: React.FC<ICalculatorModal> = ({
                 value={`${priceValue}`}
                 onChange={handlePriceChange}
                 className={
-                  'border-quaternary bg-tertiary drop-shadow-lg rounded-[10px] text-quaternary text-2xl leading-7 w-full md:w-[315px] h-[38px] border-[1px] mb-5 font-bold text-right px-2'
+                  'border-quaternary bg-tertiary drop-shadow-lg rounded-[10px] text-quaternary text-2xl leading-7 w-full md:w-[315px] h-[38px] border-[1px] mb-1 md:mb-5 font-bold text-right px-2'
                 }
                 spanClassName="prefix-span absolute left-0 w-7 pt-1 pl-2 z-10 text-quaternary text-2xl leading-7 font-bold"
               />
@@ -160,7 +160,7 @@ const CalculatorModal: React.FC<ICalculatorModal> = ({
                 placeholder="R$"
                 maxLength={30}
                 className={
-                  'border-quaternary bg-tertiary drop-shadow-lg rounded-[10px] text-quaternary text-2xl leading-7 md:w-[315px] h-[38px] border-[1px] mb-5 font-bold text-right px-2'
+                  'border-quaternary bg-tertiary drop-shadow-lg rounded-[10px] text-quaternary text-2xl leading-7 md:w-[315px] h-[38px] border-[1px] mb-1 md:mb-5 font-bold text-right px-2'
                 }
                 onChange={handleEntryChange}
               />
@@ -199,7 +199,7 @@ const CalculatorModal: React.FC<ICalculatorModal> = ({
         </div>
         <div className="grid grid-flow-row">
           <button
-            className="w-full h-13 rounded-[10px] bg-primary p-2.5  ml-auto text-tertiary font-extrabold text-xl mb-6"
+            className="w-full h-13 rounded-[10px] bg-primary p-2.5 ml-auto text-tertiary font-extrabold text-xl my-3"
             onClick={handleCalculateBtnClick}
           >
             Calcular

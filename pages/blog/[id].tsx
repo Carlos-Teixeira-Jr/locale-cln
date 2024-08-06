@@ -107,7 +107,6 @@ const PostPage = ({
 export default PostPage;
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  console.log("🚀 ~ getServerSideProps ~ context:", context.params)
 
   const postId = context.params ? context.params.id : '';
   const baseUrl = process.env.NEXT_PUBLIC_BASE_API_URL;

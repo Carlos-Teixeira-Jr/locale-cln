@@ -22,14 +22,16 @@ const VisualizationsBox = ({ views }: IVisualizationsBox) => {
 
   return (
     <section
-      className={`border border-green-500 rounded-[15px] px-5 py-1 flex gap-2 text-quaternary bg-tertiary items-center mt-5 ${visualizationsMetric === 'low' ? 'border-green-500' :
+      className={`border flex-row border-green-500 rounded-[15px] px-5 py-1 flex gap-2 text-quaternary bg-tertiary items-center mt-5 ${visualizationsMetric === 'low' ? 'border-green-500' :
         visualizationsMetric === 'medium' ? 'border-secondary' :
           'border-primary'
         }`}
     >
       <GraphicIcon fill={visualizationsMetric === 'low' ? "green" : visualizationsMetric === 'medium' ? "#F5BF5D" : "#F75D5F"} width="2.4rem" height="2.4rem" />
-      <h3 className="text-xl font-bold">{viewsStatus}</h3>
-      <p className="text-lg font-normal">{visualizations === 1 ? 'Já houve 1 acesso' : `Já foram ${visualizations} acessos.`}</p>
+      <div className="flex flex-col md:flex-row w-full items-center">
+        <h3 className="text-xl font-bold">{viewsStatus}</h3>
+        <p className="text-lg font-normal">{visualizations === 1 ? 'Já houve 1 acesso' : `Já foram ${visualizations} acessos.`}</p>
+      </div>
     </section>
   )
 }

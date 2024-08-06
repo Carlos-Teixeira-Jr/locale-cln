@@ -89,7 +89,7 @@ const ContactBox: React.FC<IContactBox> = ({ ownerInfo, property }: IContactBox)
   return (
     <>
       <div className="lg:w-fit md:pt-0 flex flex-col md:flex-row md:grid lg:flex lg:flex-col items-center justify-between align-middle lg:ml-2 md:mx-5 mx-2 lg:m-0">
-        <div className="flex flex-row gap-2 w-full lg:w-72 justify-between items-center mt-5">
+        <div className="flex flex-row gap-2 w-full lg:w-72 justify-between items-center md:mt-5">
           {picture ? (
             <Image
               src={picture}
@@ -114,7 +114,7 @@ const ContactBox: React.FC<IContactBox> = ({ ownerInfo, property }: IContactBox)
             {owner}
           </p>
         </div>
-        <div className="flex md:flex-col gap-4 mt-5 w-full justify-between">
+        <div className="flex md:flex-col gap-4 md:mt-5 w-full justify-between">
           {buttons.map((btn) => (
             <div
               onClick={() => btn.onClick()}
