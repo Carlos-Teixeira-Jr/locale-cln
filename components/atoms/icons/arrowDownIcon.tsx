@@ -5,7 +5,6 @@ export default function ArrowDownIcon({
   width = '14',
   height = '14',
   className = '',
-  ref,
   onClick
 }: IIcon) {
   return (
@@ -17,7 +16,6 @@ export default function ArrowDownIcon({
       viewBox="0 -960 960 960"
       xmlns="http://www.w3.org/2000/svg"
       onClick={() => onClick}
-      ref={ref}
     >
       <path
         d="m19-126 461-738 461 738H19Z"
