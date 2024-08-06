@@ -23,7 +23,6 @@ const Gallery: React.FC<IGallery> = ({
   onGalleryModalOpen,
   ownerData
 }: IGallery) => {
-  console.log("🚀 ~ isModalOpen:", isModalOpen)
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const isMobile = useIsMobile();
   const [currentIndex, setCurrentIndex] = useState(0);

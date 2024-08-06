@@ -63,7 +63,6 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [calculatorIsOpen, setCalculatorIsOpen] = useState(false);
-  console.log("🚀 ~ calculatorIsOpen:", calculatorIsOpen)
   const [mapIsActive, setMapIsActive] = useState(false);
   const dynamicRoute = useRouter().asPath;
   const { push } = useRouter();
@@ -113,7 +112,7 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
         </div>
 
         <div className="md:flex w-full justify-between mb-4">
-          <div className='flex flex-col w-full'>
+          <div className='flex flex-col w-full px-2'>
             <PropertyInfoTop propertyID={property} />
             <VisualizationsBox views={property.views} />
           </div>
@@ -140,6 +139,7 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
         <div className={classes.relatedProperties}>
           {relatedProperties.docs.length > 0 &&
             relatedProperties?.docs
+              .filter((item) => item._id !== property._id)
               .slice(0, 3)
               .map((prop: IData) => (
                 <PropertyCard

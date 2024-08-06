@@ -11,7 +11,6 @@ import {
   propType
 } from '../../../common/interfaces/property/propertyData';
 import { PropertyFeaturesErrors } from '../../../common/interfaces/property/propertyFeaturesErrors';
-import { useOutsideClick } from '../../../common/utils/actions/clickOutside';
 import { scrollToError } from '../../../common/utils/errors/errorsAutoScrollUtil';
 import { lowerLetters } from '../../../common/utils/strings/capitalizeFirstLetter';
 import propertyTypesData from '../../../data/propertyTypesData.json';
@@ -118,8 +117,6 @@ const MainFeatures: React.FC<IMainFeatures> = ({
   );
 
   const [propTypeDropdownIsOpen, setPropTypeDropdownIsOpen] = useState(false);
-
-  useOutsideClick(refPropertyType, setPropTypeDropdownIsOpen, propTypeDropdownIsOpen);
 
   const [propertyFeaturesData, setPropertyFeaturesData] =
     useState<IEditPropertyMainFeatures>({

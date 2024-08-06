@@ -66,19 +66,13 @@ const PropertyDifferentials = ({
       } else if (type === 'tags') {
         const newTag = secondInputValue.trim();
         if (newTag !== '') {
-          const newTagsArray = [...updatedTags, newTag];
-          setUpdatedTags(newTagsArray);
+          const newTagsArray = [...updatedCondominiumTags, newTag];
+          setUpdatedCondominiumTags(newTagsArray);
           setSecondInputValue('');
         }
       }
     }
   };
-
-  // useEffect(() => {
-  //   if (property) {
-  //     setUpdatedYouTubeLink(property.youtubeLink);
-  //   }
-  // });
 
   useEffect(() => {
     onTagsUpdate!(updatedTags);
@@ -201,7 +195,7 @@ const PropertyDifferentials = ({
 
           <h3 className={classes.h3Title}>Lazer:</h3>
 
-          <div className="flex justify-between flex-wrap">
+          <div className="flex justify-between lg:justify-start flex-wrap">
             {condominiumTagsDefault.map((tag, i) => (
               <div className={classes.checkBox} key={i}>
                 <div
@@ -237,7 +231,7 @@ const PropertyDifferentials = ({
 
           <h3 className={classes.h3Title}>Acessibilidade e Serviços:</h3>
 
-          <div className="flex flex-wrap justify-between">
+          <div className="flex flex-wrap justify-between lg:justify-start">
             {accessibilityTags.map((tag, i) => (
               <div className="flex my-5 w-[150px] ml-3" key={i}>
                 <div
@@ -273,7 +267,7 @@ const PropertyDifferentials = ({
 
           <h3 className={classes.h3Title}>Segurança:</h3>
 
-          <div className="flex flex-wrap justify-between">
+          <div className="flex flex-wrap justify-between lg:justify-start">
             {securityTags.map((tag, i) => (
               <div className={classes.checkBox} key={i}>
                 <div
