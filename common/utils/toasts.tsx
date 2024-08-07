@@ -23,6 +23,7 @@ export enum SuccessToastNames {
 }
 
 export enum ErrorToastNames {
+  InvalidImageFormat = 'invalidImageFormat',
   InvalidLoginData = 'invalidLoginData',
   UpdateFavourites = 'updateFavourites',
   PasswordRecovery = 'passwordRecovery',
@@ -347,6 +348,12 @@ const errorToastMessages: Record<ErrorToastNames, ToastMessage> = {
   },
   [ErrorToastNames.AlreadyInLoginPage]: {
     message: 'Insira seus dados para fazer login ou cadastre uma conta.',
+    options: {
+      autoClose: 5000,
+    },
+  },
+  [ErrorToastNames.InvalidImageFormat]: {
+    message: 'O formato webp não é aceito.',
     options: {
       autoClose: 5000,
     },

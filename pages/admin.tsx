@@ -94,7 +94,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
       saveVisualizedCards(id);
     }
     setIsAlreadyClicked(alreadyClicked);
-    setParams(params);
+    setParams(`${params}` + `${id}`);
   };
 
   // insere a flag de incrementação de visualizações do imóvel na url;
@@ -102,8 +102,8 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
     let newParams;
     if (isAlreadyClicked !== null) {
       const firstSubstring = params.split('increment=')[0];
-      const lastSubstring = params.split('increment=')[1];
-      newParams = firstSubstring + `increment=${!isAlreadyClicked}` + lastSubstring
+      const lastSubstring = params.split('id=')[1];
+      newParams = firstSubstring + `increment=${!isAlreadyClicked}` + `+id=${lastSubstring}`
       push(`/property/${newParams}`)
     }
   }, [isAlreadyClicked, params]);
@@ -174,6 +174,7 @@ const AdminPage: NextPageWithLayout<AdminPageProps> = ({
                     propertyType={propertyType}
                     address={address}
                     onCardClick={(id: string, params: string) => handleCardClick(id, params)}
+                    isOwnerProp={isOwner}
                   />
                 )
               )}
