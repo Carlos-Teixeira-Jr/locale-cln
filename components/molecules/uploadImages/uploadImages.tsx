@@ -6,6 +6,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { DndProvider, DropTargetMonitor, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { v4 as uuidv4 } from 'uuid';
+import { checkForWebpFiles } from '../../../common/utils/images/checkForWebpg';
 import {
   addImageToDB,
   getAllImagesFromDB,
@@ -89,20 +90,29 @@ const UploadImages = ({
 
   const handleAddImage = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
+    console.log("🚀 ~ handleAddImage ~ files:", files)
 
-    if (files && files.length + images.length > 50) {
-      showErrorToast(ErrorToastNames.ImagesMaxLimit);
-      return;
-    }
+    let hasWebpg;
 
-    if (files) {
-      for (const file of files) {
-        const id = uuidv4();
-        const src = URL.createObjectURL(file);
+    if (files !== null) hasWebpg = checkForWebpFiles(files);
 
-        await addImageToDB(file, src, id);
+    if (hasWebpg) {
+      showErrorToast(ErrorToastNames.InvalidImageFormat)
+    } else {
+      if (files && files.length + images.length > 50) {
+        showErrorToast(ErrorToastNames.ImagesMaxLimit);
+        return;
+      }
 
-        setImages((prevImages) => [...prevImages, { src, id }]);
+      if (files) {
+        for (const file of files) {
+          const id = uuidv4();
+          const src = URL.createObjectURL(file);
+
+          await addImageToDB(file, src, id);
+
+          setImages((prevImages) => [...prevImages, { src, id }]);
+        }
       }
     }
   };
