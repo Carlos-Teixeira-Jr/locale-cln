@@ -30,7 +30,8 @@ interface IAdminPropertyCard {
   adType: string;
   propertyType: string;
   address: IAddress;
-  onCardClick: (id: string, params: string) => void
+  onCardClick: (id: string, params: string) => void;
+  isOwnerProp?: boolean
 }
 
 type btnTypes = {
@@ -53,7 +54,8 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
   adType,
   propertyType,
   address,
-  onCardClick
+  onCardClick,
+  isOwnerProp
 }: IAdminPropertyCard) => {
 
   const priceString = price.toString();
@@ -62,7 +64,7 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
   const { data: session } = useSession() as any;
   const user = session?.user?.data._id;
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const params = `${adType}+${propertyType}+${address.city}+${address.neighborhood}+${address.streetName}+increment=+id=${_id}`
+  const params = `${adType}+${propertyType}+${address.city}+${address.neighborhood}+${address.streetName}+increment=${isOwnerProp}+id=`
   const [loading, setLoading] = useState(false);
   const { push } = useRouter()
 
@@ -128,7 +130,7 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
     {
       key: 'visualize',
       title: 'Visualizar',
-      link: `/property/${_id}`,
+      link: `/property/${params}`,
       className:
         'bg-[#5BC0DE] w-full h-12 px-10 rounded-md font-bold text-tertiary text-xl shadow-sm transition-colors duration-300 hover:bg-blue-500 hover:text-white',
     },
