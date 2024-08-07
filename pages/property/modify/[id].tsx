@@ -667,6 +667,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   let ownerId;
   const params = context.params?.id as string;
   const id = params.split('id=')[1];
+  // Captura o valor de increment da url para incrementar as vidualizações;
+  const firsSubstring = params.split('increment=')[1];
+  const increment = JSON.parse(firsSubstring?.split('+id')[0]);
 
   try {
     const propertyResponse = await fetch(
@@ -676,7 +679,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ userId, isEdit: false }),
+        body: JSON.stringify({ userId, isEdit: false, increment }),
       }
     );
 
