@@ -18,7 +18,6 @@ export default function DropdownAdmin({ isOwnerProp, isPlus }: IDropdownAdmin) {
     'translate-x-[1px] w-[150px] h-fit hover:bg-quaternary hover:text-tertiary py-3 flex justify-center mx-auto';
 
   const { menuItems } = useMenu()
-  console.log("🚀 ~ DropdownAdmin ~ menuItems:", menuItems)
 
   const handleClick = (key: string, ref: string) => {
     const baseRef = ref.split('?')[0];
