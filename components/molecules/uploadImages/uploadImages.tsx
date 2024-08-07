@@ -90,7 +90,6 @@ const UploadImages = ({
 
   const handleAddImage = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
-    console.log("🚀 ~ handleAddImage ~ files:", files)
 
     let hasWebpg;
 

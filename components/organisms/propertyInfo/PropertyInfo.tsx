@@ -38,7 +38,6 @@ const PropertyInfo: React.FC<IPropertyInfo> = ({
   owner,
   handleCalculatorIsOpen
 }) => {
-  console.log("🚀 ~ property:", property)
 
   const session = useSession() as any;
   const status = session.status;

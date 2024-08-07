@@ -113,7 +113,7 @@ const AdminPropertyCard: React.FC<IAdminPropertyCard> = ({
     {
       key: 'edit',
       title: 'Editar',
-      link: `property/modify/${params}&id=`,
+      link: `property/modify/${params}`,
       className:
         'bg-secondary w-full h-12 px-10 rounded-md font-bold text-tertiary text-xl transition-colors duration-300 hover:bg-yellow-500 hover:text-white',
     },

@@ -63,6 +63,7 @@ const PropertyCard: React.FC<IPropertyCard> = ({
 
   const toggleExpanded = (e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     setExpanded(!expanded);
   };
 
