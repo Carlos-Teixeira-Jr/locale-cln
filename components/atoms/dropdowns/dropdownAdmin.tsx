@@ -18,6 +18,7 @@ export default function DropdownAdmin({ isOwnerProp, isPlus }: IDropdownAdmin) {
     'translate-x-[1px] w-[150px] h-fit hover:bg-quaternary hover:text-tertiary py-3 flex justify-center mx-auto';
 
   const { menuItems } = useMenu()
+  console.log("🚀 ~ DropdownAdmin ~ menuItems:", menuItems)
 
   const handleClick = (key: string, ref: string) => {
     const baseRef = ref.split('?')[0];
@@ -83,7 +84,7 @@ export default function DropdownAdmin({ isOwnerProp, isPlus }: IDropdownAdmin) {
     <div className={`flex z-50 max-w h-fit rounded-xl bg-tertiary overflow-hidden cursor-pointer shadow-md ${pathname.includes('admin') ? 'top-[66px] absolute right-1' : 'top-[4.9rem] right-8 fixed'}`}>
       <div className="flex flex-col text-center font-medium text-md text-quaternary leading-5">
 
-        {menuItems.ownerProperties?.count && menuItems.ownerProperties?.count > 0 && (
+        {menuItems.ownerProperties?.count !== undefined && menuItems.ownerProperties?.count > 0 && (
           <div
             onClick={() => handleClick('myAnnouncements', '/admin?page=1')}
             className={
@@ -99,6 +100,7 @@ export default function DropdownAdmin({ isOwnerProp, isPlus }: IDropdownAdmin) {
             )}
           </div>
         )}
+
 
         <div
           onClick={() => handleClick('myData', '/adminUserData?page=1')}
@@ -132,7 +134,7 @@ export default function DropdownAdmin({ isOwnerProp, isPlus }: IDropdownAdmin) {
           </div>
         )}
 
-        {menuItems.ownerProperties?.count && menuItems.ownerProperties.messages?.length > 0 && (
+        {menuItems.ownerProperties?.count !== undefined && menuItems.ownerProperties.messages?.length > 0 && (
           <div
             onClick={() => handleClick('myMessages', '/adminMessages?page=1')}
             className={
