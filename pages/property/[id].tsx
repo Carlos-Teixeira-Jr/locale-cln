@@ -14,8 +14,6 @@ import {
 } from '../../common/interfaces/property/propertyData';
 import { isCardVisualized } from '../../common/utils/actions/isCardVisualized';
 import { saveVisualizedCards } from '../../common/utils/actions/saveVisualizedCards';
-import DynamicMap from '../../components/atoms/maps/dinamycMap';
-import StaticMap from '../../components/atoms/maps/map';
 import VideoPlayer from '../../components/atoms/videoPlayer/videoPlayer';
 import PropertyCard from '../../components/molecules/cards/propertyCard/PropertyCard';
 import ContactBox from '../../components/molecules/contactBox/ContactBox';
@@ -169,7 +167,7 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
               ))}
         </div>
 
-        <div className={classes.mapContainer}>
+        {/* <div className={classes.mapContainer}>
           {!mapIsActive && (
             <div id="dynamic-map" className={classes.staticMap}>
               <StaticMap
@@ -185,7 +183,7 @@ const PropertyPage: NextPageWithLayout<IPropertyPage> = ({
           <div id="static-map" className={`${mapIsActive ? '' : 'hidden'}`}>
             <DynamicMap geolocation={property.geolocation} />
           </div>
-        </div>
+        </div> */}
       </div>
 
       <Footer />
