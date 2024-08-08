@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import { ErrorToastNames, showErrorToast } from '../../../common/utils/toasts';
-import { useMenu } from '../../../context/headerMenuContext';
 import { useIsMobile } from '../../../hooks/useIsMobile';
 import DropdownAdmin from '../../atoms/dropdowns/dropdownAdmin';
 import UserIcon from '../../atoms/icons/userIcon';
@@ -17,10 +16,8 @@ export interface IHeader {
 
 const Header = ({ userIsOwner }: IHeader) => {
 
-  const { menuItems } = useMenu();
-
   const { data: session } = useSession() as any;
-  const router = useRouter();
+  const { query, pathname } = useRouter();
   const [isBuy, setIsBuy] = useState(false);
   const [isRent, setIsRent] = useState(false);
   const [open, setOpen] = useState(false);
@@ -70,7 +67,7 @@ const Header = ({ userIsOwner }: IHeader) => {
   });
 
   useEffect(() => {
-    const urlType = router.query;
+    const urlType = query;
 
     if (urlType.buyOrRent === 'alugar') {
       setIsRent(true);
@@ -79,7 +76,7 @@ const Header = ({ userIsOwner }: IHeader) => {
       setIsBuy(true);
       setIsRent(false);
     }
-  }, [router.query]);
+  }, [query]);
 
   return (
     <div>
@@ -89,7 +86,11 @@ const Header = ({ userIsOwner }: IHeader) => {
         <Link
           href="/"
           className="relative flex items-center cursor-pointer my-auto w-[8rem] justify-center"
-          onClick={() => setLogoLoading(true)}
+          onClick={() => {
+            if (pathname !== '/') {
+              setLogoLoading(true)
+            }
+          }}
         >
           {logoLoading ? (
             <Loading fill='#F75D5F' className='h-[2rem] w-[2rem] p-1 mx-auto text-gray-200 animate-spin dark:text-gray-600 fill-tertiary' />
@@ -164,7 +165,7 @@ const Header = ({ userIsOwner }: IHeader) => {
                   <button
                     className="bg-primary justify-self-end cursor-pointer text-tertiary rounded-3xl font-normal md:text-xl w-20 md:w-[124px] md:h-[2rem] mr-3 shadow-md transition-colors duration-300 hover:bg-red-600 hover:text-white"
                     onClick={() => {
-                      if (router.pathname !== '/login') {
+                      if (pathname !== '/login') {
                         setLoading(true);
                       } else {
                         showErrorToast(ErrorToastNames.AlreadyInLoginPage)
