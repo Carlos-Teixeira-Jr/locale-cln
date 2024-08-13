@@ -43,7 +43,7 @@ const AdvantagesArea: React.FC = () => {
 
   return (
     <div className="max-w-[1232px] justify-self-center">
-      <div className="flex justify-center mx-[50px]">
+      <div className="flex justify-center mx-[50px] my-5 md:my-0">
         <div className="md:absolute md:mr-[500px]">
           <Image
             src={'/images/marker.png'}
@@ -61,7 +61,7 @@ const AdvantagesArea: React.FC = () => {
           />
         </div>
       </div>
-      <div className="flex justify-center px-[15rem]">
+      <div className="flex justify-center md:px-[15rem]">
         <p className="md:w-[600px] lg:w-full md:text-xl lg:text-xl text-base font-bold text-quaternary text-center">
           Nosso site é a melhor escolha para quem está procurando comprar ou
           alugar imóveis. Aqui estão alguns motivos pelos quais você deve usar o
