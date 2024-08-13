@@ -869,7 +869,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   const [notifications, userData, ownerData, plans, properties, messages, favouriteProperties] =
     await Promise.all([
-      fetch(`${baseUrl}/notification/user/${userId}`, {
+      fetch(`${baseUrl}/notification/${userId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -928,7 +928,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       })
         .then((res) => res.json())
         .catch(() => []),
-      fetchJson(`${baseUrl}/notification/user/${userId}`),
+      fetchJson(`${baseUrl}/notification/${userId}`),
       fetchJson(`${baseUrl}/user/${userId}`),
       fetchJson(`${baseUrl}/user/find-owner-by-user`),
       fetchJson(`${baseUrl}/plan`),
