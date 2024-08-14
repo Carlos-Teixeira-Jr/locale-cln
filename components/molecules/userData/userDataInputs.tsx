@@ -53,6 +53,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
   userDataInputRefs,
   ownerData,
 }) => {
+  console.log("🚀 ~ ownerData:", ownerData)
 
   const userDataErrorScroll = {
     ...userDataInputRefs,
@@ -74,14 +75,14 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
     email: ownerData
       ? ownerData?.user?.email
       : '',
-    // cpf: ownerData?.user?.cpf ? ownerData?.user?.cpf : '',
-    cpf: "314.715.150-60",
-    // cellPhone: ownerData && ownerData.user ? ownerData.user.phone : '',
-    cellPhone: '(53) 99177-4545',
+    cpf: ownerData?.user?.cpf ? ownerData?.user?.cpf : '',
+    cellPhone: ownerData && ownerData.user ? ownerData.user.cellPhone : '',
     picture: { id: '', src: '' },
     phone: ownerData && ownerData?.user ? ownerData?.user?.phone : '',
     wwpNumber: ownerData?.owner?.wwpNumber ? ownerData?.owner?.wwpNumber : '',
   });
+
+  console.log("🚀 ~ !isSameNumber && ownerData?.owner !== null:", !isSameNumber && ownerData?.owner !== null)
 
   useEffect(() => {
     if (pathname === '/registerStep3' && ownerData?.owner?.picture) {
@@ -147,52 +148,50 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
     {
       key: 'cpf',
       label: 'CPF',
-      // value: formData.cpf,
-      value: '314.715.150-60',
+      value: formData.cpf,
       ref: userDataErrorScroll.cpf,
-      // onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      //   const input = event.target;
-      //   const value = input.value;
-      //   const maskedValue = applyNumericMask(value, '999.999.999-99');
-      //   const selectionStart = input.selectionStart || 0;
-      //   const selectionEnd = input.selectionEnd || 0;
-      //   const previousValue = input.value;
-      //   if (
-      //     selectionStart === previousValue.length ||
-      //     previousValue.length > maskedValue.length
-      //   ) {
-      //     input.value = maskedValue;
-      //   } else {
-      //     input.value = previousValue;
-      //     input.setSelectionRange(selectionStart, selectionEnd);
-      //   }
-      //   setFormData({ ...formData, cpf: maskedValue });
-      // },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        const input = event.target;
+        const value = input.value;
+        const maskedValue = applyNumericMask(value, '999.999.999-99');
+        const selectionStart = input.selectionStart || 0;
+        const selectionEnd = input.selectionEnd || 0;
+        const previousValue = input.value;
+        if (
+          selectionStart === previousValue.length ||
+          previousValue.length > maskedValue.length
+        ) {
+          input.value = maskedValue;
+        } else {
+          input.value = previousValue;
+          input.setSelectionRange(selectionStart, selectionEnd);
+        }
+        setFormData({ ...formData, cpf: maskedValue });
+      },
     },
     {
       key: 'cellPhone',
       label: 'Celular',
-      // value: formData.cellPhone,
-      value: '(53) 99177-4545',
+      value: formData.cellPhone,
       ref: userDataErrorScroll.cellPhone,
-      // onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      //   const input = event.target;
-      //   const value = input.value;
-      //   const maskedValue = applyNumericMask(value, '(99) 99999-9999');
-      //   const selectionStart = input.selectionStart || 0;
-      //   const selectionEnd = input.selectionEnd || 0;
-      //   const previousValue = input.value;
-      //   if (
-      //     selectionStart === previousValue.length ||
-      //     previousValue.length > maskedValue.length
-      //   ) {
-      //     input.value = maskedValue;
-      //   } else {
-      //     input.value = previousValue;
-      //     input.setSelectionRange(selectionStart, selectionEnd);
-      //   }
-      //   setFormData({ ...formData, cellPhone: maskedValue });
-      // },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        const input = event.target;
+        const value = input.value;
+        const maskedValue = applyNumericMask(value, '(99) 99999-9999');
+        const selectionStart = input.selectionStart || 0;
+        const selectionEnd = input.selectionEnd || 0;
+        const previousValue = input.value;
+        if (
+          selectionStart === previousValue.length ||
+          previousValue.length > maskedValue.length
+        ) {
+          input.value = maskedValue;
+        } else {
+          input.value = previousValue;
+          input.setSelectionRange(selectionStart, selectionEnd);
+        }
+        setFormData({ ...formData, cellPhone: maskedValue });
+      },
     },
     {
       key: 'phone',
@@ -319,7 +318,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
             )}
           </div>
 
-          <div className="my-5 mx-auto flex flex-col md:flex-row w-full gap-5 md:gap-10">
+          <div className="my-5 mx-auto flex flex-col md:flex-row w-full gap-5 md:gap-2">
             {inputs.slice(1, 3).map((input: Input) => (
               <div key={input.key} className="w-full" ref={input.ref}>
                 <h3 className={classes.title}>{input.label}</h3>
@@ -348,7 +347,7 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
             ))}
           </div>
 
-          <div className="my-5 mx-auto flex flex-col md:flex-row w-full gap-5 md:gap-10">
+          <div className="my-5 mx-auto flex flex-col md:flex-row w-full gap-5 md:gap-2">
             {inputs.slice(3).map((input: Input) => (
               <div key={input.key} className="w-full" ref={input.ref}>
                 <h3 className={classes.title}>{input.label}</h3>
@@ -378,31 +377,34 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
             ))}
           </div>
         </div>
-        <div className="flex flex-row">
-          <button
-            className={` w-8 h-8 rounded-full bg-tertiary drop-shadow-lg mr-5 flex justify-center cursor-pointer ${!isSameNumber
-              ? 'border-[3px] border-secondary'
-              : 'border border-quaternary'
-              }`}
-            onClick={() => setIsSameNumber(!isSameNumber)}
-          >
-            {!isSameNumber && (
-              <div className="bg-secondary w-4 h-4 rounded-full mt-[5px]"></div>
-            )}
-          </button>
-          <div className="flex flex-row gap-1">
-            <h1
-              className={`text-base leading-10 font-normal cursor-pointer ${!isSameNumber ? 'text-secondary' : 'text-quaternary'
+
+        {ownerData?.owner !== null && (
+          <div className="flex flex-row">
+            <button
+              className={` w-8 h-8 rounded-full bg-tertiary drop-shadow-lg mr-5 flex justify-center cursor-pointer ${!isSameNumber
+                ? 'border-[3px] border-secondary'
+                : 'border border-quaternary'
                 }`}
+              onClick={() => setIsSameNumber(!isSameNumber)}
             >
-              Este não é o meu{' '}
-              <span className="text-green-500 text-base font-semibold mr-2">
-                WhatsApp
-              </span>
-            </h1>
-            <WhatsAppIcon />
+              {!isSameNumber && (
+                <div className="bg-secondary w-4 h-4 rounded-full mt-[5px]"></div>
+              )}
+            </button>
+            <div className="flex flex-row gap-1">
+              <h1
+                className={`text-base leading-10 font-normal cursor-pointer ${!isSameNumber ? 'text-secondary' : 'text-quaternary'
+                  }`}
+              >
+                Este não é o meu{' '}
+                <span className="text-green-500 text-base font-semibold mr-2">
+                  WhatsApp
+                </span>
+              </h1>
+              <WhatsAppIcon />
+            </div>
           </div>
-        </div>
+        )}
 
         <div className="flex flex-col">
           {!isSameNumber && (
