@@ -53,7 +53,6 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
   userDataInputRefs,
   ownerData,
 }) => {
-  console.log("🚀 ~ ownerData:", ownerData)
 
   const userDataErrorScroll = {
     ...userDataInputRefs,
@@ -81,8 +80,6 @@ const UserDataInputs: React.FC<IUserDataInputs> = ({
     phone: ownerData && ownerData?.user ? ownerData?.user?.phone : '',
     wwpNumber: ownerData?.owner?.wwpNumber ? ownerData?.owner?.wwpNumber : '',
   });
-
-  console.log("🚀 ~ !isSameNumber && ownerData?.owner !== null:", !isSameNumber && ownerData?.owner !== null)
 
   useEffect(() => {
     if (pathname === '/registerStep3' && ownerData?.owner?.picture) {
