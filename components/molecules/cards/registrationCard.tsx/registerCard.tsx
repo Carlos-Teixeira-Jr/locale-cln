@@ -118,7 +118,7 @@ const RegisterCard: React.FC = () => {
           E-mail
         </label>
         <input
-          className={`lg:w-[360px] md:w-full w-[291px] h-10 md:h-12 rounded-[10px] border-[1px] border-quaternary drop-shadow-xl bg-tertiary text-quaternary md:p-2 text-xl font-semibold ${emailError === '' ? '' : 'border-[2px] border-red-500'
+          className={`lg:w-[360px] md:w-full w-[291px] h-10 md:h-12 rounded-[10px] border-[1px] border-quaternary drop-shadow-xl bg-tertiary text-quaternary px-2 md:p-2 text-xl font-semibold ${emailError === '' ? '' : 'border-[2px] border-red-500'
             }`}
           type="email"
           value={email}
